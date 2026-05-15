@@ -1,6 +1,8 @@
 import HeroBanner from "@/components/hero/HeroBanner";
 import MovieRow from "@/components/sliders/MovieRow";
 
+export const dynamic = "force-dynamic";
+
 const AI_SERVICE_URL = process.env.NEXT_PUBLIC_AI_SERVICE_URL || "http://localhost:8000";
 
 async function fetchFromAI(endpoint: string) {
