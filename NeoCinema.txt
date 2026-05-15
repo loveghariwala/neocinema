@@ -1,0 +1,146 @@
+NeoCinema — Full AI Movie & Series Platform
+Algorithm Plan
+
+
+
+This PDF contains the complete architecture, system design, algorithms, database structures, recommendation
+engines, AI roadmap, search engine flow, and full-stack development roadmap for the NeoCinema platform.
+
+
+
+1. Project Overview
+NeoCinema is an AI-powered cinematic movie and series discovery platform built using Next.js, MongoDB, FastAPI,
+Node.js, Tailwind CSS, Redis, Meilisearch, and Qdrant.
+
+
+
+2. Core Features
+• Movies and TV series
+• Advanced search engine
+• Reviews and ratings
+• Trailer playback
+• Cast pages
+• AI recommendation engine
+• Personalized suggestions
+• Watchlists
+• Admin dashboard
+
+
+
+3. Frontend Architecture
+Frontend stack includes Next.js App Router, Tailwind CSS, Framer Motion, shadcn/ui, optimized SEO metadata, and
+cinematic UI rendering.
+
+
+
+4. Backend Architecture
+Node.js manages authentication, reviews, watchlists, and API orchestration. FastAPI handles AI recommendations,
+embeddings, vector search, and semantic ranking.
+
+
+
+5. Database Design
+MongoDB collections:
+• movies
+• series
+• people
+• users
+• reviews
+• analytics
+
+
+
+6. TMDB Data Ingestion Flow
+CRON job fetches trending movies, top-rated movies, TV series, trailers, cast information, and recommendations
+before normalizing and storing data.
+
+
+
+7. Search Engine Algorithm
+Search queries are processed using Meilisearch with typo tolerance, actor matching, genre filtering, and ranking by
+popularity and rating.
+
+
+
+8. Recommendation Engine
+Phase 1 uses genre, tags, and actor similarity. Phase 2 uses vector embeddings and semantic AI recommendation
+logic.
+
+
+
+9. Review & Rating System
+Users submit reviews and ratings. Movie scores are recalculated dynamically and cached.
+
+
+
+10. Homepage Structure
+Homepage sections include Hero Slider, Trending Now, Popular Movies, Popular Series, Top Rated, and
+Recommended For You.
+
+
+
+11. Movie Page Structure
+Movie pages include trailers, cinematic backdrops, ratings, reviews, cast sliders, screenshots, and recommendation
+sections.
+
+
+
+12. Personalization Engine
+The AI engine analyzes user watch history, genre preferences, and interaction patterns to generate personalized
+recommendations.
+
+
+
+13. Authentication System
+Authentication uses NextAuth.js with Google login, GitHub login, JWT sessions, and protected routes.
+
+
+
+14. Caching StrategyRedis, ISR caching, edge rendering, and CDN image optimization improve overall performance.
+
+
+
+15. SEO Strategy
+Dynamic metadata, JSON-LD schema, OpenGraph tags, and automatic sitemap generation improve search rankings.
+
+
+
+16. Admin Panel
+Admin panel features include movie management, user management, review moderation, analytics, and homepage
+controls.
+
+
+
+17. Future AI Features
+Future AI features include mood-based search, AI summaries, fake review detection, and advanced semantic
+recommendations.
+
+
+
+18. Final Technology Stack
+Frontend: Next.js, Tailwind CSS, Framer Motion
+Backend: Node.js, FastAPI
+Databases: MongoDB, Redis, Qdrant, Meilisearch
+
+
+
+19. UI Theme
+Theme Name: NeoCinema
+Style: Ultra-dark cinematic UI, glowing gradients, glassmorphism, floating movie cards, and futuristic OTT aesthetics.
+
+
+
+
+20. Development Roadmap
+Phase 1: Core platform setup
+Phase 2: Search, reviews, authentication
+Phase 3: AI recommendation engine
+Phase 4: Admin panel and optimization
+System Architecture Flow
+LayerResponsibilities
+Next.js FrontendUI, pages, rendering, SEO
+Node.js APIAuth, reviews, watchlists
+FastAPI AI EngineRecommendations, embeddings, semantic search
+MongoDBPrimary data storageRedisCaching
+MeilisearchSearch indexing
+QdrantVector similarity search

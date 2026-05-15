@@ -1,0 +1,20 @@
+import { NextRequest, NextResponse } from "next/server";
+
+const AI_SERVICE_URL = process.env.NEXT_PUBLIC_AI_SERVICE_URL || "http://localhost:8000";
+
+export async function GET(
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    const { id } = await params;
+
+    try {
+        const response = await fetch(`${AI_SERVICE_URL}/api/ai/tv/${id}`);
+        if (!response.ok) {
+            return NextResponse.json({ error: "Series not found" }, { status: response.status });
+        }
+        return NextResponse.json(await response.json());
+    } catch (error) {
+        return NextResponse.json({ error: "Service unavailable" }, { status: 500 });
+    }
+}

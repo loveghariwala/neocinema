@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: hsl(240 10% 3.9%);
+  --color-foreground: hsl(0 0% 98%);
+  
+  --color-card: hsl(240 10% 3.9%);
+  --color-card-foreground: hsl(0 0% 98%);
+  
+  --color-popover: hsl(240 10% 3.9%);
+  --color-popover-foreground: hsl(0 0% 98%);
+  
+  --color-primary: hsl(0 0% 98%);
+  --color-primary-foreground: hsl(240 5.9% 10%);
+  
+  --color-secondary: hsl(240 3.7% 15.9%);
+  --color-secondary-foreground: hsl(0 0% 98%);
+  
+  --color-muted: hsl(240 3.7% 15.9%);
+  --color-muted-foreground: hsl(240 5% 64.9%);
+  
+  --color-accent: hsl(240 3.7% 15.9%);
+  --color-accent-foreground: hsl(0 0% 98%);
+  
+  --color-destructive: hsl(0 62.8% 30.6%);
+  --color-destructive-foreground: hsl(0 0% 98%);
+  
+  --color-border: hsl(240 3.7% 15.9%);
+  --color-input: hsl(240 3.7% 15.9%);
+  --color-ring: hsl(240 4.9% 83.9%);
+  
+  --radius-lg: 0.75rem;
+  --radius-md: calc(0.75rem - 2px);
+  --radius-sm: calc(0.75rem - 4px);
+
+  --color-cinema-red: hsl(0 100% 50%);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  body {
+    @apply bg-background text-foreground selection:bg-red-500/30 selection:text-white;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: hidden;
+  }
+}
+
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-neutral-800 rounded-full transition-colors hover:bg-neutral-700;
+}
+
+/* Cinematic Effects */
+@layer utilities {
+  .glass-panel {
+    @apply border border-white/10 bg-black/40 backdrop-blur-3xl shadow-2xl;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+  }
+
+  .futuristic-card {
+    @apply relative overflow-hidden rounded-3xl border border-white/5 bg-neutral-900/40 p-8 transition-all duration-500 backdrop-blur-2xl;
+    &::before {
+      content: "";
+      @apply absolute inset-0 -z-10 bg-gradient-to-br from-red-600/10 via-transparent to-transparent opacity-0 transition-opacity duration-500;
+    }
+    &:hover::before {
+      @apply opacity-100;
+    }
+    &:hover {
+      @apply border-red-600/30 -translate-y-1 shadow-[0_20px_40px_-20px_rgba(220,38,38,0.3)];
+    }
+  }
+
+  .red-glow {
+    box-shadow: 0 0 40px -10px rgba(220, 38, 38, 0.4);
+  }
+
+  .text-glow {
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3), 0 0 30px rgba(220, 38, 38, 0.2);
+  }
+
+  .double-border-animation {
+    @apply relative overflow-hidden rounded-3xl p-[1.5px];
+    background: linear-gradient(0deg, rgba(220,38,38,0.1), rgba(220,38,38,0.1));
+    
+    &::before, &::after {
+      content: "";
+      @apply absolute left-[-50%] top-[-50%] h-[200%] w-[200%] -z-10 opacity-0 transition-opacity duration-700;
+      background: conic-gradient(transparent, transparent, transparent, rgba(220, 38, 38, 0.6));
+      animation: rotate 6s linear infinite;
+    }
+
+    &::after {
+      background: conic-gradient(transparent, transparent, transparent, rgba(255, 255, 255, 0.4));
+      animation: rotate 6s linear infinite reverse;
+      animation-delay: -3s;
+    }
+
+
+    &:hover::before, &:hover::after {
+      @apply opacity-100;
+    }
+  }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.hero-gradient {
+  background: linear-gradient(to top, #050505 0%, transparent 100%);
+}
+
+.card-gradient {
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+}
+
+/* Animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}

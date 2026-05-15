@@ -1,0 +1,28 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|██████████| 103/103 [00:00<00:00, 4559.36it/s]
+INFO:     Started server process [49386]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:47852 - "POST /api/ai/reindex HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34622 - "GET /api/ai/recommend/6a05763b9d44a661f57bc748?limit=10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55890 - "GET /api/ai/recommend/6a05763b9d44a661f57bc748?limit=10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33330 - "GET /api/ai/recommend/6a05763b9d44a661f57bc748?limit=10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60696 - "GET /api/ai/recommend/6a05a8b4cc8386063f75b363?limit=10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51622 - "GET /api/ai/recommend/6a05a8b4cc8386063f75b363?limit=10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59256 - "GET /api/ai/recommend/6a05763b9d44a661f57bc74b?limit=10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42592 - "GET /api/ai/recommend/6a05763b9d44a661f57bc74b?limit=10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42592 - "GET /api/ai/recommend/6a05763b9d44a661f57bc74b?limit=10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44652 - "GET /api/ai/recommend/6a05a87ecc8386063f75b325?limit=10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55534 - "GET /api/ai/recommend/6a05763b9d44a661f57bc743?limit=10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46676 - "GET /api/ai/recommend/6a05763b9d44a661f57bc743?limit=10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43780 - "GET /api/ai/recommend/6a05763b9d44a661f57bc743?limit=10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52970 - "GET /api/ai/recommend/6a05763b9d44a661f57bc743?limit=10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34982 - "GET /api/ai/recommend/6a05763b9d44a661f57bc748?limit=10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41598 - "GET /api/ai/recommend/6a05763b9d44a661f57bc744?limit=10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36314 - "GET /api/ai/recommend/6a05ab26cc8386063f75b641?limit=10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47162 - "GET / HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [49386]
