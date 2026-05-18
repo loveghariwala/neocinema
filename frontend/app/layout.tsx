@@ -21,14 +21,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NeoCinema — Full AI Movie & Series Platform",
+  title: "NeoCinema — Full AI Movie & Series Discovery",
   description: "Experience the future of cinematic discovery with NeoCinema. AI-powered recommendations, semantic search, and an ultra-dark cinematic experience.",
   keywords: ["movies", "series", "streaming", "AI recommendations", "NeoCinema", "cinematic platform"],
   authors: [{ name: "NeoCinema Team" }],
+  icons: {
+    icon: "/neocinema_logo.png",
+    shortcut: "/neocinema_logo.png",
+    apple: "/neocinema_logo.png",
+  },
   openGraph: {
-    title: "NeoCinema — Full AI Movie & Series Platform",
+    title: "NeoCinema — Full AI Movie & Series Discovery",
     description: "AI-powered cinematic movie and series discovery platform.",
     type: "website",
+    images: [{ url: "/neocinema_logo.png" }],
   },
 };
 
