@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.routes import router
 from utils.db import close_db
+import os
 import uvicorn
 
 app = FastAPI(title="NeoCinema AI Service")
@@ -28,4 +29,5 @@ def home():
     return {"message": "NeoCinema AI Service is running"}
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
