@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
-import { Play, X, ChevronDown, Monitor, Layers, AlertCircle } from "lucide-react";
+import { Play, X, ChevronDown, Monitor, Layers, AlertCircle, RefreshCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Season {
@@ -18,13 +18,26 @@ interface StreamPlayerProps {
     title: string;
     isTv?: boolean;
     seasons?: Season[];
+    autoPlay?: boolean;
 }
 
-export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seasons = [] }: StreamPlayerProps) {
+export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seasons = [], autoPlay = false }: StreamPlayerProps) {
     const [isPlaying, setIsPlaying] = useState(false);
-    const [provider, setProvider] = useState(1);
+    const [provider, setProvider] = useState(4);
     const [isLoading, setIsLoading] = useState(true);
     const [mounted, setMounted] = useState(false);
+    const [streamFailed, setStreamFailed] = useState(false);
+    const [triedServers, setTriedServers] = useState<number[]>([]);
+    const loadTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+    useEffect(() => {
+        if (autoPlay) {
+            setIsPlaying(true);
+        }
+    }, [autoPlay]);
+
+    // Server order: DELTA first, then others
+    const serverOrder = [4, 1, 2, 3, 5];
 
     // Series state
     const [selectedSeason, setSelectedSeason] = useState(1);
@@ -48,19 +61,53 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
     const typePath = isTv ? "tv" : "movie";
 
     const streamUrl = useMemo(() => {
-        const id = imdbId || tmdbId;
-        if (provider === 1) return `https://vidsrc.pm/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 2) return `https://vidsrc.xyz/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 3) return `https://embed.su/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
         if (provider === 4) return `https://vidlink.pro/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?primaryColor=dc2626`;
-        if (provider === 5) return `https://autoembed.cc/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        return `https://vidsrc.pm/embed/${typePath}/${tmdbId}`;
-    }, [provider, tmdbId, imdbId, isTv, selectedSeason, selectedEpisode]);
+        if (provider === 1) return `https://vidsrc.icu/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 2) return `https://www.2embed.cc/embed/${tmdbId}`;
+        if (provider === 3) return `https://nontongo.win/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 5) return `https://player.videasy.net/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        return `https://vidlink.pro/${typePath}/${tmdbId}?primaryColor=dc2626`;
+    }, [provider, tmdbId, typePath, isTv, selectedSeason, selectedEpisode]);
 
     // Reset loading state when stream changes
     useEffect(() => {
         setIsLoading(true);
+        setStreamFailed(false);
     }, [streamUrl]);
+
+    // Auto-try next server after 15 seconds of loading
+    useEffect(() => {
+        if (!isPlaying || !isLoading) {
+            if (loadTimerRef.current) clearTimeout(loadTimerRef.current);
+            return;
+        }
+
+        loadTimerRef.current = setTimeout(() => {
+            const newTried = [...triedServers, provider];
+            setTriedServers(newTried);
+
+            // Find next untried server
+            const nextServer = serverOrder.find(s => !newTried.includes(s));
+            if (nextServer) {
+                setProvider(nextServer);
+            } else {
+                // All servers tried
+                setIsLoading(false);
+                setStreamFailed(true);
+            }
+        }, 15000);
+
+        return () => {
+            if (loadTimerRef.current) clearTimeout(loadTimerRef.current);
+        };
+    }, [isPlaying, isLoading, provider, triedServers]);
+
+    const handleRetryAll = useCallback(() => {
+        setTriedServers([]);
+        setStreamFailed(false);
+        setProvider(4);
+        setIsLoading(true);
+    }, []);
 
     if (!isPlaying) {
         return (
@@ -89,7 +136,7 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
             </button>
 
             <div className="relative w-full h-full md:max-w-[90vw] md:max-h-[85vh] md:rounded-[2.5rem] border-0 md:border md:border-white/10 bg-neutral-950 shadow-[0_0_150px_rgba(220,38,38,0.25)] flex flex-col overflow-visible">
-                
+
                 {/* ─── Top Bar ────────────────────────────────────────── */}
                 <div className="relative z-[1000] flex items-center justify-between bg-neutral-900/95 px-4 py-4 md:px-8 md:py-6 backdrop-blur-3xl border-b border-white/5 md:rounded-t-[2.5rem]">
                     <div className="flex items-center gap-4 md:gap-10 w-full">
@@ -100,7 +147,7 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
                                 {title} {isTv && <span className="text-neutral-500 font-bold ml-2">S{selectedSeason} E{selectedEpisode}</span>}
                             </h2>
                         </div>
-                        
+
                         <div className="h-10 w-px bg-white/10 hidden lg:block flex-shrink-0" />
 
                         {/* Server Toggle */}
@@ -109,20 +156,19 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
                                 <span className="text-[9px] font-bold text-neutral-500 uppercase tracking-widest text-center hidden sm:block">Select Server</span>
                                 <div className="flex items-center gap-1.5 rounded-xl bg-white/5 p-1 border border-white/10">
                                     {[
+                                        { id: 4, name: "DELTA" },
                                         { id: 1, name: "ALPHA" },
                                         { id: 2, name: "BETA" },
                                         { id: 3, name: "GAMMA" },
-                                        { id: 4, name: "DELTA" },
                                         { id: 5, name: "EPSILON" }
                                     ].map((p) => (
                                         <button
                                             key={p.id}
                                             onClick={() => setProvider(p.id)}
-                                            className={`rounded-lg px-3 py-1.5 text-[9px] font-black transition-all ${
-                                                provider === p.id 
-                                                    ? "bg-red-600 text-white shadow-lg shadow-red-600/40" 
+                                            className={`rounded-lg px-3 py-1.5 text-[9px] font-black transition-all ${provider === p.id
+                                                    ? "bg-red-600 text-white shadow-lg shadow-red-600/40"
                                                     : "text-neutral-500 hover:text-white hover:bg-white/5"
-                                            }`}
+                                                }`}
                                         >
                                             {p.name}
                                         </button>
@@ -148,11 +194,10 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
                                             setShowSeasonDropdown(!showSeasonDropdown);
                                             setShowEpisodeDropdown(false);
                                         }}
-                                        className={`flex items-center gap-2 sm:gap-3 rounded-2xl px-3 py-2 md:px-5 md:py-3 text-[10px] md:text-xs font-black text-white border transition-all shadow-xl ${
-                                            showSeasonDropdown 
-                                                ? "bg-red-600 border-red-500 ring-4 ring-red-600/20" 
+                                        className={`flex items-center gap-2 sm:gap-3 rounded-2xl px-3 py-2 md:px-5 md:py-3 text-[10px] md:text-xs font-black text-white border transition-all shadow-xl ${showSeasonDropdown
+                                                ? "bg-red-600 border-red-500 ring-4 ring-red-600/20"
                                                 : "bg-white/5 border-white/10 hover:bg-white/10"
-                                        }`}
+                                            }`}
                                     >
                                         <Layers size={16} className={showSeasonDropdown ? "text-white" : "text-red-600"} />
                                         <span className="hidden sm:inline opacity-70">SEASON</span> {selectedSeason}
@@ -196,11 +241,10 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
                                             setShowEpisodeDropdown(!showEpisodeDropdown);
                                             setShowSeasonDropdown(false);
                                         }}
-                                        className={`flex items-center gap-2 sm:gap-3 rounded-2xl px-3 py-2 md:px-5 md:py-3 text-[10px] md:text-xs font-black text-white border transition-all shadow-xl ${
-                                            showEpisodeDropdown 
-                                                ? "bg-red-600 border-red-500 ring-4 ring-red-600/20" 
+                                        className={`flex items-center gap-2 sm:gap-3 rounded-2xl px-3 py-2 md:px-5 md:py-3 text-[10px] md:text-xs font-black text-white border transition-all shadow-xl ${showEpisodeDropdown
+                                                ? "bg-red-600 border-red-500 ring-4 ring-red-600/20"
                                                 : "bg-white/5 border-white/10 hover:bg-white/10"
-                                        }`}
+                                            }`}
                                     >
                                         <Monitor size={16} className={showEpisodeDropdown ? "text-white" : "text-red-600"} />
                                         <span className="hidden sm:inline opacity-70">EPISODE</span> {selectedEpisode}
@@ -253,8 +297,29 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
                             <div className="text-center">
                                 <h3 className="text-lg font-black text-white tracking-[0.3em] uppercase mb-2">Establishing Stream</h3>
                                 <p className="text-xs text-neutral-500 font-bold max-w-xs mx-auto leading-relaxed">
-                                    PLEASE WAIT WHILE WE INITIALIZE THE SERVER. IF LOADING TAKES TOO LONG, TRY SWITCHING SERVERS.
+                                    TRYING SERVER {serverOrder.indexOf(provider) + 1} OF {serverOrder.length}. AUTO-SWITCHING IF UNAVAILABLE...
                                 </p>
+                            </div>
+                        </div>
+                    )}
+
+                    {streamFailed && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-neutral-950 z-30">
+                            <div className="rounded-full bg-red-600/10 p-6 border border-red-600/20">
+                                <AlertCircle size={48} className="text-red-500" />
+                            </div>
+                            <div className="text-center">
+                                <h3 className="text-xl font-black text-white tracking-tight mb-3">Content Unavailable</h3>
+                                <p className="text-sm text-neutral-400 font-medium max-w-sm mx-auto leading-relaxed mb-6">
+                                    This title is not available on any of our streaming servers right now. This usually happens with lesser-known or region-restricted content.
+                                </p>
+                                <button
+                                    onClick={handleRetryAll}
+                                    className="flex items-center gap-2 mx-auto rounded-full bg-red-600 px-6 py-3 text-sm font-black text-white transition-all hover:bg-red-700 hover:scale-105"
+                                >
+                                    <RefreshCw size={16} />
+                                    RETRY ALL SERVERS
+                                </button>
                             </div>
                         </div>
                     )}
@@ -264,16 +329,21 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
                         src={streamUrl}
                         className="h-full w-full border-none shadow-[0_0_50px_rgba(0,0,0,0.5)]"
                         allowFullScreen
-                        referrerPolicy="origin"
+                        referrerPolicy="no-referrer"
                         allow="autoplay; encrypted-media"
-                        onLoad={() => setIsLoading(false)}
+                        onLoad={() => {
+                            setIsLoading(false);
+                            setStreamFailed(false);
+                        }}
                     />
 
                     {/* Server Help Hint */}
-                    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 rounded-full bg-black/60 px-6 py-2.5 backdrop-blur-md border border-white/10 opacity-0 hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                        <AlertCircle size={14} className="text-red-500" />
-                        <span className="text-[10px] font-black text-white uppercase tracking-widest">Tip: Switch servers if the stream doesn't start</span>
-                    </div>
+                    {!isLoading && !streamFailed && (
+                        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 rounded-full bg-black/60 px-6 py-2.5 backdrop-blur-md border border-white/10 opacity-0 hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                            <AlertCircle size={14} className="text-red-500" />
+                            <span className="text-[10px] font-black text-white uppercase tracking-widest">Tip: Switch servers if the stream doesn&apos;t start</span>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

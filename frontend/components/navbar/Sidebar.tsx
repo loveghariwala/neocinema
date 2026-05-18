@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-    Home, 
-    Search, 
-    Film, 
-    Tv, 
-    History, 
-    Heart, 
+import {
+    Home,
+    Search,
+    Film,
+    Tv,
+    History,
+    Heart,
     Settings,
     LogOut,
     Sparkles
@@ -30,7 +30,7 @@ export default function Sidebar() {
     ];
 
     return (
-        <aside className="fixed left-0 top-0 z-50 hidden h-screen w-24 flex-col items-center border-r border-white/5 bg-black/40 py-8 backdrop-blur-2xl lg:flex">
+        <aside className="fixed left-0 top-10 z-50 hidden h-screen w-24 flex-col items-center border-r border-white/5 bg-black/40 py-8 backdrop-blur-2xl lg:flex">
             <Link href="/" className="mb-12 group">
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-600 shadow-[0_0_20px_rgba(220,38,38,0.5)] transition-all group-hover:scale-110">
                     <span className="text-xl font-black text-white">N</span>
@@ -42,11 +42,10 @@ export default function Sidebar() {
                     <Link
                         key={item.href}
                         href={item.href}
-                        className={`group relative flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-300 ${
-                            pathname === item.href
+                        className={`group relative flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-300 ${pathname === item.href
                                 ? "bg-red-600/10 text-red-600"
                                 : "text-neutral-500 hover:bg-white/5 hover:text-white"
-                        }`}
+                            }`}
                     >
                         <item.icon size={24} />
                         <span className="absolute left-full ml-4 whitespace-nowrap rounded-lg bg-red-600 px-3 py-1 text-xs font-bold text-white opacity-0 transition-opacity group-hover:opacity-100">

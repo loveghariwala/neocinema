@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import {
     Search,
     SlidersHorizontal,
@@ -34,8 +35,6 @@ interface Props {
     type: "movie" | "tv";
     onFilterChange: (filters: FilterState) => void;
     totalResults: number;
-    currentPage: number;
-    totalPages: number;
 }
 
 const SORT_OPTIONS = [
@@ -72,23 +71,44 @@ export default function BrowseFilterPanel({
     type,
     onFilterChange,
     totalResults,
-    currentPage,
-    totalPages,
 }: Props) {
+    const searchParams = useSearchParams();
+    const genreParam = searchParams.get("genre");
+    const sortParam = searchParams.get("sort") || "popularity.desc";
+    const initialGenreIds = genreParam ? [parseInt(genreParam)] : [];
+
     const [genres, setGenres] = useState<Genre[]>([]);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [filters, setFilters] = useState<FilterState>({
-        genreIds: [],
+        genreIds: initialGenreIds,
         yearFrom: null,
         yearTo: null,
         ratingMin: null,
         ratingMax: null,
-        sortBy: "popularity.desc",
+        sortBy: sortParam,
         search: "",
         page: 1,
         language: "",
     });
     const [searchInput, setSearchInput] = useState("");
+
+    // Sync URL parameters into filter state
+    useEffect(() => {
+        const urlGenreIds = genreParam ? [parseInt(genreParam)] : [];
+        const urlSortBy = sortParam || "popularity.desc";
+        
+        if (
+            JSON.stringify(filters.genreIds) !== JSON.stringify(urlGenreIds) ||
+            filters.sortBy !== urlSortBy
+        ) {
+            setFilters(prev => ({
+                ...prev,
+                genreIds: urlGenreIds,
+                sortBy: urlSortBy,
+                page: 1
+            }));
+        }
+    }, [genreParam, sortParam]);
 
     // Fetch genres from AI service
     useEffect(() => {
@@ -151,12 +171,7 @@ export default function BrowseFilterPanel({
         onFilterChange(reset);
     };
 
-    const changePage = (newPage: number) => {
-        const newFilters = { ...filters, page: newPage };
-        setFilters(newFilters);
-        onFilterChange(newFilters);
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    };
+
 
     const hasActiveFilters =
         filters.genreIds.length > 0 ||
@@ -439,7 +454,7 @@ export default function BrowseFilterPanel({
                 )}
             </AnimatePresence>
 
-            {/* ─── RESULTS INFO + PAGINATION ──────────────────────────────── */}
+            {/* ─── RESULTS INFO ──────────────────────────────── */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <p className="text-sm font-medium text-neutral-500">
                     <span className="font-black text-white">{totalResults.toLocaleString()}</span>{" "}
@@ -455,56 +470,7 @@ export default function BrowseFilterPanel({
                         </span>
                     )}
                 </p>
-
-                {totalPages > 1 && (
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => changePage(currentPage - 1)}
-                            disabled={currentPage <= 1}
-                            className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-bold text-neutral-400 transition-all hover:border-white/20 hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
-                        >
-                            Prev
-                        </button>
-                        {generatePageNumbers(currentPage, totalPages).map((p, i) =>
-                            p === "..." ? (
-                                <span key={`e-${i}`} className="px-1 text-neutral-600">⋯</span>
-                            ) : (
-                                <button
-                                    key={p}
-                                    onClick={() => changePage(p as number)}
-                                    className={`flex h-9 w-9 items-center justify-center rounded-xl text-xs font-bold transition-all ${
-                                        currentPage === p
-                                            ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
-                                            : "border border-white/10 bg-white/[0.03] text-neutral-400 hover:text-white"
-                                    }`}
-                                >
-                                    {p}
-                                </button>
-                            )
-                        )}
-                        <button
-                            onClick={() => changePage(currentPage + 1)}
-                            disabled={currentPage >= totalPages}
-                            className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-bold text-neutral-400 transition-all hover:border-white/20 hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
-                        >
-                            Next
-                        </button>
-                    </div>
-                )}
             </div>
         </div>
     );
-}
-
-function generatePageNumbers(current: number, total: number): (number | string)[] {
-    const capped = Math.min(total, 500);
-    if (capped <= 7) return Array.from({ length: capped }, (_, i) => i + 1);
-    const pages: (number | string)[] = [1];
-    if (current > 3) pages.push("...");
-    for (let i = Math.max(2, current - 1); i <= Math.min(capped - 1, current + 1); i++) {
-        pages.push(i);
-    }
-    if (current < capped - 2) pages.push("...");
-    pages.push(capped);
-    return pages;
 }

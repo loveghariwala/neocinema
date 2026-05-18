@@ -1,16 +1,21 @@
 "use client";
 import { useRef, useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import MovieCard from "../cards/MovieCard";
 
 interface Props {
     title: string;
     movies: any[];
+    moreLink?: string;
+    className?: string;
 }
 
 export default function MovieRow({
     title,
     movies,
+    moreLink,
+    className,
 }: Props) {
     const scrollRef = useRef<HTMLDivElement>(null);
     const [showLeft, setShowLeft] = useState(false);
@@ -30,15 +35,24 @@ export default function MovieRow({
     };
 
     return (
-        <section className="relative mb-24 overflow-hidden">
-            <div className="mb-8 flex items-center justify-between px-6 md:px-16">
-                <div className="flex items-center gap-4">
+        <section className={`relative mb-24 overflow-hidden ${className || ""}`}>
+            <div className="mb-8 flex items-center justify-between px-6 md:px-16 gap-6">
+                <div className="flex items-center gap-4 flex-shrink-0">
                     <div className="h-8 w-1.5 rounded-full bg-red-600 shadow-[0_0_15px_rgba(220,38,38,0.5)]" />
                     <h2 className="text-3xl font-black tracking-tight text-white uppercase italic">
                         {title}
                     </h2>
                 </div>
-                <div className="h-px flex-1 mx-12 bg-gradient-to-r from-red-600/40 via-red-600/10 to-transparent" />
+                <div className="h-px flex-1 bg-gradient-to-r from-red-600/40 via-red-600/10 to-transparent" />
+                {moreLink && (
+                    <Link
+                        href={moreLink}
+                        className="group flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm font-bold text-neutral-400 backdrop-blur-md transition-all hover:scale-105 hover:border-red-600/30 hover:bg-red-600/10 hover:text-red-500 flex-shrink-0"
+                    >
+                        See All
+                        <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+                    </Link>
+                )}
             </div>
 
             <div className="relative px-6 md:px-16">
@@ -54,14 +68,14 @@ export default function MovieRow({
                 </button>
 
                 {/* SLIDER CONTAINER */}
-                <div 
+                <div
                     ref={scrollRef}
                     onScroll={handleScroll}
-                    className="flex gap-[20px] overflow-x-auto scroll-smooth pb-12 pt-4 scrollbar-hide snap-x snap-mandatory"
+                    className="flex gap-[20px] overflow-x-auto scroll-smooth pb-10 pt-5 scrollbar-hide snap-x snap-mandatory"
                 >
                     {movies?.map((movie, index) => (
-                        <div 
-                            key={movie._id || movie.tmdbId || index} 
+                        <div
+                            key={movie._id || movie.tmdbId || index}
                             className="w-[calc(50%-10px)] md:w-[calc(33.33%-13.33px)] lg:w-[calc(25%-15px)] flex-shrink-0 snap-start snap-always"
                         >
                             <MovieCard movie={movie} />

@@ -1,9 +1,10 @@
 import HeroBanner from "@/components/hero/HeroBanner";
 import MovieRow from "@/components/sliders/MovieRow";
+import { getAIServiceUrl } from "@/lib/config";
 
 export const dynamic = "force-dynamic";
 
-const AI_SERVICE_URL = process.env.NEXT_PUBLIC_AI_SERVICE_URL || "http://localhost:8000";
+const AI_SERVICE_URL = getAIServiceUrl();
 
 async function fetchFromAI(endpoint: string) {
     try {
@@ -38,19 +39,36 @@ export default async function HomePage() {
 
             <div className="relative z-20 -mt-32 space-y-24 px-6 pb-20 pt-32 md:px-16">
                 {trendingMovies.length > 0 && (
-                    <MovieRow title="Trending Movies" movies={trendingMovies} />
+                    <MovieRow 
+                        title="Trending Movies" 
+                        movies={trendingMovies} 
+                        className="pt-10" 
+                        moreLink="/movies?sort=popularity.desc" 
+                    />
                 )}
 
                 {trendingSeries.length > 0 && (
-                    <MovieRow title="Trending Series" movies={trendingSeries} />
+                    <MovieRow 
+                        title="Trending Series" 
+                        movies={trendingSeries} 
+                        moreLink="/series?sort=popularity.desc" 
+                    />
                 )}
 
                 {topRatedMovies.length > 0 && (
-                    <MovieRow title="Top Rated Movies" movies={topRatedMovies} />
+                    <MovieRow 
+                        title="Top Rated Movies" 
+                        movies={topRatedMovies} 
+                        moreLink="/movies?sort=vote_average.desc" 
+                    />
                 )}
 
                 {topRatedSeries.length > 0 && (
-                    <MovieRow title="Top Rated Series" movies={topRatedSeries} />
+                    <MovieRow 
+                        title="Top Rated Series" 
+                        movies={topRatedSeries} 
+                        moreLink="/series?sort=vote_average.desc" 
+                    />
                 )}
             </div>
         </main>

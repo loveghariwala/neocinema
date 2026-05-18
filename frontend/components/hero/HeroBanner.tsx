@@ -2,11 +2,15 @@
 
 import { motion } from "framer-motion";
 import { Play, Info } from "lucide-react";
+import Link from "next/link";
 
 export default function HeroBanner({
     movie,
 }: any) {
     if (!movie) return null;
+    const id = movie._id || movie.tmdbId || movie.id;
+    const isTv = movie.isMovie === false || movie.media_type === "tv" || movie.name !== undefined;
+    const linkBase = isTv ? "/series" : "/movies";
 
     return (
         <section className="relative h-[85vh] w-full overflow-hidden">
@@ -47,14 +51,20 @@ export default function HeroBanner({
                         </p>
 
                         <div className="flex flex-wrap gap-4">
-                            <button className="flex items-center gap-2 rounded-full bg-white px-8 py-4 font-bold text-black transition-all hover:scale-105 hover:bg-neutral-200">
+                            <Link 
+                                href={`${linkBase}/${id}?play=true`}
+                                className="flex items-center gap-2 rounded-full bg-white px-8 py-4 font-bold text-black transition-all hover:scale-105 hover:bg-neutral-200"
+                            >
                                 <Play fill="currentColor" size={20} />
                                 Watch Now
-                            </button>
-                            <button className="flex items-center gap-2 rounded-full bg-white/10 px-8 py-4 font-bold text-white backdrop-blur-md transition-all hover:scale-105 hover:bg-white/20 border border-white/20">
+                            </Link>
+                            <Link 
+                                href={`${linkBase}/${id}`}
+                                className="flex items-center gap-2 rounded-full bg-white/10 px-8 py-4 font-bold text-white backdrop-blur-md transition-all hover:scale-105 hover:bg-white/20 border border-white/20"
+                            >
                                 <Info size={20} />
                                 More Info
-                            </button>
+                            </Link>
                         </div>
                     </motion.div>
                 </div>

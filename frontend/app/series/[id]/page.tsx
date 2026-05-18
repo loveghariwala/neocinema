@@ -9,12 +9,18 @@ interface PageProps {
     params: Promise<{
         id: string;
     }>;
+    searchParams?: Promise<{
+        play?: string;
+    }>;
 }
 
 export default async function SeriesDetailsPage({
     params,
+    searchParams,
 }: PageProps) {
     const { id } = await params;
+    const resolvedSearchParams = await searchParams;
+    const autoPlay = resolvedSearchParams?.play === "true";
     const series = await getMovieDetails(id, "tv");
 
     if (!series) return <div className="flex h-screen items-center justify-center text-white text-xl font-bold">Series not found</div>;
@@ -88,6 +94,7 @@ export default async function SeriesDetailsPage({
                                     title={series.title} 
                                     isTv={true} 
                                     seasons={series.seasons} 
+                                    autoPlay={autoPlay}
                                 />
 
                                 <WatchlistButton movie={series} />

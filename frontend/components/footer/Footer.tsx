@@ -31,20 +31,32 @@ export default function Footer() {
                     <div>
                         <h3 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">Navigation</h3>
                         <ul className="space-y-4">
-                            {["Home", "Discover", "Movies", "Series", "Watchlist"].map((item) => (
-                                <li key={item}>
-                                    <Link href="#" className="text-neutral-500 text-sm hover:text-white transition-colors">{item}</Link>
+                            {[
+                                { name: "Home", href: "/" },
+                                { name: "Discover", href: "/search" },
+                                { name: "Movies", href: "/movies" },
+                                { name: "Series", href: "/series" },
+                                { name: "Watchlist", href: "/watchlist" },
+                            ].map((item) => (
+                                <li key={item.name}>
+                                    <Link href={item.href} className="text-neutral-500 text-sm hover:text-white transition-colors">{item.name}</Link>
                                 </li>
                             ))}
                         </ul>
                     </div>
 
                     <div>
-                        <h3 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">Categories</h3>
+                        <h3 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">Genres</h3>
                         <ul className="space-y-4">
-                            {["Action", "Drama", "Sci-Fi", "Comedy", "Horror"].map((item) => (
-                                <li key={item}>
-                                    <Link href="#" className="text-neutral-500 text-sm hover:text-white transition-colors">{item}</Link>
+                            {[
+                                { name: "Action", href: "/movies?genre=28" },
+                                { name: "Drama", href: "/movies?genre=18" },
+                                { name: "Sci-Fi", href: "/movies?genre=878" },
+                                { name: "Comedy", href: "/movies?genre=35" },
+                                { name: "Horror", href: "/movies?genre=27" },
+                            ].map((item) => (
+                                <li key={item.name}>
+                                    <Link href={item.href} className="text-neutral-500 text-sm hover:text-white transition-colors">{item.name}</Link>
                                 </li>
                             ))}
                         </ul>
@@ -71,9 +83,9 @@ export default function Footer() {
                         &copy; {new Date().getFullYear()} NeoCinema. All rights reserved.
                     </p>
                     <div className="flex gap-6">
-                        <Link href="#" className="text-neutral-600 text-xs hover:text-white">Privacy Policy</Link>
-                        <Link href="#" className="text-neutral-600 text-xs hover:text-white">Terms of Service</Link>
-                        <Link href="#" className="text-neutral-600 text-xs hover:text-white">Cookie Policy</Link>
+                        <Link href="/privacy" className="text-neutral-600 text-xs hover:text-white">Privacy Policy</Link>
+                        <Link href="/terms" className="text-neutral-600 text-xs hover:text-white">Terms of Service</Link>
+                        <Link href="/cookies" className="text-neutral-600 text-xs hover:text-white">Cookie Policy</Link>
                     </div>
                 </div>
             </div>

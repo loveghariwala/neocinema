@@ -24,14 +24,14 @@ export default function MovieCard({ movie }: MovieCardProps) {
     const year = movie.releaseDate
         ? new Date(movie.releaseDate).getFullYear()
         : movie.release_date
-        ? new Date(movie.release_date).getFullYear()
-        : "";
+            ? new Date(movie.release_date).getFullYear()
+            : "";
     const lang = movie.language || movie.original_language || "";
 
     return (
         <Link href={`${linkBase}/${id}`} className="block group">
             <motion.div
-                whileHover={{ scale: 1.05, y: -8 }}
+                whileHover={{ scale: 1.00, y: -8 }}
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 className="relative aspect-[2/3] w-full overflow-hidden rounded-2xl bg-neutral-900 shadow-xl border border-white/5 transition-all group-hover:border-white/20 group-hover:shadow-[0_0_40px_rgba(220,38,38,0.3)]"
             >

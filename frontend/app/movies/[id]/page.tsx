@@ -9,12 +9,18 @@ interface PageProps {
     params: Promise<{
         id: string;
     }>;
+    searchParams?: Promise<{
+        play?: string;
+    }>;
 }
 
 export default async function MovieDetailsPage({
     params,
+    searchParams,
 }: PageProps) {
     const { id } = await params;
+    const resolvedSearchParams = await searchParams;
+    const autoPlay = resolvedSearchParams?.play === "true";
     const movie = await getMovieDetails(id, "movie");
 
     if (!movie) return <div className="flex h-screen items-center justify-center text-white text-xl font-bold">Movie not found</div>;
@@ -23,7 +29,7 @@ export default async function MovieDetailsPage({
         <main className="min-h-screen">
             {/* IMMERSIVE HERO */}
             <section className="relative h-[90vh] w-full overflow-hidden">
-                <MotionDiv 
+                <MotionDiv
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 1.5 }}
@@ -50,14 +56,14 @@ export default async function MovieDetailsPage({
                             transition={{ delay: 0.3 }}
                         >
                             <div className="mb-4 flex items-center gap-2">
-                                <span className="rounded bg-red-600 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-white">4K ULTRA HD</span>
+                                <span className="rounded bg-red-600 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-white">4KULTRA HD</span>
                                 <span className="rounded bg-white/10 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-white backdrop-blur-md">HDR</span>
                             </div>
 
-                            <h1 className="mb-6 text-6xl font-black tracking-tighter text-glow md:text-8xl lg:text-9xl">
+                            <h1 className="mb-6 text-4xl sm:text-2xl font-black tracking-tighter text-glow md:text-7xl lg:text-8xl">
                                 {movie.title}
                             </h1>
-                            
+
                             <div className="mb-8 flex flex-wrap items-center gap-8 text-sm font-bold uppercase tracking-widest text-neutral-400">
                                 <div className="flex items-center gap-2 text-yellow-500">
                                     <Star size={18} fill="currentColor" />
@@ -82,14 +88,15 @@ export default async function MovieDetailsPage({
                             </p>
 
                             <div className="flex flex-wrap gap-6">
-                                <StreamPlayer 
-                                    tmdbId={movie.tmdbId} 
-                                    imdbId={movie.imdbId} 
-                                    title={movie.title} 
+                                <StreamPlayer
+                                    tmdbId={movie.tmdbId}
+                                    imdbId={movie.imdbId}
+                                    title={movie.title}
+                                    autoPlay={autoPlay}
                                 />
 
                                 <WatchlistButton movie={movie} />
-                                
+
                                 <button className="flex items-center gap-3 rounded-full border border-white/20 bg-white/5 px-8 py-5 font-black text-white backdrop-blur-xl transition-all hover:bg-white/10">
                                     <Share2 size={20} />
                                     SHARE
@@ -145,11 +152,11 @@ export default async function MovieDetailsPage({
                             <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-red-600/80">Starring Cast</h3>
                             <div className="h-px flex-1 bg-gradient-to-r from-red-600/20 to-transparent" />
                         </div>
-                        
+
                         <div className="flex gap-8 overflow-x-auto pb-10 scrollbar-hide snap-x snap-mandatory">
                             {movie.cast?.map((actor: any) => (
                                 <div key={actor._id} className="min-w-[180px] group cursor-pointer snap-start">
-                                    <MotionDiv 
+                                    <MotionDiv
                                         whileHover={{ scale: 1.05, y: -8 }}
                                         transition={{ type: "spring", stiffness: 400, damping: 25 }}
                                         className="relative aspect-[2/3] mb-4 w-full overflow-hidden rounded-2xl bg-neutral-900 shadow-xl border border-white/5 transition-all group-hover:border-white/20 group-hover:shadow-[0_0_40px_rgba(220,38,38,0.3)]"

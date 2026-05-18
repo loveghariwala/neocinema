@@ -1,6 +1,7 @@
 import dbConnect from "@/lib/mongodb";
 import Movie from "@/models/Movie";
 import People from "@/models/People";
+import { getAIServiceUrl } from "@/lib/config";
 
 export async function getTrendingMovies() {
     await dbConnect();
@@ -33,7 +34,7 @@ export async function getMovieDetails(id: string, type: "movie" | "tv" = "movie"
     // If it's a numeric ID (TMDB ID), fetch from external API via AI service
     if (/^\d+$/.test(id)) {
         try {
-            const aiServiceUrl = process.env.NEXT_PUBLIC_AI_SERVICE_URL || "http://localhost:8000";
+            const aiServiceUrl = getAIServiceUrl();
             const endpoint = type === "movie" ? `/api/ai/movie/${id}` : `/api/ai/tv/${id}`;
             const response = await fetch(`${aiServiceUrl}${endpoint}`, { cache: "no-store" });
             
@@ -88,11 +89,12 @@ export async function getMovieDetails(id: string, type: "movie" | "tv" = "movie"
         
         if (!movie) return null;
 
-        let similarMovies = [];
+        let similarMovies: any[] = [];
 
         // Phase 2 Recommendation: AI Service (FastAPI)
         try {
-            const aiResponse = await fetch(`${process.env.NEXT_PUBLIC_AI_SERVICE_URL}/api/ai/recommend/${id}?limit=10`);
+            const aiServiceUrl = getAIServiceUrl();
+            const aiResponse = await fetch(`${aiServiceUrl}/api/ai/recommend/${id}?limit=10`);
             if (aiResponse.ok) {
                 const aiData = await aiResponse.json();
                 const recIds = aiData.recommendations.map((r: any) => r.id);

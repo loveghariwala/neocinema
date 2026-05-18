@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getAIServiceUrl } from "@/lib/config";
 
-const AI_SERVICE_URL = process.env.NEXT_PUBLIC_AI_SERVICE_URL || "http://localhost:8000";
+const AI_SERVICE_URL = getAIServiceUrl();
 
 export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
