@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useSearchParams } from "next/navigation";
 import {
     Search,
     SlidersHorizontal,
@@ -33,6 +32,7 @@ export interface FilterState {
 
 interface Props {
     type: "movie" | "tv";
+    filters: FilterState;
     onFilterChange: (filters: FilterState) => void;
     totalResults: number;
 }
@@ -69,46 +69,18 @@ const LANGUAGES = [
 
 export default function BrowseFilterPanel({
     type,
+    filters,
     onFilterChange,
     totalResults,
 }: Props) {
-    const searchParams = useSearchParams();
-    const genreParam = searchParams.get("genre");
-    const sortParam = searchParams.get("sort") || "popularity.desc";
-    const initialGenreIds = genreParam ? [parseInt(genreParam)] : [];
-
     const [genres, setGenres] = useState<Genre[]>([]);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const [filters, setFilters] = useState<FilterState>({
-        genreIds: initialGenreIds,
-        yearFrom: null,
-        yearTo: null,
-        ratingMin: null,
-        ratingMax: null,
-        sortBy: sortParam,
-        search: "",
-        page: 1,
-        language: "",
-    });
-    const [searchInput, setSearchInput] = useState("");
+    const [searchInput, setSearchInput] = useState(filters.search);
 
-    // Sync URL parameters into filter state
+    // Sync input box value if filters.search changes from outside (e.g., reset button)
     useEffect(() => {
-        const urlGenreIds = genreParam ? [parseInt(genreParam)] : [];
-        const urlSortBy = sortParam || "popularity.desc";
-        
-        if (
-            JSON.stringify(filters.genreIds) !== JSON.stringify(urlGenreIds) ||
-            filters.sortBy !== urlSortBy
-        ) {
-            setFilters(prev => ({
-                ...prev,
-                genreIds: urlGenreIds,
-                sortBy: urlSortBy,
-                page: 1
-            }));
-        }
-    }, [genreParam, sortParam]);
+        setSearchInput(filters.search);
+    }, [filters.search]);
 
     // Fetch genres from AI service
     useEffect(() => {
@@ -130,18 +102,15 @@ export default function BrowseFilterPanel({
     useEffect(() => {
         const timer = setTimeout(() => {
             if (searchInput !== filters.search) {
-                const newFilters = { ...filters, search: searchInput, page: 1 };
-                setFilters(newFilters);
-                onFilterChange(newFilters);
+                onFilterChange({ ...filters, search: searchInput, page: 1 });
             }
         }, 500);
         return () => clearTimeout(timer);
-    }, [searchInput]);
+    }, [searchInput, filters, onFilterChange]);
 
     const updateFilter = useCallback(
         (updates: Partial<FilterState>) => {
             const newFilters = { ...filters, ...updates, page: 1 };
-            setFilters(newFilters);
             onFilterChange(newFilters);
         },
         [filters, onFilterChange]
@@ -166,7 +135,6 @@ export default function BrowseFilterPanel({
             page: 1,
             language: "",
         };
-        setFilters(reset);
         setSearchInput("");
         onFilterChange(reset);
     };

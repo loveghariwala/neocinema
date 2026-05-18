@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import BrowseFilterPanel, { FilterState } from "./BrowseFilterPanel";
 import BrowseGrid from "./BrowseGrid";
 import { Film, Tv, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 interface Props {
     type: "movie" | "tv";
@@ -23,8 +22,8 @@ interface BrowseData {
 
 export default function BrowsePageClient({ type, title, subtitle }: Props) {
     const searchParams = useSearchParams();
-    const genreParam = searchParams.get("genre");
-    const sortParam = searchParams.get("sort") || "popularity.desc";
+    const router = useRouter();
+    const pathname = usePathname();
 
     const [data, setData] = useState<BrowseData>({
         results: [],
@@ -33,22 +32,35 @@ export default function BrowsePageClient({ type, title, subtitle }: Props) {
         currentPage: 1,
     });
     const [isLoading, setIsLoading] = useState(true);
-    const [currentFilters, setCurrentFilters] = useState<FilterState>({
-        genreIds: genreParam ? [parseInt(genreParam)] : [],
-        yearFrom: null,
-        yearTo: null,
-        ratingMin: null,
-        ratingMax: null,
-        sortBy: sortParam,
-        search: "",
-        page: 1,
-        language: "",
-    });
+
+    // Compute currentFilters directly from URL searchParams
+    const currentFilters = useMemo<FilterState>(() => {
+        const genre = searchParams.get("genre");
+        const yearFrom = searchParams.get("yearFrom");
+        const yearTo = searchParams.get("yearTo");
+        const ratingMin = searchParams.get("ratingMin");
+        const ratingMax = searchParams.get("ratingMax");
+        const sortBy = searchParams.get("sort") || "popularity.desc";
+        const search = searchParams.get("search") || "";
+        const page = searchParams.get("page") ? parseInt(searchParams.get("page")!) : 1;
+        const language = searchParams.get("language") || "";
+
+        return {
+            genreIds: genre ? genre.split(",").map(id => parseInt(id)) : [],
+            yearFrom: yearFrom ? parseInt(yearFrom) : null,
+            yearTo: yearTo ? parseInt(yearTo) : null,
+            ratingMin: ratingMin ? parseFloat(ratingMin) : null,
+            ratingMax: ratingMax ? parseFloat(ratingMax) : null,
+            sortBy,
+            search,
+            page,
+            language,
+        };
+    }, [searchParams]);
 
     const fetchData = useCallback(
         async (filters: FilterState) => {
             setIsLoading(true);
-            setCurrentFilters(filters);
             try {
                 // If search is active, use the search endpoint
                 if (filters.search && filters.search.trim().length >= 2) {
@@ -95,27 +107,32 @@ export default function BrowsePageClient({ type, title, subtitle }: Props) {
         [type]
     );
 
+    // Sync all filter changes to the URL query string
+    const handleFilterChange = useCallback((filters: FilterState) => {
+        const params = new URLSearchParams();
+        if (filters.genreIds.length > 0) params.set("genre", filters.genreIds.join(","));
+        if (filters.yearFrom) params.set("yearFrom", String(filters.yearFrom));
+        if (filters.yearTo) params.set("yearTo", String(filters.yearTo));
+        if (filters.ratingMin !== null && filters.ratingMin !== undefined) params.set("ratingMin", String(filters.ratingMin));
+        if (filters.ratingMax !== null && filters.ratingMax !== undefined) params.set("ratingMax", String(filters.ratingMax));
+        if (filters.sortBy && filters.sortBy !== "popularity.desc") params.set("sort", filters.sortBy);
+        if (filters.search) params.set("search", filters.search);
+        if (filters.page && filters.page > 1) params.set("page", String(filters.page));
+        if (filters.language) params.set("language", filters.language);
+
+        router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    }, [router, pathname]);
+
     const changePage = (p: number) => {
         const updatedFilters = { ...currentFilters, page: p };
-        fetchData(updatedFilters);
+        handleFilterChange(updatedFilters);
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    // Initial load
+    // Fetch data whenever currentFilters (synced from URL query parameters) changes
     useEffect(() => {
-        const initialGenreIds = genreParam ? [parseInt(genreParam)] : [];
-        fetchData({
-            genreIds: initialGenreIds,
-            yearFrom: null,
-            yearTo: null,
-            ratingMin: null,
-            ratingMax: null,
-            sortBy: sortParam,
-            search: "",
-            page: 1,
-            language: "",
-        });
-    }, [fetchData, genreParam, sortParam]);
+        fetchData(currentFilters);
+    }, [fetchData, currentFilters]);
 
     return (
         <main className="min-h-screen px-6 pb-20 pt-28 md:px-16">
@@ -152,7 +169,8 @@ export default function BrowsePageClient({ type, title, subtitle }: Props) {
             >
                 <BrowseFilterPanel
                     type={type}
-                    onFilterChange={fetchData}
+                    filters={currentFilters}
+                    onFilterChange={handleFilterChange}
                     totalResults={data.totalResults}
                 />
             </motion.div>
