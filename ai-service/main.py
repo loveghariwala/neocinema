@@ -12,6 +12,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "https://aggregately-legendary-nettie.ngrok-free.dev",
+        "https://neocinematv.vercel.app/"
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -20,14 +21,17 @@ app.add_middleware(
 
 app.include_router(router, prefix="/api/ai")
 
+
 @app.on_event("shutdown")
 async def shutdown_event():
     await close_db()
+
 
 @app.get("/")
 def home():
     return {"message": "NeoCinema AI Service is running"}
 
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
-    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
