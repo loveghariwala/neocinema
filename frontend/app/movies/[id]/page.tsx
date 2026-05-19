@@ -1,9 +1,11 @@
 import { getMovieDetails } from "@/services/movieService";
-import { Star, Clock, Calendar, Globe, Share2 } from "lucide-react";
+import { Star, Clock, Calendar, Globe } from "lucide-react";
 import MovieRow from "@/components/sliders/MovieRow";
 import { MotionDiv } from "@/components/layout/Motion";
 import StreamPlayer from "@/components/player/StreamPlayer";
 import WatchlistButton from "@/components/watchlist/WatchlistButton";
+import ShareButton from "@/components/ui/ShareButton";
+import { Metadata } from "next";
 
 interface PageProps {
     params: Promise<{
@@ -12,6 +14,46 @@ interface PageProps {
     searchParams?: Promise<{
         play?: string;
     }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+    const { id } = await params;
+    const movie = await getMovieDetails(id, "movie");
+    
+    if (!movie) {
+        return {
+            title: "Movie Not Found — NeoCinema",
+            description: "The movie details page you are trying to reach does not exist or has been removed."
+        };
+    }
+    
+    const releaseYear = movie.releaseDate ? new Date(movie.releaseDate).getFullYear() : "";
+    const titleText = `${movie.title} ${releaseYear ? `(${releaseYear})` : ""} — NeoCinema`;
+    const descriptionText = movie.overview 
+        ? `${movie.overview.substring(0, 150)}...` 
+        : `Watch and discover ${movie.title} with AI recommendations on NeoCinema.`;
+
+    return {
+        title: titleText,
+        description: descriptionText,
+        keywords: [movie.title, ...(movie.genres || []), "AI recommendations", "NeoCinema", "stream movie"],
+        openGraph: {
+            title: titleText,
+            description: descriptionText,
+            type: "video.movie",
+            images: movie.backdropPath 
+                ? [{ url: `https://image.tmdb.org/t/p/w780${movie.backdropPath}` }] 
+                : movie.posterPath 
+                    ? [{ url: `https://image.tmdb.org/t/p/w500${movie.posterPath}` }] 
+                    : [{ url: "/neocinema_logo.png" }],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: titleText,
+            description: descriptionText,
+            images: movie.backdropPath ? [`https://image.tmdb.org/t/p/w780${movie.backdropPath}`] : ["/neocinema_logo.png"],
+        }
+    };
 }
 
 export default async function MovieDetailsPage({
@@ -28,7 +70,7 @@ export default async function MovieDetailsPage({
     return (
         <main className="min-h-screen">
             {/* IMMERSIVE HERO */}
-            <section className="relative h-[90vh] w-full overflow-hidden">
+            <section className="relative min-h-[90vh] w-full flex items-center py-20 md:py-28 lg:py-32">
                 <MotionDiv
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -44,11 +86,11 @@ export default async function MovieDetailsPage({
                     ) : (
                         <div className="h-full w-full bg-neutral-900" />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-background via-background/50 to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
                 </MotionDiv>
 
-                <div className="relative z-10 flex h-full items-center px-6 md:px-16">
+                <div className="relative z-10 w-full px-6 md:px-16">
                     <div className="max-w-4xl">
                         <MotionDiv
                             initial={{ opacity: 0, y: 30 }}
@@ -56,38 +98,38 @@ export default async function MovieDetailsPage({
                             transition={{ delay: 0.3 }}
                         >
                             <div className="mb-4 flex items-center gap-2">
-                                <span className="rounded bg-red-600 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-white">4KULTRA HD</span>
+                                <span className="rounded bg-red-600 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-white">4K ULTRA HD</span>
                                 <span className="rounded bg-white/10 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-white backdrop-blur-md">HDR</span>
                             </div>
 
-                            <h1 className="mb-6 text-4xl sm:text-2xl font-black tracking-tighter text-glow md:text-7xl lg:text-8xl">
+                            <h1 className="mb-4 md:mb-6 text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-glow">
                                 {movie.title}
                             </h1>
 
-                            <div className="mb-8 flex flex-wrap items-center gap-8 text-sm font-bold uppercase tracking-widest text-neutral-400">
+                            <div className="mb-6 md:mb-8 flex flex-wrap items-center gap-4 sm:gap-6 md:gap-8 text-[11px] sm:text-xs md:text-sm font-bold uppercase tracking-widest text-neutral-400">
                                 <div className="flex items-center gap-2 text-yellow-500">
-                                    <Star size={18} fill="currentColor" />
+                                    <Star size={16} fill="currentColor" />
                                     <span className="text-white">{movie.rating?.toFixed(1)}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Clock size={18} className="text-red-600" />
+                                    <Clock size={16} className="text-red-600" />
                                     <span>{movie.runtime} MIN</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Calendar size={18} className="text-red-600" />
+                                    <Calendar size={16} className="text-red-600" />
                                     <span>{new Date(movie.releaseDate).getFullYear()}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Globe size={18} className="text-red-600" />
+                                    <Globe size={16} className="text-red-600" />
                                     <span>{movie.language}</span>
                                 </div>
                             </div>
 
-                            <p className="mb-10 max-w-2xl text-xl font-medium leading-relaxed text-neutral-300">
+                            <p className="mb-6 md:mb-10 max-w-2xl text-sm sm:text-base md:text-lg lg:text-xl font-medium leading-relaxed text-neutral-300 line-clamp-4 md:line-clamp-none">
                                 {movie.overview}
                             </p>
 
-                            <div className="flex flex-wrap gap-6">
+                            <div className="flex flex-wrap gap-3 sm:gap-4 md:gap-6">
                                 <StreamPlayer
                                     tmdbId={movie.tmdbId}
                                     imdbId={movie.imdbId}
@@ -97,10 +139,7 @@ export default async function MovieDetailsPage({
 
                                 <WatchlistButton movie={movie} />
 
-                                <button className="flex items-center gap-3 rounded-full border border-white/20 bg-white/5 px-8 py-5 font-black text-white backdrop-blur-xl transition-all hover:bg-white/10">
-                                    <Share2 size={20} />
-                                    SHARE
-                                </button>
+                                <ShareButton title={movie.title} />
                             </div>
                         </MotionDiv>
                     </div>
@@ -108,7 +147,7 @@ export default async function MovieDetailsPage({
             </section>
 
             {/* CONTENT GRID */}
-            <div className="relative z-20 mt-12 space-y-32 px-6 pb-32 md:px-16">
+            <div className="relative z-20 mt-6 sm:mt-12 space-y-16 sm:space-y-24 md:space-y-32 px-6 pb-20 sm:pb-32 md:px-16">
                 <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
                     {/* LEFT: DETAILS & GENRES */}
                     <div className="col-span-1 space-y-10">

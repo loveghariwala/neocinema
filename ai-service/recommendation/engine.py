@@ -20,7 +20,8 @@ class RecommendationEngine:
 
     async def generate_movie_embeddings(self):
         database = await get_db()
-        movies = await database.movies.find({}).to_list(length=1000)
+        # Fetch all movies to ensure the full catalog is indexed for AI recommendations
+        movies = await database.movies.find({}).to_list(length=10000)
 
         texts = [
             f"{m.get('title', '')} {m.get('overview', '')} {' '.join(m.get('genres', []))}" for m in movies]

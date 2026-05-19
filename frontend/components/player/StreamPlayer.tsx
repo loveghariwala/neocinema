@@ -62,7 +62,7 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
 
     const streamUrl = useMemo(() => {
         if (provider === 4) return `https://vidlink.pro/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?primaryColor=dc2626`;
-        if (provider === 1) return `https://vidsrc.icu/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 1) return `https://autoembed.co/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
         if (provider === 2) return `https://www.2embed.cc/embed/${tmdbId}`;
         if (provider === 3) return `https://nontongo.win/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
         if (provider === 5) return `https://player.videasy.net/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
@@ -113,12 +113,12 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
         return (
             <button
                 onClick={() => setIsPlaying(true)}
-                className="flex items-center gap-3 rounded-full bg-red-600 px-10 py-5 font-black text-white transition-all hover:scale-105 hover:bg-red-700 hover:red-glow group shadow-[0_0_30px_rgba(220,38,38,0.4)]"
+                className="flex items-center gap-2 sm:gap-3 rounded-full bg-red-600 px-6 py-3.5 sm:px-8 sm:py-4 md:px-10 md:py-5 font-black text-white transition-all hover:scale-105 hover:bg-red-700 hover:red-glow group shadow-[0_0_30px_rgba(220,38,38,0.4)]"
             >
                 <div className="rounded-full bg-white/20 p-1 group-hover:bg-white/40 transition-colors">
-                    <Play fill="currentColor" size={24} />
+                    <Play fill="currentColor" className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
                 </div>
-                <span className="text-lg tracking-tight">WATCH NOW</span>
+                <span className="text-sm sm:text-base md:text-lg tracking-tight text-white">WATCH NOW</span>
             </button>
         );
     }
@@ -130,63 +130,55 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
             {/* Global Close Button (Always on Top) */}
             <button
                 onClick={() => setIsPlaying(false)}
-                className="absolute top-4 right-4 md:top-8 md:right-8 z-[100001] rounded-full bg-white/10 p-3 text-white transition-all hover:bg-red-600 hover:rotate-90 border border-white/20 backdrop-blur-md shadow-2xl group"
+                className="absolute top-4 right-4 md:top-8 md:right-8 z-[100001] rounded-full bg-white/10 p-2 md:p-3 text-white transition-all hover:bg-red-600 hover:rotate-90 border border-white/20 backdrop-blur-md shadow-2xl group"
             >
-                <X size={32} className="transition-transform group-hover:scale-110" />
+                <X className="h-5 w-5 md:h-8 md:w-8 transition-transform group-hover:scale-110" />
             </button>
 
             <div className="relative w-full h-full md:max-w-[90vw] md:max-h-[85vh] md:rounded-[2.5rem] border-0 md:border md:border-white/10 bg-neutral-950 shadow-[0_0_150px_rgba(220,38,38,0.25)] flex flex-col overflow-visible">
 
                 {/* ─── Top Bar ────────────────────────────────────────── */}
-                <div className="relative z-[1000] flex items-center justify-between bg-neutral-900/95 px-4 py-4 md:px-8 md:py-6 backdrop-blur-3xl border-b border-white/5 md:rounded-t-[2.5rem]">
-                    <div className="flex items-center gap-4 md:gap-10 w-full">
-                        {/* Info Section */}
-                        <div className="hidden lg:block min-w-0">
-                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-red-600 block mb-1">Streaming Mode</span>
-                            <h2 className="text-base md:text-lg font-black text-white text-glow truncate max-w-[200px] xl:max-w-md">
+                <div className="relative z-[1000] flex flex-col gap-4 bg-neutral-900/95 px-4 py-4 md:px-8 md:py-6 backdrop-blur-3xl border-b border-white/5 md:rounded-t-[2.5rem] lg:flex-row lg:items-center lg:justify-between lg:gap-6">
+                    {/* Top Row: Title / Branding (Left) and Close Button Space / Close Button (Right) */}
+                    <div className="flex items-center justify-between w-full lg:w-auto pr-14 lg:pr-0">
+                        <div className="min-w-0">
+                            <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-red-600 block mb-0.5">Streaming Mode</span>
+                            <h2 className="text-sm md:text-lg font-black text-white text-glow truncate max-w-[220px] sm:max-w-sm md:max-w-md xl:max-w-xl">
                                 {title} {isTv && <span className="text-neutral-500 font-bold ml-2">S{selectedSeason} E{selectedEpisode}</span>}
                             </h2>
                         </div>
+                    </div>
 
-                        <div className="h-10 w-px bg-white/10 hidden lg:block flex-shrink-0" />
-
+                    {/* Bottom Row / Main Controls: Server & Series Selectors */}
+                    <div className="flex flex-wrap items-end gap-3 sm:gap-4 w-full lg:w-auto lg:flex-nowrap lg:items-center lg:gap-6 lg:ml-auto">
                         {/* Server Toggle */}
-                        <div className="flex items-center gap-4">
-                            <div className="flex flex-col gap-1">
-                                <span className="text-[9px] font-bold text-neutral-500 uppercase tracking-widest text-center hidden sm:block">Select Server</span>
-                                <div className="flex items-center gap-1.5 rounded-xl bg-white/5 p-1 border border-white/10">
-                                    {[
-                                        { id: 4, name: "DELTA" },
-                                        { id: 1, name: "ALPHA" },
-                                        { id: 2, name: "BETA" },
-                                        { id: 3, name: "GAMMA" },
-                                        { id: 5, name: "EPSILON" }
-                                    ].map((p) => (
-                                        <button
-                                            key={p.id}
-                                            onClick={() => setProvider(p.id)}
-                                            className={`rounded-lg px-3 py-1.5 text-[9px] font-black transition-all ${provider === p.id
-                                                    ? "bg-red-600 text-white shadow-lg shadow-red-600/40"
-                                                    : "text-neutral-500 hover:text-white hover:bg-white/5"
-                                                }`}
-                                        >
-                                            {p.name}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Mobile Info (only shows title briefly) */}
-                            <div className="lg:hidden">
-                                <h2 className="text-xs font-black text-white truncate max-w-[100px]">
-                                    {title}
-                                </h2>
+                        <div className="flex flex-col gap-1 flex-grow sm:flex-initial min-w-0">
+                            <span className="text-[9px] font-bold text-neutral-500 uppercase tracking-widest block">Select Server</span>
+                            <div className="flex items-center gap-1 rounded-xl bg-white/5 p-1 border border-white/10 overflow-x-auto scrollbar-none whitespace-nowrap">
+                                {[
+                                    { id: 4, name: "DELTA" },
+                                    { id: 1, name: "ALPHA" },
+                                    { id: 2, name: "BETA" },
+                                    { id: 3, name: "GAMMA" },
+                                    { id: 5, name: "EPSILON" }
+                                ].map((p) => (
+                                    <button
+                                        key={p.id}
+                                        onClick={() => setProvider(p.id)}
+                                        className={`rounded-lg px-2 py-1.5 sm:px-3 text-[9px] font-black transition-all ${provider === p.id
+                                                ? "bg-red-600 text-white shadow-lg shadow-red-600/40"
+                                                : "text-neutral-500 hover:text-white hover:bg-white/5"
+                                            }`}
+                                    >
+                                        {p.name}
+                                    </button>
+                                ))}
                             </div>
                         </div>
 
                         {/* Series Selectors */}
                         {isTv && activeSeasons.length > 0 && (
-                            <div className="flex items-center gap-2 sm:gap-4 ml-auto">
+                            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                                 {/* Season Selector */}
                                 <div className="relative">
                                     <button
@@ -194,14 +186,14 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
                                             setShowSeasonDropdown(!showSeasonDropdown);
                                             setShowEpisodeDropdown(false);
                                         }}
-                                        className={`flex items-center gap-2 sm:gap-3 rounded-2xl px-3 py-2 md:px-5 md:py-3 text-[10px] md:text-xs font-black text-white border transition-all shadow-xl ${showSeasonDropdown
-                                                ? "bg-red-600 border-red-500 ring-4 ring-red-600/20"
+                                        className={`flex items-center gap-1.5 sm:gap-2.5 rounded-xl px-3 py-2 text-[9px] sm:text-xs font-black text-white border transition-all ${showSeasonDropdown
+                                                ? "bg-red-600 border-red-500 ring-2 ring-red-600/20"
                                                 : "bg-white/5 border-white/10 hover:bg-white/10"
                                             }`}
                                     >
-                                        <Layers size={16} className={showSeasonDropdown ? "text-white" : "text-red-600"} />
-                                        <span className="hidden sm:inline opacity-70">SEASON</span> {selectedSeason}
-                                        <ChevronDown size={16} className={`transition-transform duration-300 ${showSeasonDropdown ? "rotate-180" : ""}`} />
+                                        <Layers size={12} className={showSeasonDropdown ? "text-white" : "text-red-600"} />
+                                        <span className="opacity-70">S</span>{selectedSeason}
+                                        <ChevronDown size={12} className={`transition-transform duration-300 ${showSeasonDropdown ? "rotate-180" : ""}`} />
                                     </button>
 
                                     <AnimatePresence>
@@ -210,7 +202,7 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
                                                 initial={{ opacity: 0, y: 10 }}
                                                 animate={{ opacity: 1, y: 0 }}
                                                 exit={{ opacity: 0, y: 10 }}
-                                                className="absolute top-full right-0 mt-2 z-[1100] max-h-72 w-48 overflow-y-auto rounded-2xl border border-white/10 bg-neutral-900 shadow-[0_20px_50px_rgba(0,0,0,0.8)] backdrop-blur-3xl p-2 custom-scrollbar"
+                                                className="absolute top-full left-0 mt-2 z-[1100] max-h-56 w-40 overflow-y-auto rounded-xl border border-white/10 bg-neutral-900 shadow-[0_20px_50px_rgba(0,0,0,0.8)] backdrop-blur-3xl p-1.5 custom-scrollbar"
                                             >
                                                 {activeSeasons.map((s) => (
                                                     <button
@@ -220,13 +212,13 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
                                                             setSelectedEpisode(1);
                                                             setShowSeasonDropdown(false);
                                                         }}
-                                                        className={`w-full rounded-xl px-4 py-3 text-left text-xs font-bold transition-all mb-1 last:mb-0 ${selectedSeason === s.season_number
+                                                        className={`w-full rounded-lg px-3 py-2 text-left text-[11px] font-bold transition-all mb-1 last:mb-0 ${selectedSeason === s.season_number
                                                             ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
                                                             : "text-neutral-400 hover:bg-white/10 hover:text-white"
                                                             }`}
                                                     >
                                                         Season {s.season_number}
-                                                        <span className="block text-[10px] opacity-60 font-medium">{s.episode_count} Episodes</span>
+                                                        <span className="block text-[9px] opacity-60 font-medium">{s.episode_count} Episodes</span>
                                                     </button>
                                                 ))}
                                             </motion.div>
@@ -241,14 +233,14 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
                                             setShowEpisodeDropdown(!showEpisodeDropdown);
                                             setShowSeasonDropdown(false);
                                         }}
-                                        className={`flex items-center gap-2 sm:gap-3 rounded-2xl px-3 py-2 md:px-5 md:py-3 text-[10px] md:text-xs font-black text-white border transition-all shadow-xl ${showEpisodeDropdown
-                                                ? "bg-red-600 border-red-500 ring-4 ring-red-600/20"
+                                        className={`flex items-center gap-1.5 sm:gap-2.5 rounded-xl px-3 py-2 text-[9px] sm:text-xs font-black text-white border transition-all ${showEpisodeDropdown
+                                                ? "bg-red-600 border-red-500 ring-2 ring-red-600/20"
                                                 : "bg-white/5 border-white/10 hover:bg-white/10"
                                             }`}
                                     >
-                                        <Monitor size={16} className={showEpisodeDropdown ? "text-white" : "text-red-600"} />
-                                        <span className="hidden sm:inline opacity-70">EPISODE</span> {selectedEpisode}
-                                        <ChevronDown size={16} className={`transition-transform duration-300 ${showEpisodeDropdown ? "rotate-180" : ""}`} />
+                                        <Monitor size={12} className={showEpisodeDropdown ? "text-white" : "text-red-600"} />
+                                        <span className="opacity-70">E</span>{selectedEpisode}
+                                        <ChevronDown size={12} className={`transition-transform duration-300 ${showEpisodeDropdown ? "rotate-180" : ""}`} />
                                     </button>
 
                                     <AnimatePresence>
@@ -257,9 +249,9 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
                                                 initial={{ opacity: 0, y: 10 }}
                                                 animate={{ opacity: 1, y: 0 }}
                                                 exit={{ opacity: 0, y: 10 }}
-                                                className="absolute top-full right-0 mt-2 z-[1100] max-h-72 w-64 overflow-y-auto rounded-2xl border border-white/10 bg-neutral-900 shadow-[0_20px_50px_rgba(0,0,0,0.8)] backdrop-blur-3xl p-3 custom-scrollbar"
+                                                className="absolute top-full left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-0 mt-2 z-[1100] max-h-56 w-56 overflow-y-auto rounded-xl border border-white/10 bg-neutral-900 shadow-[0_20px_50px_rgba(0,0,0,0.8)] backdrop-blur-3xl p-2 custom-scrollbar"
                                             >
-                                                <div className="grid grid-cols-4 gap-2">
+                                                <div className="grid grid-cols-4 gap-1.5">
                                                     {Array.from({ length: currentSeasonData?.episode_count || 1 }, (_, i) => i + 1).map((e) => (
                                                         <button
                                                             key={e}
@@ -267,7 +259,7 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
                                                                 setSelectedEpisode(e);
                                                                 setShowEpisodeDropdown(false);
                                                             }}
-                                                            className={`rounded-xl h-10 flex items-center justify-center text-xs font-black transition-all ${selectedEpisode === e
+                                                            className={`rounded-lg h-8 flex items-center justify-center text-[10px] font-black transition-all ${selectedEpisode === e
                                                                 ? "bg-red-600 text-white shadow-lg shadow-red-600/30 scale-105"
                                                                 : "text-neutral-500 hover:bg-white/10 hover:text-white"
                                                                 }`}

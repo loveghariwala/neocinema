@@ -47,31 +47,31 @@ export default function MovieCard({ movie }: MovieCardProps) {
                 />
 
                 {/* Rating Badge */}
-                <div className="absolute right-3 top-3 z-20 flex items-center gap-1.5 rounded-full bg-black/50 px-2.5 py-1 backdrop-blur-md border border-white/10 opacity-90 transition-opacity group-hover:opacity-100">
-                    <Star size={12} className="text-yellow-500" fill="currentColor" />
-                    <span className="text-[11px] font-black tracking-wider text-white">
+                <div className="absolute right-3 top-3 z-20 flex items-center gap-1 sm:gap-1.5 rounded-full bg-black/50 px-2 py-0.5 sm:px-2.5 sm:py-1 backdrop-blur-md border border-white/10 opacity-90 transition-opacity group-hover:opacity-100">
+                    <Star size={10} className="text-yellow-500 sm:size-3" fill="currentColor" />
+                    <span className="text-[9px] sm:text-[11px] font-black tracking-wider text-white">
                         {typeof rating === "number" ? rating.toFixed(1) : "N/A"}
                     </span>
                 </div>
 
-                {/* Language Badge */}
-                {lang && lang !== "en" && (
-                    <div className="absolute left-3 top-3 z-20 rounded-full bg-red-600/80 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-white backdrop-blur-sm">
-                        {lang.toUpperCase()}
+                {/* Top Left: Watchlist Toggle & Badges Container */}
+                <div className="absolute left-3 top-3 z-30 flex items-center gap-1 sm:gap-2">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 shrink-0 relative flex items-center justify-center">
+                        <WatchlistButton movie={movie} variant="compact" />
                     </div>
-                )}
-
-                {/* Watchlist Toggle */}
-                <div className="absolute left-3 top-3 z-30">
-                    <WatchlistButton movie={movie} variant="compact" />
+                    
+                    {lang && lang !== "en" && (
+                        <div className="rounded-md bg-red-600/80 px-1.5 py-0.5 sm:px-2.5 sm:py-1 text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-white backdrop-blur-sm border border-white/5 shadow-md">
+                            {lang.toUpperCase()}
+                        </div>
+                    )}
+                    {movie.isMovie === false && (
+                        <div className="rounded-md bg-blue-600/80 px-1.5 py-0.5 sm:px-2.5 sm:py-1 text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-white backdrop-blur-sm border border-white/5 shadow-md">
+                            <span className="inline sm:hidden">TV</span>
+                            <span className="hidden sm:inline">Series</span>
+                        </div>
+                    )}
                 </div>
-
-                {/* Type Badge for series */}
-                {movie.isMovie === false && (
-                    <div className="absolute left-3 top-3 z-20 rounded-md bg-blue-600/80 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-white backdrop-blur-sm">
-                        Series
-                    </div>
-                )}
 
                 {/* Bottom Gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-100" />

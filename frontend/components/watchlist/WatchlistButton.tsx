@@ -60,14 +60,14 @@ export default function WatchlistButton({ movie, variant = "large" }: WatchlistB
         return (
             <button
                 onClick={toggleWatchlist}
-                className={`flex h-10 w-10 items-center justify-center rounded-full backdrop-blur-md border transition-all ${
+                className={`flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full backdrop-blur-md border transition-all ${
                     isInWatchlist 
                     ? "bg-red-600 border-red-500 text-white shadow-lg shadow-red-600/40" 
                     : "bg-black/40 border-white/10 text-white hover:bg-white/20"
                 }`}
                 title={isInWatchlist ? "Remove from watchlist" : "Add to watchlist"}
             >
-                <Heart size={18} fill={isInWatchlist ? "currentColor" : "none"} className={isInWatchlist ? "scale-110" : ""} />
+                <Heart className={`h-3.5 w-3.5 sm:h-[18px] sm:w-[18px] transition-transform ${isInWatchlist ? "scale-110" : ""}`} fill={isInWatchlist ? "currentColor" : "none"} />
             </button>
         );
     }
@@ -75,13 +75,13 @@ export default function WatchlistButton({ movie, variant = "large" }: WatchlistB
     return (
         <button
             onClick={toggleWatchlist}
-            className={`flex items-center gap-3 rounded-full border px-8 py-5 font-black backdrop-blur-xl transition-all ${
+            className={`flex items-center gap-2 sm:gap-3 rounded-full border px-6 py-3.5 sm:px-8 sm:py-5 font-black backdrop-blur-xl transition-all text-sm sm:text-base ${
                 isInWatchlist
                 ? "bg-red-600/20 border-red-600 text-red-500 shadow-[0_0_40px_rgba(220,38,38,0.2)]"
                 : "bg-white/5 border-white/20 text-white hover:bg-white/10"
             }`}
         >
-            <Heart size={20} fill={isInWatchlist ? "currentColor" : "none"} className={isInWatchlist ? "animate-pulse" : ""} />
+            <Heart className={`h-4 w-4 sm:h-5 sm:w-5 ${isInWatchlist ? "animate-pulse" : ""}`} fill={isInWatchlist ? "currentColor" : "none"} />
             {isInWatchlist ? "SAVED TO WATCHLIST" : "ADD TO WATCHLIST"}
         </button>
     );

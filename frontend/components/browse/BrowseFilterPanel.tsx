@@ -10,6 +10,7 @@ import {
     RotateCcw,
     Sparkles,
     Globe,
+    Check,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -39,7 +40,8 @@ interface Props {
 
 const SORT_OPTIONS = [
     { label: "Most Popular", value: "popularity.desc", icon: "🔥" },
-    { label: "Top Rated", value: "vote_average.desc", icon: "⭐" },
+    { label: "Rating: High to Low", value: "vote_average.desc", icon: "⭐" },
+    { label: "Rating: Low to High", value: "vote_average.asc", icon: "📉" },
     { label: "Newest", value: "primary_release_date.desc", icon: "🆕" },
     { label: "Oldest", value: "primary_release_date.asc", icon: "📜" },
     { label: "Revenue", value: "revenue.desc", icon: "💰" },
@@ -77,6 +79,11 @@ export default function BrowseFilterPanel({
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [searchInput, setSearchInput] = useState(filters.search);
 
+    // Custom dropdown states
+    const [showLangDropdown, setShowLangDropdown] = useState(false);
+    const [showYearFromDropdown, setShowYearFromDropdown] = useState(false);
+    const [showYearToDropdown, setShowYearToDropdown] = useState(false);
+
     // Sync input box value if filters.search changes from outside (e.g., reset button)
     useEffect(() => {
         setSearchInput(filters.search);
@@ -97,6 +104,24 @@ export default function BrowseFilterPanel({
         }
         fetchGenres();
     }, [type]);
+
+    // Close dropdowns on click outside
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+            if (!target.closest("#lang-dropdown-container")) {
+                setShowLangDropdown(false);
+            }
+            if (!target.closest("#year-from-dropdown-container")) {
+                setShowYearFromDropdown(false);
+            }
+            if (!target.closest("#year-to-dropdown-container")) {
+                setShowYearToDropdown(false);
+            }
+        };
+        document.addEventListener("click", handleClickOutside, true);
+        return () => document.removeEventListener("click", handleClickOutside, true);
+    }, []);
 
     // Debounced search - this is the IN-PAGE search, separate from navbar
     useEffect(() => {
@@ -136,10 +161,11 @@ export default function BrowseFilterPanel({
             language: "",
         };
         setSearchInput("");
+        setShowLangDropdown(false);
+        setShowYearFromDropdown(false);
+        setShowYearToDropdown(false);
         onFilterChange(reset);
     };
-
-
 
     const hasActiveFilters =
         filters.genreIds.length > 0 ||
@@ -246,9 +272,9 @@ export default function BrowseFilterPanel({
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="overflow-hidden"
+                        className={isFilterOpen ? "!overflow-visible" : "overflow-hidden"}
                     >
-                        <div className="rounded-3xl border border-white/10 bg-white/[0.02] p-6 backdrop-blur-xl space-y-6">
+                        <div className="rounded-3xl border border-white/10 bg-neutral-950/90 p-6 space-y-6">
                             <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-neutral-600">
                                 <Sparkles size={14} className="text-red-600" />
                                 <span>Advanced Filters — Every Country, Every Language</span>
@@ -284,31 +310,149 @@ export default function BrowseFilterPanel({
                                         Release Year
                                     </label>
                                     <div className="flex items-center gap-3">
-                                        <select
-                                            value={filters.yearFrom ?? ""}
-                                            onChange={(e) =>
-                                                updateFilter({ yearFrom: e.target.value ? parseInt(e.target.value) : null })
-                                            }
-                                            className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm font-medium text-white outline-none backdrop-blur-xl transition-all focus:border-red-600/50 appearance-none cursor-pointer"
-                                        >
-                                            <option value="" className="bg-neutral-900">From</option>
-                                            {yearOptions.map((y) => (
-                                                <option key={y} value={y} className="bg-neutral-900">{y}</option>
-                                            ))}
-                                        </select>
+                                        {/* Year From */}
+                                        <div className="relative w-full" id="year-from-dropdown-container">
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setShowYearFromDropdown(!showYearFromDropdown);
+                                                    setShowYearToDropdown(false);
+                                                    setShowLangDropdown(false);
+                                                }}
+                                                className={`flex w-full items-center justify-between rounded-xl border bg-white/[0.03] px-4 py-3 text-sm font-medium text-white outline-none backdrop-blur-xl transition-all cursor-pointer ${
+                                                    showYearFromDropdown 
+                                                        ? "border-red-600 ring-2 ring-red-600/20" 
+                                                        : "border-white/10 hover:border-white/20"
+                                                }`}
+                                            >
+                                                <span className="truncate">
+                                                    {filters.yearFrom ? `From: ${filters.yearFrom}` : "From Year"}
+                                                </span>
+                                                <ChevronDown size={16} className={`text-neutral-500 transition-transform duration-300 ${showYearFromDropdown ? "rotate-180 text-red-500" : ""}`} />
+                                            </button>
+
+                                            <AnimatePresence>
+                                                {showYearFromDropdown && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, y: 10 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        exit={{ opacity: 0, y: 10 }}
+                                                        className="absolute left-0 mt-2 z-50 max-h-72 w-full overflow-y-auto rounded-2xl border border-white/10 bg-neutral-950/95 shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-3xl p-2 custom-scrollbar"
+                                                    >
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                updateFilter({ yearFrom: null });
+                                                                setShowYearFromDropdown(false);
+                                                            }}
+                                                            className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-xs font-bold transition-all mb-1 ${
+                                                                filters.yearFrom === null
+                                                                    ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
+                                                                    : "text-neutral-400 hover:bg-white/5 hover:text-white"
+                                                            }`}
+                                                        >
+                                                            <span>Any Year</span>
+                                                            {filters.yearFrom === null && <Check size={14} className="text-white" />}
+                                                        </button>
+                                                        {yearOptions.map((y) => {
+                                                            const isSelected = filters.yearFrom === y;
+                                                            return (
+                                                                <button
+                                                                    key={y}
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        updateFilter({ yearFrom: y });
+                                                                        setShowYearFromDropdown(false);
+                                                                    }}
+                                                                    className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-xs font-bold transition-all mb-1 last:mb-0 ${
+                                                                        isSelected
+                                                                            ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
+                                                                            : "text-neutral-400 hover:bg-white/5 hover:text-white"
+                                                                    }`}
+                                                                >
+                                                                    <span>{y}</span>
+                                                                    {isSelected && <Check size={14} className="text-white" />}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
+
                                         <span className="text-neutral-600 font-bold">—</span>
-                                        <select
-                                            value={filters.yearTo ?? ""}
-                                            onChange={(e) =>
-                                                updateFilter({ yearTo: e.target.value ? parseInt(e.target.value) : null })
-                                            }
-                                            className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm font-medium text-white outline-none backdrop-blur-xl transition-all focus:border-red-600/50 appearance-none cursor-pointer"
-                                        >
-                                            <option value="" className="bg-neutral-900">To</option>
-                                            {yearOptions.map((y) => (
-                                                <option key={y} value={y} className="bg-neutral-900">{y}</option>
-                                            ))}
-                                        </select>
+
+                                        {/* Year To */}
+                                        <div className="relative w-full" id="year-to-dropdown-container">
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setShowYearToDropdown(!showYearToDropdown);
+                                                    setShowYearFromDropdown(false);
+                                                    setShowLangDropdown(false);
+                                                }}
+                                                className={`flex w-full items-center justify-between rounded-xl border bg-white/[0.03] px-4 py-3 text-sm font-medium text-white outline-none backdrop-blur-xl transition-all cursor-pointer ${
+                                                    showYearToDropdown 
+                                                        ? "border-red-600 ring-2 ring-red-600/20" 
+                                                        : "border-white/10 hover:border-white/20"
+                                                }`}
+                                            >
+                                                <span className="truncate">
+                                                    {filters.yearTo ? `To: ${filters.yearTo}` : "To Year"}
+                                                </span>
+                                                <ChevronDown size={16} className={`text-neutral-500 transition-transform duration-300 ${showYearToDropdown ? "rotate-180 text-red-500" : ""}`} />
+                                            </button>
+
+                                            <AnimatePresence>
+                                                {showYearToDropdown && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, y: 10 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        exit={{ opacity: 0, y: 10 }}
+                                                        className="absolute left-0 mt-2 z-50 max-h-72 w-full overflow-y-auto rounded-2xl border border-white/10 bg-neutral-950/95 shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-3xl p-2 custom-scrollbar"
+                                                    >
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                updateFilter({ yearTo: null });
+                                                                setShowYearToDropdown(false);
+                                                            }}
+                                                            className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-xs font-bold transition-all mb-1 ${
+                                                                filters.yearTo === null
+                                                                    ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
+                                                                    : "text-neutral-400 hover:bg-white/5 hover:text-white"
+                                                            }`}
+                                                        >
+                                                            <span>Any Year</span>
+                                                            {filters.yearTo === null && <Check size={14} className="text-white" />}
+                                                        </button>
+                                                        {yearOptions.map((y) => {
+                                                            const isSelected = filters.yearTo === y;
+                                                            return (
+                                                                <button
+                                                                    key={y}
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        updateFilter({ yearTo: y });
+                                                                        setShowYearToDropdown(false);
+                                                                    }}
+                                                                    className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-xs font-bold transition-all mb-1 last:mb-0 ${
+                                                                        isSelected
+                                                                            ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
+                                                                            : "text-neutral-400 hover:bg-white/5 hover:text-white"
+                                                                    }`}
+                                                                >
+                                                                    <span>{y}</span>
+                                                                    {isSelected && <Check size={14} className="text-white" />}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -347,21 +491,62 @@ export default function BrowseFilterPanel({
                                 </div>
 
                                 {/* Language */}
-                                <div>
+                                <div className="relative" id="lang-dropdown-container">
                                     <label className="mb-3 block text-xs font-black uppercase tracking-widest text-neutral-500">
                                         <Globe size={12} className="inline mr-1" /> Language / Country
                                     </label>
-                                    <select
-                                        value={filters.language}
-                                        onChange={(e) => updateFilter({ language: e.target.value })}
-                                        className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm font-medium text-white outline-none backdrop-blur-xl transition-all focus:border-red-600/50 appearance-none cursor-pointer"
+                                    <button
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setShowLangDropdown(!showLangDropdown);
+                                            setShowYearFromDropdown(false);
+                                            setShowYearToDropdown(false);
+                                        }}
+                                        className={`flex w-full items-center justify-between rounded-xl border bg-white/[0.03] px-4 py-3 text-sm font-medium text-white outline-none backdrop-blur-xl transition-all cursor-pointer ${
+                                            showLangDropdown 
+                                                ? "border-red-600 ring-2 ring-red-600/20" 
+                                                : "border-white/10 hover:border-white/20"
+                                        }`}
                                     >
-                                        {LANGUAGES.map((lang) => (
-                                            <option key={lang.code} value={lang.code} className="bg-neutral-900">
-                                                {lang.label}
-                                            </option>
-                                        ))}
-                                    </select>
+                                        <span className="truncate">
+                                            {LANGUAGES.find((lang) => lang.code === filters.language)?.label || "All Languages"}
+                                        </span>
+                                        <ChevronDown size={16} className={`text-neutral-500 transition-transform duration-300 ${showLangDropdown ? "rotate-180 text-red-500" : ""}`} />
+                                    </button>
+
+                                    <AnimatePresence>
+                                        {showLangDropdown && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: 10 }}
+                                                className="absolute left-0 mt-2 z-50 max-h-72 w-full overflow-y-auto rounded-2xl border border-white/10 bg-neutral-950/95 shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-3xl p-2 custom-scrollbar"
+                                            >
+                                                {LANGUAGES.map((lang) => {
+                                                    const isSelected = filters.language === lang.code;
+                                                    return (
+                                                        <button
+                                                            key={lang.code}
+                                                            type="button"
+                                                            onClick={() => {
+                                                                updateFilter({ language: lang.code });
+                                                                setShowLangDropdown(false);
+                                                            }}
+                                                            className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-xs font-bold transition-all mb-1 last:mb-0 ${
+                                                                isSelected
+                                                                    ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
+                                                                    : "text-neutral-400 hover:bg-white/5 hover:text-white"
+                                                            }`}
+                                                        >
+                                                            <span>{lang.label}</span>
+                                                            {isSelected && <Check size={14} className="text-white" />}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
                                 </div>
                             </div>
 

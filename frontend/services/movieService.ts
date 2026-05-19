@@ -98,7 +98,11 @@ export async function getMovieDetails(id: string, type: "movie" | "tv" = "movie"
             if (aiResponse.ok) {
                 const aiData = await aiResponse.json();
                 const recIds = aiData.recommendations.map((r: any) => r.id);
-                similarMovies = await Movie.find({ _id: { $in: recIds } }).lean();
+                const fetchedMovies = await Movie.find({ _id: { $in: recIds } }).lean();
+                // Preserve the exact similarity score sorting order returned by the AI recommendations engine
+                similarMovies = fetchedMovies.sort(
+                    (a: any, b: any) => recIds.indexOf(String(a._id)) - recIds.indexOf(String(b._id))
+                );
             } else {
                 throw new Error("AI service error");
             }
