@@ -49,7 +49,7 @@ export default function Navbar() {
 
     const navLinks = [
         { name: "Home", href: "/", icon: Home },
-        { name: "Discover", href: "/search", icon: Sparkles },
+        { name: "search", href: "/search", icon: Sparkles },
         { name: "Movies", href: "/movies", icon: Film },
         { name: "Series", href: "/series", icon: Tv },
         { name: "Watchlist", href: "/watchlist", icon: Heart },
@@ -57,16 +57,15 @@ export default function Navbar() {
 
     return (
         <>
-            <header 
-                className={`fixed left-0 top-0 z-50 w-full transition-all duration-300 ${
-                    isScrolled 
-                    ? "bg-black/90 backdrop-blur-md border-b border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.8)] py-3" 
+            <header
+                className={`fixed left-0 top-0 z-50 w-full transition-all duration-300 ${isScrolled
+                    ? "bg-black/90 backdrop-blur-md border-b border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.8)] py-3"
                     : "bg-transparent border-b border-transparent py-5"
-                }`}
+                    }`}
             >
                 <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-6 px-6 md:px-16">
                     <Link href="/" className="group flex items-center gap-3">
-                        <img src="/neocinema_logo.png" alt="NeoCinema Logo" className="h-10 w-10 object-contain rounded-xl" />
+                        <img src="/neocinema_logo.png" alt="NeoCinema Logo" className="h-12 w-12 object-contain" />
                         <h1 className="text-2xl font-black tracking-tighter text-white transition-all group-hover:scale-105">
                             NEO<span className="text-red-600">CINEMA</span>
                         </h1>
@@ -80,9 +79,8 @@ export default function Navbar() {
                                 <Link
                                     key={link.name}
                                     href={link.href}
-                                    className={`text-sm font-medium transition-all hover:text-white hover:text-glow ${
-                                        isActive ? "text-red-600 font-bold text-glow" : "text-neutral-400"
-                                    }`}
+                                    className={`text-sm cursor-pointer font-bold text-glow transition-all hover:text-red-600 hover:text-glow ${isActive ? "text-red-600 font-bold text-glow" : "text-white"
+                                        }`}
                                 >
                                     {link.name}
                                 </Link>
@@ -124,11 +122,10 @@ export default function Navbar() {
                                     >
                                         <Link
                                             href={link.href}
-                                            className={`flex items-center justify-center gap-4 w-full rounded-2xl border py-4 text-lg font-black transition-all ${
-                                                isActive
-                                                    ? "bg-red-600/10 border-red-600/30 text-red-500 shadow-[0_0_30px_rgba(220,38,38,0.15)]"
-                                                    : "bg-white/5 border-white/5 text-neutral-300 hover:bg-white/10 hover:text-white"
-                                            }`}
+                                            className={`flex items-center justify-center gap-4 w-full rounded-2xl border py-4 text-lg font-black transition-all ${isActive
+                                                ? "bg-red-600/10 border-red-600/30 text-red-500 shadow-[0_0_30px_rgba(220,38,38,0.15)]"
+                                                : "bg-white/5 border-white/5 text-neutral-300 hover:bg-white/10 hover:text-white"
+                                                }`}
                                         >
                                             <link.icon size={20} className={isActive ? "text-red-500 animate-pulse" : "text-neutral-500"} />
                                             {link.name.toUpperCase()}
@@ -139,7 +136,7 @@ export default function Navbar() {
                         </nav>
 
                         {/* Additional aesthetic branding inside mobile drawer */}
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.3 }}

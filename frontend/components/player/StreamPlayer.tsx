@@ -21,13 +21,21 @@ interface StreamPlayerProps {
     autoPlay?: boolean;
 }
 
+const SERVERS = [
+    { name: "ALPHA", providerId: 4 },
+    { name: "BETA", providerId: 1 },
+    { name: "GAMMA", providerId: 2 },
+    { name: "DELTA", providerId: 3 },
+    { name: "EPSILON", providerId: 5 },
+];
+
 export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seasons = [], autoPlay = false }: StreamPlayerProps) {
     const [isPlaying, setIsPlaying] = useState(false);
-    const [provider, setProvider] = useState(4);
+    const [selectedServerIndex, setSelectedServerIndex] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [mounted, setMounted] = useState(false);
     const [streamFailed, setStreamFailed] = useState(false);
-    const [triedServers, setTriedServers] = useState<number[]>([]);
+    const [triedServerIndices, setTriedServerIndices] = useState<number[]>([]);
     const loadTimerRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
@@ -35,9 +43,6 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
             setIsPlaying(true);
         }
     }, [autoPlay]);
-
-    // Server order: DELTA first, then others
-    const serverOrder = [4, 1, 2, 3, 5];
 
     // Series state
     const [selectedSeason, setSelectedSeason] = useState(1);
@@ -61,13 +66,14 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
     const typePath = isTv ? "tv" : "movie";
 
     const streamUrl = useMemo(() => {
+        const provider = SERVERS[selectedServerIndex]?.providerId ?? 4;
         if (provider === 4) return `https://vidlink.pro/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?primaryColor=dc2626`;
         if (provider === 1) return `https://autoembed.co/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
         if (provider === 2) return `https://www.2embed.cc/embed/${tmdbId}`;
         if (provider === 3) return `https://nontongo.win/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
         if (provider === 5) return `https://player.videasy.net/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
         return `https://vidlink.pro/${typePath}/${tmdbId}?primaryColor=dc2626`;
-    }, [provider, tmdbId, typePath, isTv, selectedSeason, selectedEpisode]);
+    }, [selectedServerIndex, tmdbId, typePath, isTv, selectedSeason, selectedEpisode]);
 
     // Reset loading state when stream changes
     useEffect(() => {
@@ -83,13 +89,13 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
         }
 
         loadTimerRef.current = setTimeout(() => {
-            const newTried = [...triedServers, provider];
-            setTriedServers(newTried);
+            const newTried = [...triedServerIndices, selectedServerIndex];
+            setTriedServerIndices(newTried);
 
-            // Find next untried server
-            const nextServer = serverOrder.find(s => !newTried.includes(s));
-            if (nextServer) {
-                setProvider(nextServer);
+            // Find next untried server index
+            const nextServerIndex = SERVERS.findIndex((_, idx) => !newTried.includes(idx));
+            if (nextServerIndex !== -1) {
+                setSelectedServerIndex(nextServerIndex);
             } else {
                 // All servers tried
                 setIsLoading(false);
@@ -100,13 +106,20 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
         return () => {
             if (loadTimerRef.current) clearTimeout(loadTimerRef.current);
         };
-    }, [isPlaying, isLoading, provider, triedServers]);
+    }, [isPlaying, isLoading, selectedServerIndex, triedServerIndices]);
 
     const handleRetryAll = useCallback(() => {
-        setTriedServers([]);
+        setTriedServerIndices([]);
         setStreamFailed(false);
-        setProvider(4);
+        setSelectedServerIndex(0);
         setIsLoading(true);
+    }, []);
+
+    const handleServerChange = useCallback((index: number) => {
+        setSelectedServerIndex(index);
+        setIsLoading(true);
+        setStreamFailed(false);
+        setTriedServerIndices([]);
     }, []);
 
     if (!isPlaying) {
@@ -138,7 +151,7 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
             <div className="relative w-full h-full md:max-w-[90vw] md:max-h-[85vh] md:rounded-[2.5rem] border-0 md:border md:border-white/10 bg-neutral-950 shadow-[0_0_150px_rgba(220,38,38,0.25)] flex flex-col overflow-visible">
 
                 {/* ─── Top Bar ────────────────────────────────────────── */}
-                <div className="relative z-[1000] flex flex-col gap-4 bg-neutral-900/95 px-4 py-4 md:px-8 md:py-6 backdrop-blur-3xl border-b border-white/5 md:rounded-t-[2.5rem] lg:flex-row lg:items-center lg:justify-between lg:gap-6">
+                <div className="relative z-[1000] flex flex-col gap-4 bg-black/95 px-4 py-4 md:px-8 md:py-6 backdrop-blur-3xl border-b border-white/5 md:rounded-t-[2.5rem] lg:flex-row lg:items-center lg:justify-between lg:gap-6">
                     {/* Top Row: Title / Branding (Left) and Close Button Space / Close Button (Right) */}
                     <div className="flex items-center justify-between w-full lg:w-auto pr-14 lg:pr-0">
                         <div className="min-w-0">
@@ -149,33 +162,8 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
                         </div>
                     </div>
 
-                    {/* Bottom Row / Main Controls: Server & Series Selectors */}
-                    <div className="flex flex-wrap items-end gap-3 sm:gap-4 w-full lg:w-auto lg:flex-nowrap lg:items-center lg:gap-6 lg:ml-auto">
-                        {/* Server Toggle */}
-                        <div className="flex flex-col gap-1 flex-grow sm:flex-initial min-w-0">
-                            <span className="text-[9px] font-bold text-neutral-500 uppercase tracking-widest block">Select Server</span>
-                            <div className="flex items-center gap-1 rounded-xl bg-white/5 p-1 border border-white/10 overflow-x-auto scrollbar-none whitespace-nowrap">
-                                {[
-                                    { id: 4, name: "DELTA" },
-                                    { id: 1, name: "ALPHA" },
-                                    { id: 2, name: "BETA" },
-                                    { id: 3, name: "GAMMA" },
-                                    { id: 5, name: "EPSILON" }
-                                ].map((p) => (
-                                    <button
-                                        key={p.id}
-                                        onClick={() => setProvider(p.id)}
-                                        className={`rounded-lg px-2 py-1.5 sm:px-3 text-[9px] font-black transition-all ${provider === p.id
-                                                ? "bg-red-600 text-white shadow-lg shadow-red-600/40"
-                                                : "text-neutral-500 hover:text-white hover:bg-white/5"
-                                            }`}
-                                    >
-                                        {p.name}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
+                    {/* Bottom Row / Main Controls: Series Selectors */}
+                    <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full lg:w-auto lg:ml-auto">
                         {/* Series Selectors */}
                         {isTv && activeSeasons.length > 0 && (
                             <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
@@ -187,8 +175,8 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
                                             setShowEpisodeDropdown(false);
                                         }}
                                         className={`flex items-center gap-1.5 sm:gap-2.5 rounded-xl px-3 py-2 text-[9px] sm:text-xs font-black text-white border transition-all ${showSeasonDropdown
-                                                ? "bg-red-600 border-red-500 ring-2 ring-red-600/20"
-                                                : "bg-white/5 border-white/10 hover:bg-white/10"
+                                            ? "bg-red-600 border-red-500 ring-2 ring-red-600/20"
+                                            : "bg-white/5 border-white/10 hover:bg-white/10"
                                             }`}
                                     >
                                         <Layers size={12} className={showSeasonDropdown ? "text-white" : "text-red-600"} />
@@ -234,8 +222,8 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
                                             setShowSeasonDropdown(false);
                                         }}
                                         className={`flex items-center gap-1.5 sm:gap-2.5 rounded-xl px-3 py-2 text-[9px] sm:text-xs font-black text-white border transition-all ${showEpisodeDropdown
-                                                ? "bg-red-600 border-red-500 ring-2 ring-red-600/20"
-                                                : "bg-white/5 border-white/10 hover:bg-white/10"
+                                            ? "bg-red-600 border-red-500 ring-2 ring-red-600/20"
+                                            : "bg-white/5 border-white/10 hover:bg-white/10"
                                             }`}
                                     >
                                         <Monitor size={12} className={showEpisodeDropdown ? "text-white" : "text-red-600"} />
@@ -278,7 +266,7 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
                 </div>
 
                 {/* ─── Iframe Container ─────────────────────────────── */}
-                <div className="relative flex-grow bg-black md:rounded-b-[2.5rem] overflow-hidden">
+                <div className="relative flex-grow bg-black overflow-hidden">
                     {isLoading && (
                         <div className="absolute inset-0 flex flex-col items-center justify-center gap-8 bg-neutral-950 z-20">
                             <div className="relative h-24 w-24">
@@ -288,8 +276,8 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
                             </div>
                             <div className="text-center">
                                 <h3 className="text-lg font-black text-white tracking-[0.3em] uppercase mb-2">Establishing Stream</h3>
-                                <p className="text-xs text-neutral-500 font-bold max-w-xs mx-auto leading-relaxed">
-                                    TRYING SERVER {serverOrder.indexOf(provider) + 1} OF {serverOrder.length}. AUTO-SWITCHING IF UNAVAILABLE...
+                                <p className="text-xs text-neutral-500 font-bold max-w-sm mx-auto leading-relaxed">
+                                    TRYING SERVER: {SERVERS[selectedServerIndex].name} ({selectedServerIndex + 1} OF {SERVERS.length}). AUTO-SWITCHING IF UNAVAILABLE...
                                 </p>
                             </div>
                         </div>
@@ -336,6 +324,48 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
                             <span className="text-[10px] font-black text-white uppercase tracking-widest">Tip: Switch servers if the stream doesn&apos;t start</span>
                         </div>
                     )}
+                </div>
+
+                {/* ─── Bottom Server Bar ─────────────────────────────── */}
+                <div className="bg-black/95 border-t border-white/5 px-6 py-4 md:px-8 md:py-5 flex flex-col md:flex-row md:items-center gap-4 md:gap-6 md:rounded-b-[2.5rem] select-none">
+                    <div className="flex-shrink-0">
+                        <span className="text-sm md:text-base font-black text-red-300 uppercase tracking-wider">
+                            Stream Server
+                        </span>
+                    </div>
+                    <div className="flex flex-col gap-2 flex-grow">
+                        <div className="flex flex-wrap gap-2">
+                            {SERVERS.slice(0, 6).map((server, idx) => (
+                                <button
+                                    key={idx}
+                                    onClick={() => handleServerChange(idx)}
+                                    className={`px-3 py-1.5 md:px-4 md:py-2 rounded text-[10px] md:text-[11px] font-black uppercase transition-all tracking-wider border-b-[3px] cursor-pointer ${selectedServerIndex === idx
+                                        ? "bg-red-500 text-white border-red-500 shadow-lg shadow-rose-600/30 translate-y-0 active:translate-y-[2px] active:border-b-0"
+                                        : "bg-[#555] hover:bg-[#606060] text-white border-[#333] active:translate-y-[2px] active:border-b-0"
+                                        }`}
+                                >
+                                    {server.name}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {SERVERS.slice(6).map((server, idx) => {
+                                const realIdx = idx + 6;
+                                return (
+                                    <button
+                                        key={realIdx}
+                                        onClick={() => handleServerChange(realIdx)}
+                                        className={`px-3 py-1.5 md:px-4 md:py-2 rounded text-[10px] md:text-[11px] font-black uppercase transition-all tracking-wider border-b-[3px] cursor-pointer ${selectedServerIndex === realIdx
+                                            ? "bg-[#0090d0] text-white border-[#006090] shadow-lg shadow-sky-900/30 translate-y-0 active:translate-y-[2px] active:border-b-0"
+                                            : "bg-[#555] hover:bg-[#606060] text-white border-[#333] active:translate-y-[2px] active:border-b-0"
+                                            }`}
+                                    >
+                                        {server.name}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
