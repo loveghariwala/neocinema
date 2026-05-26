@@ -216,3 +216,16 @@ export async function getTrendingFromServer(mediaType: string, timeWindow: strin
     }
     return { results: [] };
 }
+
+export async function getPersonDetails(id: string) {
+    try {
+        const aiServiceUrl = getAIServiceUrl();
+        const res = await fetch(`${aiServiceUrl}/api/ai/person/${id}`, { cache: "no-store" });
+        if (res.ok) {
+            return await res.json();
+        }
+    } catch (e) {
+        console.error("getPersonDetails error:", e);
+    }
+    return null;
+}

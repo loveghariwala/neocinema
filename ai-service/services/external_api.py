@@ -130,7 +130,8 @@ class ExternalAPIService:
         return {
             "results": results,
             "totalResults": data.get("total_results", 0),
-            "totalPages": min(data.get("total_pages", 1), 500),  # TMDB caps at 500
+            # TMDB caps at 500
+            "totalPages": min(data.get("total_pages", 1), 500),
             "currentPage": data.get("page", 1),
         }
 
@@ -251,6 +252,45 @@ class ExternalAPIService:
         """Get TV series details."""
         data = await self._get(f"/tv/{tmdb_id}", {"append_to_response": "credits,similar,videos"})
         return data
+
+    async def get_person_credits(self, person_id: int) -> dict:
+        """Get combined movie and TV credits for a person."""
+        # 1. Fetch credits
+        data = await self._get(f"/person/{person_id}/combined_credits")
+        # 2. Fetch details (name, bio, profile path, etc.)
+        person_details = await self._get(f"/person/{person_id}")
+        
+        # Normalize and filter
+        cast_list = data.get("cast", [])
+        results = []
+        seen_ids = set()
+        for item in cast_list:
+            media_type = item.get("media_type")
+            if media_type == "movie":
+                norm = self._normalize_movie(item)
+                if norm["tmdbId"] not in seen_ids:
+                    results.append(norm)
+                    seen_ids.add(norm["tmdbId"])
+            elif media_type == "tv":
+                norm = self._normalize_tv(item)
+                if norm["tmdbId"] not in seen_ids:
+                    results.append(norm)
+                    seen_ids.add(norm["tmdbId"])
+                    
+        # Sort by popularity desc
+        results.sort(key=lambda x: x.get("popularity", 0), reverse=True)
+        
+        return {
+            "person": {
+                "id": person_details.get("id"),
+                "name": person_details.get("name"),
+                "biography": person_details.get("biography", ""),
+                "profilePath": person_details.get("profile_path", ""),
+                "placeOfBirth": person_details.get("place_of_birth", ""),
+                "birthday": person_details.get("birthday", ""),
+            },
+            "results": results
+        }
 
     async def close(self):
         await self.client.aclose()

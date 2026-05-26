@@ -3,6 +3,7 @@ import { Star, Clock, Calendar, Globe } from "lucide-react";
 import MovieRow from "@/components/sliders/MovieRow";
 import { MotionDiv } from "@/components/layout/Motion";
 import Image from "next/image";
+import Link from "next/link";
 import StreamPlayer from "@/components/player/StreamPlayer";
 import WatchlistButton from "@/components/watchlist/WatchlistButton";
 import ShareButton from "@/components/ui/ShareButton";
@@ -198,7 +199,7 @@ export default async function MovieDetailsPage({
 
                         <div className="flex gap-8 overflow-x-auto pb-10 scrollbar-hide snap-x snap-mandatory">
                             {movie.cast?.map((actor: any) => (
-                                <div key={actor._id} className="min-w-[180px] group cursor-pointer snap-start">
+                                <Link key={actor._id} href={`/person/${actor._id}`} className="min-w-[180px] group cursor-pointer snap-start block">
                                     <MotionDiv
                                         whileHover={{ scale: 1.05, y: -8 }}
                                         transition={{ type: "spring", stiffness: 400, damping: 25 }}
@@ -214,8 +215,7 @@ export default async function MovieDetailsPage({
                                     </MotionDiv>
                                     <h4 className="text-sm font-black text-white group-hover:text-red-500 transition-colors">{actor.name}</h4>
                                     <p className="text-xs font-medium text-neutral-500 line-clamp-1">{actor.character}</p>
-                                </div>
-
+                                </Link>
                             ))}
                         </div>
                     </div>
