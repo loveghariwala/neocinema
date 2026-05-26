@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useTransition } from "react";
 import MovieCard from "@/components/cards/MovieCard";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Film, Tv, Sparkles, X, Loader2, TrendingUp } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
 
 const TYPE_FILTERS = [
     { label: "All", value: "", icon: null },
@@ -11,78 +12,83 @@ const TYPE_FILTERS = [
     { label: "Series", value: "tv", icon: Tv },
 ];
 
-export default function SearchPageClient() {
-    const [query, setQuery] = useState("");
-    const [type, setType] = useState("");
-    const [page, setPage] = useState(1);
-    const [data, setData] = useState<any>({
-        results: [],
-        totalResults: 0,
-        totalPages: 1,
-        currentPage: 1,
-    });
-    const [isLoading, setIsLoading] = useState(false);
-    const [trending, setTrending] = useState<any[]>([]);
-    const [trendingLoaded, setTrendingLoaded] = useState(false);
+interface SearchPageClientProps {
+    initialQuery: string;
+    initialType: string;
+    initialPage: number;
+    initialData: any;
+    initialTrending: any[];
+}
 
-    // Load trending for empty state
+export default function SearchPageClient({
+    initialQuery,
+    initialType,
+    initialPage,
+    initialData,
+    initialTrending,
+}: SearchPageClientProps) {
+    const [query, setQuery] = useState(initialQuery);
+    const [type, setType] = useState(initialType);
+    const [page, setPage] = useState(initialPage);
+    const [data, setData] = useState<any>(initialData);
+    const [isPending, startTransition] = useTransition();
+
+    const router = useRouter();
+    const pathname = usePathname();
+
+    const isLoading = isPending;
+    const trending = initialTrending;
+
+    // Sync search data when server-side data is refetched
     useEffect(() => {
-        async function loadTrending() {
-            try {
-                const res = await fetch("/api/trending/movie?time_window=week");
-                if (res.ok) {
-                    const d = await res.json();
-                    setTrending(d.results || []);
-                }
-            } catch (e) {
-                console.error(e);
-            }
-            setTrendingLoaded(true);
-        }
-        loadTrending();
-    }, []);
+        setData(initialData);
+    }, [initialData]);
 
-    // Search
-    const doSearch = useCallback(
-        async (q: string, t: string, p: number) => {
-            if (!q || q.trim().length < 2) return;
-            setIsLoading(true);
-            try {
-                const params = new URLSearchParams({
-                    query: q.trim(),
-                    page: String(p),
-                });
-                if (t) params.set("type", t);
-                const res = await fetch(`/api/search?${params.toString()}`);
-                if (res.ok) {
-                    setData(await res.json());
-                }
-            } catch (e) {
-                console.error("Search error:", e);
-            } finally {
-                setIsLoading(false);
-            }
-        },
-        []
-    );
-
-    // Debounced search
     useEffect(() => {
-        if (!query || query.trim().length < 2) {
-            setData({ results: [], totalResults: 0, totalPages: 1, currentPage: 1 });
-            return;
+        setPage(initialPage);
+    }, [initialPage]);
+
+    const updateUrl = useCallback((newQuery: string, newType: string, newPage: number) => {
+        const params = new URLSearchParams();
+        if (newQuery.trim().length >= 2) {
+            params.set("q", newQuery.trim());
+            if (newType) params.set("type", newType);
+            if (newPage > 1) params.set("page", String(newPage));
         }
+        const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname;
+        startTransition(() => {
+            router.push(newUrl, { scroll: false });
+        });
+    }, [pathname, router]);
+
+    // Debounced search typing
+    useEffect(() => {
         const timer = setTimeout(() => {
-            doSearch(query, type, 1);
-            setPage(1);
+            const searchParams = new URLSearchParams(window.location.search);
+            const urlQ = searchParams.get("q") || "";
+            if (query.trim() !== urlQ.trim()) {
+                updateUrl(query, type, 1);
+            }
         }, 400);
         return () => clearTimeout(timer);
-    }, [query, type, doSearch]);
+    }, [query, type, updateUrl]);
 
     const changePage = (p: number) => {
         setPage(p);
-        doSearch(query, type, p);
+        updateUrl(query, type, p);
         window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    const handleTypeChange = (newType: string) => {
+        setType(newType);
+        setPage(1);
+        updateUrl(query, newType, 1);
+    };
+
+    const handleClear = () => {
+        setQuery("");
+        setPage(1);
+        updateUrl("", type, 1);
     };
 
     const hasResults = data.results && data.results.length > 0;
@@ -128,7 +134,7 @@ export default function SearchPageClient() {
                         />
                         {query && (
                             <button
-                                onClick={() => setQuery("")}
+                                onClick={handleClear}
                                 className="text-neutral-500 transition-colors hover:text-white"
                             >
                                 <X size={20} />
@@ -167,7 +173,7 @@ export default function SearchPageClient() {
                             {TYPE_FILTERS.map((tf) => (
                                 <button
                                     key={tf.value}
-                                    onClick={() => setType(tf.value)}
+                                    onClick={() => handleTypeChange(tf.value)}
                                     className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold transition-all ${
                                         type === tf.value
                                             ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
@@ -207,9 +213,9 @@ export default function SearchPageClient() {
                             {data.results.map((item: any, i: number) => (
                                 <motion.div
                                     key={`${item.tmdbId}-${i}`}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: i * 0.03 }}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 0.3 }}
                                 >
                                     <MovieCard movie={item} />
                                 </motion.div>
@@ -278,9 +284,9 @@ export default function SearchPageClient() {
                             {trending.map((item: any, i: number) => (
                                 <motion.div
                                     key={item.tmdbId}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: i * 0.04 }}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 0.3 }}
                                 >
                                     <MovieCard movie={item} />
                                 </motion.div>

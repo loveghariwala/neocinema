@@ -9,7 +9,7 @@ const AI_SERVICE_URL = getAIServiceUrl();
 async function fetchFromAI(endpoint: string) {
     try {
         const res = await fetch(`${AI_SERVICE_URL}/api/ai${endpoint}`, {
-            cache: "no-store",
+            next: { revalidate: 300 }, // Cache for 5 minutes
         });
         if (res.ok) {
             const data = await res.json();

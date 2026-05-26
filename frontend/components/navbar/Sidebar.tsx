@@ -42,6 +42,7 @@ export default function Sidebar() {
                     <Link
                         key={item.href}
                         href={item.href}
+                        aria-label={item.label}
                         className={`group relative flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-300 ${pathname === item.href
                                 ? "bg-red-600/10 text-red-600"
                                 : "text-neutral-500 hover:bg-white/5 hover:text-white"
@@ -63,6 +64,7 @@ export default function Sidebar() {
                     <Link
                         key={item.href}
                         href={item.href}
+                        aria-label={item.label}
                         className="group relative flex h-12 w-12 items-center justify-center rounded-2xl text-neutral-500 transition-all hover:bg-white/5 hover:text-white"
                     >
                         <item.icon size={24} />
@@ -74,10 +76,10 @@ export default function Sidebar() {
             </nav>
 
             <div className="flex flex-col gap-6">
-                <button className="group relative flex h-12 w-12 items-center justify-center rounded-2xl text-neutral-500 transition-all hover:bg-white/5 hover:text-white">
+                <button aria-label="Settings" className="group relative flex h-12 w-12 items-center justify-center rounded-2xl text-neutral-500 transition-all hover:bg-white/5 hover:text-white">
                     <Settings size={24} />
                 </button>
-                <button className="group relative flex h-12 w-12 items-center justify-center rounded-2xl text-red-600/50 transition-all hover:bg-red-600 hover:text-white">
+                <button aria-label="Log Out" className="group relative flex h-12 w-12 items-center justify-center rounded-2xl text-red-600/50 transition-all hover:bg-red-600 hover:text-white">
                     <LogOut size={24} />
                 </button>
             </div>

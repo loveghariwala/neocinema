@@ -153,3 +153,66 @@ export async function searchMovies(query: string, sort: string = "popularity") {
         totalResults: total,
     };
 }
+
+export async function discoverContentFromServer(type: "movie" | "tv", queryParams: Record<string, string>) {
+    try {
+        const aiServiceUrl = getAIServiceUrl();
+        const endpoint = type === "movie" ? "/api/ai/discover/movies" : "/api/ai/discover/series";
+        const params = new URLSearchParams();
+        Object.entries(queryParams).forEach(([key, val]) => {
+            if (val !== undefined && val !== null) {
+                params.set(key, val);
+            }
+        });
+        const res = await fetch(`${aiServiceUrl}${endpoint}?${params.toString()}`, { cache: "no-store" });
+        if (res.ok) {
+            return await res.json();
+        }
+    } catch (e) {
+        console.error(`discoverContentFromServer error for ${type}:`, e);
+    }
+    return { results: [], totalResults: 0, totalPages: 1, currentPage: 1 };
+}
+
+export async function getGenresFromServer(type: "movie" | "tv") {
+    try {
+        const aiServiceUrl = getAIServiceUrl();
+        const endpoint = type === "movie" ? "/api/ai/genres/movie" : "/api/ai/genres/tv";
+        const res = await fetch(`${aiServiceUrl}${endpoint}`, { cache: "no-store" });
+        if (res.ok) {
+            return await res.json();
+        }
+    } catch (e) {
+        console.error(`getGenresFromServer error for ${type}:`, e);
+    }
+    return { genres: [] };
+}
+
+export async function searchContentFromServer(query: string, type?: string, page?: string) {
+    try {
+        const aiServiceUrl = getAIServiceUrl();
+        const params = new URLSearchParams({ query });
+        if (type) params.set("type", type);
+        if (page) params.set("page", page);
+        const res = await fetch(`${aiServiceUrl}/api/ai/search?${params.toString()}`, { cache: "no-store" });
+        if (res.ok) {
+            return await res.json();
+        }
+    } catch (e) {
+        console.error("searchContentFromServer error:", e);
+    }
+    return { results: [], totalResults: 0, totalPages: 1, currentPage: 1 };
+}
+
+export async function getTrendingFromServer(mediaType: string, timeWindow: string = "week", page: string = "1") {
+    try {
+        const aiServiceUrl = getAIServiceUrl();
+        const res = await fetch(`${aiServiceUrl}/api/ai/trending/${mediaType}?time_window=${timeWindow}&page=${page}`, { cache: "no-store" });
+        if (res.ok) {
+            return await res.json();
+        }
+    } catch (e) {
+        console.error("getTrendingFromServer error:", e);
+    }
+    return { results: [] };
+}

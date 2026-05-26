@@ -1,16 +1,15 @@
 "use client";
 
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo, useTransition } from "react";
 import BrowseFilterPanel, { FilterState } from "./BrowseFilterPanel";
 import BrowseGrid from "./BrowseGrid";
 import { Film, Tv, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
-interface Props {
-    type: "movie" | "tv";
-    title: string;
-    subtitle: string;
+interface Genre {
+    id: number;
+    name: string;
 }
 
 interface BrowseData {
@@ -20,18 +19,28 @@ interface BrowseData {
     currentPage: number;
 }
 
-export default function BrowsePageClient({ type, title, subtitle }: Props) {
+interface Props {
+    type: "movie" | "tv";
+    title: string;
+    subtitle: string;
+    initialData: BrowseData;
+    initialGenres: Genre[];
+}
+
+export default function BrowsePageClient({ type, title, subtitle, initialData, initialGenres }: Props) {
     const searchParams = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
 
-    const [data, setData] = useState<BrowseData>({
-        results: [],
-        totalResults: 0,
-        totalPages: 1,
-        currentPage: 1,
-    });
-    const [isLoading, setIsLoading] = useState(true);
+    const [data, setData] = useState<BrowseData>(initialData);
+    const [isPending, startTransition] = useTransition();
+
+    const isLoading = isPending;
+
+    // Sync state when server data updates
+    useEffect(() => {
+        setData(initialData);
+    }, [initialData]);
 
     // Compute currentFilters directly from URL searchParams
     const currentFilters = useMemo<FilterState>(() => {
@@ -58,55 +67,6 @@ export default function BrowsePageClient({ type, title, subtitle }: Props) {
         };
     }, [searchParams]);
 
-    const fetchData = useCallback(
-        async (filters: FilterState) => {
-            setIsLoading(true);
-            try {
-                // If search is active, use the search endpoint
-                if (filters.search && filters.search.trim().length >= 2) {
-                    const params = new URLSearchParams({
-                        query: filters.search,
-                        page: String(filters.page || 1),
-                        type: type,
-                    });
-                    const res = await fetch(`/api/search?${params.toString()}`);
-                    if (res.ok) {
-                        setData(await res.json());
-                    }
-                } else {
-                    // Use discover endpoint with filters
-                    const endpoint = type === "movie" ? "/api/discover/movies" : "/api/discover/series";
-                    const params = new URLSearchParams();
-                    params.set("page", String(filters.page || 1));
-                    params.set("sort_by", filters.sortBy || "popularity.desc");
-
-                    if (filters.genreIds?.length > 0) {
-                        params.set("with_genres", filters.genreIds.join(","));
-                    }
-                    if (filters.yearFrom) params.set("year_from", String(filters.yearFrom));
-                    if (filters.yearTo) params.set("year_to", String(filters.yearTo));
-                    if (filters.ratingMin !== null && filters.ratingMin !== undefined) {
-                        params.set("rating_min", String(filters.ratingMin));
-                    }
-                    if (filters.ratingMax !== null && filters.ratingMax !== undefined) {
-                        params.set("rating_max", String(filters.ratingMax));
-                    }
-                    if (filters.language) params.set("language", filters.language);
-
-                    const res = await fetch(`${endpoint}?${params.toString()}`);
-                    if (res.ok) {
-                        setData(await res.json());
-                    }
-                }
-            } catch (err) {
-                console.error("Browse fetch error:", err);
-            } finally {
-                setIsLoading(false);
-            }
-        },
-        [type]
-    );
-
     // Sync all filter changes to the URL query string
     const handleFilterChange = useCallback((filters: FilterState) => {
         const params = new URLSearchParams();
@@ -120,7 +80,9 @@ export default function BrowsePageClient({ type, title, subtitle }: Props) {
         if (filters.page && filters.page > 1) params.set("page", String(filters.page));
         if (filters.language) params.set("language", filters.language);
 
-        router.push(`${pathname}?${params.toString()}`, { scroll: false });
+        startTransition(() => {
+            router.push(`${pathname}?${params.toString()}`, { scroll: false });
+        });
     }, [router, pathname]);
 
     const changePage = (p: number) => {
@@ -128,11 +90,6 @@ export default function BrowsePageClient({ type, title, subtitle }: Props) {
         handleFilterChange(updatedFilters);
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
-
-    // Fetch data whenever currentFilters (synced from URL query parameters) changes
-    useEffect(() => {
-        fetchData(currentFilters);
-    }, [fetchData, currentFilters]);
 
     return (
         <main className="min-h-screen px-6 pb-20 pt-28 md:px-16">
@@ -172,6 +129,7 @@ export default function BrowsePageClient({ type, title, subtitle }: Props) {
                     filters={currentFilters}
                     onFilterChange={handleFilterChange}
                     totalResults={data.totalResults}
+                    genres={initialGenres}
                 />
             </motion.div>
 

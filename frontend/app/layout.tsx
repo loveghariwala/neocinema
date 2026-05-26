@@ -21,6 +21,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL || "http://localhost:3000"),
   title: "NeoCinema — Full AI Movie & Series Discovery",
   description: "Experience the future of cinematic discovery with NeoCinema. AI-powered recommendations, semantic search, and an ultra-dark cinematic experience.",
   keywords: ["movies", "series", "streaming", "AI recommendations", "NeoCinema", "cinematic platform"],

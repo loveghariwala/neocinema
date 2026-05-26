@@ -36,6 +36,7 @@ interface Props {
     filters: FilterState;
     onFilterChange: (filters: FilterState) => void;
     totalResults: number;
+    genres: Genre[];
 }
 
 const SORT_OPTIONS = [
@@ -74,8 +75,8 @@ export default function BrowseFilterPanel({
     filters,
     onFilterChange,
     totalResults,
+    genres,
 }: Props) {
-    const [genres, setGenres] = useState<Genre[]>([]);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [searchInput, setSearchInput] = useState(filters.search);
 
@@ -88,22 +89,6 @@ export default function BrowseFilterPanel({
     useEffect(() => {
         setSearchInput(filters.search);
     }, [filters.search]);
-
-    // Fetch genres from AI service
-    useEffect(() => {
-        async function fetchGenres() {
-            try {
-                const res = await fetch(`/api/genres/${type}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setGenres(data.genres || []);
-                }
-            } catch (err) {
-                console.error("Failed to fetch genres:", err);
-            }
-        }
-        fetchGenres();
-    }, [type]);
 
     // Close dropdowns on click outside
     useEffect(() => {
@@ -209,7 +194,7 @@ export default function BrowseFilterPanel({
 
                 <div className="flex items-center gap-3 flex-wrap">
                     {/* Sort Selector */}
-                    <div className="flex items-center gap-1.5 rounded-2xl border border-white/10 bg-white/[0.03] p-1.5 backdrop-blur-xl">
+                    <div className="flex items-center gap-1.5 rounded-2xl border border-white/10 bg-white/[0.03] p-1.5 backdrop-blur-xl overflow-x-auto scrollbar-hide max-w-[calc(100vw-3rem)] sm:max-w-none">
                         {SORT_OPTIONS.map((opt) => (
                             <button
                                 key={opt.value}

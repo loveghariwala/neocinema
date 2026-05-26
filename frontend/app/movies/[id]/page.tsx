@@ -2,6 +2,7 @@ import { getMovieDetails } from "@/services/movieService";
 import { Star, Clock, Calendar, Globe } from "lucide-react";
 import MovieRow from "@/components/sliders/MovieRow";
 import { MotionDiv } from "@/components/layout/Motion";
+import Image from "next/image";
 import StreamPlayer from "@/components/player/StreamPlayer";
 import WatchlistButton from "@/components/watchlist/WatchlistButton";
 import ShareButton from "@/components/ui/ShareButton";
@@ -78,10 +79,13 @@ export default async function MovieDetailsPage({
                     className="absolute inset-0"
                 >
                     {movie.backdropPath ? (
-                        <img
-                            src={`https://image.tmdb.org/t/p/original${movie.backdropPath}`}
+                        <Image
+                            src={`https://image.tmdb.org/t/p/w1280${movie.backdropPath}`}
                             alt={movie.title}
-                            className="h-full w-full object-cover"
+                            fill
+                            priority
+                            sizes="100vw"
+                            className="object-cover"
                         />
                     ) : (
                         <div className="h-full w-full bg-neutral-900" />
@@ -201,11 +205,7 @@ export default async function MovieDetailsPage({
                                         className="relative aspect-[2/3] mb-4 w-full overflow-hidden rounded-2xl bg-neutral-900 shadow-xl border border-white/5 transition-all group-hover:border-white/20 group-hover:shadow-[0_0_40px_rgba(220,38,38,0.3)]"
                                     >
                                         {actor.profilePath ? (
-                                            <img
-                                                src={`https://image.tmdb.org/t/p/w300${actor.profilePath}`}
-                                                alt={actor.name}
-                                                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                            />
+                                            <Image src={`https://image.tmdb.org/t/p/w185${actor.profilePath}`} alt={actor.name} fill sizes="180px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
                                         ) : (
                                             <div className="flex h-full items-center justify-center text-[10px] font-black uppercase text-neutral-500">NO PHOTO</div>
                                         )}

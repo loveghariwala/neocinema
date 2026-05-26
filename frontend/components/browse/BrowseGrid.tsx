@@ -48,13 +48,9 @@ export default function BrowseGrid({ movies, isLoading, isMovie }: Props) {
             {movies.map((movie: any, index: number) => (
                 <motion.div
                     key={movie._id || movie.tmdbId || index} 
-                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{
-                        delay: index * 0.03,
-                        duration: 0.4,
-                        ease: "easeOut",
-                    }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
                 >
                     <MovieCard movie={movie} />
                 </motion.div>
