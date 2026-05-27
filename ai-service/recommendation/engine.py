@@ -4,6 +4,14 @@ from sklearn.metrics.pairwise import cosine_similarity
 from utils.db import get_db
 from bson import ObjectId
 import re
+import os
+import json
+
+
+# Path configurations relative to the engine.py file location
+VECTORS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "vector")
+EMBEDDINGS_PATH = os.path.join(VECTORS_DIR, "embeddings.npy")
+METADATA_PATH = os.path.join(VECTORS_DIR, "movies_metadata.json")
 
 
 def clean_title(title: str) -> str:
@@ -35,6 +43,21 @@ class RecommendationEngine:
         self._model = None
         self.cached_embeddings = None
         self.movie_ids = []
+        self.movies_data = []
+        self._load_precomputed_data()
+
+    def _load_precomputed_data(self):
+        try:
+            if os.path.exists(EMBEDDINGS_PATH) and os.path.exists(METADATA_PATH):
+                self.cached_embeddings = np.load(EMBEDDINGS_PATH)
+                with open(METADATA_PATH, "r") as f:
+                    self.movies_data = json.load(f)
+                self.movie_ids = [str(m['_id']) for m in self.movies_data]
+                print(f"Loaded {len(self.movies_data)} precomputed recommendations from disk.")
+            else:
+                print("Precomputed recommendation vectors not found on disk. Will lazy load from DB.")
+        except Exception as e:
+            print(f"Error loading precomputed data: {e}. Falling back to dynamic load.")
 
     @property
     def model(self):
@@ -53,7 +76,26 @@ class RecommendationEngine:
 
         self.cached_embeddings = embeddings
         self.movie_ids = [str(m['_id']) for m in movies]
-        self.movies_data = movies
+        
+        movies_metadata = []
+        for m in movies:
+            movies_metadata.append({
+                "_id": str(m['_id']),
+                "tmdbId": m.get('tmdbId'),
+                "title": m.get('title', ''),
+                "genres": m.get('genres', [])
+            })
+        self.movies_data = movies_metadata
+
+        # Save to disk to preserve cache for next startup
+        try:
+            os.makedirs(VECTORS_DIR, exist_ok=True)
+            np.save(EMBEDDINGS_PATH, embeddings)
+            with open(METADATA_PATH, "w") as f:
+                json.dump(movies_metadata, f, indent=2)
+            print("Successfully saved updated recommendations cache to disk.")
+        except Exception as e:
+            print(f"Warning: Failed to save updated recommendation cache to disk: {e}")
 
         return len(movies)
 
