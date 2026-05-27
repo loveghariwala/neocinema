@@ -10,7 +10,9 @@ export async function GET(
     const { id, seasonNum } = await params;
 
     try {
-        const response = await fetch(`${AI_SERVICE_URL}/api/ai/tv/${id}/season/${seasonNum}`);
+        const response = await fetch(`${AI_SERVICE_URL}/api/ai/tv/${id}/season/${seasonNum}`, {
+            next: { revalidate: 86400 } // Cache season details for 24 hours
+        });
         if (!response.ok) {
             return NextResponse.json({ error: "Season not found" }, { status: response.status });
         }

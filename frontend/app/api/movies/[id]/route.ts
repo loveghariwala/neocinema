@@ -10,7 +10,9 @@ export async function GET(
     const { id } = await params;
 
     try {
-        const response = await fetch(`${AI_SERVICE_URL}/api/ai/movie/${id}`);
+        const response = await fetch(`${AI_SERVICE_URL}/api/ai/movie/${id}`, {
+            next: { revalidate: 86400 } // Cache movie details for 24 hours
+        });
         if (!response.ok) {
             return NextResponse.json({ error: "Movie not found" }, { status: response.status });
         }

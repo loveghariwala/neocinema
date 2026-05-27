@@ -10,7 +10,9 @@ export async function GET(
     const { id } = await params;
 
     try {
-        const response = await fetch(`${AI_SERVICE_URL}/api/ai/tv/${id}`);
+        const response = await fetch(`${AI_SERVICE_URL}/api/ai/tv/${id}`, {
+            next: { revalidate: 86400 } // Cache series details for 24 hours
+        });
         if (!response.ok) {
             return NextResponse.json({ error: "Series not found" }, { status: response.status });
         }

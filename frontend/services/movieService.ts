@@ -36,7 +36,9 @@ export async function getMovieDetails(id: string, type: "movie" | "tv" = "movie"
         try {
             const aiServiceUrl = getAIServiceUrl();
             const endpoint = type === "movie" ? `/api/ai/movie/${id}` : `/api/ai/tv/${id}`;
-            const response = await fetch(`${aiServiceUrl}${endpoint}`, { cache: "no-store" });
+            const response = await fetch(`${aiServiceUrl}${endpoint}`, {
+                next: { revalidate: 86400 } // Cache detail responses for 24 hours
+            });
             
             if (response.ok) {
                 const data = await response.json();
@@ -44,7 +46,9 @@ export async function getMovieDetails(id: string, type: "movie" | "tv" = "movie"
                 // Fetch AI recommendations from FastAPI using tmdbId/numeric ID
                 let similarMovies: any[] = [];
                 try {
-                    const aiRes = await fetch(`${aiServiceUrl}/api/ai/recommend/${id}?limit=10`);
+                    const aiRes = await fetch(`${aiServiceUrl}/api/ai/recommend/${id}?limit=10`, {
+                        next: { revalidate: 86400 } // Cache recommendations for 24 hours
+                    });
                     if (aiRes.ok) {
                         const aiData = await aiRes.json();
                         const recIds = aiData.recommendations?.map((r: any) => r.id) || [];
@@ -202,7 +206,9 @@ export async function getGenresFromServer(type: "movie" | "tv") {
     try {
         const aiServiceUrl = getAIServiceUrl();
         const endpoint = type === "movie" ? "/api/ai/genres/movie" : "/api/ai/genres/tv";
-        const res = await fetch(`${aiServiceUrl}${endpoint}`, { cache: "no-store" });
+        const res = await fetch(`${aiServiceUrl}${endpoint}`, {
+            next: { revalidate: 86400 } // Cache genres list for 24 hours
+        });
         if (res.ok) {
             return await res.json();
         }
@@ -231,7 +237,9 @@ export async function searchContentFromServer(query: string, type?: string, page
 export async function getTrendingFromServer(mediaType: string, timeWindow: string = "week", page: string = "1") {
     try {
         const aiServiceUrl = getAIServiceUrl();
-        const res = await fetch(`${aiServiceUrl}/api/ai/trending/${mediaType}?time_window=${timeWindow}&page=${page}`, { cache: "no-store" });
+        const res = await fetch(`${aiServiceUrl}/api/ai/trending/${mediaType}?time_window=${timeWindow}&page=${page}`, {
+            next: { revalidate: 3600 } // Cache trending items for 1 hour
+        });
         if (res.ok) {
             return await res.json();
         }
@@ -244,7 +252,9 @@ export async function getTrendingFromServer(mediaType: string, timeWindow: strin
 export async function getPersonDetails(id: string) {
     try {
         const aiServiceUrl = getAIServiceUrl();
-        const res = await fetch(`${aiServiceUrl}/api/ai/person/${id}`, { cache: "no-store" });
+        const res = await fetch(`${aiServiceUrl}/api/ai/person/${id}`, {
+            next: { revalidate: 86400 } // Cache cast member details for 24 hours
+        });
         if (res.ok) {
             return await res.json();
         }

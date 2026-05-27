@@ -260,10 +260,13 @@ class ExternalAPIService:
 
     async def get_person_credits(self, person_id: int) -> dict:
         """Get combined movie and TV credits for a person."""
-        # 1. Fetch credits
-        data = await self._get(f"/person/{person_id}/combined_credits")
-        # 2. Fetch details (name, bio, profile path, etc.)
-        person_details = await self._get(f"/person/{person_id}")
+        import asyncio
+        # Fetch both combined credits and person bio details in parallel to cut response time in half
+        tasks = [
+            self._get(f"/person/{person_id}/combined_credits"),
+            self._get(f"/person/{person_id}")
+        ]
+        data, person_details = await asyncio.gather(*tasks)
         
         # Normalize and filter
         cast_list = data.get("cast", [])
