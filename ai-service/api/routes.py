@@ -168,6 +168,15 @@ async def get_tv_detail(tmdb_id: int):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.get("/tv/{tmdb_id}/season/{season_number}")
+async def get_tv_season_detail(tmdb_id: int, season_number: int):
+    """Get TV season details from external API."""
+    try:
+        return await external_api.get_tv_season_detail(tmdb_id, season_number)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.get("/person/{person_id}")
 async def get_person_detail(person_id: int):
     """Get person details and combined movie/TV credits from external API."""

@@ -199,11 +199,10 @@ export default function BrowseFilterPanel({
                             <button
                                 key={opt.value}
                                 onClick={() => updateFilter({ sortBy: opt.value })}
-                                className={`flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
-                                    filters.sortBy === opt.value
+                                className={`flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold transition-all ${filters.sortBy === opt.value
                                         ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
                                         : "text-neutral-500 hover:bg-white/5 hover:text-white"
-                                }`}
+                                    }`}
                                 title={opt.label}
                             >
                                 <span className="text-sm">{opt.icon}</span>
@@ -215,11 +214,10 @@ export default function BrowseFilterPanel({
                     {/* Filter Toggle */}
                     <button
                         onClick={() => setIsFilterOpen(!isFilterOpen)}
-                        className={`relative flex items-center gap-2 rounded-2xl border px-4 py-3 text-sm font-bold transition-all ${
-                            isFilterOpen
+                        className={`relative flex items-center gap-2 rounded-2xl border px-4 py-3 text-sm font-bold transition-all ${isFilterOpen
                                 ? "border-red-600/50 bg-red-600/10 text-red-500"
                                 : "border-white/10 bg-white/[0.03] text-neutral-400 hover:border-white/20 hover:text-white"
-                        }`}
+                            }`}
                     >
                         <SlidersHorizontal size={16} />
                         <span className="hidden sm:inline">Filters</span>
@@ -275,11 +273,10 @@ export default function BrowseFilterPanel({
                                         <button
                                             key={genre.id}
                                             onClick={() => toggleGenre(genre.id)}
-                                            className={`rounded-full border px-4 py-2 text-xs font-bold transition-all duration-200 ${
-                                                filters.genreIds.includes(genre.id)
+                                            className={`rounded-full border px-4 py-2 text-xs font-bold transition-all duration-200 ${filters.genreIds.includes(genre.id)
                                                     ? "border-red-600 bg-red-600/20 text-red-400 shadow-[0_0_12px_rgba(220,38,38,0.2)]"
                                                     : "border-white/10 bg-white/[0.03] text-neutral-500 hover:border-white/20 hover:text-white"
-                                            }`}
+                                                }`}
                                         >
                                             {genre.name}
                                         </button>
@@ -288,7 +285,7 @@ export default function BrowseFilterPanel({
                             </div>
 
                             {/* Year Range + Rating + Language */}
-                            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                                 {/* Year Range */}
                                 <div>
                                     <label className="mb-3 block text-xs font-black uppercase tracking-widest text-neutral-500">
@@ -305,11 +302,10 @@ export default function BrowseFilterPanel({
                                                     setShowYearToDropdown(false);
                                                     setShowLangDropdown(false);
                                                 }}
-                                                className={`flex w-full items-center justify-between rounded-xl border bg-white/[0.03] px-4 py-3 text-sm font-medium text-white outline-none backdrop-blur-xl transition-all cursor-pointer ${
-                                                    showYearFromDropdown 
-                                                        ? "border-red-600 ring-2 ring-red-600/20" 
+                                                className={`flex w-full items-center justify-between rounded-xl border bg-white/[0.03] px-4 py-3 text-sm font-medium text-white outline-none backdrop-blur-xl transition-all cursor-pointer ${showYearFromDropdown
+                                                        ? "border-red-600 ring-2 ring-red-600/20"
                                                         : "border-white/10 hover:border-white/20"
-                                                }`}
+                                                    }`}
                                             >
                                                 <span className="truncate">
                                                     {filters.yearFrom ? `From: ${filters.yearFrom}` : "From Year"}
@@ -331,11 +327,10 @@ export default function BrowseFilterPanel({
                                                                 updateFilter({ yearFrom: null });
                                                                 setShowYearFromDropdown(false);
                                                             }}
-                                                            className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-xs font-bold transition-all mb-1 ${
-                                                                filters.yearFrom === null
+                                                            className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-xs font-bold transition-all mb-1 ${filters.yearFrom === null
                                                                     ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
                                                                     : "text-neutral-400 hover:bg-white/5 hover:text-white"
-                                                            }`}
+                                                                }`}
                                                         >
                                                             <span>Any Year</span>
                                                             {filters.yearFrom === null && <Check size={14} className="text-white" />}
@@ -350,11 +345,10 @@ export default function BrowseFilterPanel({
                                                                         updateFilter({ yearFrom: y });
                                                                         setShowYearFromDropdown(false);
                                                                     }}
-                                                                    className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-xs font-bold transition-all mb-1 last:mb-0 ${
-                                                                        isSelected
+                                                                    className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-xs font-bold transition-all mb-1 last:mb-0 ${isSelected
                                                                             ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
                                                                             : "text-neutral-400 hover:bg-white/5 hover:text-white"
-                                                                    }`}
+                                                                        }`}
                                                                 >
                                                                     <span>{y}</span>
                                                                     {isSelected && <Check size={14} className="text-white" />}
@@ -378,11 +372,10 @@ export default function BrowseFilterPanel({
                                                     setShowYearFromDropdown(false);
                                                     setShowLangDropdown(false);
                                                 }}
-                                                className={`flex w-full items-center justify-between rounded-xl border bg-white/[0.03] px-4 py-3 text-sm font-medium text-white outline-none backdrop-blur-xl transition-all cursor-pointer ${
-                                                    showYearToDropdown 
-                                                        ? "border-red-600 ring-2 ring-red-600/20" 
+                                                className={`flex w-full items-center justify-between rounded-xl border bg-white/[0.03] px-4 py-3 text-sm font-medium text-white outline-none backdrop-blur-xl transition-all cursor-pointer ${showYearToDropdown
+                                                        ? "border-red-600 ring-2 ring-red-600/20"
                                                         : "border-white/10 hover:border-white/20"
-                                                }`}
+                                                    }`}
                                             >
                                                 <span className="truncate">
                                                     {filters.yearTo ? `To: ${filters.yearTo}` : "To Year"}
@@ -404,11 +397,10 @@ export default function BrowseFilterPanel({
                                                                 updateFilter({ yearTo: null });
                                                                 setShowYearToDropdown(false);
                                                             }}
-                                                            className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-xs font-bold transition-all mb-1 ${
-                                                                filters.yearTo === null
+                                                            className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-xs font-bold transition-all mb-1 ${filters.yearTo === null
                                                                     ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
                                                                     : "text-neutral-400 hover:bg-white/5 hover:text-white"
-                                                            }`}
+                                                                }`}
                                                         >
                                                             <span>Any Year</span>
                                                             {filters.yearTo === null && <Check size={14} className="text-white" />}
@@ -423,11 +415,10 @@ export default function BrowseFilterPanel({
                                                                         updateFilter({ yearTo: y });
                                                                         setShowYearToDropdown(false);
                                                                     }}
-                                                                    className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-xs font-bold transition-all mb-1 last:mb-0 ${
-                                                                        isSelected
+                                                                    className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-xs font-bold transition-all mb-1 last:mb-0 ${isSelected
                                                                             ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
                                                                             : "text-neutral-400 hover:bg-white/5 hover:text-white"
-                                                                    }`}
+                                                                        }`}
                                                                 >
                                                                     <span>{y}</span>
                                                                     {isSelected && <Check size={14} className="text-white" />}
@@ -488,11 +479,10 @@ export default function BrowseFilterPanel({
                                             setShowYearFromDropdown(false);
                                             setShowYearToDropdown(false);
                                         }}
-                                        className={`flex w-full items-center justify-between rounded-xl border bg-white/[0.03] px-4 py-3 text-sm font-medium text-white outline-none backdrop-blur-xl transition-all cursor-pointer ${
-                                            showLangDropdown 
-                                                ? "border-red-600 ring-2 ring-red-600/20" 
+                                        className={`flex w-full items-center justify-between rounded-xl border bg-white/[0.03] px-4 py-3 text-sm font-medium text-white outline-none backdrop-blur-xl transition-all cursor-pointer ${showLangDropdown
+                                                ? "border-red-600 ring-2 ring-red-600/20"
                                                 : "border-white/10 hover:border-white/20"
-                                        }`}
+                                            }`}
                                     >
                                         <span className="truncate">
                                             {LANGUAGES.find((lang) => lang.code === filters.language)?.label || "All Languages"}
@@ -518,11 +508,10 @@ export default function BrowseFilterPanel({
                                                                 updateFilter({ language: lang.code });
                                                                 setShowLangDropdown(false);
                                                             }}
-                                                            className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-xs font-bold transition-all mb-1 last:mb-0 ${
-                                                                isSelected
+                                                            className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-xs font-bold transition-all mb-1 last:mb-0 ${isSelected
                                                                     ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
                                                                     : "text-neutral-400 hover:bg-white/5 hover:text-white"
-                                                            }`}
+                                                                }`}
                                                         >
                                                             <span>{lang.label}</span>
                                                             {isSelected && <Check size={14} className="text-white" />}

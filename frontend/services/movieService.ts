@@ -41,6 +41,36 @@ export async function getMovieDetails(id: string, type: "movie" | "tv" = "movie"
             if (response.ok) {
                 const data = await response.json();
                 
+                // Fetch AI recommendations from FastAPI using tmdbId/numeric ID
+                let similarMovies: any[] = [];
+                try {
+                    const aiRes = await fetch(`${aiServiceUrl}/api/ai/recommend/${id}?limit=10`);
+                    if (aiRes.ok) {
+                        const aiData = await aiRes.json();
+                        const recIds = aiData.recommendations?.map((r: any) => r.id) || [];
+                        if (recIds.length > 0) {
+                            await dbConnect();
+                            const fetchedMovies = await Movie.find({ _id: { $in: recIds } }).lean();
+                            similarMovies = fetchedMovies.sort(
+                                (a: any, b: any) => recIds.indexOf(String(a._id)) - recIds.indexOf(String(b._id))
+                            );
+                        }
+                    }
+                } catch (recError) {
+                    console.warn("AI Recommendations failed for TMDB ID:", recError);
+                }
+
+                // If AI recommendation is empty, fallback to TMDB similar
+                if (similarMovies.length === 0) {
+                    similarMovies = data.similar?.results?.slice(0, 10).map((s: any) => ({
+                        tmdbId: s.id,
+                        title: s.title || s.name,
+                        posterPath: s.poster_path,
+                        rating: s.vote_average,
+                        isMovie: type === "movie"
+                    })) || [];
+                }
+                
                 // Normalize TMDB detail format to our internal format for the UI
                 return {
                     _id: String(data.id),
@@ -61,13 +91,7 @@ export async function getMovieDetails(id: string, type: "movie" | "tv" = "movie"
                         character: c.character,
                         profilePath: c.profile_path
                     })) || [],
-                    similar: data.similar?.results?.slice(0, 10).map((s: any) => ({
-                        tmdbId: s.id,
-                        title: s.title || s.name,
-                        posterPath: s.poster_path,
-                        rating: s.vote_average,
-                        isMovie: type === "movie"
-                    })) || [],
+                    similar: JSON.parse(JSON.stringify(similarMovies)),
                     isMovie: type === "movie",
                     videos: data.videos?.results || [],
                     seasons: data.seasons || [],

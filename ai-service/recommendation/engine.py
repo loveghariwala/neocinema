@@ -3,6 +3,31 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from utils.db import get_db
 from bson import ObjectId
+import re
+
+
+def clean_title(title: str) -> str:
+    return title.lower().strip()
+
+
+def get_title_base(title: str) -> str:
+    t = clean_title(title)
+
+    # 1. Split on colons or dashes (e.g. "Dune: Part Two" -> "Dune")
+    for separator in [':', ' - ']:
+        if separator in t:
+            parts = t.split(separator)
+            if parts[0].strip():
+                return parts[0].strip()
+
+    # 2. Strip Roman numerals or digits at the end
+    t_no_num = re.sub(r'\s+(?:[0-9]+|v?i{0,3}|i?x|x?i{0,3})$', '', t)
+
+    # 3. Strip common franchise words like "part", "volume", "vol", "chapter"
+    t_no_words = re.sub(
+        r'\s+(?:part|volume|vol\.?|chapter)\s*(?:[0-9]+|v?i{0,3}|i?x|x?i{0,3})?$', '', t_no_num)
+
+    return t_no_words.strip()
 
 
 class RecommendationEngine:
@@ -20,7 +45,6 @@ class RecommendationEngine:
 
     async def generate_movie_embeddings(self):
         database = await get_db()
-        # Fetch all movies to ensure the full catalog is indexed for AI recommendations
         movies = await database.movies.find({}).to_list(length=10000)
 
         texts = [
@@ -40,14 +64,51 @@ class RecommendationEngine:
         try:
             idx = self.movie_ids.index(movie_id)
         except ValueError:
-            return []
+            # If not found in ObjectId list, try searching by TMDB ID
+            idx = -1
+            for i, m in enumerate(self.movies_data):
+                if str(m.get('tmdbId', '')) == movie_id:
+                    idx = i
+                    break
+            if idx == -1:
+                return []
+
+        target_movie = self.movies_data[idx]
+        target_title = target_movie.get('title', '')
+        target_base = get_title_base(target_title)
 
         target_embedding = self.cached_embeddings[idx].reshape(1, -1)
         similarities = cosine_similarity(
             target_embedding, self.cached_embeddings)[0]
 
-        # Sort by similarity
-        related_indices = np.argsort(similarities)[::-1][1:limit+1]
+        sequel_indices = []
+        other_indices = []
+
+        for i in range(len(self.movies_data)):
+            if i == idx:
+                continue
+
+            movie = self.movies_data[i]
+            title = movie.get('title', '')
+
+            is_seq = False
+            if len(target_base) >= 3:
+                base = get_title_base(title)
+                if base == target_base:
+                    is_seq = True
+
+            if is_seq:
+                sequel_indices.append((i, similarities[i]))
+            else:
+                other_indices.append((i, similarities[i]))
+
+        # Sort both lists by similarity score desc
+        sequel_indices.sort(key=lambda x: x[1], reverse=True)
+        other_indices.sort(key=lambda x: x[1], reverse=True)
+
+        # Combine: sequels first, then others
+        combined = sequel_indices + other_indices
+        related_indices = [item[0] for item in combined[:limit]]
 
         recommendations = []
         for i in related_indices:

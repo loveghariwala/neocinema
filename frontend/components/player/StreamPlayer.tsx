@@ -19,6 +19,8 @@ interface StreamPlayerProps {
     isTv?: boolean;
     seasons?: Season[];
     autoPlay?: boolean;
+    initialSeason?: number;
+    initialEpisode?: number;
 }
 
 const SERVERS = [
@@ -29,7 +31,16 @@ const SERVERS = [
     { name: "EPSILON", providerId: 5 },
 ];
 
-export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seasons = [], autoPlay = false }: StreamPlayerProps) {
+export default function StreamPlayer({
+    tmdbId,
+    imdbId,
+    title,
+    isTv = false,
+    seasons = [],
+    autoPlay = false,
+    initialSeason = 1,
+    initialEpisode = 1
+}: StreamPlayerProps) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [selectedServerIndex, setSelectedServerIndex] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
@@ -45,10 +56,15 @@ export default function StreamPlayer({ tmdbId, imdbId, title, isTv = false, seas
     }, [autoPlay]);
 
     // Series state
-    const [selectedSeason, setSelectedSeason] = useState(1);
-    const [selectedEpisode, setSelectedEpisode] = useState(1);
+    const [selectedSeason, setSelectedSeason] = useState(initialSeason);
+    const [selectedEpisode, setSelectedEpisode] = useState(initialEpisode);
     const [showSeasonDropdown, setShowSeasonDropdown] = useState(false);
     const [showEpisodeDropdown, setShowEpisodeDropdown] = useState(false);
+
+    useEffect(() => {
+        setSelectedSeason(initialSeason);
+        setSelectedEpisode(initialEpisode);
+    }, [initialSeason, initialEpisode]);
 
     useEffect(() => {
         setMounted(true);

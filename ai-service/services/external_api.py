@@ -253,6 +253,11 @@ class ExternalAPIService:
         data = await self._get(f"/tv/{tmdb_id}", {"append_to_response": "credits,similar,videos"})
         return data
 
+    async def get_tv_season_detail(self, tmdb_id: int, season_number: int) -> dict:
+        """Get TV season details."""
+        data = await self._get(f"/tv/{tmdb_id}/season/{season_number}")
+        return data
+
     async def get_person_credits(self, person_id: int) -> dict:
         """Get combined movie and TV credits for a person."""
         # 1. Fetch credits

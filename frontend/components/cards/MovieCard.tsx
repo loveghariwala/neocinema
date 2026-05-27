@@ -48,6 +48,8 @@ export default function MovieCard({ movie }: MovieCardProps) {
                         src={imgSrc}
                         alt={title}
                         fill
+                        fetchPriority="high"
+                        loading="lazy"
                         sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 20vw, 15vw"
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                         onError={() => {
@@ -69,12 +71,12 @@ export default function MovieCard({ movie }: MovieCardProps) {
                     <div className="w-8 h-8 sm:w-10 sm:h-10 shrink-0 relative flex items-center justify-center">
                         <WatchlistButton movie={movie} variant="compact" />
                     </div>
-                    
-                    {lang && lang !== "en" && (
+
+                    {/* {lang && lang !== "en" && (
                         <div className="rounded-md bg-red-600/80 px-1.5 py-0.5 sm:px-2.5 sm:py-1 text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-white backdrop-blur-sm border border-white/5 shadow-md">
                             {lang.toUpperCase()}
                         </div>
-                    )}
+                    )} */}
                     {movie.isMovie === false && (
                         <div className="rounded-md bg-blue-600/80 px-1.5 py-0.5 sm:px-2.5 sm:py-1 text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-white backdrop-blur-sm border border-white/5 shadow-md">
                             <span className="inline sm:hidden">TV</span>

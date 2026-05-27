@@ -7,6 +7,7 @@ import Link from "next/link";
 import StreamPlayer from "@/components/player/StreamPlayer";
 import WatchlistButton from "@/components/watchlist/WatchlistButton";
 import ShareButton from "@/components/ui/ShareButton";
+import SeasonEpisodeBrowser from "@/components/series/SeasonEpisodeBrowser";
 import { Metadata } from "next";
 
 interface PageProps {
@@ -15,6 +16,8 @@ interface PageProps {
     }>;
     searchParams?: Promise<{
         play?: string;
+        season?: string;
+        episode?: string;
     }>;
 }
 
@@ -65,6 +68,8 @@ export default async function SeriesDetailsPage({
     const { id } = await params;
     const resolvedSearchParams = await searchParams;
     const autoPlay = resolvedSearchParams?.play === "true";
+    const seasonParam = resolvedSearchParams?.season ? parseInt(resolvedSearchParams.season) : 1;
+    const episodeParam = resolvedSearchParams?.episode ? parseInt(resolvedSearchParams.episode) : 1;
     const series = await getMovieDetails(id, "tv");
 
     if (!series) return <div className="flex h-screen items-center justify-center text-white text-xl font-bold">Series not found</div>;
@@ -135,6 +140,8 @@ export default async function SeriesDetailsPage({
                                     isTv={true}
                                     seasons={series.seasons}
                                     autoPlay={autoPlay}
+                                    initialSeason={seasonParam}
+                                    initialEpisode={episodeParam}
                                 />
 
                                 <WatchlistButton movie={series} />
@@ -199,6 +206,13 @@ export default async function SeriesDetailsPage({
                         </div>
                     </div>
                 </div>
+
+                {series.seasons?.length > 0 && (
+                    <SeasonEpisodeBrowser
+                        seriesId={String(series.tmdbId || series._id)}
+                        seasons={series.seasons}
+                    />
+                )}
 
                 {series.similar?.length > 0 && (
                     <div className="space-y-8">
