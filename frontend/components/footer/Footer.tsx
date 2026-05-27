@@ -5,14 +5,14 @@ export default function Footer() {
     return (
         <footer className="border-t border-white/5 bg-background pt-20 pb-10 px-6 md:px-16">
             <div className="mx-auto max-w-[1600px]">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
-                    <div className="col-span-1 md:col-span-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 xl:gap-12 mb-20">
+                    <div>
                         <Link href="/" className="group">
                             <h2 className="text-3xl font-black tracking-tighter text-white mb-6">
                                 NEO<span className="text-red-600">CINEMA</span>
                             </h2>
                         </Link>
-                        <p className="text-neutral-500 text-sm leading-relaxed mb-8">
+                        <p className="text-neutral-500 text-sm leading-relaxed mb-8 text-justify">
                             Experience the future of cinematic discovery. Our AI-powered platform brings you the best movies and series tailored to your taste.
                         </p>
                         <div className="flex gap-4">
@@ -69,7 +69,7 @@ export default function Footer() {
                             <input
                                 type="email"
                                 placeholder="Your email"
-                                className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white outline-none focus:border-red-600 transition-colors flex-1"
+                                className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white outline-none focus:border-red-600 transition-colors flex-1 w-full min-w-0"
                             />
                             <button className="bg-red-600 text-white rounded-lg px-4 py-2 text-sm font-bold hover:bg-red-700 transition-colors">
                                 <Mail size={18} />
