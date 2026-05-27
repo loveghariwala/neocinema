@@ -4,13 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
     Home,
-    Search,
     Film,
     Tv,
     History,
     Heart,
-    Settings,
-    LogOut,
     Sparkles
 } from "lucide-react";
 
@@ -31,11 +28,11 @@ export default function Sidebar() {
 
     return (
         <aside className="fixed left-0 top-10 z-50 hidden h-screen w-24 flex-col items-center border-r border-white/5 bg-black/40 py-8 backdrop-blur-2xl lg:flex">
-            <Link href="/" className="mb-12 group">
+            {/* <Link href="/" className="mb-12 group">
                 <div className="flex h-12 w-12 items-center justify-center transition-all group-hover:scale-110">
                     <img src="/neocinema_logo.png" alt="NeoCinema Logo" className="h-9 w-9 object-contain" />
                 </div>
-            </Link>
+            </Link> */}
 
             <nav className="flex flex-1 flex-col gap-8">
                 {menuItems.map((item) => (
@@ -75,6 +72,6 @@ export default function Sidebar() {
                 ))}
             </nav>
 
-        </aside>
+        </aside >
     );
 }
