@@ -46,9 +46,13 @@ export async function getMovieDetails(id: string, type: "movie" | "tv" = "movie"
                 // Fetch AI recommendations from FastAPI using tmdbId/numeric ID
                 let similarMovies: any[] = [];
                 try {
+                    const controller = new AbortController();
+                    const timeout = setTimeout(() => controller.abort(), 5000); // 5s timeout
                     const aiRes = await fetch(`${aiServiceUrl}/api/ai/recommend/${id}?limit=10`, {
-                        next: { revalidate: 86400 } // Cache recommendations for 24 hours
+                        next: { revalidate: 86400 }, // Cache recommendations for 24 hours
+                        signal: controller.signal,
                     });
+                    clearTimeout(timeout);
                     if (aiRes.ok) {
                         const aiData = await aiRes.json();
                         const recIds = aiData.recommendations?.map((r: any) => r.id) || [];
@@ -122,7 +126,12 @@ export async function getMovieDetails(id: string, type: "movie" | "tv" = "movie"
         // Phase 2 Recommendation: AI Service (FastAPI)
         try {
             const aiServiceUrl = getAIServiceUrl();
-            const aiResponse = await fetch(`${aiServiceUrl}/api/ai/recommend/${id}?limit=10`);
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 5000); // 5s timeout
+            const aiResponse = await fetch(`${aiServiceUrl}/api/ai/recommend/${id}?limit=10`, {
+                signal: controller.signal,
+            });
+            clearTimeout(timeout);
             if (aiResponse.ok) {
                 const aiData = await aiResponse.json();
                 const recIds = aiData.recommendations.map((r: any) => r.id);

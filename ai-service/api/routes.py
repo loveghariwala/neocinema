@@ -13,11 +13,7 @@ router = APIRouter()
 @router.get("/recommend/{movie_id}", response_model=RecommendationResponse)
 async def get_recommendations(movie_id: str, limit: int = 10):
     recs = await engine.get_recommendations(movie_id, limit)
-    if not recs:
-        count = await engine.generate_movie_embeddings()
-        recs = await engine.get_recommendations(movie_id, limit)
-        if not recs:
-            raise HTTPException(status_code=404, detail="Movie not found or no recommendations available")
+    # Return empty recommendations instead of triggering an expensive full re-index
     return {"movie_id": movie_id, "recommendations": recs}
 
 

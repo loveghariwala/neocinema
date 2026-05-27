@@ -8,9 +8,13 @@ const AI_SERVICE_URL = getAIServiceUrl();
 
 async function fetchFromAI(endpoint: string) {
     try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8000); // 8s timeout
         const res = await fetch(`${AI_SERVICE_URL}/api/ai${endpoint}`, {
             next: { revalidate: 300 }, // Cache for 5 minutes
+            signal: controller.signal,
         });
+        clearTimeout(timeout);
         if (res.ok) {
             const data = await res.json();
             return data.results || [];

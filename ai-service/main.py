@@ -1,8 +1,13 @@
+import os
+
+# Suppress HuggingFace Hub unauthenticated request warnings
+os.environ["HF_HUB_DISABLE_IMPLICIT_TOKEN"] = "1"
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.routes import router
 from utils.db import close_db
-import os
 import uvicorn
 
 app = FastAPI(title="NeoCinema AI Service")

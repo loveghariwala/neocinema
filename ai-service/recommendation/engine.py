@@ -62,6 +62,10 @@ class RecommendationEngine:
     @property
     def model(self):
         if self._model is None:
+            import warnings
+            import os
+            os.environ["HF_HUB_DISABLE_IMPLICIT_TOKEN"] = "1"
+            warnings.filterwarnings("ignore", message=".*unauthenticated.*")
             from sentence_transformers import SentenceTransformer
             self._model = SentenceTransformer('all-MiniLM-L6-v2')
         return self._model
