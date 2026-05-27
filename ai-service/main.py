@@ -7,13 +7,19 @@ import uvicorn
 
 app = FastAPI(title="NeoCinema AI Service")
 
+# Load allowed origins from environment variable, fallback to default lists
+allowed_origins = [
+    "http://localhost:3000",
+    "https://aggregately-legendary-nettie.ngrok-free.dev",
+    "https://neocinematv.vercel.app"
+]
+env_origins = os.environ.get("ALLOWED_ORIGINS")
+if env_origins:
+    allowed_origins = [origin.strip() for origin in env_origins.split(",") if origin.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "https://aggregately-legendary-nettie.ngrok-free.dev",
-        "https://neocinematv.vercel.app/"
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
