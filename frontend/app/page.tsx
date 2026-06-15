@@ -1,39 +1,23 @@
 import HeroBanner from "@/components/hero/HeroBanner";
 import MovieRow from "@/components/sliders/MovieRow";
-import { getAIServiceUrl } from "@/lib/config";
+import { getTrendingFromServer, discoverContentFromServer } from "@/services/movieService";
 
 export const revalidate = 300; // ISR: regenerate home page every 5 minutes
 
-const AI_SERVICE_URL = getAIServiceUrl();
-
-async function fetchFromAI(endpoint: string) {
-    try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 8000); // 8s timeout
-        const res = await fetch(`${AI_SERVICE_URL}/api/ai${endpoint}`, {
-            next: { revalidate: 300 }, // Cache for 5 minutes
-            signal: controller.signal,
-        });
-        clearTimeout(timeout);
-        if (res.ok) {
-            const data = await res.json();
-            return data.results || [];
-        }
-    } catch (e) {
-        console.error(`Failed to fetch ${endpoint}:`, e);
-    }
-    return [];
-}
-
 export default async function HomePage() {
-    // Fetch from external API via our FastAPI service
-    const [trendingMovies, trendingSeries, topRatedMovies, topRatedSeries] =
+    // Fetch from external API via our fallback service
+    const [trendingMoviesRes, trendingSeriesRes, topRatedMoviesRes, topRatedSeriesRes] =
         await Promise.all([
-            fetchFromAI("/trending/movie?time_window=week"),
-            fetchFromAI("/trending/tv?time_window=week"),
-            fetchFromAI("/discover/movies?sort_by=vote_average.desc&rating_min=7&page=1"),
-            fetchFromAI("/discover/series?sort_by=vote_average.desc&rating_min=7&page=1"),
+            getTrendingFromServer("movie", "week", "1"),
+            getTrendingFromServer("tv", "week", "1"),
+            discoverContentFromServer("movie", { sort_by: "vote_average.desc", rating_min: "7", page: "1" }),
+            discoverContentFromServer("tv", { sort_by: "vote_average.desc", rating_min: "7", page: "1" }),
         ]);
+
+    const trendingMovies = trendingMoviesRes?.results || [];
+    const trendingSeries = trendingSeriesRes?.results || [];
+    const topRatedMovies = topRatedMoviesRes?.results || [];
+    const topRatedSeries = topRatedSeriesRes?.results || [];
 
     const heroMovie = trendingMovies[0] || null;
 
