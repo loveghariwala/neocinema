@@ -53,6 +53,9 @@ export const metadata: Metadata = {
     images: ["/neocinema_logo.png"],
     creator: "@neocinema",
   },
+  verification: {
+    google: "JVmcLJM33BWsPNbH1zaa3BF_EbUiCy20KHEPKT_6GnM",
+  },
   icons: {
     icon: "/neocinema_logo.png",
     shortcut: "/neocinema_logo.png",
