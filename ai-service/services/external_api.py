@@ -2,13 +2,57 @@
 NeoCinema External API Service
 Proxies to the videasy.net TMDB mirror for global movies & series data.
 Supports: discover, search, genre lists, trending, top-rated, and detail fetching.
+Includes in-memory TTL caching to avoid redundant network calls.
 """
 import httpx
 from typing import Optional
 import math
+import time
+import hashlib
+import json
 
 BASE_URL = "https://db.videasy.net/3"
 API_KEY = "4c1eef5a8d388386187a3426bc2345be"
+
+# ─── In-Memory TTL Cache ────────────────────────────────────────────────────
+# Simple dict-based cache with per-entry expiration times.
+# Max 2000 entries; oldest entries are evicted when the limit is exceeded.
+
+_cache: dict[str, tuple[float, any]] = {}
+_CACHE_MAX_SIZE = 2000
+
+# TTL presets (seconds)
+TTL_SHORT = 600       # 10 min — trending, discover, search results
+TTL_MEDIUM = 3600     # 1 hour — details, genres, person
+TTL_LONG = 86400      # 24 hours — genre lists (rarely change)
+
+
+def _cache_key(endpoint: str, params: dict | None) -> str:
+    """Generate a stable hash key from endpoint + sorted params."""
+    raw = endpoint + "|" + json.dumps(params or {}, sort_keys=True)
+    return hashlib.md5(raw.encode()).hexdigest()
+
+
+def _cache_get(key: str):
+    """Return cached value if still valid, else None."""
+    entry = _cache.get(key)
+    if entry is None:
+        return None
+    expires_at, value = entry
+    if time.time() > expires_at:
+        _cache.pop(key, None)
+        return None
+    return value
+
+
+def _cache_set(key: str, value, ttl: int):
+    """Store value with TTL. Evict oldest entries if cache is full."""
+    if len(_cache) >= _CACHE_MAX_SIZE:
+        # Evict the 200 oldest entries in one pass
+        sorted_keys = sorted(_cache, key=lambda k: _cache[k][0])
+        for k in sorted_keys[:200]:
+            _cache.pop(k, None)
+    _cache[key] = (time.time() + ttl, value)
 
 # ─── Genre ID Maps (cached) ─────────────────────────────────────────────────
 MOVIE_GENRES = {
@@ -34,15 +78,26 @@ class ExternalAPIService:
     def __init__(self):
         self.client = httpx.AsyncClient(timeout=15.0)
 
-    async def _get(self, endpoint: str, params: dict = None) -> dict:
-        """Make a GET request to the external API."""
+    async def _get(self, endpoint: str, params: dict = None, ttl: int = TTL_SHORT) -> dict:
+        """Make a GET request to the external API with in-memory caching."""
         if params is None:
             params = {}
+        
+        # Check cache first
+        key = _cache_key(endpoint, params)
+        cached = _cache_get(key)
+        if cached is not None:
+            return cached
+        
         params["api_key"] = API_KEY
         url = f"{BASE_URL}{endpoint}"
         response = await self.client.get(url, params=params)
         response.raise_for_status()
-        return response.json()
+        data = response.json()
+        
+        # Store in cache
+        _cache_set(key, data, ttl)
+        return data
 
     def _normalize_movie(self, item: dict) -> dict:
         """Normalize a movie item from TMDB format to our internal format."""
@@ -233,29 +288,29 @@ class ExternalAPIService:
 
     async def get_movie_genres(self) -> list:
         """Get movie genre list."""
-        data = await self._get("/genre/movie/list")
+        data = await self._get("/genre/movie/list", ttl=TTL_LONG)
         return data.get("genres", [])
 
     async def get_tv_genres(self) -> list:
         """Get TV genre list."""
-        data = await self._get("/genre/tv/list")
+        data = await self._get("/genre/tv/list", ttl=TTL_LONG)
         return data.get("genres", [])
 
     # ─── DETAIL ──────────────────────────────────────────────────────────────
 
     async def get_movie_detail(self, tmdb_id: int) -> dict:
         """Get movie details."""
-        data = await self._get(f"/movie/{tmdb_id}", {"append_to_response": "credits,similar,videos"})
+        data = await self._get(f"/movie/{tmdb_id}", {"append_to_response": "credits,similar,videos"}, ttl=TTL_MEDIUM)
         return data
 
     async def get_tv_detail(self, tmdb_id: int) -> dict:
         """Get TV series details."""
-        data = await self._get(f"/tv/{tmdb_id}", {"append_to_response": "credits,similar,videos"})
+        data = await self._get(f"/tv/{tmdb_id}", {"append_to_response": "credits,similar,videos"}, ttl=TTL_MEDIUM)
         return data
 
     async def get_tv_season_detail(self, tmdb_id: int, season_number: int) -> dict:
         """Get TV season details."""
-        data = await self._get(f"/tv/{tmdb_id}/season/{season_number}")
+        data = await self._get(f"/tv/{tmdb_id}/season/{season_number}", ttl=TTL_MEDIUM)
         return data
 
     async def get_person_credits(self, person_id: int) -> dict:
@@ -263,8 +318,8 @@ class ExternalAPIService:
         import asyncio
         # Fetch both combined credits and person bio details in parallel to cut response time in half
         tasks = [
-            self._get(f"/person/{person_id}/combined_credits"),
-            self._get(f"/person/{person_id}")
+            self._get(f"/person/{person_id}/combined_credits", ttl=TTL_MEDIUM),
+            self._get(f"/person/{person_id}", ttl=TTL_MEDIUM)
         ]
         data, person_details = await asyncio.gather(*tasks)
         

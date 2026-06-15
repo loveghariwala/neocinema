@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAIServiceUrl } from "@/lib/config";
-
-const AI_SERVICE_URL = getAIServiceUrl();
+import { withFallback } from "@/lib/fallback";
+import { tmdbService } from "@/lib/tmdb";
 
 export async function GET(
     request: NextRequest,
@@ -12,15 +11,23 @@ export async function GET(
     const urlParams = new URLSearchParams();
     searchParams.forEach((value, key) => urlParams.set(key, value));
 
+    if (!["movie", "tv", "all"].includes(mediaType)) {
+        return NextResponse.json({ error: "mediaType must be 'movie', 'tv', or 'all'" }, { status: 400 });
+    }
+
     try {
-        const response = await fetch(
-            `${AI_SERVICE_URL}/api/ai/trending/${mediaType}?${urlParams.toString()}`,
+        const timeWindow = searchParams.get("time_window") || "week";
+        const page = Number(searchParams.get("page")) || 1;
+
+        const { data, source } = await withFallback(
+            `/api/ai/trending/${mediaType}?${urlParams.toString()}`,
+            () => tmdbService.getTrending(mediaType, timeWindow, page),
             { cache: "no-store" }
         );
-        if (!response.ok) {
-            return NextResponse.json({ error: "API error" }, { status: response.status });
-        }
-        return NextResponse.json(await response.json());
+
+        const res = NextResponse.json(data);
+        res.headers.set("X-Data-Source", source);
+        return res;
     } catch (error) {
         return NextResponse.json({ error: "Service unavailable" }, { status: 500 });
     }

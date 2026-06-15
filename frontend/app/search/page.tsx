@@ -22,7 +22,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     const type = resolvedSearchParams.type || "";
     const page = resolvedSearchParams.page || "1";
 
-    let data = { results: [], totalResults: 0, totalPages: 1, currentPage: 1 };
+    let data: any = { results: [], totalResults: 0, totalPages: 1, currentPage: 1 };
     let trending: any[] = [];
 
     if (query && query.trim().length >= 2) {

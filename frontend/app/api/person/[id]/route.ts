@@ -10,15 +10,15 @@ export async function GET(
 
     try {
         const { data, source } = await withFallback(
-            `/api/ai/tv/${id}`,
-            () => tmdbService.getTvDetail(Number(id)),
-            { next: { revalidate: 86400 } } as any // Cache series details for 24 hours
+            `/api/ai/person/${id}`,
+            () => tmdbService.getPersonCredits(Number(id)),
+            { next: { revalidate: 86400 } } as any // Cache person details for 24 hours
         );
 
         const res = NextResponse.json(data);
         res.headers.set("X-Data-Source", source);
         return res;
     } catch (error) {
-        return NextResponse.json({ error: "Series not found" }, { status: 500 });
+        return NextResponse.json({ error: "Person not found" }, { status: 500 });
     }
 }

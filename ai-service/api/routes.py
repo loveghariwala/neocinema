@@ -2,8 +2,9 @@ from fastapi import APIRouter, HTTPException, Query
 from models.schemas import RecommendationResponse
 from recommendation.engine import engine
 from services.browse_service import browse_service
-from services.external_api import external_api
+from services.external_api import external_api, _cache
 from typing import Optional
+import time
 
 router = APIRouter()
 
@@ -213,3 +214,18 @@ async def get_filter_options(is_movie: bool = Query(True)):
     """Get filter options from local DB."""
     options = await browse_service.get_filter_options(is_movie=is_movie)
     return options
+
+
+# ─── CACHE DIAGNOSTICS ───────────────────────────────────────────────────────
+
+@router.get("/cache-status")
+async def cache_status():
+    """Return in-memory cache stats."""
+    now = time.time()
+    active = sum(1 for _, (exp, _) in _cache.items() if exp > now)
+    expired = len(_cache) - active
+    return {
+        "total_entries": len(_cache),
+        "active_entries": active,
+        "expired_entries": expired,
+    }

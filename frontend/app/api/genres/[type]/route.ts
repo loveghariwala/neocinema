@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAIServiceUrl } from "@/lib/config";
-
-const AI_SERVICE_URL = getAIServiceUrl();
+import { withFallback } from "@/lib/fallback";
+import { tmdbService } from "@/lib/tmdb";
 
 export async function GET(
     request: NextRequest,
@@ -10,14 +9,20 @@ export async function GET(
     const { type } = await params;
 
     try {
-        const response = await fetch(
-            `${AI_SERVICE_URL}/api/ai/genres/${type}`,
+        const { data, source } = await withFallback(
+            `/api/ai/genres/${type}`,
+            async () => {
+                const genres = type === "movie"
+                    ? await tmdbService.getMovieGenres()
+                    : await tmdbService.getTvGenres();
+                return { genres };
+            },
             { cache: "no-store" }
         );
-        if (!response.ok) {
-            return NextResponse.json({ error: "API error" }, { status: response.status });
-        }
-        return NextResponse.json(await response.json());
+
+        const res = NextResponse.json(data);
+        res.headers.set("X-Data-Source", source);
+        return res;
     } catch (error) {
         return NextResponse.json({ error: "Service unavailable" }, { status: 500 });
     }

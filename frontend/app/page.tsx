@@ -2,7 +2,7 @@ import HeroBanner from "@/components/hero/HeroBanner";
 import MovieRow from "@/components/sliders/MovieRow";
 import { getAIServiceUrl } from "@/lib/config";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300; // ISR: regenerate home page every 5 minutes
 
 const AI_SERVICE_URL = getAIServiceUrl();
 

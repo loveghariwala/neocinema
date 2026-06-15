@@ -15,12 +15,12 @@ export default function MovieCard({ movie }: MovieCardProps) {
     // Support both local DB (_id) and external API (tmdbId) formats
     const id = movie._id || movie.tmdbId;
     const linkBase = movie.isMovie === false ? "/series" : "/movies";
+    const title = movie.title || movie.name || "Unknown";
     const posterUrl = movie.posterPath
         ? movie.posterPath.startsWith("http")
             ? movie.posterPath
             : `https://image.tmdb.org/t/p/w342${movie.posterPath}`
-        : "/placeholder.jpg";
-    const title = movie.title || movie.name || "Unknown";
+        : `https://ui-avatars.com/api/?name=${encodeURIComponent(title)}&background=1a1a1a&color=dc2626&size=300&bold=true`;
     const rating = movie.rating ?? movie.vote_average ?? 0;
     const genre = movie.genres?.[0] || "Unknown";
     const year = movie.releaseDate
@@ -48,8 +48,6 @@ export default function MovieCard({ movie }: MovieCardProps) {
                         src={imgSrc}
                         alt={title}
                         fill
-                        fetchPriority="high"
-                        loading="lazy"
                         sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 20vw, 15vw"
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                         onError={() => {

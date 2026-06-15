@@ -2,6 +2,8 @@ import dbConnect from "@/lib/mongodb";
 import Movie from "@/models/Movie";
 import People from "@/models/People";
 import { getAIServiceUrl } from "@/lib/config";
+import { withFallback } from "@/lib/fallback";
+import { tmdbService } from "@/lib/tmdb";
 
 export async function getTrendingMovies() {
     await dbConnect();
@@ -31,85 +33,83 @@ export async function getTopRatedMovies() {
 }
 
 export async function getMovieDetails(id: string, type: "movie" | "tv" = "movie") {
-    // If it's a numeric ID (TMDB ID), fetch from external API via AI service
+    // If it's a numeric ID (TMDB ID), fetch from external API via AI service with fallback
     if (/^\d+$/.test(id)) {
         try {
-            const aiServiceUrl = getAIServiceUrl();
             const endpoint = type === "movie" ? `/api/ai/movie/${id}` : `/api/ai/tv/${id}`;
-            const response = await fetch(`${aiServiceUrl}${endpoint}`, {
-                next: { revalidate: 86400 } // Cache detail responses for 24 hours
-            });
+            const { data } = await withFallback(
+                endpoint,
+                () => type === "movie"
+                    ? tmdbService.getMovieDetail(Number(id))
+                    : tmdbService.getTvDetail(Number(id)),
+            );
             
-            if (response.ok) {
-                const data = await response.json();
-                
-                // Fetch AI recommendations from FastAPI using tmdbId/numeric ID
-                let similarMovies: any[] = [];
-                try {
-                    const controller = new AbortController();
-                    const timeout = setTimeout(() => controller.abort(), 5000); // 5s timeout
-                    const aiRes = await fetch(`${aiServiceUrl}/api/ai/recommend/${id}?limit=10`, {
-                        next: { revalidate: 86400 }, // Cache recommendations for 24 hours
-                        signal: controller.signal,
-                    });
-                    clearTimeout(timeout);
-                    if (aiRes.ok) {
-                        const aiData = await aiRes.json();
-                        const recIds = aiData.recommendations?.map((r: any) => r.id) || [];
-                        if (recIds.length > 0) {
-                            await dbConnect();
-                            const fetchedMovies = await Movie.find({ _id: { $in: recIds } }).lean();
-                            similarMovies = fetchedMovies.sort(
-                                (a: any, b: any) => recIds.indexOf(String(a._id)) - recIds.indexOf(String(b._id))
-                            );
-                        }
+            // Fetch AI recommendations from FastAPI using tmdbId/numeric ID
+            let similarMovies: any[] = [];
+            try {
+                const aiServiceUrl = getAIServiceUrl();
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 5000); // 5s timeout
+                const aiRes = await fetch(`${aiServiceUrl}/api/ai/recommend/${id}?limit=10`, {
+                    next: { revalidate: 86400 }, // Cache recommendations for 24 hours
+                    signal: controller.signal,
+                });
+                clearTimeout(timeout);
+                if (aiRes.ok) {
+                    const aiData = await aiRes.json();
+                    const recIds = aiData.recommendations?.map((r: any) => r.id) || [];
+                    if (recIds.length > 0) {
+                        await dbConnect();
+                        const fetchedMovies = await Movie.find({ _id: { $in: recIds } }).lean();
+                        similarMovies = fetchedMovies.sort(
+                            (a: any, b: any) => recIds.indexOf(String(a._id)) - recIds.indexOf(String(b._id))
+                        );
                     }
-                } catch (recError) {
-                    console.warn("AI Recommendations failed for TMDB ID:", recError);
                 }
-
-                // If AI recommendation is empty, fallback to TMDB similar
-                if (similarMovies.length === 0) {
-                    similarMovies = data.similar?.results?.slice(0, 10).map((s: any) => ({
-                        tmdbId: s.id,
-                        title: s.title || s.name,
-                        posterPath: s.poster_path,
-                        rating: s.vote_average,
-                        isMovie: type === "movie"
-                    })) || [];
-                }
-                
-                // Normalize TMDB detail format to our internal format for the UI
-                return {
-                    _id: String(data.id),
-                    tmdbId: data.id,
-                    imdbId: data.imdb_id || data.external_ids?.imdb_id,
-                    title: data.title || data.name,
-                    overview: data.overview,
-                    posterPath: data.poster_path,
-                    backdropPath: data.backdrop_path,
-                    releaseDate: data.release_date || data.first_air_date,
-                    rating: data.vote_average,
-                    language: data.original_language?.toUpperCase() || "EN",
-                    genres: data.genres?.map((g: any) => g.name) || [],
-                    runtime: data.runtime || (data.episode_run_time && data.episode_run_time[0]) || 0,
-                    cast: data.credits?.cast?.slice(0, 10).map((c: any) => ({
-                        _id: String(c.id),
-                        name: c.name,
-                        character: c.character,
-                        profilePath: c.profile_path
-                    })) || [],
-                    similar: JSON.parse(JSON.stringify(similarMovies)),
-                    isMovie: type === "movie",
-                    videos: data.videos?.results || [],
-                    seasons: data.seasons || [],
-                    number_of_seasons: data.number_of_seasons,
-                    number_of_episodes: data.number_of_episodes
-                };
+            } catch (recError) {
+                console.warn("AI Recommendations failed for TMDB ID:", recError);
             }
-            return null; 
+
+            // If AI recommendation is empty, fallback to TMDB similar
+            if (similarMovies.length === 0) {
+                similarMovies = data.similar?.results?.slice(0, 10).map((s: any) => ({
+                    tmdbId: s.id,
+                    title: s.title || s.name,
+                    posterPath: s.poster_path,
+                    rating: s.vote_average,
+                    isMovie: type === "movie"
+                })) || [];
+            }
+            
+            // Normalize TMDB detail format to our internal format for the UI
+            return {
+                _id: String(data.id),
+                tmdbId: data.id,
+                imdbId: data.imdb_id || data.external_ids?.imdb_id,
+                title: data.title || data.name,
+                overview: data.overview,
+                posterPath: data.poster_path,
+                backdropPath: data.backdrop_path,
+                releaseDate: data.release_date || data.first_air_date,
+                rating: data.vote_average,
+                language: data.original_language?.toUpperCase() || "EN",
+                genres: data.genres?.map((g: any) => g.name) || [],
+                runtime: data.runtime || (data.episode_run_time && data.episode_run_time[0]) || 0,
+                cast: data.credits?.cast?.slice(0, 10).map((c: any) => ({
+                    _id: String(c.id),
+                    name: c.name,
+                    character: c.character,
+                    profilePath: c.profile_path
+                })) || [],
+                similar: JSON.parse(JSON.stringify(similarMovies)),
+                isMovie: type === "movie",
+                videos: data.videos?.results || [],
+                seasons: data.seasons || [],
+                number_of_seasons: data.number_of_seasons,
+                number_of_episodes: data.number_of_episodes
+            };
         } catch (error) {
-            console.error("AI Service detail fetch failed:", error);
+            console.error("Movie detail fetch failed (all backends):", error);
             return null;
         }
     }
@@ -193,7 +193,6 @@ export async function searchMovies(query: string, sort: string = "popularity") {
 
 export async function discoverContentFromServer(type: "movie" | "tv", queryParams: Record<string, string>) {
     try {
-        const aiServiceUrl = getAIServiceUrl();
         const endpoint = type === "movie" ? "/api/ai/discover/movies" : "/api/ai/discover/series";
         const params = new URLSearchParams();
         Object.entries(queryParams).forEach(([key, val]) => {
@@ -201,10 +200,32 @@ export async function discoverContentFromServer(type: "movie" | "tv", queryParam
                 params.set(key, val);
             }
         });
-        const res = await fetch(`${aiServiceUrl}${endpoint}?${params.toString()}`, { cache: "no-store" });
-        if (res.ok) {
-            return await res.json();
-        }
+
+        const { data } = await withFallback(
+            `${endpoint}?${params.toString()}`,
+            () => type === "movie"
+                ? tmdbService.discoverMovies({
+                    page: Number(queryParams.page) || 1,
+                    sort_by: queryParams.sort_by || "popularity.desc",
+                    with_genres: queryParams.with_genres,
+                    year_from: queryParams.year_from ? Number(queryParams.year_from) : undefined,
+                    year_to: queryParams.year_to ? Number(queryParams.year_to) : undefined,
+                    rating_min: queryParams.rating_min ? Number(queryParams.rating_min) : undefined,
+                    rating_max: queryParams.rating_max ? Number(queryParams.rating_max) : undefined,
+                    language: queryParams.language,
+                })
+                : tmdbService.discoverTv({
+                    page: Number(queryParams.page) || 1,
+                    sort_by: queryParams.sort_by || "popularity.desc",
+                    with_genres: queryParams.with_genres,
+                    year_from: queryParams.year_from ? Number(queryParams.year_from) : undefined,
+                    year_to: queryParams.year_to ? Number(queryParams.year_to) : undefined,
+                    rating_min: queryParams.rating_min ? Number(queryParams.rating_min) : undefined,
+                    rating_max: queryParams.rating_max ? Number(queryParams.rating_max) : undefined,
+                    language: queryParams.language,
+                }),
+        );
+        return data;
     } catch (e) {
         console.error(`discoverContentFromServer error for ${type}:`, e);
     }
@@ -213,14 +234,17 @@ export async function discoverContentFromServer(type: "movie" | "tv", queryParam
 
 export async function getGenresFromServer(type: "movie" | "tv") {
     try {
-        const aiServiceUrl = getAIServiceUrl();
         const endpoint = type === "movie" ? "/api/ai/genres/movie" : "/api/ai/genres/tv";
-        const res = await fetch(`${aiServiceUrl}${endpoint}`, {
-            next: { revalidate: 86400 } // Cache genres list for 24 hours
-        });
-        if (res.ok) {
-            return await res.json();
-        }
+        const { data } = await withFallback(
+            endpoint,
+            async () => {
+                const genres = type === "movie"
+                    ? await tmdbService.getMovieGenres()
+                    : await tmdbService.getTvGenres();
+                return { genres };
+            },
+        );
+        return data;
     } catch (e) {
         console.error(`getGenresFromServer error for ${type}:`, e);
     }
@@ -229,14 +253,24 @@ export async function getGenresFromServer(type: "movie" | "tv") {
 
 export async function searchContentFromServer(query: string, type?: string, page?: string) {
     try {
-        const aiServiceUrl = getAIServiceUrl();
         const params = new URLSearchParams({ query });
         if (type) params.set("type", type);
         if (page) params.set("page", page);
-        const res = await fetch(`${aiServiceUrl}/api/ai/search?${params.toString()}`, { cache: "no-store" });
-        if (res.ok) {
-            return await res.json();
-        }
+
+        const { data } = await withFallback(
+            `/api/ai/search?${params.toString()}`,
+            async () => {
+                const pageNum = Number(page) || 1;
+                if (type === "movie") {
+                    return tmdbService.searchMovies(query, pageNum);
+                } else if (type === "tv") {
+                    return tmdbService.searchTv(query, pageNum);
+                } else {
+                    return tmdbService.searchMulti(query, pageNum);
+                }
+            },
+        );
+        return data;
     } catch (e) {
         console.error("searchContentFromServer error:", e);
     }
@@ -245,13 +279,11 @@ export async function searchContentFromServer(query: string, type?: string, page
 
 export async function getTrendingFromServer(mediaType: string, timeWindow: string = "week", page: string = "1") {
     try {
-        const aiServiceUrl = getAIServiceUrl();
-        const res = await fetch(`${aiServiceUrl}/api/ai/trending/${mediaType}?time_window=${timeWindow}&page=${page}`, {
-            next: { revalidate: 3600 } // Cache trending items for 1 hour
-        });
-        if (res.ok) {
-            return await res.json();
-        }
+        const { data } = await withFallback(
+            `/api/ai/trending/${mediaType}?time_window=${timeWindow}&page=${page}`,
+            () => tmdbService.getTrending(mediaType, timeWindow, Number(page) || 1),
+        );
+        return data;
     } catch (e) {
         console.error("getTrendingFromServer error:", e);
     }
@@ -260,13 +292,11 @@ export async function getTrendingFromServer(mediaType: string, timeWindow: strin
 
 export async function getPersonDetails(id: string) {
     try {
-        const aiServiceUrl = getAIServiceUrl();
-        const res = await fetch(`${aiServiceUrl}/api/ai/person/${id}`, {
-            next: { revalidate: 86400 } // Cache cast member details for 24 hours
-        });
-        if (res.ok) {
-            return await res.json();
-        }
+        const { data } = await withFallback(
+            `/api/ai/person/${id}`,
+            () => tmdbService.getPersonCredits(Number(id)),
+        );
+        return data;
     } catch (e) {
         console.error("getPersonDetails error:", e);
     }

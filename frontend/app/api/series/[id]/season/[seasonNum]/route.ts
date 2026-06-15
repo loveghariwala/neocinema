@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAIServiceUrl } from "@/lib/config";
-
-const AI_SERVICE_URL = getAIServiceUrl();
+import { withFallback } from "@/lib/fallback";
+import { tmdbService } from "@/lib/tmdb";
 
 export async function GET(
     request: NextRequest,
@@ -10,14 +9,16 @@ export async function GET(
     const { id, seasonNum } = await params;
 
     try {
-        const response = await fetch(`${AI_SERVICE_URL}/api/ai/tv/${id}/season/${seasonNum}`, {
-            next: { revalidate: 86400 } // Cache season details for 24 hours
-        });
-        if (!response.ok) {
-            return NextResponse.json({ error: "Season not found" }, { status: response.status });
-        }
-        return NextResponse.json(await response.json());
+        const { data, source } = await withFallback(
+            `/api/ai/tv/${id}/season/${seasonNum}`,
+            () => tmdbService.getTvSeasonDetail(Number(id), Number(seasonNum)),
+            { next: { revalidate: 86400 } } as any // Cache season details for 24 hours
+        );
+
+        const res = NextResponse.json(data);
+        res.headers.set("X-Data-Source", source);
+        return res;
     } catch (error) {
-        return NextResponse.json({ error: "Service unavailable" }, { status: 500 });
+        return NextResponse.json({ error: "Season not found" }, { status: 500 });
     }
 }
