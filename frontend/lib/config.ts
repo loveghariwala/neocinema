@@ -1,5 +1,5 @@
 export function getAIServiceUrl(): string {
-    let url = process.env.AI_SERVICE_URL || process.env.NEXT_PUBLIC_AI_SERVICE_URL || "http://localhost:8000";
+    let url = process.env.AI_SERVICE_URL || process.env.NEXT_PUBLIC_AI_SERVICE_URL || process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000";
     if (url) {
         url = url.trim();
         // Remove trailing slash if any
