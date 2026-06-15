@@ -5,9 +5,23 @@ import { Loader2 } from "lucide-react";
 import { discoverContentFromServer, getGenresFromServer, searchContentFromServer } from "@/services/movieService";
 
 export const metadata: Metadata = {
-    title: "Movies — NeoCinema",
-    description:
-        "Browse over 1 million movies from every country. Filter by genre, year, rating, language. AI-powered discovery.",
+    title: "Browse Movies",
+    description: "Explore an extensive library of over 1 million movies from around the globe. Filter by genre, release year, rating, and language using our advanced discovery engine.",
+    keywords: ["movies list", "browse movies", "global cinema", "film database", "movie search", "filter movies by genre"],
+    alternates: { canonical: '/movies' },
+    openGraph: {
+        title: "Browse Movies | NeoCinema",
+        description: "Explore an extensive library of over 1 million movies from around the globe. Filter by genre, release year, rating, and language using our advanced discovery engine.",
+        url: '/movies',
+        type: "website",
+        images: [{ url: "/neocinema_logo.png", width: 800, height: 600, alt: "Browse Movies on NeoCinema" }],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "Browse Movies | NeoCinema",
+        description: "Explore an extensive library of over 1 million movies from around the globe.",
+        images: ["/neocinema_logo.png"],
+    }
 };
 
 interface PageProps {

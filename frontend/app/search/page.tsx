@@ -3,9 +3,23 @@ import SearchPageClient from "./SearchPageClient";
 import { searchContentFromServer, getTrendingFromServer } from "@/services/movieService";
 
 export const metadata: Metadata = {
-    title: "Discover — NeoCinema",
-    description:
-        "Search and discover over 1 million movies and 200K+ series from every country in the world.",
+    title: "Global Search & Discovery",
+    description: "Search across millions of movies, TV shows, and cast members. NeoCinema's global search engine helps you find exactly what you want to watch.",
+    keywords: ["movie search", "search TV shows", "find actors", "NeoCinema search", "global movie database", "content discovery"],
+    alternates: { canonical: '/search' },
+    openGraph: {
+        title: "Global Search & Discovery | NeoCinema",
+        description: "Search across millions of movies, TV shows, and cast members. NeoCinema's global search engine helps you find exactly what you want to watch.",
+        url: '/search',
+        type: "website",
+        images: [{ url: "/neocinema_logo.png", width: 800, height: 600, alt: "Search NeoCinema" }],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "Global Search & Discovery | NeoCinema",
+        description: "Search across millions of movies, TV shows, and cast members.",
+        images: ["/neocinema_logo.png"],
+    }
 };
 
 interface SearchPageProps {

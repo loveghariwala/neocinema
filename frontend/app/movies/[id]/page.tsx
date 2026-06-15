@@ -39,6 +39,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         title: titleText,
         description: descriptionText,
         keywords: [movie.title, ...(movie.genres || []), "AI recommendations", "NeoCinema", "stream movie"],
+        alternates: { canonical: `/movies/${id}` },
         openGraph: {
             title: titleText,
             description: descriptionText,
@@ -69,8 +70,27 @@ export default async function MovieDetailsPage({
 
     if (!movie) return <div className="flex h-screen items-center justify-center text-white text-xl font-bold">Movie not found</div>;
 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://neocinematv.vercel.app";
+    const movieSchema = {
+        "@context": "https://schema.org",
+        "@type": "Movie",
+        "name": movie.title,
+        "image": movie.posterPath ? `https://image.tmdb.org/t/p/w500${movie.posterPath}` : `${baseUrl}/neocinema_logo.png`,
+        "description": movie.overview,
+        "dateCreated": movie.releaseDate,
+        "director": {
+            "@type": "Person",
+            "name": "Unknown" // Usually fetched from credits, keeping fallback
+        },
+        "url": `${baseUrl}/movies/${id}`
+    };
+
     return (
         <main className="min-h-screen">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(movieSchema) }}
+            />
             {/* IMMERSIVE HERO */}
             <section className="relative min-h-[90vh] w-full flex items-center py-20 md:py-28 lg:py-32">
                 <MotionDiv

@@ -27,6 +27,7 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
     return {
         title: titleText,
         description: descriptionText,
+        alternates: { canonical: `/person/${id}` },
         openGraph: {
             title: titleText,
             description: descriptionText,
@@ -40,5 +41,27 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
 export default async function PersonPage({ params }: PersonPageProps) {
     const resolvedParams = await params;
     const data = await getPersonDetails(resolvedParams.id);
-    return <PersonPageClient data={data} />;
+    
+    if (!data || !data.person) return <PersonPageClient data={data} />;
+
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://neocinematv.vercel.app";
+    const personSchema = {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": data.person.name,
+        "url": `${baseUrl}/person/${resolvedParams.id}`,
+        "image": data.person.profilePath ? `https://image.tmdb.org/t/p/h632${data.person.profilePath}` : `${baseUrl}/neocinema_logo.png`,
+        "description": data.person.biography,
+        "jobTitle": data.person.knownForDepartment
+    };
+
+    return (
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+            />
+            <PersonPageClient data={data} />
+        </>
+    );
 }
