@@ -5,9 +5,23 @@ import { Loader2 } from "lucide-react";
 import { discoverContentFromServer, getGenresFromServer, searchContentFromServer } from "@/services/movieService";
 
 export const metadata: Metadata = {
-    title: "Series — NeoCinema",
-    description:
-        "Browse over 200K TV series from every country. Filter by genre, year, rating, language. AI-powered discovery.",
+    title: "Browse TV Series",
+    description: "Discover over 200,000 television series, documentaries, and anime from around the world. Find your next binge-watch with our AI-powered recommendation filters.",
+    keywords: ["TV series", "television shows", "browse series", "binge-watch", "documentaries", "anime series", "top rated tv shows"],
+    alternates: { canonical: '/series' },
+    openGraph: {
+        title: "Browse TV Series | NeoCinema",
+        description: "Discover over 200,000 television series, documentaries, and anime from around the world. Find your next binge-watch with our AI-powered recommendation filters.",
+        url: '/series',
+        type: "website",
+        images: [{ url: "/neocinema_logo.png", width: 800, height: 600, alt: "Browse TV Series on NeoCinema" }],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "Browse TV Series | NeoCinema",
+        description: "Discover over 200,000 television series, documentaries, and anime from around the world.",
+        images: ["/neocinema_logo.png"],
+    }
 };
 
 interface PageProps {

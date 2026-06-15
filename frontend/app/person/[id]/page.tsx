@@ -52,7 +52,7 @@ export default async function PersonPage({ params }: PersonPageProps) {
         "url": `${baseUrl}/person/${resolvedParams.id}`,
         "image": data.person.profilePath ? `https://image.tmdb.org/t/p/h632${data.person.profilePath}` : `${baseUrl}/neocinema_logo.png`,
         "description": data.person.biography,
-        "jobTitle": data.person.knownForDepartment
+        "jobTitle": (data.person as any).knownForDepartment || "Actor"
     };
 
     return (
