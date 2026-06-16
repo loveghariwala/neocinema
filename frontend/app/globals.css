@@ -61,6 +61,30 @@
   @apply bg-neutral-800 rounded-full transition-colors hover:bg-neutral-700;
 }
 
+/* Next-Gen Horizontal Scrollbar */
+.next-gen-scrollbar::-webkit-scrollbar {
+  height: 8px;
+}
+
+.next-gen-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 9999px;
+  margin: 0 16px;
+}
+
+.next-gen-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.next-gen-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(220, 38, 38, 0.5); /* Red hover effect */
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
 /* Cinematic Effects */
 @layer utilities {
   .glass-panel {

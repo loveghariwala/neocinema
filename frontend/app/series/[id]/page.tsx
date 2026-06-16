@@ -5,7 +5,6 @@ import { MotionDiv } from "@/components/layout/Motion";
 import Image from "next/image";
 import Link from "next/link";
 import StreamPlayer from "@/components/player/StreamPlayer";
-import WatchlistButton from "@/components/watchlist/WatchlistButton";
 import ShareButton from "@/components/ui/ShareButton";
 import SeasonEpisodeBrowser from "@/components/series/SeasonEpisodeBrowser";
 import { Metadata } from "next";
@@ -38,11 +37,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         ? `${series.overview.substring(0, 150)}...`
         : `Watch and discover TV Series ${series.title} with AI recommendations on NeoCinema.`;
 
+    const castKeywords = (series.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
+
     return {
         title: titleText,
         description: descriptionText,
-        keywords: [series.title, ...(series.genres || []), "AI recommendations", "NeoCinema", "stream TV series"],
+        keywords: [series.title, ...(series.genres || []), ...castKeywords, "AI recommendations", "NeoCinema", "stream TV series", "watch series free"],
         alternates: { canonical: `/series/${id}` },
+        robots: { index: true, follow: true },
         openGraph: {
             title: titleText,
             description: descriptionText,
@@ -76,85 +78,134 @@ export default async function SeriesDetailsPage({
     if (!series) return <div className="flex h-screen items-center justify-center text-white text-xl font-bold">Series not found</div>;
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://neocinematv.vercel.app";
-    const seriesSchema = {
+
+    // ─── TVSeries JSON-LD ────────────────────────────────────────────────────
+    const seriesJsonLd = {
         "@context": "https://schema.org",
         "@type": "TVSeries",
+        "@id": `${baseUrl}/series/${id}#tvseries`,
         "name": series.title,
         "image": series.posterPath ? `https://image.tmdb.org/t/p/w500${series.posterPath}` : `${baseUrl}/neocinema_logo.png`,
         "description": series.overview,
         "startDate": series.releaseDate,
         "url": `${baseUrl}/series/${id}`,
-        "aggregateRating": series.rating ? {
-            "@type": "AggregateRating",
-            "ratingValue": series.rating,
-            "bestRating": "10",
-            "ratingCount": 100 // Fallback if vote_count isn't normalized, could be passed from backend
-        } : undefined
+        "genre": series.genres,
+        "numberOfSeasons": series.number_of_seasons,
+        "numberOfEpisodes": series.number_of_episodes,
+        ...(series.rating ? {
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": series.rating,
+                "bestRating": "10",
+                "ratingCount": 100,
+            },
+        } : {}),
+        "actor": (series.cast || []).slice(0, 5).map((c: any) => ({
+            "@type": "Person",
+            "name": c.name,
+            "url": `${baseUrl}/person/${c._id}`,
+        })),
+        "publisher": {
+            "@type": "Organization",
+            "@id": `${baseUrl}#org`,
+            "name": "NeoCinema",
+        },
+    };
+
+    // ─── Breadcrumb JSON-LD ──────────────────────────────────────────────────
+    const breadcrumbJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": baseUrl },
+            { "@type": "ListItem", "position": 2, "name": "Series", "item": `${baseUrl}/series` },
+            { "@type": "ListItem", "position": 3, "name": series.title, "item": `${baseUrl}/series/${id}` },
+        ],
     };
 
     return (
         <main className="min-h-screen">
             <script
+                id="json-ld-series"
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(seriesSchema) }}
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(seriesJsonLd).replace(/</g, '\\u003c') }}
+            />
+            <script
+                id="json-ld-breadcrumb"
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, '\\u003c') }}
             />
             {/* IMMERSIVE HERO */}
-            <section className="relative min-h-[90vh] w-full flex items-center py-20 md:py-28 lg:py-32">
+            <section className="relative min-h-[90vh] w-full flex items-center py-20 md:py-28 lg:py-32 overflow-hidden bg-black">
                 <MotionDiv
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 1.5 }}
+                    initial={{ scale: 1 }}
+                    animate={{ scale: 1.1 }}
+                    transition={{ duration: 20, ease: "linear", repeat: Infinity, repeatType: "reverse" }}
                     className="absolute inset-0"
                 >
                     {series.backdropPath ? (
-                        <Image src={`https://image.tmdb.org/t/p/w1280${series.backdropPath}`} alt={series.title} fill priority sizes="100vw" className="object-cover" />
+                        <Image 
+                            src={`https://image.tmdb.org/t/p/original${series.backdropPath}`} 
+                            alt={series.title} 
+                            fill 
+                            priority 
+                            sizes="100vw" 
+                            className="object-cover opacity-80" 
+                        />
                     ) : (
                         <div className="h-full w-full bg-neutral-900" />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-r from-background via-background/50 to-transparent" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
                 </MotionDiv>
+
+                {/* Next-Gen Vignette Gradients */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,black_100%)] opacity-40" />
 
                 <div className="relative z-10 w-full px-6 md:px-16">
                     <div className="max-w-4xl">
                         <MotionDiv
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 }}
+                            transition={{ delay: 0.3, duration: 0.8 }}
                         >
-                            <div className="mb-4 flex items-center gap-2">
-                                <span className="rounded bg-blue-600 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-white">TV SERIES</span>
-                                <span className="rounded bg-white/10 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-white backdrop-blur-md">HDR</span>
+                            <div className="mb-4 flex items-center gap-3">
+                                <span className="rounded-full bg-blue-600/20 border border-blue-500/20 px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-blue-500 backdrop-blur-md shadow-[0_0_15px_rgba(37,99,235,0.3)]">
+                                    TV SERIES
+                                </span>
+                                <span className="rounded-full bg-white/5 border border-white/10 px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-white backdrop-blur-md">
+                                    HDR
+                                </span>
                             </div>
 
-                            <h1 className="mb-4 md:mb-6 text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-glow">
+                            <h1 className="mb-4 md:mb-6 pb-2 lg:pb-4 text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60 leading-[1.1] filter drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]">
                                 {series.title}
                             </h1>
 
                             <div className="mb-6 md:mb-8 flex flex-wrap items-center gap-4 sm:gap-6 md:gap-8 text-[11px] sm:text-xs md:text-sm font-bold uppercase tracking-widest text-neutral-400">
-                                <div className="flex items-center gap-2 text-yellow-500">
+                                <div className="flex items-center gap-2 text-yellow-500 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
                                     <Star size={16} fill="currentColor" />
                                     <span className="text-white">{series.rating?.toFixed(1)}</span>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <Clock size={16} className="text-red-600" />
-                                    <span>{series.runtime} MIN / EP</span>
+                                <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
+                                    <Clock size={16} className="text-red-500" />
+                                    <span className="text-white">{series.runtime} MIN / EP</span>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <Calendar size={16} className="text-red-600" />
-                                    <span>{series.releaseDate ? new Date(series.releaseDate).getFullYear() : "N/A"}</span>
+                                <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
+                                    <Calendar size={16} className="text-red-500" />
+                                    <span className="text-white">{series.releaseDate ? new Date(series.releaseDate).getFullYear() : "N/A"}</span>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <Globe size={16} className="text-red-600" />
-                                    <span>{series.language?.toUpperCase()}</span>
+                                <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
+                                    <Globe size={16} className="text-red-500" />
+                                    <span className="text-white">{series.language?.toUpperCase()}</span>
                                 </div>
                             </div>
 
-                            <p className="mb-6 md:mb-10 max-w-2xl text-sm sm:text-base md:text-lg lg:text-xl font-medium leading-relaxed text-neutral-300 line-clamp-4 md:line-clamp-none">
+                            <p className="mb-8 md:mb-10 max-w-2xl text-sm sm:text-base md:text-lg lg:text-xl font-medium leading-relaxed text-neutral-300 drop-shadow-lg">
                                 {series.overview}
                             </p>
 
-                            <div className="flex flex-wrap gap-3 sm:gap-4 md:gap-6">
+                            <div className="flex flex-wrap gap-4 sm:gap-6">
                                 <StreamPlayer
                                     tmdbId={series.tmdbId}
                                     imdbId={series.imdbId}
@@ -166,7 +217,6 @@ export default async function SeriesDetailsPage({
                                     initialEpisode={episodeParam}
                                 />
 
-                                <WatchlistButton movie={series} />
                                 <ShareButton title={series.title} />
                             </div>
                         </MotionDiv>
@@ -177,20 +227,20 @@ export default async function SeriesDetailsPage({
             {/* CONTENT GRID */}
             <div className="relative z-20 mt-6 sm:mt-12 space-y-16 sm:space-y-24 md:space-y-32 px-6 pb-20 sm:pb-32 md:px-16">
                 <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
-                    <div className="col-span-1 space-y-10">
-                        <div className="futuristic-card group">
+                    <div className="col-span-1 space-y-8">
+                        <div className="rounded-3xl border border-white/5 bg-neutral-950/50 p-6 md:p-8 backdrop-blur-xl shadow-2xl relative overflow-hidden group">
+                            <div className="absolute inset-0 bg-gradient-to-br from-red-600/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                             <div className="relative z-10">
-                                <div className="mb-8 flex items-center justify-between">
-                                    <h3 className="text-[9px] font-black uppercase tracking-[0.5em] text-red-500">
-                                        SERIES GENRES
+                                <div className="mb-6 flex items-center justify-between">
+                                    <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-red-500 drop-shadow-[0_0_10px_rgba(220,38,38,0.5)]">
+                                        Genres
                                     </h3>
-                                    <span className="rounded-full bg-red-600/20 px-2 py-0.5 text-[8px] font-black text-red-500">AI POWERED</span>
                                 </div>
                                 <div className="flex flex-wrap gap-2">
                                     {series.genres?.map((genre: string) => (
                                         <span
                                             key={genre}
-                                            className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-[11px] font-black text-neutral-400 transition-all hover:border-red-600/40 hover:bg-red-600/20 hover:text-white hover:scale-105"
+                                            className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-black text-neutral-300 transition-all hover:border-red-500 hover:bg-red-500/20 hover:text-white hover:shadow-[0_0_15px_rgba(220,38,38,0.4)]"
                                         >
                                             {genre}
                                         </span>
@@ -202,27 +252,27 @@ export default async function SeriesDetailsPage({
 
                     <div className="col-span-2 overflow-hidden">
                         <div className="mb-10 flex items-center gap-6">
-                            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-red-600/80">Starring Cast</h3>
-                            <div className="h-px flex-1 bg-gradient-to-r from-red-600/20 to-transparent" />
+                            <h3 className="text-xl font-black uppercase tracking-tighter text-white">Starring Cast</h3>
+                            <div className="h-px flex-1 bg-gradient-to-r from-red-600/50 to-transparent" />
                         </div>
 
-                        <div className="flex gap-8 overflow-x-auto pb-10 scrollbar-hide snap-x snap-mandatory">
+                        <div className="flex gap-6 overflow-x-auto pb-10 scrollbar-hide snap-x snap-mandatory">
                             {series.cast?.map((actor: any) => (
-                                <Link key={actor._id} href={`/person/${actor._id}`} className="min-w-[180px] group cursor-pointer snap-start block">
+                                <Link key={actor._id} href={`/person/${actor._id}`} className="min-w-[160px] md:min-w-[180px] group cursor-pointer snap-start block">
                                     <MotionDiv
-                                        whileHover={{ scale: 1.05, y: -8 }}
+                                        whileHover={{ scale: 1.05, y: -10 }}
                                         transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                                        className="relative aspect-[2/3] mb-4 w-full overflow-hidden rounded-2xl bg-neutral-900 shadow-xl border border-white/5 transition-all group-hover:border-white/20 group-hover:shadow-[0_0_40px_rgba(220,38,38,0.3)]"
+                                        className="relative aspect-[2/3] mb-4 w-full overflow-hidden rounded-2xl bg-neutral-950 shadow-xl border border-white/[0.05] transition-all group-hover:border-white/20 group-hover:shadow-[0_20px_50px_rgba(220,38,38,0.3)]"
                                     >
                                         {actor.profilePath ? (
-                                            <Image src={`https://image.tmdb.org/t/p/w185${actor.profilePath}`} alt={actor.name} fill sizes="180px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
+                                            <Image src={`https://image.tmdb.org/t/p/w342${actor.profilePath}`} alt={actor.name} fill sizes="180px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
                                         ) : (
-                                            <div className="flex h-full items-center justify-center text-[10px] font-black uppercase text-neutral-500">NO PHOTO</div>
+                                            <div className="flex h-full items-center justify-center text-[10px] font-black uppercase text-neutral-500 bg-neutral-900">NO PHOTO</div>
                                         )}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-90" />
                                     </MotionDiv>
-                                    <h4 className="text-sm font-black text-white group-hover:text-red-500 transition-colors">{actor.name}</h4>
-                                    <p className="text-xs font-medium text-neutral-500 line-clamp-1">{actor.character}</p>
+                                    <h4 className="text-base font-black text-white group-hover:text-red-500 transition-colors drop-shadow-md">{actor.name}</h4>
+                                    <p className="text-sm font-medium text-neutral-400 line-clamp-2">{actor.character}</p>
                                 </Link>
                             ))}
                         </div>

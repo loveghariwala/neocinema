@@ -2,31 +2,12 @@ import HeroBanner from "@/components/hero/HeroBanner";
 import MovieRow from "@/components/sliders/MovieRow";
 import { getTrendingFromServer, discoverContentFromServer, getTopRatedMovies } from "@/services/movieService";
 import { Metadata } from "next";
+import { cache } from "react";
 
 export const revalidate = 300; // ISR: regenerate home page every 5 minutes
 
-export const metadata: Metadata = {
-    title: 'Watch Free Movies Online in HD | NeoCinema',
-    description: 'Stream top-rated free movies, series, and anime on NeoCinema. Fast streaming, no ads, HD quality.',
-    keywords: ['free-movies', 'watch movies online free', 'NeoCinema free series', 'IMDb Top 250 movies', 'Top rated movies', 'top rated series', 'trending movies', 'trending series', 'search movies', 'search series', 'movies', 'series', 'anime', 'HD movies', 'fast streaming', 'no ads', '720p', '1080p', '2160p', '4K', 'free movies no sign up', 'free movies no account', 'free movies no registration', 'free movies without sign up', 'free movies without account', 'free movies without registration'],
-    alternates: { canonical: '/' },
-    openGraph: {
-        title: "Home | NeoCinema - AI Movie Discovery",
-        description: "Discover the best movies and TV series with NeoCinema's AI-powered recommendations. Experience an ultra-dark cinematic UI with personalized content discovery.",
-        url: '/',
-        type: "website",
-        images: [{ url: "/neocinema_logo.png", width: 800, height: 600, alt: "NeoCinema Home" }],
-    },
-    twitter: {
-        card: "summary_large_image",
-        title: "Home | NeoCinema - AI Movie Discovery",
-        description: "Discover the best movies and TV series with NeoCinema's AI-powered recommendations.",
-        images: ["/neocinema_logo.png"],
-    }
-};
-
-export default async function HomePage() {
-    // Fetch from external API via our fallback service
+// ─── Cached data fetch (shared between generateMetadata + page render) ───────
+const getHomeDataCached = cache(async () => {
     const [trendingMoviesRes, trendingSeriesRes, topRatedMoviesRes, topRatedSeriesRes] =
         await Promise.all([
             getTrendingFromServer("movie", "week", "1"),
@@ -39,6 +20,78 @@ export default async function HomePage() {
     const trendingSeries = trendingSeriesRes?.results || [];
     const topRatedMovies = topRatedMoviesRes || [];
     const topRatedSeries = topRatedSeriesRes?.results || [];
+
+    return { trendingMovies, trendingSeries, topRatedMovies, topRatedSeries };
+});
+
+// ─── Dynamic Metadata (SEO keywords auto-generated from live movie data) ─────
+export async function generateMetadata(): Promise<Metadata> {
+    const { trendingMovies, trendingSeries } = await getHomeDataCached();
+
+    // Auto-inject real trending movie & series titles as SEO keywords
+    const movieKeywords = trendingMovies
+        .slice(0, 10)
+        .map((m: any) => m.title || m.name)
+        .filter(Boolean);
+    const seriesKeywords = trendingSeries
+        .slice(0, 10)
+        .map((s: any) => s.title || s.name)
+        .filter(Boolean);
+
+    return {
+        title: 'Watch Free Movies Online in HD | NeoCinema',
+        description: 'Stream top-rated free movies, series, and anime on NeoCinema. AI-powered recommendations, fast streaming, no ads, HD quality.',
+        keywords: [
+            'NeoCinema',
+            'fmovies',
+            '123movies',
+            'soap2day',
+            'watchsomoi',
+            'movies7',
+            'moviesjoy',
+            '123freemovies',
+            'fmoxies',
+            '300mbmovies',
+            'moviesflix',
+            'free movies',
+            'watch movies online free',
+            'HD movies',
+            'trending movies',
+            'top rated series',
+            'AI movie recommendations',
+            'stream series online',
+            '4K movies',
+            '1080p streaming',
+            ...movieKeywords,
+            ...seriesKeywords,
+        ],
+        alternates: {
+            canonical: '/',
+        },
+        robots: {
+            index: true,
+            follow: true,
+        },
+        openGraph: {
+            title: "Watch Free Movies & Series Online | NeoCinema",
+            description: "Discover the best movies and TV series with NeoCinema's AI-powered recommendations. Experience an ultra-dark cinematic UI with personalized content discovery.",
+            url: '/',
+            type: "website",
+            images: [{ url: "/neocinema_logo.png", width: 800, height: 600, alt: "NeoCinema — AI Movie & TV Series Discovery" }],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: "Watch Free Movies & Series Online | NeoCinema",
+            description: "Discover the best movies and TV series with NeoCinema's AI-powered recommendations.",
+            images: ["/neocinema_logo.png"],
+        },
+    };
+}
+
+// ─── Page Component ──────────────────────────────────────────────────────────
+export default async function HomePage() {
+    const { trendingMovies, trendingSeries, topRatedMovies, topRatedSeries } =
+        await getHomeDataCached();
 
     const heroMovie = trendingMovies[0] || null;
     return (

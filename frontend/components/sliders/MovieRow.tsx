@@ -3,6 +3,7 @@ import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import MovieCard from "../cards/MovieCard";
+import { motion, useInView } from "framer-motion";
 
 interface Props {
     title: string;
@@ -18,7 +19,10 @@ export default function MovieRow({
     className,
 }: Props) {
     const scrollRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
     const [showLeft, setShowLeft] = useState(false);
+    const [showRight, setShowRight] = useState(true);
+    const isInView = useInView(containerRef, { once: true, margin: "-100px" });
 
     const scroll = (direction: "left" | "right") => {
         if (scrollRef.current) {
@@ -30,72 +34,115 @@ export default function MovieRow({
 
     const handleScroll = () => {
         if (scrollRef.current) {
-            setShowLeft(scrollRef.current.scrollLeft > 0);
+            const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+            setShowLeft(scrollLeft > 0);
+            setShowRight(scrollLeft < scrollWidth - clientWidth - 5);
         }
     };
 
+    // Auto-scroll every 15 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (scrollRef.current) {
+                const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+                if (scrollLeft + clientWidth >= scrollWidth - 10) {
+                    scrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
+                } else {
+                    scroll("right");
+                }
+            }
+        }, 15000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const containerVariants: import("framer-motion").Variants = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: { staggerChildren: 0.1 }
+        }
+    };
+
+    const itemVariants: import("framer-motion").Variants = {
+        hidden: { opacity: 0, x: 50 },
+        show: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+    };
+
     return (
-        <section className={`relative mb-24 overflow-hidden ${className || ""}`}>
-            <div className="mb-8 flex items-center justify-between px-6 md:px-16 gap-6">
-                <div className="flex items-center gap-4 flex-shrink-0">
-                    <div className="h-8 w-1.5 rounded-full bg-red-600 shadow-[0_0_15px_rgba(220,38,38,0.5)]" />
-                    <h2 className="text-3xl font-black tracking-tight text-white uppercase italic">
+        <section ref={containerRef} className={`relative mb-24 overflow-hidden ${className || ""}`}>
+            {/* Header Section */}
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.6 }}
+                className="mb-8 flex items-end justify-between px-6 md:px-16 gap-6"
+            >
+                <div className="flex items-end gap-4 flex-shrink-0">
+                    <h2 className="text-2xl md:text-4xl font-black tracking-tighter text-white uppercase">
                         {title}
+                        <span className="block h-1 w-1/2 bg-red-600 mt-2 rounded-full shadow-[0_0_10px_rgba(220,38,38,0.8)]" />
                     </h2>
                 </div>
-                <div className="h-px flex-1 bg-gradient-to-r from-red-600/40 via-red-600/10 to-transparent" />
+                {/* <div className="h-px flex-1 bg-gradient-to-r from-red-600/40 via-red-600/10 to-transparent mb-2" /> */}
                 {moreLink && (
                     <Link
                         href={moreLink}
-                        className="group flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm font-bold text-neutral-400 backdrop-blur-md transition-all hover:scale-105 hover:border-red-600/30 hover:bg-red-600/10 hover:text-red-500 flex-shrink-0"
+                        className="group flex items-center gap-2 mb-1 px-4 py-2 text-sm font-bold text-neutral-400 transition-all hover:text-white flex-shrink-0"
                     >
-                        See All
-                        <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+                        Explore All
+                        <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1.5 group-hover:text-red-500" />
                     </Link>
                 )}
-            </div>
+            </motion.div>
 
-            <div className="relative px-6 md:px-16">
-                {/* LEFT ARROW */}
+            <div className="relative px-6 md:px-16 group/row">
+                {/* LEFT ARROW - Fade on hover */}
                 <button
                     onClick={() => scroll("left")}
                     disabled={!showLeft}
-                    className={`absolute left-0 md:left-2 top-1/2 z-50 -translate-y-1/2 flex items-center justify-center p-2 transition-all duration-300 ${!showLeft ? "opacity-30 cursor-not-allowed" : "opacity-100 hover:scale-110"}`}
+                    className={`absolute left-0 md:left-4 top-1/2 z-40 -translate-y-1/2 flex items-center justify-center p-2 transition-all duration-500 ${!showLeft ? "opacity-0 pointer-events-none" : "opacity-0 group-hover/row:opacity-100 hover:scale-110"}`}
                 >
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-black/80 text-white backdrop-blur-xl shadow-2xl transition-colors hover:bg-red-600 hover:border-red-500">
-                        <ChevronLeft size={32} />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black/50 text-white backdrop-blur-xl shadow-2xl transition-colors hover:bg-red-600/90 hover:border-red-500 hover:shadow-[0_0_20px_rgba(220,38,38,0.6)]">
+                        <ChevronLeft size={24} />
                     </div>
                 </button>
 
                 {/* SLIDER CONTAINER */}
-                <div
+                <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate={isInView ? "show" : "hidden"}
                     ref={scrollRef}
                     onScroll={handleScroll}
-                    className="flex gap-[20px] overflow-x-auto scroll-smooth pb-10 pt-5 scrollbar-hide snap-x snap-mandatory"
+                    className="flex gap-[20px] overflow-x-auto scroll-smooth pb-12 pt-4 next-gen-scrollbar snap-x snap-mandatory"
                 >
                     {movies?.map((movie, index) => (
-                        <div
+                        <motion.div
+                            variants={itemVariants}
                             key={movie._id || movie.tmdbId || index}
-                            className="w-[calc(50%-10px)] md:w-[calc(33.33%-13.33px)] lg:w-[calc(25%-15px)] flex-shrink-0 snap-start snap-always"
+                            className="w-[calc(50%-10px)] md:w-[calc(33.33%-13.33px)] lg:w-[calc(20%-16px)] flex-shrink-0 snap-start snap-always"
                         >
                             <MovieCard movie={movie} />
-                        </div>
+                        </motion.div>
                     ))}
-                </div>
+                </motion.div>
 
-                {/* RIGHT ARROW */}
+                {/* RIGHT ARROW - Fade on hover */}
                 <button
                     onClick={() => scroll("right")}
-                    className="absolute right-0 md:right-2 top-1/2 z-50 -translate-y-1/2 flex items-center justify-center p-2 opacity-100 transition-all duration-300 hover:scale-110"
+                    disabled={!showRight}
+                    className={`absolute right-0 md:right-4 top-1/2 z-40 -translate-y-1/2 flex items-center justify-center p-2 transition-all duration-500 ${!showRight ? "opacity-0 pointer-events-none" : "opacity-0 group-hover/row:opacity-100 hover:scale-110"}`}
                 >
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-black/80 text-white backdrop-blur-xl shadow-2xl transition-colors hover:bg-red-600 hover:border-red-500">
-                        <ChevronRight size={32} />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black/50 text-white backdrop-blur-xl shadow-2xl transition-colors hover:bg-red-600/90 hover:border-red-500 hover:shadow-[0_0_20px_rgba(220,38,38,0.6)]">
+                        <ChevronRight size={24} />
                     </div>
                 </button>
-
+                
+                {/* Edge Fades */}
+                <div className="pointer-events-none absolute left-0 top-0 bottom-12 w-16 bg-gradient-to-r from-background to-transparent z-30" />
+                <div className="pointer-events-none absolute right-0 top-0 bottom-12 w-16 bg-gradient-to-l from-background to-transparent z-30" />
             </div>
         </section>
-
-
     );
 }

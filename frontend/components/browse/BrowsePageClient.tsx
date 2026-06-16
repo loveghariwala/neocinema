@@ -92,25 +92,29 @@ export default function BrowsePageClient({ type, title, subtitle, initialData, i
     };
 
     return (
-        <main className="min-h-screen px-6 pb-20 pt-28 md:px-16">
+        <main className="min-h-screen px-6 pb-20 pt-28 md:px-16 relative">
+            {/* Subtle Top Gradient Mesh */}
+            <div className="pointer-events-none absolute left-0 top-0 h-[40vh] w-full bg-gradient-to-b from-red-900/10 via-background to-background" />
+            <div className="pointer-events-none absolute left-1/4 top-0 h-[30vh] w-[50vw] rounded-full bg-red-600/5 blur-[120px]" />
+
             {/* ─── Page Header ─────────────────────────────────────────── */}
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="mb-10"
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className="relative mb-12"
             >
-                <div className="flex items-center gap-4 mb-3">
-                    <div className="rounded-2xl bg-red-600/20 p-3 text-red-500">
-                        {type === "movie" ? <Film size={28} /> : <Tv size={28} />}
+                <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-red-600/20 to-black border border-red-500/20 text-red-500 shadow-[0_0_30px_rgba(220,38,38,0.15)]">
+                        {type === "movie" ? <Film size={32} /> : <Tv size={32} />}
                     </div>
                     <div>
-                        <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white">
+                        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-white/90 to-white/30 drop-shadow-lg">
                             {title.split(" ")[0]}{" "}
-                            <span className="text-red-600">{title.split(" ").slice(1).join(" ")}</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-br from-red-500 to-red-800">{title.split(" ").slice(1).join(" ")}</span>
                         </h1>
-                        <p className="text-neutral-500 font-medium mt-1 flex items-center gap-2">
-                            <Sparkles size={14} className="text-red-600" />
+                        <p className="text-neutral-400 font-bold tracking-wide mt-2 flex items-center gap-2 text-sm sm:text-base">
+                            <Sparkles size={16} className="text-red-500 animate-pulse" />
                             {subtitle}
                         </p>
                     </div>

@@ -5,7 +5,6 @@ import { MotionDiv } from "@/components/layout/Motion";
 import Image from "next/image";
 import Link from "next/link";
 import StreamPlayer from "@/components/player/StreamPlayer";
-import WatchlistButton from "@/components/watchlist/WatchlistButton";
 import ShareButton from "@/components/ui/ShareButton";
 import { Metadata } from "next";
 
@@ -35,11 +34,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         ? `${movie.overview.substring(0, 150)}...`
         : `Watch and discover ${movie.title} with AI recommendations on NeoCinema.`;
 
+    const castKeywords = (movie.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
+
     return {
         title: titleText,
         description: descriptionText,
-        keywords: [movie.title, ...(movie.genres || []), "AI recommendations", "NeoCinema", "stream movie"],
+        keywords: [movie.title, ...(movie.genres || []), ...castKeywords, "AI recommendations", "NeoCinema", "stream movie", "watch online free"],
         alternates: { canonical: `/movies/${id}` },
+        robots: { index: true, follow: true },
         openGraph: {
             title: titleText,
             description: descriptionText,
@@ -71,119 +73,141 @@ export default async function MovieDetailsPage({
     if (!movie) return <div className="flex h-screen items-center justify-center text-white text-xl font-bold">Movie not found</div>;
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://neocinematv.vercel.app";
-    const movieSchema = {
+
+    // ─── Movie JSON-LD ───────────────────────────────────────────────────────
+    const movieJsonLd = {
         "@context": "https://schema.org",
         "@type": "Movie",
+        "@id": `${baseUrl}/movies/${id}#movie`,
         "name": movie.title,
         "image": movie.posterPath ? `https://image.tmdb.org/t/p/w500${movie.posterPath}` : `${baseUrl}/neocinema_logo.png`,
         "description": movie.overview,
         "dateCreated": movie.releaseDate,
-        "director": {
+        "url": `${baseUrl}/movies/${id}`,
+        "genre": movie.genres,
+        "duration": movie.runtime ? `PT${movie.runtime}M` : undefined,
+        ...(movie.rating ? {
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": movie.rating,
+                "bestRating": "10",
+                "ratingCount": 100,
+            },
+        } : {}),
+        "actor": (movie.cast || []).slice(0, 5).map((c: any) => ({
             "@type": "Person",
-            "name": "Unknown" // Usually fetched from credits, keeping fallback
+            "name": c.name,
+            "url": `${baseUrl}/person/${c._id}`,
+        })),
+        "publisher": {
+            "@type": "Organization",
+            "@id": `${baseUrl}#org`,
+            "name": "NeoCinema",
         },
-        "url": `${baseUrl}/movies/${id}`
+    };
+
+    // ─── Breadcrumb JSON-LD ──────────────────────────────────────────────────
+    const breadcrumbJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": baseUrl },
+            { "@type": "ListItem", "position": 2, "name": "Movies", "item": `${baseUrl}/movies` },
+            { "@type": "ListItem", "position": 3, "name": movie.title, "item": `${baseUrl}/movies/${id}` },
+        ],
     };
 
     return (
         <>
             <script
+                id="json-ld-movie"
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{
-                    __html: JSON.stringify({
-                        "@context": "https://schema.org",
-                        "@type": "Movie",
-                        "name": movie.title,
-                        "image": `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-                        "description": movie.overview,
-                        "dateCreated": movie.release_date,
-                        "aggregateRating": {
-                            "@type": "AggregateRating",
-                            "ratingValue": movie.vote_average,
-                            "bestRating": "10",
-                            "ratingCount": movie.vote_count
-                        }
-                    })
-                }}
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(movieJsonLd).replace(/</g, '\\u003c') }}
+            />
+            <script
+                id="json-ld-breadcrumb"
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, '\\u003c') }}
             />
 
             <main className="min-h-screen">
-                <script
-                    type="application/ld+json"
-                    dangerouslySetInnerHTML={{ __html: JSON.stringify(movieSchema) }}
-                />
                 {/* IMMERSIVE HERO */}
-                <section className="relative min-h-[90vh] w-full flex items-center py-20 md:py-28 lg:py-32">
+                <section className="relative min-h-[90vh] w-full flex items-center py-20 md:py-28 lg:py-32 overflow-hidden bg-black">
                     <MotionDiv
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 1.5 }}
+                        initial={{ scale: 1 }}
+                        animate={{ scale: 1.1 }}
+                        transition={{ duration: 20, ease: "linear", repeat: Infinity, repeatType: "reverse" }}
                         className="absolute inset-0"
                     >
                         {movie.backdropPath ? (
                             <Image
-                                src={`https://image.tmdb.org/t/p/w1280${movie.backdropPath}`}
+                                src={`https://image.tmdb.org/t/p/original${movie.backdropPath}`}
                                 alt={movie.title}
                                 fill
                                 priority
                                 sizes="100vw"
-                                className="object-cover"
+                                className="object-cover opacity-80"
                             />
                         ) : (
                             <div className="h-full w-full bg-neutral-900" />
                         )}
-                        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/50 to-transparent" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
                     </MotionDiv>
+
+                    {/* Next-Gen Vignette Gradients */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,black_100%)] opacity-40" />
 
                     <div className="relative z-10 w-full px-6 md:px-16">
                         <div className="max-w-4xl">
                             <MotionDiv
                                 initial={{ opacity: 0, y: 30 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.3 }}
+                                transition={{ delay: 0.3, duration: 0.8 }}
                             >
-                                <div className="mb-4 flex items-center gap-2">
-                                    <span className="rounded bg-red-600 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-white">4K ULTRA HD</span>
-                                    <span className="rounded bg-white/10 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-white backdrop-blur-md">HDR</span>
+                                <div className="mb-4 flex items-center gap-3">
+                                    <span className="rounded-full bg-red-600/20 border border-red-500/20 px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-red-500 backdrop-blur-md shadow-[0_0_15px_rgba(220,38,38,0.3)]">
+                                        4K ULTRA HD
+                                    </span>
+                                    <span className="rounded-full bg-white/5 border border-white/10 px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-white backdrop-blur-md">
+                                        HDR
+                                    </span>
                                 </div>
 
-                                <h1 className="mb-4 md:mb-6 text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-glow">
+                                <h1 className="mb-4 md:mb-6 pb-2 lg:pb-4 text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60 leading-[1.1] filter drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]">
                                     {movie.title}
                                 </h1>
 
                                 <div className="mb-6 md:mb-8 flex flex-wrap items-center gap-4 sm:gap-6 md:gap-8 text-[11px] sm:text-xs md:text-sm font-bold uppercase tracking-widest text-neutral-400">
-                                    <div className="flex items-center gap-2 text-yellow-500">
+                                    <div className="flex items-center gap-2 text-yellow-500 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
                                         <Star size={16} fill="currentColor" />
                                         <span className="text-white">{movie.rating?.toFixed(1)}</span>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <Clock size={16} className="text-red-600" />
-                                        <span>{movie.runtime} MIN</span>
+                                    <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
+                                        <Clock size={16} className="text-red-500" />
+                                        <span className="text-white">{movie.runtime} MIN</span>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <Calendar size={16} className="text-red-600" />
-                                        <span>{new Date(movie.releaseDate).getFullYear()}</span>
+                                    <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
+                                        <Calendar size={16} className="text-red-500" />
+                                        <span className="text-white">{new Date(movie.releaseDate).getFullYear()}</span>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <Globe size={16} className="text-red-600" />
-                                        <span>{movie.language}</span>
+                                    <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
+                                        <Globe size={16} className="text-red-500" />
+                                        <span className="text-white">{movie.language}</span>
                                     </div>
                                 </div>
 
-                                <p className="mb-6 md:mb-10 max-w-2xl text-sm sm:text-base md:text-lg lg:text-xl font-medium leading-relaxed text-neutral-300 line-clamp-4 md:line-clamp-none">
+                                <p className="mb-8 md:mb-10 max-w-2xl text-sm sm:text-base md:text-lg lg:text-xl font-medium leading-relaxed text-neutral-300 drop-shadow-lg">
                                     {movie.overview}
                                 </p>
 
-                                <div className="flex flex-wrap gap-3 sm:gap-4 md:gap-6">
+                                <div className="flex flex-wrap gap-4 sm:gap-6">
                                     <StreamPlayer
                                         tmdbId={movie.tmdbId}
                                         imdbId={movie.imdbId}
                                         title={movie.title}
                                         autoPlay={autoPlay}
                                     />
-
-                                    <WatchlistButton movie={movie} />
 
                                     <ShareButton title={movie.title} />
                                 </div>
@@ -196,20 +220,20 @@ export default async function MovieDetailsPage({
                 <div className="relative z-20 mt-6 sm:mt-12 space-y-16 sm:space-y-24 md:space-y-32 px-6 pb-20 sm:pb-32 md:px-16">
                     <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
                         {/* LEFT: DETAILS & GENRES */}
-                        <div className="col-span-1 space-y-10">
-                            <div className="futuristic-card group">
+                        <div className="col-span-1 space-y-8">
+                            <div className="rounded-3xl border border-white/5 bg-neutral-950/50 p-6 md:p-8 backdrop-blur-xl shadow-2xl relative overflow-hidden group">
+                                <div className="absolute inset-0 bg-gradient-to-br from-red-600/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                                 <div className="relative z-10">
-                                    <div className="mb-8 flex items-center justify-between">
-                                        <h3 className="text-[9px] font-black uppercase tracking-[0.5em] text-red-500">
-                                            AI GENRES
+                                    <div className="mb-6 flex items-center justify-between">
+                                        <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-red-500 drop-shadow-[0_0_10px_rgba(220,38,38,0.5)]">
+                                            Genres
                                         </h3>
-                                        <span className="rounded-full bg-red-600/20 px-2 py-0.5 text-[8px] font-black text-red-500">AI POWERED</span>
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {movie.genres?.map((genre: string) => (
                                             <span
                                                 key={genre}
-                                                className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-[11px] font-black text-neutral-400 transition-all hover:border-red-600/40 hover:bg-red-600/20 hover:text-white hover:scale-105"
+                                                className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-black text-neutral-300 transition-all hover:border-red-500 hover:bg-red-500/20 hover:text-white hover:shadow-[0_0_15px_rgba(220,38,38,0.4)]"
                                             >
                                                 {genre}
                                             </span>
@@ -218,15 +242,20 @@ export default async function MovieDetailsPage({
                                 </div>
                             </div>
 
-                            <div className="futuristic-card">
-                                <h3 className="mb-6 text-[10px] font-black uppercase tracking-[0.4em] text-red-600/80">Production</h3>
-                                <div className="space-y-4">
-                                    {movie.productionCompanies?.map((company: string) => (
-                                        <div key={company} className="flex items-center gap-3 text-sm font-bold text-neutral-500">
-                                            <div className="h-1 w-1 rounded-full bg-red-600" />
-                                            {company}
-                                        </div>
-                                    ))}
+                            <div className="rounded-3xl border border-white/5 bg-neutral-950/50 p-6 md:p-8 backdrop-blur-xl shadow-2xl relative overflow-hidden group">
+                                <div className="absolute inset-0 bg-gradient-to-br from-red-600/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                                <div className="relative z-10">
+                                    <h3 className="mb-6 text-[10px] font-black uppercase tracking-[0.4em] text-red-500 drop-shadow-[0_0_10px_rgba(220,38,38,0.5)]">
+                                        Production
+                                    </h3>
+                                    <div className="space-y-4">
+                                        {movie.productionCompanies?.map((company: string) => (
+                                            <div key={company} className="flex items-center gap-3 text-sm font-bold text-neutral-400 group-hover:text-white transition-colors">
+                                                <div className="h-1.5 w-1.5 rounded-full bg-red-600 shadow-[0_0_10px_rgba(220,38,38,0.8)]" />
+                                                {company}
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -234,33 +263,32 @@ export default async function MovieDetailsPage({
                         {/* RIGHT: CAST */}
                         <div className="col-span-2 overflow-hidden">
                             <div className="mb-10 flex items-center gap-6">
-                                <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-red-600/80">Starring Cast</h3>
-                                <div className="h-px flex-1 bg-gradient-to-r from-red-600/20 to-transparent" />
+                                <h3 className="text-xl font-black uppercase tracking-tighter text-white">Starring Cast</h3>
+                                <div className="h-px flex-1 bg-gradient-to-r from-red-600/50 to-transparent" />
                             </div>
 
-                            <div className="flex gap-8 overflow-x-auto pb-10 scrollbar-hide snap-x snap-mandatory">
+                            <div className="flex gap-6 overflow-x-auto pb-10 scrollbar-hide snap-x snap-mandatory">
                                 {movie.cast?.map((actor: any) => (
-                                    <Link key={actor._id} href={`/person/${actor._id}`} className="min-w-[180px] group cursor-pointer snap-start block">
+                                    <Link key={actor._id} href={`/person/${actor._id}`} className="min-w-[160px] md:min-w-[180px] group cursor-pointer snap-start block">
                                         <MotionDiv
-                                            whileHover={{ scale: 1.05, y: -8 }}
+                                            whileHover={{ scale: 1.05, y: -10 }}
                                             transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                                            className="relative aspect-[2/3] mb-4 w-full overflow-hidden rounded-2xl bg-neutral-900 shadow-xl border border-white/5 transition-all group-hover:border-white/20 group-hover:shadow-[0_0_40px_rgba(220,38,38,0.3)]"
+                                            className="relative aspect-[2/3] mb-4 w-full overflow-hidden rounded-2xl bg-neutral-950 shadow-xl border border-white/[0.05] transition-all group-hover:border-white/20 group-hover:shadow-[0_20px_50px_rgba(220,38,38,0.3)]"
                                         >
                                             {actor.profilePath ? (
-                                                <Image src={`https://image.tmdb.org/t/p/w185${actor.profilePath}`} alt={actor.name} fill sizes="180px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
+                                                <Image src={`https://image.tmdb.org/t/p/w342${actor.profilePath}`} alt={actor.name} fill sizes="180px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
                                             ) : (
-                                                <div className="flex h-full items-center justify-center text-[10px] font-black uppercase text-neutral-500">NO PHOTO</div>
+                                                <div className="flex h-full items-center justify-center text-[10px] font-black uppercase text-neutral-500 bg-neutral-900">NO PHOTO</div>
                                             )}
                                             {/* Bottom Gradient Overlay for Cast */}
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-90" />
                                         </MotionDiv>
-                                        <h4 className="text-sm font-black text-white group-hover:text-red-500 transition-colors">{actor.name}</h4>
-                                        <p className="text-xs font-medium text-neutral-500 line-clamp-1">{actor.character}</p>
+                                        <h4 className="text-base font-black text-white group-hover:text-red-500 transition-colors drop-shadow-md">{actor.name}</h4>
+                                        <p className="text-sm font-medium text-neutral-400 line-clamp-2">{actor.character}</p>
                                     </Link>
                                 ))}
                             </div>
                         </div>
-
                     </div>
 
 

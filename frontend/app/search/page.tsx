@@ -1,41 +1,10 @@
 import { Metadata } from "next";
 import SearchPageClient from "./SearchPageClient";
 import { searchContentFromServer, getTrendingFromServer } from "@/services/movieService";
+import { cache } from "react";
 
-export const metadata: Metadata = {
-    title: "Global Search & Discovery",
-    description: "Search across millions of movies, TV shows, and cast members. NeoCinema's global search engine helps you find exactly what you want to watch.",
-    keywords: ["movie search", "search TV shows", "find actors", "NeoCinema search", "global movie database", "content discovery"],
-    alternates: { canonical: '/search' },
-    openGraph: {
-        title: "Global Search & Discovery | NeoCinema",
-        description: "Search across millions of movies, TV shows, and cast members. NeoCinema's global search engine helps you find exactly what you want to watch.",
-        url: '/search',
-        type: "website",
-        images: [{ url: "/neocinema_logo.png", width: 800, height: 600, alt: "Search NeoCinema" }],
-    },
-    twitter: {
-        card: "summary_large_image",
-        title: "Global Search & Discovery | NeoCinema",
-        description: "Search across millions of movies, TV shows, and cast members.",
-        images: ["/neocinema_logo.png"],
-    }
-};
-
-interface SearchPageProps {
-    searchParams?: Promise<{
-        q?: string;
-        type?: string;
-        page?: string;
-    }>;
-}
-
-export default async function SearchPage({ searchParams }: SearchPageProps) {
-    const resolvedSearchParams = (await searchParams) || {};
-    const query = resolvedSearchParams.q || "";
-    const type = resolvedSearchParams.type || "";
-    const page = resolvedSearchParams.page || "1";
-
+// ─── Cached data fetch (shared between generateMetadata + page render) ───────
+const getSearchPageData = cache(async (query: string, type: string, page: string) => {
     let data: any = { results: [], totalResults: 0, totalPages: 1, currentPage: 1 };
     let trending: any[] = [];
 
@@ -46,13 +15,115 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         trending = trendingData.results || [];
     }
 
+    return { data, trending };
+});
+
+// ─── SearchAction JSON-LD ────────────────────────────────────────────────────
+const generateSearchJsonLd = () => {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://neocinematv.vercel.app";
+    return {
+        "@context": "https://schema.org",
+        "@type": "SearchResultsPage",
+        "@id": `${baseUrl}/search#searchpage`,
+        "name": "Search Movies & TV Series — NeoCinema",
+        "description": "Search across millions of movies, TV shows, and cast members with NeoCinema's global search engine.",
+        "url": `${baseUrl}/search`,
+        "isPartOf": {
+            "@type": "WebSite",
+            "@id": `${baseUrl}#website`,
+            "name": "NeoCinema",
+            "url": baseUrl,
+        },
+        "publisher": {
+            "@type": "Organization",
+            "@id": `${baseUrl}#org`,
+            "name": "NeoCinema",
+            "url": baseUrl,
+            "logo": {
+                "@type": "ImageObject",
+                "url": `${baseUrl}/neocinema_logo.png`,
+            },
+        },
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": `${baseUrl}/search?q={search_term_string}`,
+            "query-input": "required name=search_term_string",
+        },
+    };
+};
+
+// ─── Dynamic Metadata ────────────────────────────────────────────────────────
+interface SearchPageProps {
+    searchParams?: Promise<{
+        q?: string;
+        type?: string;
+        page?: string;
+    }>;
+}
+
+export async function generateMetadata({ searchParams }: SearchPageProps): Promise<Metadata> {
+    const resolvedSearchParams = (await searchParams) || {};
+    const query = resolvedSearchParams.q || "";
+
+    const title = query
+        ? `Search results for "${query}"`
+        : "Global Search & Discovery";
+    const description = query
+        ? `Find movies, TV shows, and cast members matching "${query}" on NeoCinema.`
+        : "Search across millions of movies, TV shows, and cast members. NeoCinema's global search engine helps you find exactly what you want to watch.";
+
+    return {
+        title,
+        description,
+        keywords: [
+            "movie search", "search TV shows", "find actors",
+            "NeoCinema search", "global movie database", "content discovery",
+            "search movies online", "find series",
+            ...(query ? [query] : []),
+        ],
+        alternates: { canonical: '/search' },
+        robots: { index: false, follow: true },
+        openGraph: {
+            title: `${title} | NeoCinema`,
+            description,
+            url: '/search',
+            type: "website",
+            images: [{ url: "/neocinema_logo.png", width: 800, height: 600, alt: "Search NeoCinema" }],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: `${title} | NeoCinema`,
+            description,
+            images: ["/neocinema_logo.png"],
+        },
+    };
+}
+
+// ─── Page Component ──────────────────────────────────────────────────────────
+export default async function SearchPage({ searchParams }: SearchPageProps) {
+    const resolvedSearchParams = (await searchParams) || {};
+    const query = resolvedSearchParams.q || "";
+    const type = resolvedSearchParams.type || "";
+    const page = resolvedSearchParams.page || "1";
+
+    const { data, trending } = await getSearchPageData(query, type, page);
+
     return (
-        <SearchPageClient
-            initialQuery={query}
-            initialType={type}
-            initialPage={parseInt(page)}
-            initialData={data}
-            initialTrending={trending}
-        />
+        <>
+            <script
+                id="search-jsonld"
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(generateSearchJsonLd()).replace(/</g, '\\u003c'),
+                }}
+            />
+            <SearchPageClient
+                initialQuery={query}
+                initialType={type}
+                initialPage={parseInt(page)}
+                initialData={data}
+                initialTrending={trending}
+            />
+        </>
     );
 }
