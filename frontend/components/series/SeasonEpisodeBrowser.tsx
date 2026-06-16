@@ -80,7 +80,7 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons }: SeasonEpisod
                 </div>
 
                 {/* Season selection row */}
-                <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide max-w-full pb-2 sm:pb-0">
+                <div className="flex items-center gap-2 overflow-x-auto next-gen-scrollbar max-w-full pb-4 pt-1 snap-x snap-mandatory">
                     {activeSeasons.map((season) => (
                         <button
                             key={season.id}
@@ -88,7 +88,7 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons }: SeasonEpisod
                                 setSelectedSeason(season.season_number);
                                 setImgErrors({});
                             }}
-                            className={`rounded-xl px-4 py-2.5 text-xs font-black transition-all border shrink-0 ${
+                            className={`rounded-xl px-4 py-2.5 text-xs font-black transition-all border shrink-0 snap-start ${
                                 selectedSeason === season.season_number
                                     ? "bg-red-600 border-red-500 text-white shadow-lg shadow-red-600/30"
                                     : "bg-white/5 border-white/10 text-neutral-400 hover:bg-white/10 hover:text-white"

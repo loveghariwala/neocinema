@@ -3,32 +3,32 @@
 @theme {
   --color-background: hsl(240 10% 3.9%);
   --color-foreground: hsl(0 0% 98%);
-  
+
   --color-card: hsl(240 10% 3.9%);
   --color-card-foreground: hsl(0 0% 98%);
-  
+
   --color-popover: hsl(240 10% 3.9%);
   --color-popover-foreground: hsl(0 0% 98%);
-  
+
   --color-primary: hsl(0 0% 98%);
   --color-primary-foreground: hsl(240 5.9% 10%);
-  
+
   --color-secondary: hsl(240 3.7% 15.9%);
   --color-secondary-foreground: hsl(0 0% 98%);
-  
+
   --color-muted: hsl(240 3.7% 15.9%);
   --color-muted-foreground: hsl(240 5% 64.9%);
-  
+
   --color-accent: hsl(240 3.7% 15.9%);
   --color-accent-foreground: hsl(0 0% 98%);
-  
+
   --color-destructive: hsl(0 62.8% 30.6%);
   --color-destructive-foreground: hsl(0 0% 98%);
-  
+
   --color-border: hsl(240 3.7% 15.9%);
   --color-input: hsl(240 3.7% 15.9%);
   --color-ring: hsl(240 4.9% 83.9%);
-  
+
   --radius-lg: 0.75rem;
   --radius-md: calc(0.75rem - 2px);
   --radius-sm: calc(0.75rem - 4px);
@@ -40,6 +40,7 @@
   * {
     border-color: var(--color-border);
   }
+
   body {
     @apply bg-background text-foreground selection:bg-red-500/30 selection:text-white;
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -63,26 +64,22 @@
 
 /* Next-Gen Horizontal Scrollbar */
 .next-gen-scrollbar::-webkit-scrollbar {
-  height: 8px;
+  height: 4px;
 }
 
 .next-gen-scrollbar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 9999px;
-  margin: 0 16px;
+  margin: 0 32px;
 }
 
 .next-gen-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(90deg, rgba(220, 38, 38, 0.8), rgba(220, 38, 38, 0.4));
   border-radius: 9999px;
-  border: 2px solid transparent;
-  background-clip: padding-box;
 }
 
 .next-gen-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(220, 38, 38, 0.5); /* Red hover effect */
-  border: 2px solid transparent;
-  background-clip: padding-box;
+  background: linear-gradient(90deg, rgba(255, 50, 50, 1), rgba(220, 38, 38, 0.8));
 }
 
 /* Cinematic Effects */
@@ -94,13 +91,16 @@
 
   .futuristic-card {
     @apply relative overflow-hidden rounded-3xl border border-white/5 bg-neutral-900/40 p-8 transition-all duration-500 backdrop-blur-2xl;
+
     &::before {
       content: "";
       @apply absolute inset-0 -z-10 bg-gradient-to-br from-red-600/10 via-transparent to-transparent opacity-0 transition-opacity duration-500;
     }
+
     &:hover::before {
       @apply opacity-100;
     }
+
     &:hover {
       @apply border-red-600/30 -translate-y-1 shadow-[0_20px_40px_-20px_rgba(220,38,38,0.3)];
     }
@@ -116,9 +116,10 @@
 
   .double-border-animation {
     @apply relative overflow-hidden rounded-3xl p-[1.5px];
-    background: linear-gradient(0deg, rgba(220,38,38,0.1), rgba(220,38,38,0.1));
-    
-    &::before, &::after {
+    background: linear-gradient(0deg, rgba(220, 38, 38, 0.1), rgba(220, 38, 38, 0.1));
+
+    &::before,
+    &::after {
       content: "";
       @apply absolute left-[-50%] top-[-50%] h-[200%] w-[200%] -z-10 opacity-0 transition-opacity duration-700;
       background: conic-gradient(transparent, transparent, transparent, rgba(220, 38, 38, 0.6));
@@ -132,15 +133,21 @@
     }
 
 
-    &:hover::before, &:hover::after {
+    &:hover::before,
+    &:hover::after {
       @apply opacity-100;
     }
   }
 }
 
 @keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .hero-gradient {
@@ -153,9 +160,17 @@
 
 /* Animations */
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 .animate-float {
