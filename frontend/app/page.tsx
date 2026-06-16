@@ -6,9 +6,9 @@ import { Metadata } from "next";
 export const revalidate = 300; // ISR: regenerate home page every 5 minutes
 
 export const metadata: Metadata = {
-    title: "Home",
-    description: "Discover the best movies and TV series with NeoCinema's AI-powered recommendations. Experience an ultra-dark cinematic UI with personalized content discovery.",
-    keywords: ["movie recommendations", "AI streaming discovery", "top rated movies", "trending series", "NeoCinema home"],
+    title: 'Watch Free Movies Online in HD | NeoCinema',
+    description: 'Stream top-rated free movies, series, and anime on NeoCinema. Fast streaming, no ads, HD quality.',
+    keywords: ['free-movies', 'watch movies online free', 'NeoCinema free series', 'IMDb Top 250 movies', 'Top rated movies', 'top rated series', 'trending movies', 'trending series', 'search movies', 'search series', 'movies', 'series', 'anime', 'HD movies', 'fast streaming', 'no ads', '720p', '1080p', '2160p', '4K', 'free movies no sign up', 'free movies no account', 'free movies no registration', 'free movies without sign up', 'free movies without account', 'free movies without registration'],
     alternates: { canonical: '/' },
     openGraph: {
         title: "Home | NeoCinema - AI Movie Discovery",
