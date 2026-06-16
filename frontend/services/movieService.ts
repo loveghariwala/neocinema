@@ -213,6 +213,8 @@ export async function discoverContentFromServer(type: "movie" | "tv", queryParam
                     rating_min: queryParams.rating_min ? Number(queryParams.rating_min) : undefined,
                     rating_max: queryParams.rating_max ? Number(queryParams.rating_max) : undefined,
                     language: queryParams.language,
+                    with_keywords: queryParams.with_keywords,
+                    with_companies: queryParams.with_companies,
                 })
                 : tmdbService.discoverTv({
                     page: Number(queryParams.page) || 1,
@@ -223,6 +225,8 @@ export async function discoverContentFromServer(type: "movie" | "tv", queryParam
                     rating_min: queryParams.rating_min ? Number(queryParams.rating_min) : undefined,
                     rating_max: queryParams.rating_max ? Number(queryParams.rating_max) : undefined,
                     language: queryParams.language,
+                    with_keywords: queryParams.with_keywords,
+                    with_companies: queryParams.with_companies,
                 }),
         );
         return data;

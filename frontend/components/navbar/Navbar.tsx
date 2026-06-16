@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Home, Sparkles, Film, Tv } from "lucide-react";
+import { Menu, X, Home, Sparkles, Film, Tv, Library } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
@@ -32,6 +32,7 @@ export default function Navbar() {
 
     const navLinks = [
         { name: "Home", href: "/", icon: Home },
+        { name: "Collections", href: "/collections", icon: Library },
         { name: "Discover", href: "/search", icon: Sparkles },
         { name: "Movies", href: "/movies", icon: Film },
         { name: "Series", href: "/series", icon: Tv },
@@ -73,7 +74,7 @@ export default function Navbar() {
                     </Link>
 
                     {/* ─── DESKTOP NAV — Floating pill ────────── */}
-                    <nav className="hidden md:flex items-center">
+                    <nav className="hidden lg:flex items-center">
                         <div className="flex items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.03] px-1.5 py-1.5 backdrop-blur-xl">
                             {navLinks.map((link) => {
                                 const isActive = pathname === link.href;
@@ -110,7 +111,7 @@ export default function Navbar() {
                     {/* ─── MOBILE HAMBURGER ────────────────────── */}
                     <button
                         onClick={() => setIsOpen(!isOpen)}
-                        className="relative z-10 flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white backdrop-blur-xl transition-all hover:bg-white/10 hover:border-white/20 md:hidden"
+                        className="relative z-10 flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white backdrop-blur-xl transition-all hover:bg-white/10 hover:border-white/20 lg:hidden"
                         aria-label="Toggle Menu"
                     >
                         <AnimatePresence mode="wait">
@@ -149,7 +150,7 @@ export default function Navbar() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm md:hidden"
+                            className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm lg:hidden"
                             onClick={() => setIsOpen(false)}
                         />
 
@@ -159,7 +160,7 @@ export default function Navbar() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -30 }}
                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                            className="fixed inset-x-0 top-[64px] z-50 md:hidden"
+                            className="fixed inset-x-0 top-[64px] z-50 lg:hidden"
                         >
                             <div className="mx-4 mt-2 rounded-3xl border border-white/[0.08] bg-neutral-950/95 p-4 shadow-[0_24px_64px_rgba(0,0,0,0.8)] backdrop-blur-3xl">
                                 <nav className="flex flex-col gap-1.5">

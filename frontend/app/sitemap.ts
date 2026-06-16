@@ -1,6 +1,6 @@
-// frontend/app/sitemap.ts
 import { MetadataRoute } from 'next';
 import { getTrendingFromServer } from '@/services/movieService';
+import { COLLECTIONS } from '@/lib/collections';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://neocinematv.vercel.app';
@@ -31,7 +31,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.6,
     },
+    {
+      url: `${baseUrl}/collections`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9, // High priority for our SEO long-tail pages
+    },
   ];
+
+  // 1.5 Get Dynamic Collections
+  const collectionRoutes: MetadataRoute.Sitemap = COLLECTIONS.map((c) => ({
+    url: `${baseUrl}/collections/${c.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 0.9,
+  }));
 
   // 2. Fetch Dynamic Movies
   const trendingMovies = await getTrendingFromServer("movie");
@@ -53,5 +67,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...movieRoutes, ...seriesRoutes];
+  return [...staticRoutes, ...collectionRoutes, ...movieRoutes, ...seriesRoutes];
 }

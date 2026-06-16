@@ -184,6 +184,8 @@ export const tmdbService = {
         rating_min?: number;
         rating_max?: number;
         language?: string;
+        with_keywords?: string;
+        with_companies?: string;
     }) {
         const queryParams: Record<string, any> = {
             page: params.page || 1,
@@ -196,6 +198,8 @@ export const tmdbService = {
         if (params.rating_min !== undefined && params.rating_min !== null) queryParams["vote_average.gte"] = params.rating_min;
         if (params.rating_max !== undefined && params.rating_max !== null) queryParams["vote_average.lte"] = params.rating_max;
         if (params.language) queryParams.with_original_language = params.language;
+        if (params.with_keywords) queryParams.with_keywords = params.with_keywords;
+        if (params.with_companies) queryParams.with_companies = params.with_companies;
 
         const data = await tmdbGet("/discover/movie", queryParams);
         const results = (data.results || []).map(normalizeMovie);
@@ -211,6 +215,8 @@ export const tmdbService = {
         rating_min?: number;
         rating_max?: number;
         language?: string;
+        with_keywords?: string;
+        with_companies?: string;
     }) {
         const queryParams: Record<string, any> = {
             page: params.page || 1,
@@ -223,6 +229,8 @@ export const tmdbService = {
         if (params.rating_min !== undefined && params.rating_min !== null) queryParams["vote_average.gte"] = params.rating_min;
         if (params.rating_max !== undefined && params.rating_max !== null) queryParams["vote_average.lte"] = params.rating_max;
         if (params.language) queryParams.with_original_language = params.language;
+        if (params.with_keywords) queryParams.with_keywords = params.with_keywords;
+        if (params.with_companies) queryParams.with_companies = params.with_companies;
 
         const data = await tmdbGet("/discover/tv", queryParams);
         const results = (data.results || []).map(normalizeTv);
