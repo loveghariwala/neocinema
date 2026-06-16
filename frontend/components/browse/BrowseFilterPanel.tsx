@@ -11,6 +11,12 @@ import {
     Sparkles,
     Globe,
     Check,
+    Flame,
+    Star,
+    TrendingDown,
+    Clock,
+    History,
+    CircleDollarSign,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -40,12 +46,12 @@ interface Props {
 }
 
 const SORT_OPTIONS = [
-    { label: "Most Popular", value: "popularity.desc", icon: "🔥" },
-    { label: "Rating: High to Low", value: "vote_average.desc", icon: "⭐" },
-    { label: "Rating: Low to High", value: "vote_average.asc", icon: "📉" },
-    { label: "Newest", value: "primary_release_date.desc", icon: "🆕" },
-    { label: "Oldest", value: "primary_release_date.asc", icon: "📜" },
-    { label: "Revenue", value: "revenue.desc", icon: "💰" },
+    { label: "Most Popular", value: "popularity.desc", icon: <Flame size={14} /> },
+    { label: "Rating: High to Low", value: "vote_average.desc", icon: <Star size={14} /> },
+    { label: "Rating: Low to High", value: "vote_average.asc", icon: <TrendingDown size={14} /> },
+    { label: "Newest", value: "primary_release_date.desc", icon: <Clock size={14} /> },
+    { label: "Oldest", value: "primary_release_date.asc", icon: <History size={14} /> },
+    { label: "Revenue", value: "revenue.desc", icon: <CircleDollarSign size={14} /> },
 ];
 
 const LANGUAGES = [

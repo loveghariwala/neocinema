@@ -13,13 +13,15 @@ import {
     RotateCcw,
     X,
     Star,
+    Calendar,
+    Type,
 } from "lucide-react";
 
 const SORT_OPTIONS = [
-    { label: "Date Added", value: "added", icon: "📅" },
-    { label: "Title A-Z", value: "title", icon: "🔤" },
-    { label: "Rating", value: "rating", icon: "⭐" },
-    { label: "Year", value: "year", icon: "📆" },
+    { label: "Date Added", value: "added", icon: <Calendar size={14} /> },
+    { label: "Title A-Z", value: "title", icon: <Type size={14} /> },
+    { label: "Rating", value: "rating", icon: <Star size={14} /> },
+    { label: "Year", value: "year", icon: <Calendar size={14} /> },
 ];
 
 const FILTER_TYPES = [
