@@ -37,7 +37,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const movies = await getTrendingMovies();
 
   const movieRoutes = movies.map((movie: any) => ({
-    url: `${baseUrl}/movies/${movie.id}`,
+    url: `${baseUrl}/movies/${movie.tmdbId || movie._id}`,
     lastModified: new Date(),
     changeFrequency: 'weekly',
     priority: 0.7,
