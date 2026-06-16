@@ -83,7 +83,13 @@ export default async function SeriesDetailsPage({
         "image": series.posterPath ? `https://image.tmdb.org/t/p/w500${series.posterPath}` : `${baseUrl}/neocinema_logo.png`,
         "description": series.overview,
         "startDate": series.releaseDate,
-        "url": `${baseUrl}/series/${id}`
+        "url": `${baseUrl}/series/${id}`,
+        "aggregateRating": series.rating ? {
+            "@type": "AggregateRating",
+            "ratingValue": series.rating,
+            "bestRating": "10",
+            "ratingCount": 100 // Fallback if vote_count isn't normalized, could be passed from backend
+        } : undefined
     };
 
     return (

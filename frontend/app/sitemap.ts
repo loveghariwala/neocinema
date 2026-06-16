@@ -1,12 +1,12 @@
 // frontend/app/sitemap.ts
 import { MetadataRoute } from 'next';
-import { getTrendingMovies } from '@/services/movieService'; // Your fetch logic
+import { getTrendingFromServer } from '@/services/movieService';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://neocinematv.vercel.app';
 
   // 1. Get Static Pages
-  const staticRoutes = [
+  const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: new Date(),
@@ -33,15 +33,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // 2. Fetch Dynamic Movies (Example fetching top 1000 movies)
-  const movies = await getTrendingMovies();
+  // 2. Fetch Dynamic Movies
+  const trendingMovies = await getTrendingFromServer("movie");
+  const movies = trendingMovies?.results || [];
+  const movieRoutes: MetadataRoute.Sitemap = movies.map((movie: any) => ({
+    url: `${baseUrl}/movies/${movie.id || movie.tmdbId}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 0.8,
+  }));
 
-  const movieRoutes = movies.map((movie: any) => ({
-    url: `${baseUrl}/movies/${movie.tmdbId || movie._id}`,
+  // 3. Fetch Dynamic Series
+  const trendingSeries = await getTrendingFromServer("tv");
+  const seriesList = trendingSeries?.results || [];
+  const seriesRoutes: MetadataRoute.Sitemap = seriesList.map((series: any) => ({
+    url: `${baseUrl}/series/${series.id || series.tmdbId}`,
     lastModified: new Date(),
     changeFrequency: 'weekly',
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...movieRoutes];
+  return [...staticRoutes, ...movieRoutes, ...seriesRoutes];
 }
