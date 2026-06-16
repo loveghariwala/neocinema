@@ -23,15 +23,15 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://neocinematv.vercel.app"),
   title: {
-    default: "NeoCinema | AI-Powered Movie & TV Series Discovery",
-    template: "%s | NeoCinema"
+    default: "Watch Free Movies & TV Shows Online in HD",
+    template: "%s | Watch Free Movies Online"
   },
-  description: "Experience the future of cinematic discovery with NeoCinema. AI-powered recommendations, semantic search, and an ultra-dark cinematic experience for movies and TV shows.",
+  description: "Watch and stream free movies and TV series online in HD. Find the latest trending movies, top-rated series, and new releases with zero ads.",
   keywords: ["movies", "series", "streaming", "AI recommendations", "NeoCinema", "cinematic platform", "movie discovery", "TV shows", "free movies", "watch movies online", "HD movies", "trending movies", "top rated series"],
   authors: [{ name: "Love Ghariwala", url: "https://github.com/loveghariwala" }],
   creator: "Love Ghariwala",
-  publisher: "NeoCinema",
-  applicationName: "NeoCinema",
+  publisher: "Watch Free Movies",
+  applicationName: "Watch Free Movies Online",
   robots: {
     index: true,
     follow: true,
@@ -47,18 +47,18 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: "NeoCinema | AI-Powered Movie & TV Series Discovery",
-    description: "Experience the future of cinematic discovery with NeoCinema. AI-powered recommendations, semantic search, and an ultra-dark cinematic experience.",
+    title: "Watch Free Movies & TV Shows Online in HD",
+    description: "Watch and stream free movies and TV series online in HD. Find the latest trending movies, top-rated series, and new releases with zero ads.",
     url: '/',
-    siteName: "NeoCinema",
+    siteName: "Watch Movies Online Free",
     locale: "en_US",
     type: "website",
-    images: [{ url: "/neocinema_logo.png", width: 800, height: 600, alt: "NeoCinema — AI Movie & TV Series Discovery Platform" }],
+    images: [{ url: "/neocinema_logo.png", width: 800, height: 600, alt: "Watch Free Movies & TV Series Online" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "NeoCinema | AI-Powered Movie & TV Series Discovery",
-    description: "Experience the future of cinematic discovery with NeoCinema. AI-powered recommendations, semantic search, and an ultra-dark cinematic experience.",
+    title: "Watch Free Movies & TV Shows Online in HD",
+    description: "Watch and stream free movies and TV series online in HD. Find the latest trending movies, top-rated series, and new releases with zero ads.",
     images: ["/neocinema_logo.png"],
     creator: "@neocinema",
   },
