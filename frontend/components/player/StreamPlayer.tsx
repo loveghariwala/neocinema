@@ -24,11 +24,11 @@ interface StreamPlayerProps {
 }
 
 const SERVERS = [
+    { name: "EPSILON", providerId: 5 },
     { name: "ALPHA", providerId: 4 },
     { name: "BETA", providerId: 1 },
     { name: "GAMMA", providerId: 2 },
     { name: "DELTA", providerId: 3 },
-    { name: "EPSILON", providerId: 5 },
 ];
 
 export default function StreamPlayer({
