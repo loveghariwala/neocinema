@@ -35,10 +35,8 @@ export default function MovieCard({ movie }: MovieCardProps) {
 
     return (
         <Link href={`${linkBase}/${id}`} className="block group w-full h-full" aria-label={`View details for ${title}`}>
-            <motion.div
-                whileHover={{ scale: 1.05, y: -10 }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                className="relative aspect-[2/3] w-full overflow-hidden rounded-2xl bg-neutral-950 shadow-xl border border-white/[0.05] transition-all duration-500 group-hover:border-white/20 group-hover:shadow-[0_20px_50px_rgba(220,38,38,0.3)]"
+            <div
+                className="relative aspect-[2/3] w-full overflow-hidden rounded-2xl bg-neutral-950 shadow-xl border border-white/[0.05] transition-all duration-500 ease-out group-hover:border-white/20 group-hover:shadow-[0_20px_50px_rgba(220,38,38,0.3)] group-hover:-translate-y-2 group-hover:scale-[1.03]"
             >
                 {/* Poster Image */}
                 <div className="absolute inset-0 bg-neutral-900">
@@ -106,7 +104,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
                         <Play size={24} className="text-white drop-shadow-md" fill="currentColor" />
                     </div>
                 </div>
-            </motion.div>
+            </div>
         </Link>
     );
 }

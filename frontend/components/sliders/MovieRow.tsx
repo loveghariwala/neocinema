@@ -40,21 +40,8 @@ export default function MovieRow({
         }
     };
 
-    // Auto-scroll every 15 seconds
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (scrollRef.current) {
-                const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-                if (scrollLeft + clientWidth >= scrollWidth - 10) {
-                    scrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
-                } else {
-                    scroll("right");
-                }
-            }
-        }, 15000);
-
-        return () => clearInterval(interval);
-    }, []);
+    // Auto-scroll removed to reduce unnecessary background CPU load
+    // Navigation is now purely user-driven
 
     const containerVariants: import("framer-motion").Variants = {
         hidden: { opacity: 0 },
@@ -72,7 +59,7 @@ export default function MovieRow({
     return (
         <section ref={containerRef} className={`relative mb-24 overflow-hidden ${className || ""}`}>
             {/* Header Section */}
-            <motion.div 
+            <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.6 }}
@@ -140,7 +127,7 @@ export default function MovieRow({
                         <ChevronRight size={24} />
                     </div>
                 </button>
-                
+
                 {/* Edge Fades */}
                 <div className="pointer-events-none absolute left-0 top-0 bottom-12 w-16 bg-gradient-to-r from-background to-transparent z-30" />
                 <div className="pointer-events-none absolute right-0 top-0 bottom-12 w-16 bg-gradient-to-l from-background to-transparent z-30" />
