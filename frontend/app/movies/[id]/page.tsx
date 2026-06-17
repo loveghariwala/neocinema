@@ -30,10 +30,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
 
     const releaseYear = movie.releaseDate ? new Date(movie.releaseDate).getFullYear() : "";
-    const titleText = `${movie.title} ${releaseYear ? `(${releaseYear})` : ""} — NeoCinema`;
-    const descriptionText = movie.overview
-        ? `${movie.overview.substring(0, 150)}...`
-        : `Watch and discover ${movie.title} with AI recommendations on NeoCinema.`;
+    const titleText = `Watch ${movie.title} ${releaseYear ? `(${releaseYear})` : ""} Online Free — NeoCinema`;
+    const descriptionText = `Stream ${movie.title} in HD for free. ${
+        movie.overview ? movie.overview.substring(0, 110) + '...' : ''
+    } Experience ultra-fast streaming with AI-powered recommendations on NeoCinema.`;
 
     const castKeywords = (movie.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
 

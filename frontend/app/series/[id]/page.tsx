@@ -33,10 +33,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
 
     const releaseYear = series.releaseDate ? new Date(series.releaseDate).getFullYear() : "";
-    const titleText = `${series.title} ${releaseYear ? `(${releaseYear})` : ""} — NeoCinema`;
-    const descriptionText = series.overview
-        ? `${series.overview.substring(0, 150)}...`
-        : `Watch and discover TV Series ${series.title} with AI recommendations on NeoCinema.`;
+    const titleText = `Watch ${series.title} ${releaseYear ? `(${releaseYear})` : ""} TV Series Online Free — NeoCinema`;
+    const descriptionText = `Stream all seasons and episodes of ${series.title} in HD for free. ${
+        series.overview ? series.overview.substring(0, 100) + '...' : ''
+    } Experience ultra-fast streaming with no ads on NeoCinema.`;
 
     const castKeywords = (series.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
 
