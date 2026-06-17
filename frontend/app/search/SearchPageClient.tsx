@@ -140,9 +140,6 @@ export default function SearchPageClient({
                                 <X size={20} />
                             </button>
                         )}
-                        {isLoading && (
-                            <Loader2 size={20} className="animate-spin text-red-600" />
-                        )}
                     </div>
 
                     {/* Hint */}
@@ -197,17 +194,7 @@ export default function SearchPageClient({
 
             {/* ─── Results ───────────────────────────────────────────── */}
             {isSearching ? (
-                isLoading && !hasResults ? (
-                    <div className="flex h-[40vh] flex-col items-center justify-center">
-                        <div className="relative">
-                            <div className="h-16 w-16 rounded-full border-2 border-neutral-800" />
-                            <div className="absolute inset-0 h-16 w-16 animate-spin rounded-full border-2 border-transparent border-t-red-600" />
-                        </div>
-                        <p className="mt-6 text-sm font-bold uppercase tracking-widest text-neutral-600">
-                            Searching globally...
-                        </p>
-                    </div>
-                ) : hasResults ? (
+                isLoading && !hasResults ? null : hasResults ? (
                     <>
                         <div className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                             {data.results.map((item: any, i: number) => (

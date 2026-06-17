@@ -74,12 +74,12 @@ const generateSeriesJsonLd = (seriesList: any[]) => {
                         : `${baseUrl}/neocinema_logo.png`,
                     "url": `${baseUrl}/series/${series.id || series.tmdbId}`,
                     "startDate": series.first_air_date,
-                    ...(series.vote_average ? {
+                    ...(series.rating && series.voteCount ? {
                         "aggregateRating": {
                             "@type": "AggregateRating",
-                            "ratingValue": series.vote_average,
+                            "ratingValue": series.rating,
                             "bestRating": "10",
-                            "ratingCount": series.vote_count || 100,
+                            "ratingCount": series.voteCount,
                         },
                     } : {}),
                 },
@@ -166,13 +166,5 @@ async function SeriesPageContent({ searchParams }: PageProps) {
 }
 
 export default function SeriesPage({ searchParams }: PageProps) {
-    return (
-        <Suspense fallback={
-            <div className="flex h-screen items-center justify-center bg-background">
-                <Loader2 className="h-10 w-10 animate-spin text-red-600" />
-            </div>
-        }>
-            <SeriesPageContent searchParams={searchParams} />
-        </Suspense>
-    );
+    return <SeriesPageContent searchParams={searchParams} />;
 }

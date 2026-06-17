@@ -102,17 +102,7 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons }: SeasonEpisod
 
             {/* Episodes List / Grid */}
             <AnimatePresence mode="wait">
-                {loading ? (
-                    <motion.div
-                        key="loading"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="flex h-48 items-center justify-center"
-                    >
-                        <Loader2 className="h-8 w-8 animate-spin text-red-600" />
-                    </motion.div>
-                ) : error ? (
+                {loading ? null : error ? (
                     <motion.div
                         key="error"
                         initial={{ opacity: 0 }}

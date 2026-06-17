@@ -74,12 +74,12 @@ const generateMoviesJsonLd = (movies: any[]) => {
                         : `${baseUrl}/neocinema_logo.png`,
                     "url": `${baseUrl}/movies/${movie.id || movie.tmdbId}`,
                     "dateCreated": movie.release_date,
-                    ...(movie.vote_average ? {
+                    ...(movie.rating && movie.voteCount ? {
                         "aggregateRating": {
                             "@type": "AggregateRating",
-                            "ratingValue": movie.vote_average,
+                            "ratingValue": movie.rating,
                             "bestRating": "10",
-                            "ratingCount": movie.vote_count || 100,
+                            "ratingCount": movie.voteCount,
                         },
                     } : {}),
                 },
@@ -166,13 +166,5 @@ async function MoviesPageContent({ searchParams }: PageProps) {
 }
 
 export default function MoviesPage({ searchParams }: PageProps) {
-    return (
-        <Suspense fallback={
-            <div className="flex h-screen items-center justify-center bg-background">
-                <Loader2 className="h-10 w-10 animate-spin text-red-600" />
-            </div>
-        }>
-            <MoviesPageContent searchParams={searchParams} />
-        </Suspense>
-    );
+    return <MoviesPageContent searchParams={searchParams} />;
 }

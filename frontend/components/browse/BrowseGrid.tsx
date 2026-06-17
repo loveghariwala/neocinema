@@ -12,17 +12,7 @@ interface Props {
 
 export default function BrowseGrid({ movies, isLoading, isMovie }: Props) {
     if (isLoading) {
-        return (
-            <div className="flex h-[50vh] flex-col items-center justify-center">
-                <div className="relative">
-                    <div className="h-16 w-16 rounded-full border-2 border-neutral-800" />
-                    <div className="absolute inset-0 h-16 w-16 animate-spin rounded-full border-2 border-transparent border-t-red-600" />
-                </div>
-                <p className="mt-6 text-sm font-bold uppercase tracking-widest text-neutral-600">
-                    Loading {isMovie ? "movies" : "series"}...
-                </p>
-            </div>
-        );
+        return null;
     }
 
     if (!movies || movies.length === 0) {

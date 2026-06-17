@@ -92,6 +92,7 @@ export async function getMovieDetails(id: string, type: "movie" | "tv" = "movie"
                 backdropPath: data.backdrop_path,
                 releaseDate: data.release_date || data.first_air_date,
                 rating: data.vote_average,
+                voteCount: data.vote_count,
                 language: data.original_language?.toUpperCase() || "EN",
                 genres: data.genres?.map((g: any) => g.name) || [],
                 runtime: data.runtime || (data.episode_run_time && data.episode_run_time[0]) || 0,

@@ -87,12 +87,12 @@ export default async function MovieDetailsPage({
         "url": `${baseUrl}/movies/${id}`,
         "genre": movie.genres,
         "duration": movie.runtime ? `PT${movie.runtime}M` : undefined,
-        ...(movie.rating ? {
+        ...(movie.rating && movie.voteCount ? {
             "aggregateRating": {
                 "@type": "AggregateRating",
                 "ratingValue": movie.rating,
                 "bestRating": "10",
-                "ratingCount": 100,
+                "ratingCount": movie.voteCount,
             },
         } : {}),
         "actor": (movie.cast || []).slice(0, 5).map((c: any) => ({

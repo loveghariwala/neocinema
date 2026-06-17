@@ -93,12 +93,12 @@ export default async function SeriesDetailsPage({
         "genre": series.genres,
         "numberOfSeasons": series.number_of_seasons,
         "numberOfEpisodes": series.number_of_episodes,
-        ...(series.rating ? {
+        ...(series.rating && series.voteCount ? {
             "aggregateRating": {
                 "@type": "AggregateRating",
                 "ratingValue": series.rating,
                 "bestRating": "10",
-                "ratingCount": 100,
+                "ratingCount": series.voteCount,
             },
         } : {}),
         "actor": (series.cast || []).slice(0, 5).map((c: any) => ({
