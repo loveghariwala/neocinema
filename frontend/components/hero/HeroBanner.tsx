@@ -35,7 +35,7 @@ export default function HeroBanner({
     };
 
     return (
-        <section className="relative h-[85vh] sm:h-[90vh] md:h-[100vh] w-full overflow-hidden bg-black">
+        <section className="relative flex flex-col min-h-[85vh] sm:min-h-[90vh] md:min-h-[100vh] w-full overflow-hidden bg-black">
             {/* Background Image with Continuous Ken Burns Zoom */}
             <motion.div
                 initial={{ scale: 1 }}
@@ -63,7 +63,7 @@ export default function HeroBanner({
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,black_100%)] opacity-40" />
 
             {/* Content */}
-            <div className="relative z-10 flex h-full flex-col justify-end pb-24 pt-28 md:justify-center md:pb-0 px-5 sm:px-8 md:px-16 lg:px-24">
+            <div className="relative z-10 flex flex-1 flex-col justify-end pb-32 pt-32 md:justify-center md:pb-32 px-5 sm:px-8 md:px-16 lg:px-24">
                 <motion.div
                     className="max-w-4xl w-full"
                     variants={containerVariants}
