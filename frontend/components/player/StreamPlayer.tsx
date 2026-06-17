@@ -29,6 +29,10 @@ const SERVERS = [
     { name: "DELTA", providerId: 4 },
     { name: "EPSILON", providerId: 5 },
     { name: "ZETA", providerId: 6 },
+    { name: "ETA", providerId: 7 },
+    { name: "THETA", providerId: 8 },
+    { name: "IOTA", providerId: 9 },
+    { name: "KAPPA", providerId: 10 },
 ];
 
 export default function StreamPlayer({
@@ -89,6 +93,10 @@ export default function StreamPlayer({
         if (provider === 4) return `https://autoembed.co/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
         if (provider === 5) return `https://www.2embed.cc/embed/${tmdbId}`;
         if (provider === 6) return `https://nontongo.win/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 7) return `https://vidsrc.cc/v2/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 8) return `https://moviesapi.club/${typePath}/${tmdbId}${isTv ? `-${selectedSeason}-${selectedEpisode}` : ""}`;
+        if (provider === 9) return `https://vidsrc.me/embed/${typePath}?tmdb=${tmdbId}${isTv ? `&season=${selectedSeason}&episode=${selectedEpisode}` : ""}`;
+        if (provider === 10) return `https://vidsrc.in/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
         return `https://player.videasy.net/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
     }, [selectedServerIndex, tmdbId, typePath, isTv, selectedSeason, selectedEpisode]);
 

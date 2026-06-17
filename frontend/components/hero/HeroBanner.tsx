@@ -41,11 +41,11 @@ export default function HeroBanner({
                 initial={{ scale: 1 }}
                 animate={{ scale: 1.1 }}
                 transition={{ duration: 20, ease: "linear", repeat: Infinity, repeatType: "reverse" }}
-                className="absolute inset-0"
+                className="absolute inset-0 will-change-transform"
             >
                 {backdropUrl ? (
                     <Image
-                        src={`https://image.tmdb.org/t/p/original${backdropUrl}`}
+                        src={`https://image.tmdb.org/t/p/w1280${backdropUrl}`}
                         alt={title}
                         fill
                         priority
@@ -58,9 +58,9 @@ export default function HeroBanner({
             </motion.div>
 
             {/* Next-Gen Vignette Gradients */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,black_100%)] opacity-40" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,black_100%)] opacity-40" />
 
             {/* Content */}
             <div className="relative z-10 flex h-full flex-col justify-end pb-24 pt-28 md:justify-center md:pb-0 px-5 sm:px-8 md:px-16 lg:px-24">
@@ -104,7 +104,7 @@ export default function HeroBanner({
                     </motion.p>
 
                     {/* Action Buttons */}
-                    <motion.div variants={itemVariants} className="flex items-center gap-4 flex-wrap">
+                    <motion.div variants={itemVariants} className="flex items-center gap-4 flex-wrap relative z-50 pointer-events-auto">
                         <Link
                             href={`${linkBase}/${id}?play=true`}
                             className="group relative flex items-center gap-3 rounded-full bg-white px-6 py-3.5 sm:px-8 sm:py-4 text-sm sm:text-base font-black text-black transition-all hover:bg-neutral-200 overflow-hidden"

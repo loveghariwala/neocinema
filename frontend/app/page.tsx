@@ -99,38 +99,46 @@ export default async function HomePage() {
             <h1 className="sr-only">NeoCinema - AI Powered Movie & TV Series Discovery</h1>
             {heroMovie && <HeroBanner movie={heroMovie} />}
 
-            <div className="relative z-20 -mt-32 space-y-24 px-6 pb-20 pt-32 md:px-16">
+            <div className="relative z-20 -mt-32 space-y-24 px-6 pb-20 pt-32 md:px-16 pointer-events-none">
                 {trendingMovies.length > 0 && (
-                    <MovieRow
-                        title="Trending Movies"
-                        movies={trendingMovies}
-                        className="pt-10"
-                        moreLink="/movies?sort=popularity.desc"
-                    />
+                    <div className="pointer-events-auto">
+                        <MovieRow
+                            title="Trending Movies"
+                            movies={trendingMovies}
+                            className="pt-10"
+                            moreLink="/movies?sort=popularity.desc"
+                        />
+                    </div>
                 )}
 
                 {trendingSeries.length > 0 && (
-                    <MovieRow
-                        title="Trending Series"
-                        movies={trendingSeries}
-                        moreLink="/series?sort=popularity.desc"
-                    />
+                    <div className="pointer-events-auto">
+                        <MovieRow
+                            title="Trending Series"
+                            movies={trendingSeries}
+                            moreLink="/series?sort=popularity.desc"
+                        />
+                    </div>
                 )}
 
                 {topRatedMovies.length > 0 && (
-                    <MovieRow
-                        title="Top Rated Movies"
-                        movies={topRatedMovies}
-                        moreLink="/movies?sort=vote_average.desc"
-                    />
+                    <div className="pointer-events-auto">
+                        <MovieRow
+                            title="Top Rated Movies"
+                            movies={topRatedMovies}
+                            moreLink="/movies?sort=vote_average.desc"
+                        />
+                    </div>
                 )}
 
                 {topRatedSeries.length > 0 && (
-                    <MovieRow
-                        title="Top Rated Series"
-                        movies={topRatedSeries}
-                        moreLink="/series?sort=vote_average.desc"
-                    />
+                    <div className="pointer-events-auto">
+                        <MovieRow
+                            title="Top Rated Series"
+                            movies={topRatedSeries}
+                            moreLink="/series?sort=vote_average.desc"
+                        />
+                    </div>
                 )}
             </div>
         </main>
