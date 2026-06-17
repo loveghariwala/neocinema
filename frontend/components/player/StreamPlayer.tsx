@@ -22,13 +22,13 @@ interface StreamPlayerProps {
     initialSeason?: number;
     initialEpisode?: number;
 }
-
 const SERVERS = [
+    { name: "ALPHA", providerId: 1 },
+    { name: "BETA", providerId: 2 },
+    { name: "GAMMA", providerId: 3 },
+    { name: "DELTA", providerId: 4 },
     { name: "EPSILON", providerId: 5 },
-    { name: "ALPHA", providerId: 4 },
-    { name: "BETA", providerId: 1 },
-    { name: "GAMMA", providerId: 2 },
-    { name: "DELTA", providerId: 3 },
+    { name: "ZETA", providerId: 6 },
 ];
 
 export default function StreamPlayer({
@@ -82,13 +82,14 @@ export default function StreamPlayer({
     const typePath = isTv ? "tv" : "movie";
 
     const streamUrl = useMemo(() => {
-        const provider = SERVERS[selectedServerIndex]?.providerId ?? 4;
-        if (provider === 4) return `https://vidlink.pro/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?primaryColor=dc2626`;
-        if (provider === 1) return `https://autoembed.co/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 2) return `https://www.2embed.cc/embed/${tmdbId}`;
-        if (provider === 3) return `https://nontongo.win/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 5) return `https://player.videasy.net/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        return `https://vidlink.pro/${typePath}/${tmdbId}?primaryColor=dc2626`;
+        const provider = SERVERS[selectedServerIndex]?.providerId ?? 1;
+        if (provider === 1) return `https://player.videasy.net/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 2) return `https://embed.smashystream.com/playere.php?tmdb=${tmdbId}${isTv ? `&season=${selectedSeason}&episode=${selectedEpisode}` : ""}`;
+        if (provider === 3) return `https://vidlink.pro/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?primaryColor=dc2626`;
+        if (provider === 4) return `https://autoembed.co/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 5) return `https://www.2embed.cc/embed/${tmdbId}`;
+        if (provider === 6) return `https://nontongo.win/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        return `https://player.videasy.net/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
     }, [selectedServerIndex, tmdbId, typePath, isTv, selectedSeason, selectedEpisode]);
 
     // Reset loading state when stream changes
@@ -293,7 +294,7 @@ export default function StreamPlayer({
                             <div className="text-center">
                                 <h3 className="text-lg font-black text-white tracking-[0.3em] uppercase mb-2">Establishing Stream</h3>
                                 <p className="text-xs text-neutral-500 font-bold max-w-sm mx-auto leading-relaxed">
-                                    TRYING SERVER: {SERVERS[selectedServerIndex].name} ({selectedServerIndex + 1} OF {SERVERS.length}). AUTO-SWITCHING IF UNAVAILABLE...
+                                    TRYING SERVER: {SERVERS[selectedServerIndex]?.name || "UNKNOWN"} ({Math.min(selectedServerIndex + 1, SERVERS.length)} OF {SERVERS.length}). AUTO-SWITCHING IF UNAVAILABLE...
                                 </p>
                             </div>
                         </div>

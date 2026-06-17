@@ -34,7 +34,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
     }, [posterUrl]);
 
     return (
-        <Link href={`${linkBase}/${id}`} className="block group w-full h-full">
+        <Link href={`${linkBase}/${id}`} className="block group w-full h-full" aria-label={`View details for ${title}`}>
             <motion.div
                 whileHover={{ scale: 1.05, y: -10 }}
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
@@ -93,7 +93,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
                             </span>
                         )}
                         {year && (
-                            <span className="text-[9px] sm:text-[10px] font-bold text-neutral-300 drop-shadow-md whitespace-nowrap">
+                            <span className="text-[9px] sm:text-[10px] font-bold text-neutral-200 drop-shadow-md whitespace-nowrap">
                                 {year}
                             </span>
                         )}

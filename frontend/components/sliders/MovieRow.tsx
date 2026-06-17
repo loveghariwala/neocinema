@@ -101,6 +101,7 @@ export default function MovieRow({
                 <button
                     onClick={() => scroll("left")}
                     disabled={!showLeft}
+                    aria-label="Scroll left"
                     className={`absolute left-0 md:left-4 top-1/2 z-40 -translate-y-1/2 flex items-center justify-center p-2 transition-all duration-500 ${!showLeft ? "opacity-0 pointer-events-none" : "opacity-0 group-hover/row:opacity-100 hover:scale-110"}`}
                 >
                     <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black/50 text-white backdrop-blur-xl shadow-2xl transition-colors hover:bg-red-600/90 hover:border-red-500 hover:shadow-[0_0_20px_rgba(220,38,38,0.6)]">
@@ -132,6 +133,7 @@ export default function MovieRow({
                 <button
                     onClick={() => scroll("right")}
                     disabled={!showRight}
+                    aria-label="Scroll right"
                     className={`absolute right-0 md:right-4 top-1/2 z-40 -translate-y-1/2 flex items-center justify-center p-2 transition-all duration-500 ${!showRight ? "opacity-0 pointer-events-none" : "opacity-0 group-hover/row:opacity-100 hover:scale-110"}`}
                 >
                     <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-black/50 text-white backdrop-blur-xl shadow-2xl transition-colors hover:bg-red-600/90 hover:border-red-500 hover:shadow-[0_0_20px_rgba(220,38,38,0.6)]">
