@@ -107,6 +107,7 @@ export default function HeroBanner({
                     <motion.div variants={itemVariants} className="flex items-center gap-4 flex-wrap relative z-50 pointer-events-auto">
                         <Link
                             href={`${linkBase}/${id}?play=true`}
+                            aria-label={`Watch ${title} now`}
                             className="group relative flex items-center gap-3 rounded-full bg-white px-6 py-3.5 sm:px-8 sm:py-4 text-sm sm:text-base font-black text-black transition-all hover:bg-neutral-200 overflow-hidden"
                         >
                             <div className="absolute inset-0 bg-white shadow-[0_0_40px_rgba(255,255,255,0.6)] opacity-0 transition-opacity group-hover:opacity-100" />
@@ -116,6 +117,7 @@ export default function HeroBanner({
 
                         <Link
                             href={`${linkBase}/${id}`}
+                            aria-label={`More info about ${title}`}
                             className="group flex items-center gap-3 rounded-full bg-neutral-900/40 px-6 py-3.5 sm:px-8 sm:py-4 text-sm sm:text-base font-bold text-white backdrop-blur-xl transition-all hover:bg-white/10 border border-white/10 hover:border-white/30"
                         >
                             <Info size={20} className="transition-transform group-hover:scale-110 text-neutral-400 group-hover:text-white" />
