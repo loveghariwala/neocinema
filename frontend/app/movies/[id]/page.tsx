@@ -73,7 +73,7 @@ export default async function MovieDetailsPage({
 
     if (!movie) return <div className="flex h-screen items-center justify-center text-white text-xl font-bold">Movie not found</div>;
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://neocinematv.vercel.app";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
 
     // ─── Movie JSON-LD ───────────────────────────────────────────────────────
     const movieJsonLd = {

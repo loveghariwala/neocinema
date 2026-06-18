@@ -20,7 +20,7 @@ const getSearchPageData = cache(async (query: string, type: string, page: string
 
 // ─── SearchAction JSON-LD ────────────────────────────────────────────────────
 const generateSearchJsonLd = () => {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://neocinematv.vercel.app";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
     return {
         "@context": "https://schema.org",
         "@type": "SearchResultsPage",

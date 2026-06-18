@@ -3,7 +3,7 @@ import { getTrendingFromServer } from '@/services/movieService';
 import { COLLECTIONS } from '@/lib/collections';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://neocinematv.vercel.app';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.neocinematv.com';
 
   // 1. Get Static Pages
   const staticRoutes: MetadataRoute.Sitemap = [

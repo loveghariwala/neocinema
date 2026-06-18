@@ -22,13 +22,13 @@ export default function CollectionsPage() {
         "@type": "CollectionPage",
         "name": "Curated Movie Collections",
         "description": "Discover hand-picked lists of the best movies and TV series tailored by genre, mood, and style. From cyberpunk classics to feel-good comedies.",
-        "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://neocinematv.vercel.app'}/collections`,
+        "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.neocinematv.com'}/collections`,
         "mainEntity": {
             "@type": "ItemList",
             "itemListElement": COLLECTIONS.map((c, index) => ({
                 "@type": "ListItem",
                 "position": index + 1,
-                "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://neocinematv.vercel.app'}/collections/${c.slug}`,
+                "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.neocinematv.com'}/collections/${c.slug}`,
                 "name": c.title,
                 "description": c.description
             }))

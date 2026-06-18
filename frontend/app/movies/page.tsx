@@ -34,7 +34,7 @@ const getMoviesPageData = cache(async (searchParams: Record<string, string>) => 
 
 // ─── CollectionPage + ItemList JSON-LD ───────────────────────────────────────
 const generateMoviesJsonLd = (movies: any[]) => {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://neocinematv.vercel.app";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
     return {
         "@context": "https://schema.org",
         "@type": "CollectionPage",

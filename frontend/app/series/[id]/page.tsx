@@ -78,7 +78,7 @@ export default async function SeriesDetailsPage({
 
     if (!series) return <div className="flex h-screen items-center justify-center text-white text-xl font-bold">Series not found</div>;
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://neocinematv.vercel.app";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
 
     // ─── TVSeries JSON-LD ────────────────────────────────────────────────────
     const seriesJsonLd = {

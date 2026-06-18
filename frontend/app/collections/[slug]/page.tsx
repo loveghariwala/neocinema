@@ -63,13 +63,13 @@ export default async function CollectionDetailPage({ params }: Props) {
         "@type": "CollectionPage",
         "name": collection.title,
         "description": collection.description,
-        "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://neocinematv.vercel.app'}/collections/${slug}`,
+        "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.neocinematv.com'}/collections/${slug}`,
         "mainEntity": {
             "@type": "ItemList",
             "itemListElement": movies.map((movie: any, index: number) => ({
                 "@type": "ListItem",
                 "position": index + 1,
-                "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://neocinematv.vercel.app'}/${collection.type === 'movie' ? 'movies' : 'series'}/${movie.id || movie._id || movie.tmdbId}`,
+                "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.neocinematv.com'}/${collection.type === 'movie' ? 'movies' : 'series'}/${movie.id || movie._id || movie.tmdbId}`,
                 "name": movie.title || movie.name || "Unknown",
                 "image": movie.posterPath ? `https://image.tmdb.org/t/p/w500${movie.posterPath}` : undefined
             }))

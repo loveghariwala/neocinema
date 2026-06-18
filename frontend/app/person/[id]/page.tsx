@@ -58,7 +58,7 @@ export default async function PersonPage({ params }: PersonPageProps) {
     
     if (!data || !data.person) return <PersonPageClient data={data} />;
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://neocinematv.vercel.app";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
 
     // ─── Person JSON-LD ──────────────────────────────────────────────────────
     const personJsonLd = {
