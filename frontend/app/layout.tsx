@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
@@ -63,7 +64,7 @@ export const metadata: Metadata = {
     creator: "@neocinema",
   },
   verification: {
-    google: "JVmcLJM33BWsPNbH1zaa3BF_EbUiCy20KHEPKT_6GnM",
+    google: "II4VqINTxDD9hlZqBSTqyO7vBQApjT92YCHylPQflfg",
   },
   icons: {
     icon: [
@@ -157,6 +158,20 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", notoSans.variable, playfairDisplayHeading.variable)}
     >
+      <head>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-4RGXPG1KWQ"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-4RGXPG1KWQ');
+          `}
+        </Script>
+      </head>
       <body suppressHydrationWarning className="min-h-full flex flex-row bg-background">
         <script
           id="json-ld-schema"

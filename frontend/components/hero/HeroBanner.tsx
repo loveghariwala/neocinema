@@ -121,7 +121,7 @@ export default function HeroBanner({
                             className="group flex items-center gap-3 rounded-full bg-neutral-900/40 px-6 py-3.5 sm:px-8 sm:py-4 text-sm sm:text-base font-bold text-white backdrop-blur-xl transition-all hover:bg-white/10 border border-white/10 hover:border-white/30"
                         >
                             <Info size={20} className="transition-transform group-hover:scale-110 text-neutral-400 group-hover:text-white" />
-                            <span>MORE INFO</span>
+                            <span>MORE INFO<span className="sr-only"> about {title}</span></span>
                         </Link>
                     </motion.div>
                 </motion.div>
