@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { Mail, MapPin, Globe, Github } from "lucide-react";
+import { Mail, MapPin, Globe, Code } from "lucide-react";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ export default function ContactPage() {
         { icon: Mail, title: "Email", subtitle: "For general inquiries", value: "contact@neocinematv.com", href: "mailto:contact@neocinematv.com" },
         { icon: MapPin, title: "Location", subtitle: "Where we're based", value: "India", href: null },
         { icon: Globe, title: "Website", subtitle: "Visit our platform", value: "www.neocinematv.com", href: "/" },
-        { icon: Github, title: "GitHub", subtitle: "Report bugs or contribute", value: "@loveghariwala", href: "https://github.com/loveghariwala" },
+        { icon: Code, title: "GitHub", subtitle: "Report bugs or contribute", value: "@loveghariwala", href: "https://github.com/loveghariwala" },
     ];
 
     return (
