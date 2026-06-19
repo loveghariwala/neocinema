@@ -1,107 +1,98 @@
 import { MetadataRoute } from 'next';
-import { getTrendingFromServer } from '@/services/movieService';
 import { COLLECTIONS } from '@/lib/collections';
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+/**
+ * Optimized sitemap — only includes static and collection routes.
+ * 
+ * WHY: Dynamic movie/series pages from TMDB trending were causing
+ * Googlebot to generate millions of edge requests, exceeding Vercel's
+ * free tier limit. Trending results change constantly, so Googlebot
+ * re-crawls all URLs on every sitemap fetch.
+ * 
+ * Individual movie/series pages are still indexable via internal links
+ * and Google's natural crawling — they don't need to be in the sitemap.
+ */
+export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.neocinematv.com';
 
-  // 1. Get Static Pages
+  // Static pages with realistic lastModified dates (not new Date() which
+  // signals to crawlers that the page has changed and needs re-crawling)
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
+      lastModified: new Date('2026-06-01'),
+      changeFrequency: 'weekly',
       priority: 1,
     },
     {
       url: `${baseUrl}/movies`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
+      lastModified: new Date('2026-06-01'),
+      changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
       url: `${baseUrl}/series`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
+      lastModified: new Date('2026-06-01'),
+      changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
       url: `${baseUrl}/search`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
+      lastModified: new Date('2026-06-01'),
+      changeFrequency: 'monthly',
       priority: 0.6,
     },
     {
       url: `${baseUrl}/collections`,
-      lastModified: new Date(),
+      lastModified: new Date('2026-06-01'),
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/about`,
-      lastModified: new Date(),
+      lastModified: new Date('2026-06-01'),
       changeFrequency: 'monthly',
       priority: 0.5,
     },
     {
       url: `${baseUrl}/contact`,
-      lastModified: new Date(),
+      lastModified: new Date('2026-06-01'),
       changeFrequency: 'monthly',
       priority: 0.5,
     },
     {
       url: `${baseUrl}/privacy`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.4,
+      lastModified: new Date('2026-06-01'),
+      changeFrequency: 'yearly',
+      priority: 0.3,
     },
     {
       url: `${baseUrl}/terms`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.4,
+      lastModified: new Date('2026-06-01'),
+      changeFrequency: 'yearly',
+      priority: 0.3,
     },
     {
       url: `${baseUrl}/cookies`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.3,
+      lastModified: new Date('2026-06-01'),
+      changeFrequency: 'yearly',
+      priority: 0.2,
     },
     {
       url: `${baseUrl}/disclaimer`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.3,
+      lastModified: new Date('2026-06-01'),
+      changeFrequency: 'yearly',
+      priority: 0.2,
     },
   ];
 
-  // 1.5 Get Dynamic Collections
+  // Collection pages (fixed set, not dynamic API calls)
   const collectionRoutes: MetadataRoute.Sitemap = COLLECTIONS.map((c) => ({
     url: `${baseUrl}/collections/${c.slug}`,
-    lastModified: new Date(),
+    lastModified: new Date('2026-06-01'),
     changeFrequency: 'weekly',
     priority: 0.9,
   }));
 
-  // 2. Fetch Dynamic Movies
-  const trendingMovies = await getTrendingFromServer("movie");
-  const movies = trendingMovies?.results || [];
-  const movieRoutes: MetadataRoute.Sitemap = movies.map((movie: any) => ({
-    url: `${baseUrl}/movies/${movie.id || movie.tmdbId}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly',
-    priority: 0.8,
-  }));
-
-  // 3. Fetch Dynamic Series
-  const trendingSeries = await getTrendingFromServer("tv");
-  const seriesList = trendingSeries?.results || [];
-  const seriesRoutes: MetadataRoute.Sitemap = seriesList.map((series: any) => ({
-    url: `${baseUrl}/series/${series.id || series.tmdbId}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly',
-    priority: 0.7,
-  }));
-
-  return [...staticRoutes, ...collectionRoutes, ...movieRoutes, ...seriesRoutes];
+  return [...staticRoutes, ...collectionRoutes];
 }
