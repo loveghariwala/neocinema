@@ -27,6 +27,8 @@ export async function GET(request: NextRequest) {
             const data = await response.json();
             const res = NextResponse.json(data);
             res.headers.set("X-Data-Source", "fastapi");
+            // Cache browse results for 5 min at CDN edge
+            res.headers.set("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
             return res;
         }
     } catch (error) {
@@ -58,6 +60,8 @@ export async function GET(request: NextRequest) {
 
         const res = NextResponse.json(data);
         res.headers.set("X-Data-Source", "nextjs");
+        // Cache browse results for 5 min at CDN edge
+        res.headers.set("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
         return res;
     } catch (fallbackError) {
         console.error("Browse fallback error:", fallbackError);

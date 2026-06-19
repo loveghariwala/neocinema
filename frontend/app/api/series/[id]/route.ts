@@ -17,6 +17,8 @@ export async function GET(
 
         const res = NextResponse.json(data);
         res.headers.set("X-Data-Source", source);
+        // Cache series details for 1 hour at CDN edge
+        res.headers.set("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=7200");
         return res;
     } catch (error) {
         return NextResponse.json({ error: "Series not found" }, { status: 500 });

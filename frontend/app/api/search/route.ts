@@ -32,6 +32,8 @@ export async function GET(request: NextRequest) {
 
         const res = NextResponse.json(data);
         res.headers.set("X-Data-Source", source);
+        // Cache search results for 2 min at CDN edge
+        res.headers.set("Cache-Control", "public, s-maxage=120, stale-while-revalidate=300");
         return res;
     } catch (error) {
         return NextResponse.json({ error: "Service unavailable" }, { status: 500 });

@@ -27,6 +27,8 @@ export async function GET(
 
         const res = NextResponse.json(data);
         res.headers.set("X-Data-Source", source);
+        // Cache trending data for 5 min at CDN edge, serve stale for 10 min while revalidating
+        res.headers.set("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
         return res;
     } catch (error) {
         return NextResponse.json({ error: "Service unavailable" }, { status: 500 });

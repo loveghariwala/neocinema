@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-
+import { Analytics } from "@vercel/analytics/react";
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
 import { Geist, Geist_Mono, Noto_Sans, Playfair_Display } from "next/font/google";
@@ -185,7 +185,7 @@ export default function RootLayout({
           </main>
           <Footer />
         </div>
-
+        <Analytics />
       </body>
     </html>
   );

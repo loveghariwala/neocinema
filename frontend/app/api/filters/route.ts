@@ -22,6 +22,8 @@ export async function GET(request: NextRequest) {
             const data = await response.json();
             const res = NextResponse.json(data);
             res.headers.set("X-Data-Source", "fastapi");
+            // Filter options rarely change — cache for 1 hour
+            res.headers.set("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=7200");
             return res;
         }
     } catch (error) {
@@ -42,6 +44,8 @@ export async function GET(request: NextRequest) {
 
         const res = NextResponse.json(data);
         res.headers.set("X-Data-Source", "nextjs");
+        // Filter options rarely change — cache for 1 hour
+        res.headers.set("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=7200");
         return res;
     } catch (fallbackError) {
         console.error("Filters fallback error:", fallbackError);
