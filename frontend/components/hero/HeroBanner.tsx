@@ -36,12 +36,10 @@ export default function HeroBanner({
 
     return (
         <section className="relative flex flex-col min-h-[85vh] sm:min-h-[90vh] md:min-h-[100vh] w-full overflow-hidden bg-black">
-            {/* Background Image with Continuous Ken Burns Zoom */}
-            <motion.div
-                initial={{ scale: 1 }}
-                animate={{ scale: 1.1 }}
-                transition={{ duration: 20, ease: "linear", repeat: Infinity, repeatType: "reverse" }}
-                className="absolute inset-0 will-change-transform"
+            {/* Background Image with Hardware-Accelerated CSS Ken Burns Zoom */}
+            <div
+                className="absolute inset-0 will-change-transform animate-ken-burns"
+                style={{ animation: "ken-burns 40s linear infinite alternate" }}
             >
                 {backdropUrl ? (
                     <Image
@@ -55,7 +53,7 @@ export default function HeroBanner({
                 ) : (
                     <div className="h-full w-full bg-neutral-900" />
                 )}
-            </motion.div>
+            </div>
 
             {/* Next-Gen Vignette Gradients */}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent" />

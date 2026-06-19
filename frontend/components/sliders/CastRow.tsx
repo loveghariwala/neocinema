@@ -83,11 +83,8 @@ export default function CastRow({ cast }: Props) {
                             className="min-w-[160px] md:min-w-[180px] flex-shrink-0 snap-start block"
                         >
                             <Link href={`/person/${actor.id || actor._id}`} className="group cursor-pointer block" aria-label={`View details for ${actor.name}`}>
-                                <motion.div
-                                    whileHover={{ scale: 1.05, y: -10 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                                    className="relative aspect-[2/3] mb-4 w-full overflow-hidden rounded-2xl bg-neutral-950 shadow-xl border border-white/[0.05] transition-all group-hover:border-white/20 group-hover:shadow-[0_20px_50px_rgba(220,38,38,0.3)]"
+                                <div
+                                    className="relative aspect-[2/3] mb-4 w-full overflow-hidden rounded-2xl bg-neutral-950 shadow-xl border border-white/[0.05] transition-all duration-300 group-hover:-translate-y-2 group-hover:scale-105 group-hover:border-white/20 group-hover:shadow-[0_20px_50px_rgba(220,38,38,0.3)]"
                                 >
                                     {actor.profilePath ? (
                                         <Image src={`https://image.tmdb.org/t/p/w342${actor.profilePath}`} alt={actor.name} fill sizes="180px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -95,7 +92,7 @@ export default function CastRow({ cast }: Props) {
                                         <div className="flex h-full items-center justify-center text-[10px] font-black uppercase text-neutral-500 bg-neutral-900">NO PHOTO</div>
                                     )}
                                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-90" />
-                                </motion.div>
+                                </div>
                                 <h4 className="text-base font-black text-white group-hover:text-red-500 transition-colors drop-shadow-md">{actor.name}</h4>
                                 <p className="text-sm font-medium text-neutral-300 line-clamp-2">{actor.character}</p>
                             </Link>

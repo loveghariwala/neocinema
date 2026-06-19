@@ -106,13 +106,12 @@ export default function MovieRow({
                     className="flex gap-[20px] overflow-x-auto scroll-smooth pb-12 pt-4 next-gen-scrollbar snap-x snap-mandatory"
                 >
                     {movies?.map((movie, index) => (
-                        <motion.div
-                            variants={itemVariants}
+                        <div
                             key={movie._id || movie.tmdbId || index}
                             className="w-[calc(50%-10px)] md:w-[calc(33.33%-13.33px)] lg:w-[calc(20%-16px)] flex-shrink-0 snap-start snap-always"
                         >
                             <MovieCard movie={movie} />
-                        </motion.div>
+                        </div>
                     ))}
                 </motion.div>
 

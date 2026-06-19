@@ -20,6 +20,9 @@ export default function MovieCard({ movie }: MovieCardProps) {
             ? movie.posterPath
             : `https://image.tmdb.org/t/p/w342${movie.posterPath}`
         : `https://ui-avatars.com/api/?name=${encodeURIComponent(title)}&background=1a1a1a&color=dc2626&size=300&bold=true`;
+    
+    const fallbackUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(title)}&background=1a1a1a&color=dc2626&size=300&bold=true`;
+
     const rating = movie.rating ?? movie.vote_average ?? 0;
     const genre = movie.genres?.[0] || "Unknown";
     const year = movie.releaseDate
@@ -28,10 +31,11 @@ export default function MovieCard({ movie }: MovieCardProps) {
             ? new Date(movie.release_date).getFullYear()
             : "";
 
-    const [imgSrc, setImgSrc] = useState(posterUrl);
+    // Track error state only, preventing 80 hydration re-renders on page load
+    const [hasError, setHasError] = useState(false);
     useEffect(() => {
-        setImgSrc(posterUrl);
-    }, [posterUrl]);
+        setHasError(false);
+    }, [movie.posterPath]);
 
     return (
         <Link href={`${linkBase}/${id}`} className="block group w-full h-full" aria-label={`View details for ${title}`}>
@@ -41,14 +45,12 @@ export default function MovieCard({ movie }: MovieCardProps) {
                 {/* Poster Image */}
                 <div className="absolute inset-0 bg-neutral-900">
                     <Image
-                        src={imgSrc}
+                        src={hasError ? fallbackUrl : posterUrl}
                         alt={title}
                         fill
                         sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 20vw, 15vw"
                         className="object-cover opacity-90 transition-all duration-700 group-hover:scale-110 group-hover:opacity-100 group-hover:blur-[2px]"
-                        onError={() => {
-                            setImgSrc(`https://ui-avatars.com/api/?name=${encodeURIComponent(title)}&background=1a1a1a&color=dc2626&size=300&bold=true`);
-                        }}
+                        onError={() => setHasError(true)}
                     />
                 </div>
 
@@ -76,7 +78,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-90" />
                 
                 {/* Secondary Hover Gradient (Red Glow) */}
-                <div className="absolute inset-0 bg-gradient-to-t from-red-900/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 mix-blend-overlay" />
+                <div className="absolute inset-0 bg-gradient-to-t from-red-900/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
                 {/* Content Overlay */}
                 <div className="absolute bottom-0 left-0 w-full p-3 sm:p-4 flex flex-col justify-end translate-y-4 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 z-20">
