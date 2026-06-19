@@ -10,6 +10,8 @@ import ShareButton from "@/components/ui/ShareButton";
 import SeasonEpisodeBrowser from "@/components/series/SeasonEpisodeBrowser";
 import { Metadata } from "next";
 
+export const revalidate = 86400; // ISR: cache series detail pages for 24 hours
+
 interface PageProps {
     params: Promise<{
         id: string;

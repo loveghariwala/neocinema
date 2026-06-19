@@ -5,6 +5,8 @@ import { cache } from "react";
 import { Loader2 } from "lucide-react";
 import { discoverContentFromServer, getGenresFromServer, searchContentFromServer } from "@/services/movieService";
 
+export const revalidate = 300; // ISR: regenerate every 5 minutes instead of every request
+
 // ─── Cached data fetch (shared between generateMetadata + page render) ───────
 const getSeriesPageData = cache(async (searchParams: Record<string, string>) => {
     const search = searchParams.search || "";

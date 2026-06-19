@@ -2,6 +2,8 @@ import { getPersonDetails } from "@/services/movieService";
 import PersonPageClient from "./PersonPageClient";
 import { Metadata } from "next";
 
+export const revalidate = 86400; // ISR: cache person detail pages for 24 hours
+
 interface PersonPageProps {
     params: Promise<{
         id: string;

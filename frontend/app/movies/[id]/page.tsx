@@ -9,6 +9,8 @@ import StreamPlayer from "@/components/player/StreamPlayer";
 import ShareButton from "@/components/ui/ShareButton";
 import { Metadata } from "next";
 
+export const revalidate = 86400; // ISR: cache movie detail pages for 24 hours
+
 interface PageProps {
     params: Promise<{
         id: string;
