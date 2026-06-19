@@ -67,6 +67,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
 }
 
+import { notFound } from "next/navigation";
+
 export default async function SeriesDetailsPage({
     params,
     searchParams,
@@ -78,7 +80,9 @@ export default async function SeriesDetailsPage({
     const episodeParam = resolvedSearchParams?.episode ? parseInt(resolvedSearchParams.episode) : 1;
     const series = await getMovieDetails(id, "tv");
 
-    if (!series) return <div className="flex h-screen items-center justify-center text-white text-xl font-bold">Series not found</div>;
+    if (!series) {
+        notFound();
+    }
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
 

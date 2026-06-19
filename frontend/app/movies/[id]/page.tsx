@@ -64,6 +64,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
 }
 
+import { notFound } from "next/navigation";
+
 export default async function MovieDetailsPage({
     params,
     searchParams,
@@ -73,7 +75,9 @@ export default async function MovieDetailsPage({
     const autoPlay = resolvedSearchParams?.play === "true";
     const movie = await getMovieDetails(id, "movie");
 
-    if (!movie) return <div className="flex h-screen items-center justify-center text-white text-xl font-bold">Movie not found</div>;
+    if (!movie) {
+        notFound();
+    }
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
 

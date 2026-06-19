@@ -16,13 +16,13 @@ export default function Footer() {
                             Experience the future of cinematic discovery. Our AI-powered platform brings you the best movies and series tailored to your taste.
                         </p>
                         <div className="flex gap-4">
-                            <a href="#" className="rounded-full bg-white/5 p-3 text-neutral-400 transition-all hover:bg-red-600 hover:text-white">
+                            <a href="#" aria-label="Send Message" className="rounded-full bg-white/5 p-3 text-neutral-400 transition-all hover:bg-red-600 hover:text-white">
                                 <Send size={18} />
                             </a>
-                            <a href="#" className="rounded-full bg-white/5 p-3 text-neutral-400 transition-all hover:bg-red-600 hover:text-white">
+                            <a href="#" aria-label="View Instagram" className="rounded-full bg-white/5 p-3 text-neutral-400 transition-all hover:bg-red-600 hover:text-white">
                                 <Camera size={18} />
                             </a>
-                            <a href="#" className="rounded-full bg-white/5 p-3 text-neutral-400 transition-all hover:bg-red-600 hover:text-white">
+                            <a href="#" aria-label="View GitHub Code" className="rounded-full bg-white/5 p-3 text-neutral-400 transition-all hover:bg-red-600 hover:text-white">
                                 <Code size={18} />
                             </a>
                         </div>
@@ -86,9 +86,10 @@ export default function Footer() {
                             <input
                                 type="email"
                                 placeholder="Your email"
+                                aria-label="Email address for newsletter"
                                 className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white outline-none focus:border-red-600 transition-colors flex-1 w-full min-w-0"
                             />
-                            <button className="bg-red-600 text-white rounded-lg px-4 py-2 text-sm font-bold hover:bg-red-700 transition-colors">
+                            <button aria-label="Subscribe to newsletter" className="bg-red-600 text-white rounded-lg px-4 py-2 text-sm font-bold hover:bg-red-700 transition-colors">
                                 <Mail size={18} />
                             </button>
                         </div>
