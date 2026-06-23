@@ -1,5 +1,6 @@
 import HeroBanner from "@/components/hero/HeroBanner";
 import MovieRow from "@/components/sliders/MovieRow";
+import AdsterraNativeBanner from "@/components/ads/AdsterraNativeBanner";
 import { getTrendingFromServer, discoverContentFromServer, getTopRatedMovies } from "@/services/movieService";
 import { Metadata } from "next";
 import { cache } from "react";
@@ -110,6 +111,9 @@ export default async function HomePage() {
                         />
                     </div>
                 )}
+
+                {/* Adsterra Native Banner (Matches the horizontal layout) */}
+                <AdsterraNativeBanner />
 
                 {trendingSeries.length > 0 && (
                     <div className="pointer-events-auto">

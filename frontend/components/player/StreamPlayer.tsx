@@ -33,6 +33,9 @@ const SERVERS = [
     { name: "THETA", providerId: 8 },
     { name: "IOTA", providerId: 9 },
     { name: "KAPPA", providerId: 10 },
+    { name: "HINDI-1", providerId: 11 },
+    { name: "HINDI-2", providerId: 12 },
+    { name: "HINDI-3", providerId: 13 },
 ];
 
 export default function StreamPlayer({
@@ -97,6 +100,9 @@ export default function StreamPlayer({
         if (provider === 8) return `https://moviesapi.club/${typePath}/${tmdbId}${isTv ? `-${selectedSeason}-${selectedEpisode}` : ""}`;
         if (provider === 9) return `https://vidsrc.me/embed/${typePath}?tmdb=${tmdbId}${isTv ? `&season=${selectedSeason}&episode=${selectedEpisode}` : ""}`;
         if (provider === 10) return `https://vidsrc.in/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 11) return `https://embed.su/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 12) return `https://multiembed.mov/?video_id=${tmdbId}&tmdb=1${isTv ? `&s=${selectedSeason}&e=${selectedEpisode}` : ""}`;
+        if (provider === 13) return `https://vidsrc.rip/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
         return `https://player.videasy.net/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
     }, [selectedServerIndex, tmdbId, typePath, isTv, selectedSeason, selectedEpisode]);
 
@@ -374,7 +380,7 @@ export default function StreamPlayer({
                             ))}
                         </div>
                         <div className="flex flex-wrap gap-2">
-                            {SERVERS.slice(6).map((server, idx) => {
+                            {SERVERS.slice(6, 10).map((server, idx) => {
                                 const realIdx = idx + 6;
                                 return (
                                     <button
@@ -382,6 +388,23 @@ export default function StreamPlayer({
                                         onClick={() => handleServerChange(realIdx)}
                                         className={`px-3 py-1.5 md:px-4 md:py-2 rounded text-[10px] md:text-[11px] font-black uppercase transition-all tracking-wider border-b-[3px] cursor-pointer ${selectedServerIndex === realIdx
                                             ? "bg-[#0090d0] text-white border-[#006090] shadow-lg shadow-sky-900/30 translate-y-0 active:translate-y-[2px] active:border-b-0"
+                                            : "bg-[#555] hover:bg-[#606060] text-white border-[#333] active:translate-y-[2px] active:border-b-0"
+                                            }`}
+                                    >
+                                        {server.name}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {SERVERS.slice(10).map((server, idx) => {
+                                const realIdx = idx + 10;
+                                return (
+                                    <button
+                                        key={realIdx}
+                                        onClick={() => handleServerChange(realIdx)}
+                                        className={`px-3 py-1.5 md:px-4 md:py-2 rounded text-[10px] md:text-[11px] font-black uppercase transition-all tracking-wider border-b-[3px] cursor-pointer ${selectedServerIndex === realIdx
+                                            ? "bg-[#10b981] text-white border-[#047857] shadow-lg shadow-emerald-900/30 translate-y-0 active:translate-y-[2px] active:border-b-0"
                                             : "bg-[#555] hover:bg-[#606060] text-white border-[#333] active:translate-y-[2px] active:border-b-0"
                                             }`}
                                     >

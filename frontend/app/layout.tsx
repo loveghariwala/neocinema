@@ -171,6 +171,11 @@ export default function RootLayout({
             gtag('config', 'G-4RGXPG1KWQ');
           `}
         </Script>
+        {/* Adsterra Popunder */}
+        <Script 
+          src="https://pl29858256.effectivecpmnetwork.com/c2/8d/3a/c28d3aac5fc463198cc00359f362b421.js" 
+          strategy="lazyOnload"
+        />
       </head>
       <body suppressHydrationWarning className="min-h-full flex flex-row bg-background">
         <script
