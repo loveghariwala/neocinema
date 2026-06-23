@@ -36,6 +36,9 @@ const SERVERS = [
     { name: "HINDI-1", providerId: 11 },
     { name: "HINDI-2", providerId: 12 },
     { name: "HINDI-3", providerId: 13 },
+    { name: "HINDI-4", providerId: 14 },
+    { name: "HINDI-5", providerId: 15 },
+    { name: "HINDI-6", providerId: 16 },
 ];
 
 export default function StreamPlayer({
@@ -103,6 +106,9 @@ export default function StreamPlayer({
         if (provider === 11) return `https://embed.su/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
         if (provider === 12) return `https://multiembed.mov/?video_id=${tmdbId}&tmdb=1${isTv ? `&s=${selectedSeason}&e=${selectedEpisode}` : ""}`;
         if (provider === 13) return `https://vidsrc.rip/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 14) return `https://vidsrc.net/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 15) return `https://autoembed.to/${typePath}/tmdb/${tmdbId}${isTv ? `-${selectedSeason}-${selectedEpisode}` : ""}`;
+        if (provider === 16) return `https://vidbinge.com/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
         return `https://player.videasy.net/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
     }, [selectedServerIndex, tmdbId, typePath, isTv, selectedSeason, selectedEpisode]);
 
