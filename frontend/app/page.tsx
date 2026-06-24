@@ -17,10 +17,13 @@ const getHomeDataCached = cache(async () => {
             discoverContentFromServer("tv", { sort_by: "vote_average.asc", rating_min: "8.3", rating_max: "9.0", page: "1", language: "ko", with_genres: "80" }),
         ]);
 
-    const trendingMovies = trendingMoviesRes?.results || [];
-    const trendingSeries = trendingSeriesRes?.results || [];
-    const topRatedMovies = topRatedMoviesRes?.results || [];
-    const topRatedSeries = topRatedSeriesRes?.results || [];
+    const blockedIds = ["1180798", "1064137", "1154268", "260471", "1173900", "490005"];
+    const isAllowed = (item: any) => !blockedIds.includes(String(item.id || item.tmdbId || item._id));
+
+    const trendingMovies = (trendingMoviesRes?.results || []).filter(isAllowed);
+    const trendingSeries = (trendingSeriesRes?.results || []).filter(isAllowed);
+    const topRatedMovies = (topRatedMoviesRes?.results || []).filter(isAllowed);
+    const topRatedSeries = (topRatedSeriesRes?.results || []).filter(isAllowed);
 
     return { trendingMovies, trendingSeries, topRatedMovies, topRatedSeries };
 });
@@ -34,6 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
         .slice(0, 10)
         .map((m: any) => m.title || m.name)
         .filter(Boolean);
+
     const seriesKeywords = trendingSeries
         .slice(0, 10)
         .map((s: any) => s.title || s.name)
