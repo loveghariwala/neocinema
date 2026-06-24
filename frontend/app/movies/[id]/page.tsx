@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     const castKeywords = (movie.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
 
-    const blockedIds = ["1180798", "1064137", "1154268", "260471", "1173900", "490005"];
+    const blockedIds = ["1180798", "1064137", "1154268", "260471", "1173900", "490005", "1628522", "852042"];
     const isBlocked = blockedIds.includes(String(id));
 
     return {

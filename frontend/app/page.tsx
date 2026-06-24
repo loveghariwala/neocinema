@@ -29,7 +29,7 @@ const getHomeDataCached = cache(async () => {
 export async function generateMetadata(): Promise<Metadata> {
     const { trendingMovies, trendingSeries } = await getHomeDataCached();
 
-    const blockedIds = ["1180798", "1064137", "1154268", "260471", "1173900", "490005"];
+    const blockedIds = ["1180798", "1064137", "1154268", "260471", "1173900", "490005", "1628522", "852042"];
     const isAllowed = (item: any) => !blockedIds.includes(String(item.id || item.tmdbId || item._id));
 
     // Auto-inject real trending movie & series titles as SEO keywords

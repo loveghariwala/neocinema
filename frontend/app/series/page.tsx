@@ -109,13 +109,15 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     const resolvedSearchParams = (await searchParams) || {};
     const { data } = await getSeriesPageData(resolvedSearchParams as Record<string, string>);
 
+    const page = resolvedSearchParams.page || "1";
+
     const seriesKeywords = (data?.results || [])
         .slice(0, 10)
         .map((s: any) => s.title || s.name)
         .filter(Boolean);
 
     return {
-        title: "Browse TV Series",
+        title: page === "1" ? "Browse TV Series" : `Browse TV Series - Page ${page}`,
         description: "Discover over 200,000 television series, documentaries, and anime from around the world. Find your next binge-watch with our AI-powered recommendation filters.",
         keywords: [
             "TV series", "television shows", "browse series", "binge-watch",
@@ -124,7 +126,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
             ...seriesKeywords,
         ],
         alternates: { canonical: '/series' },
-        robots: { index: true, follow: true },
+        robots: page === "1" ? { index: true, follow: true } : { index: false, follow: true },
         openGraph: {
             title: "Browse TV Series | NeoCinema",
             description: "Discover over 200,000 television series, documentaries, and anime from around the world.",

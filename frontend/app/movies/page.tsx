@@ -109,13 +109,15 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     const resolvedSearchParams = (await searchParams) || {};
     const { data } = await getMoviesPageData(resolvedSearchParams as Record<string, string>);
 
+    const page = resolvedSearchParams.page || "1";
+
     const movieKeywords = (data?.results || [])
         .slice(0, 10)
         .map((m: any) => m.title || m.name)
         .filter(Boolean);
 
     return {
-        title: "Browse Movies",
+        title: page === "1" ? "Browse Movies" : `Browse Movies - Page ${page}`,
         description: "Explore an extensive library of over 1 million movies from around the globe. Filter by genre, release year, rating, and language using our advanced discovery engine.",
         keywords: [
             "movies list", "browse movies", "global cinema", "film database",
@@ -124,7 +126,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
             ...movieKeywords,
         ],
         alternates: { canonical: '/movies' },
-        robots: { index: true, follow: true },
+        robots: page === "1" ? { index: true, follow: true } : { index: false, follow: true },
         openGraph: {
             title: "Browse Movies | NeoCinema",
             description: "Explore an extensive library of over 1 million movies from around the globe. Filter by genre, release year, rating, and language.",
