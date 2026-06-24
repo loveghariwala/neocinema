@@ -23,30 +23,20 @@ interface StreamPlayerProps {
     initialEpisode?: number;
 }
 const SERVERS = [
-    { name: "NEO 1", providerId: 1 },
-    { name: "NEO 2", providerId: 2 },
-    { name: "NEO 3", providerId: 3 },
-    { name: "NEO 4", providerId: 4 },
-    { name: "NEO 5", providerId: 5 },
-    { name: "NEO 6", providerId: 6 },
-    { name: "NEO 7", providerId: 7 },
-    { name: "NEO 8", providerId: 8 },
-    { name: "NEO 9", providerId: 9 },
-    { name: "NEO 10", providerId: 10 },
-    { name: "NEO 11", providerId: 11 },
-    { name: "NEO 12", providerId: 12 },
-    { name: "NEO 13", providerId: 13 },
-    { name: "NEO 14", providerId: 14 },
-    { name: "NEO 15", providerId: 15 },
-    { name: "NEO 16", providerId: 16 },
-    { name: "NEO 17", providerId: 17 },
-    { name: "NEO 18", providerId: 18 },
-    { name: "NEO 19", providerId: 19 },
-    { name: "NEO 20", providerId: 20 },
-    { name: "NEO 21", providerId: 21 },
-    { name: "NEO 22", providerId: 22 },
-    { name: "NEO 23", providerId: 23 },
-    { name: "NEO 24", providerId: 24 },
+    { name: "OMEGA", providerId: 11 },
+    { name: "ALPHA", providerId: 1 },
+    { name: "GAMMA", providerId: 3 },
+    { name: "DELTA", providerId: 4 },
+    { name: "EPSILON", providerId: 5 },
+    { name: "ZETA", providerId: 6 },
+    { name: "ETA", providerId: 7 },
+    { name: "THETA", providerId: 8 },
+    { name: "IOTA", providerId: 9 },
+    { name: "KAPPA", providerId: 10 },
+    { name: "LAMBDA", providerId: 12 },
+    { name: "MU", providerId: 13 },
+    { name: "NU", providerId: 14 },
+    { name: "XI", providerId: 15 },
 ];
 
 export default function StreamPlayer({
@@ -101,32 +91,20 @@ export default function StreamPlayer({
 
     const streamUrl = useMemo(() => {
         const provider = SERVERS[selectedServerIndex]?.providerId ?? 1;
-        // Base64 encoded domains to prevent DMCA bots from scanning the Vercel source code
-        if (provider === 1) return `${atob("aHR0cHM6Ly92aWRzcmMubWUvZW1iZWQv")}${typePath}?tmdb=${tmdbId}${isTv ? `&season=${selectedSeason}&episode=${selectedEpisode}` : ""}`;
-        if (provider === 2) return `${atob("aHR0cHM6Ly92aWRuZXN0LmZ1bi9lbWJlZC8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 3) return `${atob("aHR0cHM6Ly92aWRzcmMudG8vZW1iZWQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 4) return `${atob("aHR0cHM6Ly9wbGF5ZXIudmlkZWFzeS5uZXQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 5) return `${atob("aHR0cHM6Ly9lbWJlZC5zbWFzaHlzdHJlYW0uY29tL3BsYXllcmUucGhwP3RtZGI9")}${tmdbId}${isTv ? `&season=${selectedSeason}&episode=${selectedEpisode}` : ""}`;
-        if (provider === 6) return `${atob("aHR0cHM6Ly92aWRsaW5rLnByby8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?primaryColor=dc2626`;
+        if (provider === 1) return `${atob("aHR0cHM6Ly9wbGF5ZXIudmlkZWFzeS5uZXQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 3) return `${atob("aHR0cHM6Ly92aWRsaW5rLnByby8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?primaryColor=dc2626`;
+        if (provider === 4) return `${atob("aHR0cHM6Ly9hdXRvZW1iZWQuY28v")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 5) return `${atob("aHR0cHM6Ly93d3cuMmVtYmVkLmNjL2VtYmVkLw==")}${tmdbId}`;
+        if (provider === 6) return `${atob("aHR0cHM6Ly9ub250b25nby53aW4vZW1iZWQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
         if (provider === 7) return `${atob("aHR0cHM6Ly92aWRzcmMuY2MvdjIvZW1iZWQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 8) return `${atob("aHR0cHM6Ly93d3cuMmVtYmVkLmNjL2VtYmVkLw==")}${tmdbId}`;
-        if (provider === 9) return `${atob("aHR0cHM6Ly92aWRzcmMuaW4vZW1iZWQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 10) return `${atob("aHR0cHM6Ly9hdXRvZW1iZWQuY28v")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 11) return `${atob("aHR0cHM6Ly9ub250b25nby53aW4vZW1iZWQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 12) return `${atob("aHR0cHM6Ly9tb3ZpZXNhcGkuY2x1Yi8=")}${typePath}/${tmdbId}${isTv ? `-${selectedSeason}-${selectedEpisode}` : ""}`;
-        if (provider === 13) return `${atob("aHR0cHM6Ly92aWRzcmMucG0vZW1iZWQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 14) return `${atob("aHR0cHM6Ly92aWRzcmMudmlwL2VtYmVkLw==")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 15) return `${atob("aHR0cHM6Ly92aWRzcmMueHl6L2VtYmVkLw==")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 16) return `${atob("aHR0cHM6Ly92aWRzcmMucHJvL2VtYmVkLw==")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 17) return `${atob("aHR0cHM6Ly9wbGF5ZXIuY2luZXByby5wcm8vZW1iZWQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 18) return `${atob("aHR0cHM6Ly9mbW92aWVzLnBzL2VtYmVkLw==")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 19) return `${atob("aHR0cHM6Ly92aWRib3gudG8vZW1iZWQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 20) return `${atob("aHR0cHM6Ly9hcGkuZmxpeGhxLnRvL2VtYmVkLw==")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 21) return `${atob("aHR0cHM6Ly9ibGFja3ZpZC5zcGFjZS9lbWJlZD90bWRiPQ==")}${tmdbId}${isTv ? `&season=${selectedSeason}&episode=${selectedEpisode}` : ""}`;
-        if (provider === 22) return `${atob("aHR0cHM6Ly9tb3ZpZWhkLnByby9lbWJlZC8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 23) return `${atob("aHR0cHM6Ly9wbGF5LmZsaXhoZC5jYy9lbWJlZC8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 24) return `${atob("aHR0cHM6Ly9tb3ZpZXMudmlwL2VtYmVkLw==")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        
+        if (provider === 8) return `${atob("aHR0cHM6Ly9tb3ZpZXNhcGkuY2x1Yi8=")}${typePath}/${tmdbId}${isTv ? `-${selectedSeason}-${selectedEpisode}` : ""}`;
+        if (provider === 9) return `${atob("aHR0cHM6Ly92aWRzcmMubWUvZW1iZWQv")}${typePath}?tmdb=${tmdbId}${isTv ? `&season=${selectedSeason}&episode=${selectedEpisode}` : ""}`;
+        if (provider === 10) return `${atob("aHR0cHM6Ly92aWRzcmMuaW4vZW1iZWQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 11) return `${atob("aHR0cHM6Ly92aWRuZXN0LmZ1bi8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 12) return `${atob("aHR0cHM6Ly92aWRuZXN0LmZ1bi8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?server=gama`;
+        if (provider === 13) return `${atob("aHR0cHM6Ly92aWRuZXN0LmZ1bi8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?server=alfa`;
+        if (provider === 14) return `${atob("aHR0cHM6Ly92aWRuZXN0LmZ1bi8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?server=lamda`;
+        if (provider === 15) return `${atob("aHR0cHM6Ly92aWRuZXN0LmZ1bi8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?server=sigma`;
         return `${atob("aHR0cHM6Ly9wbGF5ZXIudmlkZWFzeS5uZXQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
     }, [selectedServerIndex, tmdbId, typePath, isTv, selectedSeason, selectedEpisode]);
 
@@ -390,7 +368,7 @@ export default function StreamPlayer({
                     </div>
                     <div className="flex flex-col gap-2 flex-grow">
                         <div className="flex flex-wrap gap-2">
-                            {SERVERS.slice(0, 8).map((server, idx) => (
+                            {SERVERS.slice(0, 5).map((server, idx) => (
                                 <button
                                     key={idx}
                                     onClick={() => handleServerChange(idx)}
@@ -404,8 +382,8 @@ export default function StreamPlayer({
                             ))}
                         </div>
                         <div className="flex flex-wrap gap-2">
-                            {SERVERS.slice(8, 15).map((server, idx) => {
-                                const realIdx = idx + 8;
+                            {SERVERS.slice(5, 10).map((server, idx) => {
+                                const realIdx = idx + 5;
                                 return (
                                     <button
                                         key={realIdx}
@@ -421,8 +399,8 @@ export default function StreamPlayer({
                             })}
                         </div>
                         <div className="flex flex-wrap gap-2">
-                            {SERVERS.slice(15, 22).map((server, idx) => {
-                                const realIdx = idx + 15;
+                            {SERVERS.slice(10, 15).map((server, idx) => {
+                                const realIdx = idx + 10;
                                 return (
                                     <button
                                         key={realIdx}
