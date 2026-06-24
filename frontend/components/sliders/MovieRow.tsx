@@ -40,8 +40,25 @@ export default function MovieRow({
         }
     };
 
-    // Auto-scroll removed to reduce unnecessary background CPU load
-    // Navigation is now purely user-driven
+    // Auto-scroll every 10 seconds to infinity
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (scrollRef.current) {
+                const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+                // Check if we are at the end
+                if (scrollLeft >= scrollWidth - clientWidth - 10) {
+                    // Loop back to start
+                    scrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
+                } else {
+                    // Scroll right by one view width
+                    const scrollTo = scrollLeft + clientWidth;
+                    scrollRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
+                }
+            }
+        }, 10000);
+
+        return () => clearInterval(interval);
+    }, []);
 
     const containerVariants: import("framer-motion").Variants = {
         hidden: { opacity: 0 },

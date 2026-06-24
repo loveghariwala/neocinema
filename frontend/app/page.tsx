@@ -13,13 +13,13 @@ const getHomeDataCached = cache(async () => {
         await Promise.all([
             getTrendingFromServer("movie", "week", "1"),
             getTrendingFromServer("tv", "week", "1"),
-            getTopRatedMovies(),
-            discoverContentFromServer("tv", { sort_by: "vote_average.desc", rating_min: "5", page: "1" }),
+            discoverContentFromServer("movie", { sort_by: "popularity.desc", with_genres: "27,878", page: "1" }),
+            discoverContentFromServer("tv", { sort_by: "vote_average.asc", rating_min: "8.3", rating_max: "9.0", page: "1", language: "ko", with_genres: "80" }),
         ]);
 
     const trendingMovies = trendingMoviesRes?.results || [];
     const trendingSeries = trendingSeriesRes?.results || [];
-    const topRatedMovies = topRatedMoviesRes || [];
+    const topRatedMovies = topRatedMoviesRes?.results || [];
     const topRatedSeries = topRatedSeriesRes?.results || [];
 
     return { trendingMovies, trendingSeries, topRatedMovies, topRatedSeries };
