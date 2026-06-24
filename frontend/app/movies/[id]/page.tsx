@@ -39,12 +39,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     const castKeywords = (movie.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
 
+    const blockedIds = ["1180798", "1064137", "1154268", "260471", "1173900", "490005"];
+    const isBlocked = blockedIds.includes(String(id));
+
     return {
         title: titleText,
         description: descriptionText,
         keywords: [movie.title, ...(movie.genres || []), ...castKeywords, "AI recommendations", "NeoCinema", "stream movie", "watch online free"],
         alternates: { canonical: `/movies/${id}` },
-        robots: { index: true, follow: true },
+        robots: isBlocked ? { index: false, follow: false } : { index: true, follow: true },
         openGraph: {
             title: titleText,
             description: descriptionText,
