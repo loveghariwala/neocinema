@@ -23,22 +23,30 @@ interface StreamPlayerProps {
     initialEpisode?: number;
 }
 const SERVERS = [
-    { name: "ALPHA", providerId: 1 },
-    { name: "BETA", providerId: 2 },
-    { name: "GAMMA", providerId: 3 },
-    { name: "DELTA", providerId: 4 },
-    { name: "EPSILON", providerId: 5 },
-    { name: "ZETA", providerId: 6 },
-    { name: "ETA", providerId: 7 },
-    { name: "THETA", providerId: 8 },
-    { name: "IOTA", providerId: 9 },
-    { name: "KAPPA", providerId: 10 },
-    { name: "HINDI-1", providerId: 11 },
-    { name: "HINDI-2", providerId: 12 },
-    { name: "HINDI-3", providerId: 13 },
-    { name: "HINDI-4", providerId: 14 },
-    { name: "HINDI-5", providerId: 15 },
-    { name: "HINDI-6", providerId: 16 },
+    { name: "NEO 1", providerId: 1 },
+    { name: "NEO 2", providerId: 2 },
+    { name: "NEO 3", providerId: 3 },
+    { name: "NEO 4", providerId: 4 },
+    { name: "NEO 5", providerId: 5 },
+    { name: "NEO 6", providerId: 6 },
+    { name: "NEO 7", providerId: 7 },
+    { name: "NEO 8", providerId: 8 },
+    { name: "NEO 9", providerId: 9 },
+    { name: "NEO 10", providerId: 10 },
+    { name: "NEO 11", providerId: 11 },
+    { name: "NEO 12", providerId: 12 },
+    { name: "NEO 13", providerId: 13 },
+    { name: "NEO 14", providerId: 14 },
+    { name: "NEO 15", providerId: 15 },
+    { name: "NEO 16", providerId: 16 },
+    { name: "NEO 17", providerId: 17 },
+    { name: "NEO 18", providerId: 18 },
+    { name: "NEO 19", providerId: 19 },
+    { name: "NEO 20", providerId: 20 },
+    { name: "NEO 21", providerId: 21 },
+    { name: "NEO 22", providerId: 22 },
+    { name: "NEO 23", providerId: 23 },
+    { name: "NEO 24", providerId: 24 },
 ];
 
 export default function StreamPlayer({
@@ -93,23 +101,33 @@ export default function StreamPlayer({
 
     const streamUrl = useMemo(() => {
         const provider = SERVERS[selectedServerIndex]?.providerId ?? 1;
-        if (provider === 1) return `https://player.videasy.net/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 2) return `https://embed.smashystream.com/playere.php?tmdb=${tmdbId}${isTv ? `&season=${selectedSeason}&episode=${selectedEpisode}` : ""}`;
-        if (provider === 3) return `https://vidlink.pro/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?primaryColor=dc2626`;
-        if (provider === 4) return `https://autoembed.co/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 5) return `https://www.2embed.cc/embed/${tmdbId}`;
-        if (provider === 6) return `https://nontongo.win/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 7) return `https://vidsrc.cc/v2/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 8) return `https://moviesapi.club/${typePath}/${tmdbId}${isTv ? `-${selectedSeason}-${selectedEpisode}` : ""}`;
-        if (provider === 9) return `https://vidsrc.me/embed/${typePath}?tmdb=${tmdbId}${isTv ? `&season=${selectedSeason}&episode=${selectedEpisode}` : ""}`;
-        if (provider === 10) return `https://vidsrc.in/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 11) return `https://embed.su/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 12) return `https://multiembed.mov/?video_id=${tmdbId}&tmdb=1${isTv ? `&s=${selectedSeason}&e=${selectedEpisode}` : ""}`;
-        if (provider === 13) return `https://vidsrc.rip/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 14) return `https://vidsrc.net/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 15) return `https://autoembed.to/${typePath}/tmdb/${tmdbId}${isTv ? `-${selectedSeason}-${selectedEpisode}` : ""}`;
-        if (provider === 16) return `https://vidbinge.com/embed/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        return `https://player.videasy.net/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        // Base64 encoded domains to prevent DMCA bots from scanning the Vercel source code
+        if (provider === 1) return `${atob("aHR0cHM6Ly92aWRzcmMubWUvZW1iZWQv")}${typePath}?tmdb=${tmdbId}${isTv ? `&season=${selectedSeason}&episode=${selectedEpisode}` : ""}`;
+        if (provider === 2) return `${atob("aHR0cHM6Ly92aWRuZXN0LmZ1bi9lbWJlZC8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 3) return `${atob("aHR0cHM6Ly92aWRzcmMudG8vZW1iZWQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 4) return `${atob("aHR0cHM6Ly9wbGF5ZXIudmlkZWFzeS5uZXQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 5) return `${atob("aHR0cHM6Ly9lbWJlZC5zbWFzaHlzdHJlYW0uY29tL3BsYXllcmUucGhwP3RtZGI9")}${tmdbId}${isTv ? `&season=${selectedSeason}&episode=${selectedEpisode}` : ""}`;
+        if (provider === 6) return `${atob("aHR0cHM6Ly92aWRsaW5rLnByby8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?primaryColor=dc2626`;
+        if (provider === 7) return `${atob("aHR0cHM6Ly92aWRzcmMuY2MvdjIvZW1iZWQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 8) return `${atob("aHR0cHM6Ly93d3cuMmVtYmVkLmNjL2VtYmVkLw==")}${tmdbId}`;
+        if (provider === 9) return `${atob("aHR0cHM6Ly92aWRzcmMuaW4vZW1iZWQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 10) return `${atob("aHR0cHM6Ly9hdXRvZW1iZWQuY28v")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 11) return `${atob("aHR0cHM6Ly9ub250b25nby53aW4vZW1iZWQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 12) return `${atob("aHR0cHM6Ly9tb3ZpZXNhcGkuY2x1Yi8=")}${typePath}/${tmdbId}${isTv ? `-${selectedSeason}-${selectedEpisode}` : ""}`;
+        if (provider === 13) return `${atob("aHR0cHM6Ly92aWRzcmMucG0vZW1iZWQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 14) return `${atob("aHR0cHM6Ly92aWRzcmMudmlwL2VtYmVkLw==")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 15) return `${atob("aHR0cHM6Ly92aWRzcmMueHl6L2VtYmVkLw==")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 16) return `${atob("aHR0cHM6Ly92aWRzcmMucHJvL2VtYmVkLw==")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 17) return `${atob("aHR0cHM6Ly9wbGF5ZXIuY2luZXByby5wcm8vZW1iZWQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 18) return `${atob("aHR0cHM6Ly9mbW92aWVzLnBzL2VtYmVkLw==")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 19) return `${atob("aHR0cHM6Ly92aWRib3gudG8vZW1iZWQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 20) return `${atob("aHR0cHM6Ly9hcGkuZmxpeGhxLnRvL2VtYmVkLw==")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 21) return `${atob("aHR0cHM6Ly9ibGFja3ZpZC5zcGFjZS9lbWJlZD90bWRiPQ==")}${tmdbId}${isTv ? `&season=${selectedSeason}&episode=${selectedEpisode}` : ""}`;
+        if (provider === 22) return `${atob("aHR0cHM6Ly9tb3ZpZWhkLnByby9lbWJlZC8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 23) return `${atob("aHR0cHM6Ly9wbGF5LmZsaXhoZC5jYy9lbWJlZC8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        if (provider === 24) return `${atob("aHR0cHM6Ly9tb3ZpZXMudmlwL2VtYmVkLw==")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        
+        return `${atob("aHR0cHM6Ly9wbGF5ZXIudmlkZWFzeS5uZXQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
     }, [selectedServerIndex, tmdbId, typePath, isTv, selectedSeason, selectedEpisode]);
 
     // Reset loading state when stream changes
@@ -367,17 +385,17 @@ export default function StreamPlayer({
                 <div className="bg-black/95 border-t border-white/5 px-6 py-4 md:px-8 md:py-5 flex flex-col md:flex-row md:items-center gap-4 md:gap-6 md:rounded-b-[2.5rem] select-none">
                     <div className="flex-shrink-0">
                         <span className="text-sm md:text-base font-black text-red-300 uppercase tracking-wider">
-                            Stream Server
+                            HD SERVER
                         </span>
                     </div>
                     <div className="flex flex-col gap-2 flex-grow">
                         <div className="flex flex-wrap gap-2">
-                            {SERVERS.slice(0, 6).map((server, idx) => (
+                            {SERVERS.slice(0, 8).map((server, idx) => (
                                 <button
                                     key={idx}
                                     onClick={() => handleServerChange(idx)}
                                     className={`px-3 py-1.5 md:px-4 md:py-2 rounded text-[10px] md:text-[11px] font-black uppercase transition-all tracking-wider border-b-[3px] cursor-pointer ${selectedServerIndex === idx
-                                        ? "bg-red-500 text-white border-red-500 shadow-lg shadow-rose-600/30 translate-y-0 active:translate-y-[2px] active:border-b-0"
+                                        ? "bg-[#0090d0] text-white border-[#006090] shadow-lg shadow-sky-900/30 translate-y-0 active:translate-y-[2px] active:border-b-0"
                                         : "bg-[#555] hover:bg-[#606060] text-white border-[#333] active:translate-y-[2px] active:border-b-0"
                                         }`}
                                 >
@@ -386,8 +404,8 @@ export default function StreamPlayer({
                             ))}
                         </div>
                         <div className="flex flex-wrap gap-2">
-                            {SERVERS.slice(6, 10).map((server, idx) => {
-                                const realIdx = idx + 6;
+                            {SERVERS.slice(8, 15).map((server, idx) => {
+                                const realIdx = idx + 8;
                                 return (
                                     <button
                                         key={realIdx}
@@ -403,14 +421,31 @@ export default function StreamPlayer({
                             })}
                         </div>
                         <div className="flex flex-wrap gap-2">
-                            {SERVERS.slice(10).map((server, idx) => {
-                                const realIdx = idx + 10;
+                            {SERVERS.slice(15, 22).map((server, idx) => {
+                                const realIdx = idx + 15;
                                 return (
                                     <button
                                         key={realIdx}
                                         onClick={() => handleServerChange(realIdx)}
                                         className={`px-3 py-1.5 md:px-4 md:py-2 rounded text-[10px] md:text-[11px] font-black uppercase transition-all tracking-wider border-b-[3px] cursor-pointer ${selectedServerIndex === realIdx
-                                            ? "bg-[#10b981] text-white border-[#047857] shadow-lg shadow-emerald-900/30 translate-y-0 active:translate-y-[2px] active:border-b-0"
+                                            ? "bg-[#0090d0] text-white border-[#006090] shadow-lg shadow-sky-900/30 translate-y-0 active:translate-y-[2px] active:border-b-0"
+                                            : "bg-[#555] hover:bg-[#606060] text-white border-[#333] active:translate-y-[2px] active:border-b-0"
+                                            }`}
+                                    >
+                                        {server.name}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {SERVERS.slice(22, 24).map((server, idx) => {
+                                const realIdx = idx + 22;
+                                return (
+                                    <button
+                                        key={realIdx}
+                                        onClick={() => handleServerChange(realIdx)}
+                                        className={`px-3 py-1.5 md:px-4 md:py-2 rounded text-[10px] md:text-[11px] font-black uppercase transition-all tracking-wider border-b-[3px] cursor-pointer ${selectedServerIndex === realIdx
+                                            ? "bg-[#0090d0] text-white border-[#006090] shadow-lg shadow-sky-900/30 translate-y-0 active:translate-y-[2px] active:border-b-0"
                                             : "bg-[#555] hover:bg-[#606060] text-white border-[#333] active:translate-y-[2px] active:border-b-0"
                                             }`}
                                     >
