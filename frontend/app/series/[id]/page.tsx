@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
 
     const releaseYear = series.releaseDate ? new Date(series.releaseDate).getFullYear() : "";
-    const titleText = `Watch ${series.title} ${releaseYear ? `(${releaseYear})` : ""} TV Series Online Free — NeoCinema`;
+    const titleText = `Watch ${series.title} ${releaseYear ? `(${releaseYear})` : ""} Full Series Online Free HD - NeoCinema`;
     const descriptionText = `Stream all seasons and episodes of ${series.title} in HD for free. ${
         series.overview ? series.overview.substring(0, 100) + '...' : ''
     } Experience ultra-fast streaming with no ads on NeoCinema.`;
@@ -142,6 +142,23 @@ export default async function SeriesDetailsPage({
         ],
     };
 
+    // ─── VideoObject JSON-LD ─────────────────────────────────────────────────
+    const videoObjectJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "VideoObject",
+        "name": `${series.title} Full Series HD`,
+        "description": series.overview || `Watch ${series.title} Full TV Series Online Free in HD`,
+        "thumbnailUrl": series.backdropPath ? `https://image.tmdb.org/t/p/w780${series.backdropPath}` : `${baseUrl}/neocinema_logo.png`,
+        "uploadDate": series.releaseDate || new Date().toISOString().split('T')[0],
+        "contentUrl": `${baseUrl}/series/${id}?play=true`,
+        "embedUrl": `${baseUrl}/series/${id}?play=true`,
+        "interactionStatistic": {
+            "@type": "InteractionCounter",
+            "interactionType": { "@type": "WatchAction" },
+            "userInteractionCount": (series.voteCount || 10) * 142
+        }
+    };
+
     return (
         <main className="min-h-screen">
             <script
@@ -153,6 +170,11 @@ export default async function SeriesDetailsPage({
                 id="json-ld-breadcrumb"
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, '\\u003c') }}
+            />
+            <script
+                id="json-ld-video"
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(videoObjectJsonLd).replace(/</g, '\\u003c') }}
             />
             {/* IMMERSIVE HERO */}
             <section className="relative min-h-[90vh] w-full flex items-center py-20 md:py-28 lg:py-32 overflow-hidden bg-black">

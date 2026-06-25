@@ -10,20 +10,22 @@ export const revalidate = 300; // ISR: regenerate home page every 5 minutes
 
 // ─── Cached data fetch (shared between generateMetadata + page render) ───────
 const getHomeDataCached = cache(async () => {
-    const [trendingMoviesRes, trendingSeriesRes, topRatedMoviesRes, topRatedSeriesRes] =
+    const [trendingMoviesRes, trendingSeriesRes, topRatedMoviesRes, topRatedSeriesRes, trendingHindiRes] =
         await Promise.all([
             getTrendingFromServer("movie", "week", "1"),
             getTrendingFromServer("tv", "week", "1"),
             discoverContentFromServer("movie", { sort_by: "popularity.desc", with_genres: "27,878", page: "1" }),
             discoverContentFromServer("tv", { sort_by: "vote_average.asc", rating_min: "8.3", rating_max: "9.0", page: "1", language: "ko", with_genres: "80" }),
+            discoverContentFromServer("movie", { sort_by: "popularity.desc", language: "hi", page: "1" }),
         ]);
 
     const trendingMovies = trendingMoviesRes?.results || [];
     const trendingSeries = trendingSeriesRes?.results || [];
     const topRatedMovies = topRatedMoviesRes?.results || [];
     const topRatedSeries = topRatedSeriesRes?.results || [];
+    const trendingHindi = trendingHindiRes?.results || [];
 
-    return { trendingMovies, trendingSeries, topRatedMovies, topRatedSeries };
+    return { trendingMovies, trendingSeries, topRatedMovies, topRatedSeries, trendingHindi };
 });
 
 // ─── Dynamic Metadata (SEO keywords auto-generated from live movie data) ─────
@@ -105,7 +107,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 // ─── Page Component ──────────────────────────────────────────────────────────
 export default async function HomePage() {
-    const { trendingMovies, trendingSeries, topRatedMovies, topRatedSeries } =
+    const { trendingMovies, trendingSeries, topRatedMovies, topRatedSeries, trendingHindi } =
         await getHomeDataCached();
 
     const heroMovie = trendingMovies[0] || null;
@@ -135,6 +137,16 @@ export default async function HomePage() {
                             title="Trending Series"
                             movies={trendingSeries}
                             moreLink="/series?sort=popularity.desc"
+                        />
+                    </div>
+                )}
+
+                {trendingHindi.length > 0 && (
+                    <div className="pointer-events-auto">
+                        <MovieRow
+                            title="Trending Hindi Movies"
+                            movies={trendingHindi}
+                            moreLink="/movies?language=hi"
                         />
                     </div>
                 )}
