@@ -174,8 +174,13 @@ export default function StreamPlayer({
 
     const handleInitialPlay = () => {
         if (!hasClickedAd) {
-            // Adsterra Smart Link Integration (Popunder)
-            window.open("https://www.effectivecpmnetwork.com/khge4vq0f?key=0bc9ee47ad5de40ae42fce1eae3506e2", "_blank");
+            // Check if it is a mobile device
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            // Adsterra Smart Link Integration (Popunder) - Desktop Only
+            if (!isMobile) {
+                window.open("https://www.effectivecpmnetwork.com/khge4vq0f?key=0bc9ee47ad5de40ae42fce1eae3506e2", "_blank");
+            }
             setHasClickedAd(true);
         }
         setIsPlaying(true);
@@ -206,7 +211,7 @@ export default function StreamPlayer({
                     <div className="flex flex-col min-w-0 flex-1">
                         <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] text-red-600 block mb-0.5">Streaming Mode</span>
                         <h2 className="text-xs sm:text-sm md:text-base font-black text-white text-glow truncate">
-                            {title} {isTv && <span className="text-neutral-500 font-bold ml-2">S{selectedSeason} E{selectedEpisode}</span>}
+                            {title} {isTv && <span className="text-neutral-400 font-bold ml-2">S{selectedSeason} E{selectedEpisode}</span>}
                         </h2>
                     </div>
 
@@ -251,7 +256,7 @@ export default function StreamPlayer({
                                                             }`}
                                                     >
                                                         Season {s.season_number}
-                                                        <span className="block text-[9px] opacity-60 font-medium">{s.episode_count} Episodes</span>
+                                                        <span className="block text-[9px] text-neutral-300 font-medium">{s.episode_count} Episodes</span>
                                                     </button>
                                                 ))}
                                             </div>
@@ -326,7 +331,7 @@ export default function StreamPlayer({
                             </div>
                             <div className="text-center">
                                 <h3 className="text-lg font-black text-white tracking-[0.3em] uppercase mb-2">Establishing Stream</h3>
-                                <p className="text-xs text-neutral-500 font-bold max-w-sm mx-auto leading-relaxed">
+                                <p className="text-xs text-neutral-400 font-bold max-w-sm mx-auto leading-relaxed">
                                     TRYING SERVER: {SERVERS[selectedServerIndex]?.name || "UNKNOWN"} ({Math.min(selectedServerIndex + 1, SERVERS.length)} OF {SERVERS.length}). AUTO-SWITCHING IF UNAVAILABLE...
                                 </p>
                             </div>
