@@ -14,12 +14,23 @@ export default function AdsterraNativeBanner() {
         // Prevent double injection in React Strict Mode
         if (bannerRef.current.querySelector("script")) return;
 
+        const conf = document.createElement("script");
+        conf.type = "text/javascript";
+        conf.innerHTML = `atOptions = {
+            'key' : 'dcbee4d1696d82a7378d3aa14780aa77',
+            'format' : 'iframe',
+            'height' : 90,
+            'width' : 728,
+            'params' : {}
+        };`;
+
         const script = document.createElement("script");
         script.type = "text/javascript";
         script.async = true;
         script.dataset.cfasync = "false";
         script.src = "https://pl29858380.effectivecpmnetwork.com/dcbee4d1696d82a7378d3aa14780aa77/invoke.js";
         
+        bannerRef.current.appendChild(conf);
         bannerRef.current.appendChild(script);
     }, []);
 
