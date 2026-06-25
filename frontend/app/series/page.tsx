@@ -3,7 +3,8 @@ import { Metadata } from "next";
 import BrowsePageClient from "@/components/browse/BrowsePageClient";
 import { Suspense } from "react";
 import { cache } from "react";
-import { Loader2 } from "lucide-react";
+import Loader2 from "lucide-react/dist/esm/icons/loader-2";
+
 import { discoverContentFromServer, getGenresFromServer, searchContentFromServer } from "@/services/movieService";
 
 export const revalidate = 300; // ISR: regenerate every 5 minutes instead of every request

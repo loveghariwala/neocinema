@@ -1,9 +1,12 @@
 "use client";
 import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import ChevronLeft from "lucide-react/dist/esm/icons/chevron-left";
+import ChevronRight from "lucide-react/dist/esm/icons/chevron-right";
+import ArrowRight from "lucide-react/dist/esm/icons/arrow-right";
+
 import MovieCard from "../cards/MovieCard";
-import { motion, useInView } from "framer-motion";
+
 
 interface Props {
     title: string;
@@ -22,7 +25,7 @@ export default function MovieRow({
     const containerRef = useRef<HTMLDivElement>(null);
     const [showLeft, setShowLeft] = useState(false);
     const [showRight, setShowRight] = useState(true);
-    const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+    const isInView = true;
 
     const scroll = (direction: "left" | "right") => {
         if (scrollRef.current) {
@@ -60,7 +63,7 @@ export default function MovieRow({
         return () => clearInterval(interval);
     }, []);
 
-    const containerVariants: import("framer-motion").Variants = {
+    const containerVariants: any = {
         hidden: { opacity: 0 },
         show: {
             opacity: 1,
@@ -68,7 +71,7 @@ export default function MovieRow({
         }
     };
 
-    const itemVariants: import("framer-motion").Variants = {
+    const itemVariants: any = {
         hidden: { opacity: 0, x: 50 },
         show: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
     };
@@ -76,10 +79,7 @@ export default function MovieRow({
     return (
         <section ref={containerRef} className={`relative mb-24 overflow-hidden ${className || ""}`}>
             {/* Header Section */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.6 }}
+            <div
                 className="mb-8 flex items-end justify-between px-6 md:px-16 gap-6"
             >
                 <div className="flex items-end gap-4 flex-shrink-0">
@@ -98,7 +98,7 @@ export default function MovieRow({
                         <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1.5 group-hover:text-red-500" />
                     </Link>
                 )}
-            </motion.div>
+            </div>
 
             <div className="relative px-6 md:px-16 group/row">
                 {/* LEFT ARROW - Fade on hover */}
@@ -114,10 +114,7 @@ export default function MovieRow({
                 </button>
 
                 {/* SLIDER CONTAINER */}
-                <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate={isInView ? "show" : "hidden"}
+                <div
                     ref={scrollRef}
                     onScroll={handleScroll}
                     className="flex gap-[20px] overflow-x-auto scroll-smooth pb-12 pt-4 next-gen-scrollbar snap-x snap-mandatory"
@@ -130,7 +127,7 @@ export default function MovieRow({
                             <MovieCard movie={movie} />
                         </div>
                     ))}
-                </motion.div>
+                </div>
 
                 {/* RIGHT ARROW - Fade on hover */}
                 <button

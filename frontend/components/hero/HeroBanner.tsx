@@ -1,7 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Play, Info, Star } from "lucide-react";
+
+import Play from "lucide-react/dist/esm/icons/play";
+import Info from "lucide-react/dist/esm/icons/info";
+import Star from "lucide-react/dist/esm/icons/star";
+
 import Link from "next/link";
 import Image from "next/image";
 
@@ -16,7 +19,7 @@ export default function HeroBanner({
     const title = movie.title || movie.name || "Unknown";
 
     // Text reveal animation variants
-    const containerVariants: import("framer-motion").Variants = {
+    const containerVariants: any = {
         hidden: { opacity: 0 },
         show: {
             opacity: 1,
@@ -24,7 +27,7 @@ export default function HeroBanner({
         }
     };
 
-    const itemVariants: import("framer-motion").Variants = {
+    const itemVariants: any = {
         hidden: { opacity: 0, y: 30, filter: "blur(10px)" },
         show: {
             opacity: 1,
@@ -62,14 +65,11 @@ export default function HeroBanner({
 
             {/* Content */}
             <div className="relative z-10 flex flex-1 flex-col justify-end pb-32 pt-32 md:justify-center md:pb-32 px-5 sm:px-8 md:px-16 lg:px-24">
-                <motion.div
+                <div
                     className="max-w-4xl w-full"
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="show"
                 >
                     {/* Badge */}
-                    <motion.div variants={itemVariants} className="mb-3 sm:mb-4 flex flex-wrap items-center gap-3">
+                    <div className="mb-3 sm:mb-4 flex flex-wrap items-center gap-3">
                         <span className="flex items-center gap-1.5 rounded-full bg-red-600/20 px-2.5 py-1 sm:px-3 sm:py-1 text-[9px] sm:text-xs font-black tracking-[0.2em] text-red-500 backdrop-blur-md border border-red-500/20">
                             <span className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
@@ -83,26 +83,24 @@ export default function HeroBanner({
                                 {movie.vote_average.toFixed(1)}
                             </span>
                         )}
-                    </motion.div>
+                    </div>
 
                     {/* Title */}
-                    <motion.h1
-                        variants={itemVariants}
+                    <h1
                         className="mb-3 sm:mb-4 pb-1 lg:pb-4 text-4xl sm:text-5xl md:text-7xl lg:text-[7rem] font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60 leading-[1.1] filter drop-shadow-[0_0_30px_rgba(255,255,255,0.2)] break-words"
                     >
                         {title}
-                    </motion.h1>
+                    </h1>
 
                     {/* Overview */}
-                    <motion.p
-                        variants={itemVariants}
+                    <p
                         className="mb-6 sm:mb-8 max-w-2xl text-xs sm:text-sm md:text-lg lg:text-xl font-medium leading-relaxed text-neutral-300 line-clamp-3 md:line-clamp-4 drop-shadow-lg"
                     >
                         {movie.overview}
-                    </motion.p>
+                    </p>
 
                     {/* Action Buttons */}
-                    <motion.div variants={itemVariants} className="flex items-center gap-4 flex-wrap relative z-50 pointer-events-auto">
+                    <div className="flex items-center gap-4 flex-wrap relative z-50 pointer-events-auto">
                         <Link
                             href={`${linkBase}/${id}?play=true`}
                             aria-label={`Watch ${title} now`}
@@ -121,8 +119,8 @@ export default function HeroBanner({
                             <Info size={20} className="transition-transform group-hover:scale-110 text-neutral-400 group-hover:text-white" />
                             <span>MORE INFO<span className="sr-only"> about {title}</span></span>
                         </Link>
-                    </motion.div>
-                </motion.div>
+                    </div>
+                </div>
             </div>
         </section>
     );

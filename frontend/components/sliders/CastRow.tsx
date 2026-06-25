@@ -1,8 +1,10 @@
 "use client";
 import { useRef, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { motion, useInView } from "framer-motion";
+import ChevronLeft from "lucide-react/dist/esm/icons/chevron-left";
+import ChevronRight from "lucide-react/dist/esm/icons/chevron-right";
+
+
 import Image from "next/image";
 
 interface Props {
@@ -14,7 +16,7 @@ export default function CastRow({ cast }: Props) {
     const containerRef = useRef<HTMLDivElement>(null);
     const [showLeft, setShowLeft] = useState(false);
     const [showRight, setShowRight] = useState(true);
-    const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+    const isInView = true;
 
     const scroll = (direction: "left" | "right") => {
         if (scrollRef.current) {
@@ -32,7 +34,7 @@ export default function CastRow({ cast }: Props) {
         }
     };
 
-    const containerVariants: import("framer-motion").Variants = {
+    const containerVariants: any = {
         hidden: { opacity: 0 },
         show: {
             opacity: 1,
@@ -40,7 +42,7 @@ export default function CastRow({ cast }: Props) {
         }
     };
 
-    const itemVariants: import("framer-motion").Variants = {
+    const itemVariants: any = {
         hidden: { opacity: 0, x: 50 },
         show: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
     };
@@ -68,17 +70,13 @@ export default function CastRow({ cast }: Props) {
                 </button>
 
                 {/* SLIDER CONTAINER */}
-                <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate={isInView ? "show" : "hidden"}
+                <div
                     ref={scrollRef}
                     onScroll={handleScroll}
                     className="flex gap-6 overflow-x-auto scroll-smooth pb-10 next-gen-scrollbar snap-x snap-mandatory"
                 >
                     {cast.map((actor: any) => (
-                        <motion.div
-                            variants={itemVariants}
+                        <div
                             key={actor.id || actor._id}
                             className="min-w-[160px] md:min-w-[180px] flex-shrink-0 snap-start block"
                         >
@@ -96,9 +94,9 @@ export default function CastRow({ cast }: Props) {
                                 <h4 className="text-base font-black text-white group-hover:text-red-500 transition-colors drop-shadow-md">{actor.name}</h4>
                                 <p className="text-sm font-medium text-neutral-300 line-clamp-2">{actor.character}</p>
                             </Link>
-                        </motion.div>
+                        </div>
                     ))}
-                </motion.div>
+                </div>
 
                 {/* RIGHT ARROW */}
                 <button

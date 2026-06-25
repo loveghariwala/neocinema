@@ -1,9 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
 
-export const MotionDiv = motion.div;
-export const MotionSection = motion.section;
-export const MotionH1 = motion.h1;
-export const MotionP = motion.p;
-export const MotionSpan = motion.span;
+
+export const MotionDiv = (props: any) => <div {...props} />;
+export const MotionSection = (props: any) => <section {...props} />;
+export const MotionH1 = (props: any) => <h1 {...props} />;
+export const MotionP = (props: any) => <p {...props} />;
+export const MotionSpan = (props: any) => <span {...props} />;

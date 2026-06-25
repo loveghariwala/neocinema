@@ -1,5 +1,7 @@
 import Link from 'next/link';
-import { Home, Search } from 'lucide-react';
+import Home from "lucide-react/dist/esm/icons/home";
+import Search from "lucide-react/dist/esm/icons/search";
+
 
 export default function NotFound() {
   return (

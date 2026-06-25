@@ -1,7 +1,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { COLLECTIONS } from "@/lib/collections";
-import { Film } from "lucide-react";
+import Film from "lucide-react/dist/esm/icons/film";
+
 
 export const metadata: Metadata = {
     title: "Curated Movie Collections",

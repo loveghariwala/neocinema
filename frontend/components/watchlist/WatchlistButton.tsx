@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Heart } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import Heart from "lucide-react/dist/esm/icons/heart";
+
+
 
 interface WatchlistButtonProps {
     movie: any;

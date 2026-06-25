@@ -2,8 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Play, Calendar, Loader2, Monitor } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import Play from "lucide-react/dist/esm/icons/play";
+import Calendar from "lucide-react/dist/esm/icons/calendar";
+import Loader2 from "lucide-react/dist/esm/icons/loader-2";
+import Monitor from "lucide-react/dist/esm/icons/monitor";
+
+
 import Image from "next/image";
 
 interface Episode {
@@ -101,13 +105,10 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons }: SeasonEpisod
             </div>
 
             {/* Episodes List / Grid */}
-            <AnimatePresence mode="wait">
+            <>
                 {loading ? null : error ? (
-                    <motion.div
+                    <div
                         key="error"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
                         className="flex h-48 flex-col items-center justify-center text-neutral-500"
                     >
                         <p className="text-sm font-bold">Failed to load episodes.</p>
@@ -117,13 +118,10 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons }: SeasonEpisod
                         >
                             Retry
                         </button>
-                    </motion.div>
+                    </div>
                 ) : (
-                    <motion.div
+                    <div
                         key="episodes"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 20 }}
                         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                     >
                         {episodes.map((episode) => {
@@ -192,9 +190,9 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons }: SeasonEpisod
                                 </div>
                             );
                         })}
-                    </motion.div>
+                    </div>
                 )}
-            </AnimatePresence>
+            </>
         </div>
     );
 }

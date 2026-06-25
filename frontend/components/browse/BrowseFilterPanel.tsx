@@ -1,24 +1,23 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import {
-    Search,
-    SlidersHorizontal,
-    X,
-    ChevronDown,
-    ChevronUp,
-    RotateCcw,
-    Sparkles,
-    Globe,
-    Check,
-    Flame,
-    Star,
-    TrendingDown,
-    Clock,
-    History,
-    CircleDollarSign,
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import Search from "lucide-react/dist/esm/icons/search";
+import SlidersHorizontal from "lucide-react/dist/esm/icons/sliders-horizontal";
+import X from "lucide-react/dist/esm/icons/x";
+import ChevronDown from "lucide-react/dist/esm/icons/chevron-down";
+import ChevronUp from "lucide-react/dist/esm/icons/chevron-up";
+import RotateCcw from "lucide-react/dist/esm/icons/rotate-ccw";
+import Sparkles from "lucide-react/dist/esm/icons/sparkles";
+import Globe from "lucide-react/dist/esm/icons/globe";
+import Check from "lucide-react/dist/esm/icons/check";
+import Flame from "lucide-react/dist/esm/icons/flame";
+import Star from "lucide-react/dist/esm/icons/star";
+import TrendingDown from "lucide-react/dist/esm/icons/trending-down";
+import Clock from "lucide-react/dist/esm/icons/clock";
+import History from "lucide-react/dist/esm/icons/history";
+import CircleDollarSign from "lucide-react/dist/esm/icons/circle-dollar-sign";
+
+
 
 interface Genre {
     id: number;
@@ -240,27 +239,21 @@ export default function BrowseFilterPanel({
                     </button>
 
                     {hasActiveFilters && (
-                        <motion.button
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
+                        <button
                             onClick={resetFilters}
                             className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm font-bold text-neutral-400 transition-all hover:border-red-600/30 hover:text-red-500"
                         >
                             <RotateCcw size={14} />
                             <span className="hidden sm:inline">Reset</span>
-                        </motion.button>
+                        </button>
                     )}
                 </div>
             </div>
 
             {/* ─── EXPANDABLE FILTER PANEL ────────────────────────────────── */}
-            <AnimatePresence>
+            <>
                 {isFilterOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                    <div
                         className={isFilterOpen ? "!overflow-visible" : "overflow-hidden"}
                     >
                         <div className="rounded-3xl border border-white/10 bg-neutral-950/90 p-6 space-y-6">
@@ -319,12 +312,9 @@ export default function BrowseFilterPanel({
                                                 <ChevronDown size={16} className={`text-neutral-500 transition-transform duration-300 ${showYearFromDropdown ? "rotate-180 text-red-500" : ""}`} />
                                             </button>
 
-                                            <AnimatePresence>
+                                            <>
                                                 {showYearFromDropdown && (
-                                                    <motion.div
-                                                        initial={{ opacity: 0, y: 10 }}
-                                                        animate={{ opacity: 1, y: 0 }}
-                                                        exit={{ opacity: 0, y: 10 }}
+                                                    <div
                                                         className="absolute left-0 mt-2 z-50 max-h-72 w-full overflow-y-auto rounded-2xl border border-white/10 bg-neutral-950/95 shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-3xl p-2 custom-scrollbar"
                                                     >
                                                         <button
@@ -361,9 +351,9 @@ export default function BrowseFilterPanel({
                                                                 </button>
                                                             );
                                                         })}
-                                                    </motion.div>
+                                                    </div>
                                                 )}
-                                            </AnimatePresence>
+                                            </>
                                         </div>
 
                                         <span className="text-neutral-600 font-bold">—</span>
@@ -389,12 +379,9 @@ export default function BrowseFilterPanel({
                                                 <ChevronDown size={16} className={`text-neutral-500 transition-transform duration-300 ${showYearToDropdown ? "rotate-180 text-red-500" : ""}`} />
                                             </button>
 
-                                            <AnimatePresence>
+                                            <>
                                                 {showYearToDropdown && (
-                                                    <motion.div
-                                                        initial={{ opacity: 0, y: 10 }}
-                                                        animate={{ opacity: 1, y: 0 }}
-                                                        exit={{ opacity: 0, y: 10 }}
+                                                    <div
                                                         className="absolute left-0 mt-2 z-50 max-h-72 w-full overflow-y-auto rounded-2xl border border-white/10 bg-neutral-950/95 shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-3xl p-2 custom-scrollbar"
                                                     >
                                                         <button
@@ -431,9 +418,9 @@ export default function BrowseFilterPanel({
                                                                 </button>
                                                             );
                                                         })}
-                                                    </motion.div>
+                                                    </div>
                                                 )}
-                                            </AnimatePresence>
+                                            </>
                                         </div>
                                     </div>
                                 </div>
@@ -496,12 +483,9 @@ export default function BrowseFilterPanel({
                                         <ChevronDown size={16} className={`text-neutral-500 transition-transform duration-300 ${showLangDropdown ? "rotate-180 text-red-500" : ""}`} />
                                     </button>
 
-                                    <AnimatePresence>
+                                    <>
                                         {showLangDropdown && (
-                                            <motion.div
-                                                initial={{ opacity: 0, y: 10 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: 10 }}
+                                            <div
                                                 className="absolute left-0 mt-2 z-50 max-h-72 w-full overflow-y-auto rounded-2xl border border-white/10 bg-neutral-950/95 shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-3xl p-2 custom-scrollbar"
                                             >
                                                 {LANGUAGES.map((lang) => {
@@ -524,9 +508,9 @@ export default function BrowseFilterPanel({
                                                         </button>
                                                     );
                                                 })}
-                                            </motion.div>
+                                            </div>
                                         )}
-                                    </AnimatePresence>
+                                    </>
                                 </div>
                             </div>
 
@@ -583,9 +567,9 @@ export default function BrowseFilterPanel({
                                 </div>
                             )}
                         </div>
-                    </motion.div>
+                    </div>
                 )}
-            </AnimatePresence>
+            </>
 
             {/* ─── RESULTS INFO ──────────────────────────────── */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

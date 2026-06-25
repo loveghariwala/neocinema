@@ -1,8 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
+
 import MovieCard from "../cards/MovieCard";
-import { Film, Tv, Loader2 } from "lucide-react";
+import Film from "lucide-react/dist/esm/icons/film";
+import Tv from "lucide-react/dist/esm/icons/tv";
+import Loader2 from "lucide-react/dist/esm/icons/loader-2";
+
 
 interface Props {
     movies: any[];
@@ -36,14 +39,11 @@ export default function BrowseGrid({ movies, isLoading, isMovie }: Props) {
     return (
         <div className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {movies.map((movie: any, index: number) => (
-                <motion.div
-                    key={movie._id || movie.tmdbId || index} 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
+                <div
+                    key={movie._id || movie.tmdbId || index}
                 >
                     <MovieCard movie={movie} />
-                </motion.div>
+                </div>
             ))}
         </div>
     );

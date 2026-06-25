@@ -1,5 +1,9 @@
 import Link from "next/link";
-import { Send, Code, Camera, Mail } from "lucide-react";
+import Send from "lucide-react/dist/esm/icons/send";
+import Code from "lucide-react/dist/esm/icons/code";
+import Camera from "lucide-react/dist/esm/icons/camera";
+import Mail from "lucide-react/dist/esm/icons/mail";
+
 
 export default function Footer() {
     return (

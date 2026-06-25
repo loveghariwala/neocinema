@@ -3,8 +3,11 @@
 import { useState, useCallback, useEffect, useMemo, useTransition } from "react";
 import BrowseFilterPanel, { FilterState } from "./BrowseFilterPanel";
 import BrowseGrid from "./BrowseGrid";
-import { Film, Tv, Sparkles } from "lucide-react";
-import { motion } from "framer-motion";
+import Film from "lucide-react/dist/esm/icons/film";
+import Tv from "lucide-react/dist/esm/icons/tv";
+import Sparkles from "lucide-react/dist/esm/icons/sparkles";
+
+
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 interface Genre {
@@ -98,10 +101,7 @@ export default function BrowsePageClient({ type, title, subtitle, initialData, i
             <div className="pointer-events-none absolute left-1/4 top-0 h-[30vh] w-[50vw] rounded-full bg-red-600/5 blur-[120px]" />
 
             {/* ─── Page Header ─────────────────────────────────────────── */}
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
+            <div
                 className="relative mb-12"
             >
                 <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6">
@@ -119,13 +119,10 @@ export default function BrowsePageClient({ type, title, subtitle, initialData, i
                         </p>
                     </div>
                 </div>
-            </motion.div>
+            </div>
 
             {/* ─── Filter Panel ──────────────────────────────────────── */}
-            <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
+            <div
                 className="mb-8"
             >
                 <BrowseFilterPanel
@@ -135,7 +132,7 @@ export default function BrowsePageClient({ type, title, subtitle, initialData, i
                     totalResults={data.totalResults}
                     genres={initialGenres}
                 />
-            </motion.div>
+            </div>
 
             {/* ─── Results Grid ──────────────────────────────────────── */}
             <BrowseGrid

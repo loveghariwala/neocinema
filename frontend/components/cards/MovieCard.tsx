@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { Star, Play } from "lucide-react";
+
+import Star from "lucide-react/dist/esm/icons/star";
+import Play from "lucide-react/dist/esm/icons/play";
+
 import Image from "next/image";
 import { useState, useEffect } from "react";
 

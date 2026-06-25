@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { motion, useInView } from "framer-motion";
+
 
 export default function AdsterraNativeBanner() {
     const bannerRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
-    const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+    const isInView = true;
 
     useEffect(() => {
         if (!bannerRef.current) return;
@@ -26,10 +26,7 @@ export default function AdsterraNativeBanner() {
     return (
         <section ref={containerRef} className="relative mb-24 overflow-hidden pointer-events-auto">
             {/* Header Section (Matching MovieRow.tsx) */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.6 }}
+            <div
                 className="mb-8 flex items-end justify-between px-6 md:px-16 gap-6"
             >
                 <div className="flex items-end gap-4 flex-shrink-0">
@@ -41,12 +38,9 @@ export default function AdsterraNativeBanner() {
                         <span className="block h-1 w-1/2 bg-red-600 mt-2 rounded-full shadow-[0_0_10px_rgba(220,38,38,0.8)]" />
                     </h2>
                 </div>
-            </motion.div>
+            </div>
 
-            <motion.div 
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.98 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
+            <div
                 className="px-6 md:px-16"
             >
                 <div className="w-full flex justify-center items-center overflow-hidden">
@@ -54,7 +48,7 @@ export default function AdsterraNativeBanner() {
                         {/* The ad will be injected here by Adsterra */}
                     </div>
                 </div>
-            </motion.div>
+            </div>
         </section>
     );
 }

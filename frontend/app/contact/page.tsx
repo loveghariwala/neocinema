@@ -1,5 +1,9 @@
 import { Metadata } from "next";
-import { Mail, MapPin, Globe, Code } from "lucide-react";
+import Mail from "lucide-react/dist/esm/icons/mail";
+import MapPin from "lucide-react/dist/esm/icons/map-pin";
+import Globe from "lucide-react/dist/esm/icons/globe";
+import Code from "lucide-react/dist/esm/icons/code";
+
 import Link from "next/link";
 
 export const metadata: Metadata = {

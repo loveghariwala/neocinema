@@ -2,8 +2,15 @@
 
 import { useState, useEffect, useCallback, useTransition } from "react";
 import MovieCard from "@/components/cards/MovieCard";
-import { motion, AnimatePresence } from "framer-motion";
-import { Search, Film, Tv, Sparkles, X, Loader2, TrendingUp } from "lucide-react";
+
+import Search from "lucide-react/dist/esm/icons/search";
+import Film from "lucide-react/dist/esm/icons/film";
+import Tv from "lucide-react/dist/esm/icons/tv";
+import Sparkles from "lucide-react/dist/esm/icons/sparkles";
+import X from "lucide-react/dist/esm/icons/x";
+import Loader2 from "lucide-react/dist/esm/icons/loader-2";
+import TrendingUp from "lucide-react/dist/esm/icons/trending-up";
+
 import { useRouter, usePathname } from "next/navigation";
 
 const TYPE_FILTERS = [
@@ -97,9 +104,7 @@ export default function SearchPageClient({
     return (
         <main className="min-h-screen px-6 pb-20 pt-28 md:px-16">
             {/* ─── Header ────────────────────────────────────────────── */}
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
+            <div
                 className="mb-10"
             >
                 <div className="flex items-center gap-4 mb-6">
@@ -144,23 +149,19 @@ export default function SearchPageClient({
 
                     {/* Hint */}
                     {query.length > 0 && query.length < 2 && (
-                        <motion.div
-                            initial={{ opacity: 0, y: -5 }}
-                            animate={{ opacity: 1, y: 0 }}
+                        <div
                             className="mt-3 px-2"
                         >
                             <span className="text-xs font-bold uppercase tracking-widest text-neutral-600">
                                 Type at least 2 characters...
                             </span>
-                        </motion.div>
+                        </div>
                     )}
                 </div>
 
                 {/* ─── Type Filter ───────────────────────────────────── */}
                 {isSearching && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
+                    <div
                         className="mt-6 flex items-center gap-3"
                     >
                         <span className="text-xs font-black uppercase tracking-widest text-neutral-600 mr-2">
@@ -188,9 +189,9 @@ export default function SearchPageClient({
                                 <span className="font-black text-white">{data.totalResults?.toLocaleString()}</span> results
                             </span>
                         )}
-                    </motion.div>
+                    </div>
                 )}
-            </motion.div>
+            </div>
 
             {/* ─── Results ───────────────────────────────────────────── */}
             {isSearching ? (
@@ -198,14 +199,11 @@ export default function SearchPageClient({
                     <>
                         <div className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                             {data.results.map((item: any, i: number) => (
-                                <motion.div
+                                <div
                                     key={`${item.tmdbId}-${i}`}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.3 }}
                                 >
                                     <MovieCard movie={item} />
-                                </motion.div>
+                                </div>
                             ))}
                         </div>
 
@@ -255,10 +253,7 @@ export default function SearchPageClient({
                 )
             ) : (
                 /* ─── Trending (Empty State) ──────────────────────── */
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.2 }}
+                <div
                 >
                     <div className="mb-6 flex items-center gap-3">
                         <TrendingUp size={20} className="text-red-600" />
@@ -269,18 +264,15 @@ export default function SearchPageClient({
                     {trending.length > 0 && (
                         <div className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                             {trending.map((item: any, i: number) => (
-                                <motion.div
+                                <div
                                     key={item.tmdbId}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.3 }}
                                 >
                                     <MovieCard movie={item} />
-                                </motion.div>
+                                </div>
                             ))}
                         </div>
                     )}
-                </motion.div>
+                </div>
             )}
         </main>
     );

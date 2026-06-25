@@ -1,5 +1,11 @@
 import { Metadata } from "next";
-import { Film, Search, Sparkles, Users, Shield, Globe } from "lucide-react";
+import Film from "lucide-react/dist/esm/icons/film";
+import Search from "lucide-react/dist/esm/icons/search";
+import Sparkles from "lucide-react/dist/esm/icons/sparkles";
+import Users from "lucide-react/dist/esm/icons/users";
+import Shield from "lucide-react/dist/esm/icons/shield";
+import Globe from "lucide-react/dist/esm/icons/globe";
+
 
 export const metadata: Metadata = {
     title: "About Us",

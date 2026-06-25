@@ -2,8 +2,15 @@
 
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
-import { Play, X, ChevronDown, Monitor, Layers, AlertCircle, RefreshCw } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import Play from "lucide-react/dist/esm/icons/play";
+import X from "lucide-react/dist/esm/icons/x";
+import ChevronDown from "lucide-react/dist/esm/icons/chevron-down";
+import Monitor from "lucide-react/dist/esm/icons/monitor";
+import Layers from "lucide-react/dist/esm/icons/layers";
+import AlertCircle from "lucide-react/dist/esm/icons/alert-circle";
+import RefreshCw from "lucide-react/dist/esm/icons/refresh-cw";
+
+
 
 interface Season {
     id: number;
@@ -217,12 +224,9 @@ export default function StreamPlayer({
                                         <ChevronDown size={12} className={`transition-transform duration-300 ${showSeasonDropdown ? "rotate-180" : ""}`} />
                                     </button>
 
-                                    <AnimatePresence>
+                                    <>
                                         {showSeasonDropdown && (
-                                            <motion.div
-                                                initial={{ opacity: 0, y: 10 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: 10 }}
+                                            <div
                                                 className="absolute top-full left-0 mt-2 z-[1100] max-h-56 w-40 overflow-y-auto rounded-xl border border-white/10 bg-neutral-900 shadow-[0_20px_50px_rgba(0,0,0,0.8)] backdrop-blur-3xl p-1.5 custom-scrollbar"
                                             >
                                                 {activeSeasons.map((s) => (
@@ -242,9 +246,9 @@ export default function StreamPlayer({
                                                         <span className="block text-[9px] opacity-60 font-medium">{s.episode_count} Episodes</span>
                                                     </button>
                                                 ))}
-                                            </motion.div>
+                                            </div>
                                         )}
-                                    </AnimatePresence>
+                                    </>
                                 </div>
 
                                 {/* Episode Selector */}
@@ -264,12 +268,9 @@ export default function StreamPlayer({
                                         <ChevronDown size={12} className={`transition-transform duration-300 ${showEpisodeDropdown ? "rotate-180" : ""}`} />
                                     </button>
 
-                                    <AnimatePresence>
+                                    <>
                                         {showEpisodeDropdown && (
-                                            <motion.div
-                                                initial={{ opacity: 0, y: 10 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: 10 }}
+                                            <div
                                                 className="absolute top-full left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:right-0 mt-2 z-[1100] max-h-56 w-56 overflow-y-auto rounded-xl border border-white/10 bg-neutral-900 shadow-[0_20px_50px_rgba(0,0,0,0.8)] backdrop-blur-3xl p-2 custom-scrollbar"
                                             >
                                                 <div className="grid grid-cols-4 gap-1.5">
@@ -289,9 +290,9 @@ export default function StreamPlayer({
                                                         </button>
                                                     ))}
                                                 </div>
-                                            </motion.div>
+                                            </div>
                                         )}
-                                    </AnimatePresence>
+                                    </>
                                 </div>
                             </div>
                         )}

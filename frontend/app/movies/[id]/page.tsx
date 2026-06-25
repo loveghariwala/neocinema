@@ -1,6 +1,10 @@
 export const runtime = 'edge';
 import { getMovieDetails } from "@/services/movieService";
-import { Star, Clock, Calendar, Globe } from "lucide-react";
+import Star from "lucide-react/dist/esm/icons/star";
+import Clock from "lucide-react/dist/esm/icons/clock";
+import Calendar from "lucide-react/dist/esm/icons/calendar";
+import Globe from "lucide-react/dist/esm/icons/globe";
+
 import MovieCard from "@/components/cards/MovieCard";
 import CastRow from "@/components/sliders/CastRow";
 import { MotionDiv } from "@/components/layout/Motion";

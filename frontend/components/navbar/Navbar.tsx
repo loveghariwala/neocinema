@@ -3,8 +3,15 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Home, Sparkles, Film, Tv, Library } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import Menu from "lucide-react/dist/esm/icons/menu";
+import X from "lucide-react/dist/esm/icons/x";
+import Home from "lucide-react/dist/esm/icons/home";
+import Sparkles from "lucide-react/dist/esm/icons/sparkles";
+import Film from "lucide-react/dist/esm/icons/film";
+import Tv from "lucide-react/dist/esm/icons/tv";
+import Library from "lucide-react/dist/esm/icons/library";
+
+
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -90,14 +97,8 @@ export default function Navbar() {
                                     >
                                         {/* Active indicator background */}
                                         {isActive && (
-                                            <motion.div
-                                                layoutId="nav-active-pill"
+                                            <div
                                                 className="absolute inset-0 rounded-full bg-red-600/90 shadow-[0_0_20px_rgba(220,38,38,0.4)]"
-                                                transition={{
-                                                    type: "spring",
-                                                    stiffness: 400,
-                                                    damping: 30,
-                                                }}
                                             />
                                         )}
                                         <link.icon size={15} className="relative z-10" />
@@ -114,52 +115,37 @@ export default function Navbar() {
                         className="relative z-10 flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white backdrop-blur-xl transition-all hover:bg-white/10 hover:border-white/20 lg:hidden"
                         aria-label="Toggle Menu"
                     >
-                        <AnimatePresence mode="wait">
+                        <>
                             {isOpen ? (
-                                <motion.div
+                                <div
                                     key="close"
-                                    initial={{ rotate: -90, opacity: 0 }}
-                                    animate={{ rotate: 0, opacity: 1 }}
-                                    exit={{ rotate: 90, opacity: 0 }}
-                                    transition={{ duration: 0.2 }}
                                 >
                                     <X size={20} />
-                                </motion.div>
+                                </div>
                             ) : (
-                                <motion.div
+                                <div
                                     key="menu"
-                                    initial={{ rotate: 90, opacity: 0 }}
-                                    animate={{ rotate: 0, opacity: 1 }}
-                                    exit={{ rotate: -90, opacity: 0 }}
-                                    transition={{ duration: 0.2 }}
                                 >
                                     <Menu size={20} />
-                                </motion.div>
+                                </div>
                             )}
-                        </AnimatePresence>
+                        </>
                     </button>
                 </div>
             </header>
 
             {/* ─── MOBILE FULLSCREEN DRAWER ─────────────── */}
-            <AnimatePresence>
+            <>
                 {isOpen && (
                     <>
                         {/* Backdrop */}
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
+                        <div
                             className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm lg:hidden"
                             onClick={() => setIsOpen(false)}
                         />
 
                         {/* Drawer panel */}
-                        <motion.div
-                            initial={{ opacity: 0, y: -30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -30 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        <div
                             className="fixed inset-x-0 top-[64px] z-50 lg:hidden"
                         >
                             <div className="mx-4 mt-2 rounded-3xl border border-white/[0.08] bg-neutral-950/95 p-4 shadow-[0_24px_64px_rgba(0,0,0,0.8)] backdrop-blur-3xl">
@@ -167,11 +153,8 @@ export default function Navbar() {
                                     {navLinks.map((link, idx) => {
                                         const isActive = pathname === link.href;
                                         return (
-                                            <motion.div
+                                            <div
                                                 key={link.name}
-                                                initial={{ opacity: 0, x: -20 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                transition={{ delay: idx * 0.06 }}
                                             >
                                                 <Link
                                                     href={link.href}
@@ -190,13 +173,12 @@ export default function Navbar() {
                                                     </div>
                                                     <span className="tracking-wide">{link.name}</span>
                                                     {isActive && (
-                                                        <motion.div
-                                                            layoutId="mobile-active"
+                                                        <div
                                                             className="ml-auto h-2 w-2 rounded-full bg-red-600 shadow-[0_0_8px_rgba(220,38,38,0.8)]"
                                                         />
                                                     )}
                                                 </Link>
-                                            </motion.div>
+                                            </div>
                                         );
                                     })}
                                 </nav>
@@ -208,10 +190,10 @@ export default function Navbar() {
                                     </span>
                                 </div>
                             </div>
-                        </motion.div>
+                        </div>
                     </>
                 )}
-            </AnimatePresence>
+            </>
         </>
     );
 }

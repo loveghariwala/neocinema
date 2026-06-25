@@ -2,8 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ArrowLeft, Film, Calendar, MapPin, User } from "lucide-react";
-import { motion } from "framer-motion";
+import ArrowLeft from "lucide-react/dist/esm/icons/arrow-left";
+import Film from "lucide-react/dist/esm/icons/film";
+import Calendar from "lucide-react/dist/esm/icons/calendar";
+import MapPin from "lucide-react/dist/esm/icons/map-pin";
+import User from "lucide-react/dist/esm/icons/user";
+
+
 import MovieCard from "@/components/cards/MovieCard";
 
 interface PersonPageClientProps {
@@ -48,9 +53,7 @@ export default function PersonPageClient({ data }: PersonPageClientProps) {
             {/* Profile Section */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16 mb-16 items-start">
                 {/* Profile Image */}
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                <div
                     className="relative aspect-[2/3] w-full max-w-sm mx-auto md:mx-0 overflow-hidden rounded-3xl bg-neutral-900 shadow-2xl border border-white/5"
                 >
                     {person.profilePath ? (
@@ -67,14 +70,11 @@ export default function PersonPageClient({ data }: PersonPageClientProps) {
                             <User size={64} className="text-neutral-700" />
                         </div>
                     )}
-                </motion.div>
+                </div>
 
                 {/* Profile Details */}
                 <div className="md:col-span-2 space-y-6">
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
+                    <div
                     >
                         <h1 className="text-4xl md:text-6xl font-black tracking-tight text-white mb-2">
                             {person.name}
@@ -82,12 +82,9 @@ export default function PersonPageClient({ data }: PersonPageClientProps) {
                         <p className="text-red-500 font-bold uppercase tracking-[0.2em] text-sm">
                             Cast Member
                         </p>
-                    </motion.div>
+                    </div>
 
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
+                    <div
                         className="flex flex-wrap gap-6 text-sm text-neutral-400"
                     >
                         {person.birthday && (
@@ -102,13 +99,10 @@ export default function PersonPageClient({ data }: PersonPageClientProps) {
                                 <span>{person.placeOfBirth}</span>
                             </div>
                         )}
-                    </motion.div>
+                    </div>
 
                     {person.biography && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 }}
+                        <div
                             className="space-y-3"
                         >
                             <h3 className="text-sm font-black uppercase tracking-[0.3em] text-neutral-500">
@@ -117,7 +111,7 @@ export default function PersonPageClient({ data }: PersonPageClientProps) {
                             <p className="text-neutral-300 leading-relaxed text-sm md:text-base font-medium max-h-[250px] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-neutral-800">
                                 {person.biography}
                             </p>
-                        </motion.div>
+                        </div>
                     )}
                 </div>
             </div>
@@ -137,14 +131,11 @@ export default function PersonPageClient({ data }: PersonPageClientProps) {
                 {results && results.length > 0 ? (
                     <div className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                         {results.map((item: any, i: number) => (
-                            <motion.div
+                            <div
                                 key={`${item.tmdbId}-${i}`}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ duration: 0.3 }}
                             >
                                 <MovieCard movie={item} />
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
                 ) : (

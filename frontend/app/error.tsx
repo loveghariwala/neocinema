@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect } from 'react';
-import { RotateCcw, Home } from 'lucide-react';
+import RotateCcw from "lucide-react/dist/esm/icons/rotate-ccw";
+import Home from "lucide-react/dist/esm/icons/home";
+
 import Link from 'next/link';
 
 export default function Error({
