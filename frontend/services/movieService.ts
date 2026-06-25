@@ -265,3 +265,13 @@ export async function getPersonDetails(id: string) {
     }
     return null;
 }
+
+export async function getTvSeasonDetail(seriesId: string | number, seasonNumber: number) {
+    try {
+        const data = await tmdbService.getTvSeasonDetail(Number(seriesId), seasonNumber);
+        return data;
+    } catch (e) {
+        console.error("getTvSeasonDetail error:", e);
+    }
+    return null;
+}

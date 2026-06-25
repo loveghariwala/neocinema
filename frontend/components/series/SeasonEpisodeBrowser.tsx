@@ -29,48 +29,32 @@ interface Season {
 interface SeasonEpisodeBrowserProps {
     seriesId: string;
     seasons: Season[];
+    initialEpisodes: Episode[];
+    initialSeason: number;
 }
 
-export default function SeasonEpisodeBrowser({ seriesId, seasons }: SeasonEpisodeBrowserProps) {
+export default function SeasonEpisodeBrowser({ seriesId, seasons, initialEpisodes, initialSeason }: SeasonEpisodeBrowserProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
     // Filter out specials (season 0)
     const activeSeasons = seasons.filter(s => s.season_number > 0);
-    const [selectedSeason, setSelectedSeason] = useState(
-        activeSeasons.length > 0 ? activeSeasons[0].season_number : 1
-    );
-    const [episodes, setEpisodes] = useState<Episode[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
     const [imgErrors, setImgErrors] = useState<Record<number, boolean>>({});
-
-    useEffect(() => {
-        const fetchEpisodes = async () => {
-            setLoading(true);
-            setError(false);
-            try {
-                const res = await fetch(`/api/series/${seriesId}/season/${selectedSeason}`);
-                if (!res.ok) throw new Error("Failed to fetch episodes");
-                const data = await res.json();
-                setEpisodes(data.episodes || []);
-            } catch (err) {
-                console.error(err);
-                setError(true);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchEpisodes();
-    }, [seriesId, selectedSeason]);
 
     const playEpisode = (episodeNumber: number) => {
         const params = new URLSearchParams(searchParams.toString());
         params.set("play", "true");
-        params.set("season", String(selectedSeason));
+        params.set("season", String(initialSeason));
         params.set("episode", String(episodeNumber));
         router.push(`?${params.toString()}`, { scroll: false });
+    };
+
+    const changeSeason = (seasonNumber: number) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("season", String(seasonNumber));
+        params.delete("episode");
+        router.push(`?${params.toString()}`, { scroll: false });
+        setImgErrors({});
     };
 
     return (
@@ -88,11 +72,8 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons }: SeasonEpisod
                     {activeSeasons.map((season) => (
                         <button
                             key={season.id}
-                            onClick={() => {
-                                setSelectedSeason(season.season_number);
-                                setImgErrors({});
-                            }}
-                            className={`rounded-xl px-4 py-2.5 text-xs font-black transition-all border shrink-0 snap-start ${selectedSeason === season.season_number
+                            onClick={() => changeSeason(season.season_number)}
+                            className={`rounded-xl px-4 py-2.5 text-xs font-black transition-all border shrink-0 snap-start ${initialSeason === season.season_number
                                 ? "bg-red-600 border-red-500 text-white shadow-lg shadow-red-600/30"
                                 : "bg-white/5 border-white/10 text-neutral-400 hover:bg-white/10 hover:text-white"
                                 }`}
@@ -103,27 +84,17 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons }: SeasonEpisod
                 </div>
             </div>
 
-            {/* Episodes List / Grid */}
-            <>
-                {loading ? null : error ? (
-                    <div
-                        key="error"
-                        className="flex h-48 flex-col items-center justify-center text-neutral-500"
-                    >
-                        <p className="text-sm font-bold">Failed to load episodes.</p>
-                        <button
-                            onClick={() => setSelectedSeason(selectedSeason)}
-                            className="mt-2 text-xs font-black uppercase tracking-widest text-red-500 hover:underline"
-                        >
-                            Retry
-                        </button>
+            {/* Episodes List */}
+            <div
+                key={`season-${initialSeason}`}
+                className="flex flex-col gap-4"
+            >
+                {initialEpisodes.length === 0 ? (
+                    <div className="flex h-48 flex-col items-center justify-center text-neutral-500">
+                        <p className="text-sm font-bold">No episodes found for this season.</p>
                     </div>
                 ) : (
-                    <div
-                        key="episodes"
-                        className="flex flex-col gap-4"
-                    >
-                        {episodes.map((episode) => {
+                    initialEpisodes.map((episode) => {
                             const stillUrl = episode.still_path && !imgErrors[episode.id]
                                 ? `https://image.tmdb.org/t/p/w300${episode.still_path}`
                                 : null;
@@ -185,10 +156,9 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons }: SeasonEpisod
                                     </div>
                                 </div>
                             );
-                        })}
-                    </div>
+                        })
                 )}
-            </>
+            </div>
         </div>
     );
 }
