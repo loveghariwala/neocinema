@@ -1,13 +1,8 @@
-import { getAIServiceUrl } from "@/lib/config";
-import { withFallback } from "@/lib/fallback";
 import { tmdbService } from "@/lib/tmdb";
 
 export async function getTrendingMovies() {
     try {
-        const { data } = await withFallback(
-            `/api/ai/trending/movie?time_window=week&page=1`,
-            () => tmdbService.getTrending("movie", "week", 1)
-        );
+        const data = await tmdbService.getTrending("movie", "week", 1);
         return data?.results?.slice(0, 20) || [];
     } catch (error) {
         console.error("Failed to fetch trending movies:", error);
@@ -17,10 +12,7 @@ export async function getTrendingMovies() {
 
 export async function getTrendingSeries() {
     try {
-        const { data } = await withFallback(
-            `/api/ai/trending/tv?time_window=week&page=1`,
-            () => tmdbService.getTrending("tv", "week", 1)
-        );
+        const data = await tmdbService.getTrending("tv", "week", 1);
         return data?.results?.slice(0, 20) || [];
     } catch (error) {
         console.error("Failed to fetch trending series:", error);
@@ -30,10 +22,7 @@ export async function getTrendingSeries() {
 
 export async function getTopRatedMovies() {
     try {
-        const { data } = await withFallback(
-            `/api/ai/discover/movies?sort_by=vote_average.desc&rating_min=7&page=1`,
-            () => tmdbService.discoverMovies({ sort_by: "vote_average.desc", rating_min: 7 })
-        );
+        const data = await tmdbService.discoverMovies({ sort_by: "vote_average.desc", rating_min: 7 });
         return data?.results?.slice(0, 20) || [];
     } catch (error) {
         console.error("Failed to fetch top rated movies:", error);
@@ -55,13 +44,9 @@ async function getCollectionParts(collectionId: number) {
 
 export async function getMovieDetails(id: string, type: "movie" | "tv" = "movie") {
     try {
-        const endpoint = type === "movie" ? `/api/ai/movie/${id}` : `/api/ai/tv/${id}`;
-        const { data } = await withFallback(
-            endpoint,
-            () => type === "movie"
-                ? tmdbService.getMovieDetail(Number(id))
-                : tmdbService.getTvDetail(Number(id)),
-        );
+        const data = type === "movie"
+            ? await tmdbService.getMovieDetail(Number(id))
+            : await tmdbService.getTvDetail(Number(id));
 
         if (!data) return null;
 
@@ -139,10 +124,7 @@ export async function getMovieDetails(id: string, type: "movie" | "tv" = "movie"
 
 export async function searchMovies(query: string, sort: string = "popularity") {
     try {
-        const { data } = await withFallback(
-            `/api/ai/search/movie?query=${encodeURIComponent(query)}&page=1`,
-            () => tmdbService.searchMovies(query, 1)
-        );
+        const data = await tmdbService.searchMovies(query, 1);
         return data;
     } catch (error) {
         console.error("Failed to search movies:", error);
@@ -152,42 +134,31 @@ export async function searchMovies(query: string, sort: string = "popularity") {
 
 export async function discoverContentFromServer(type: "movie" | "tv", queryParams: Record<string, string>) {
     try {
-        const endpoint = type === "movie" ? "/api/ai/discover/movies" : "/api/ai/discover/series";
-        const params = new URLSearchParams();
-        Object.entries(queryParams).forEach(([key, val]) => {
-            if (val !== undefined && val !== null) {
-                params.set(key, val);
-            }
-        });
-
-        const { data } = await withFallback(
-            `${endpoint}?${params.toString()}`,
-            () => type === "movie"
-                ? tmdbService.discoverMovies({
-                    page: Number(queryParams.page) || 1,
-                    sort_by: queryParams.sort_by || "popularity.desc",
-                    with_genres: queryParams.with_genres,
-                    year_from: queryParams.year_from ? Number(queryParams.year_from) : undefined,
-                    year_to: queryParams.year_to ? Number(queryParams.year_to) : undefined,
-                    rating_min: queryParams.rating_min ? Number(queryParams.rating_min) : undefined,
-                    rating_max: queryParams.rating_max ? Number(queryParams.rating_max) : undefined,
-                    language: queryParams.language,
-                    with_keywords: queryParams.with_keywords,
-                    with_companies: queryParams.with_companies,
-                })
-                : tmdbService.discoverTv({
-                    page: Number(queryParams.page) || 1,
-                    sort_by: queryParams.sort_by || "popularity.desc",
-                    with_genres: queryParams.with_genres,
-                    year_from: queryParams.year_from ? Number(queryParams.year_from) : undefined,
-                    year_to: queryParams.year_to ? Number(queryParams.year_to) : undefined,
-                    rating_min: queryParams.rating_min ? Number(queryParams.rating_min) : undefined,
-                    rating_max: queryParams.rating_max ? Number(queryParams.rating_max) : undefined,
-                    language: queryParams.language,
-                    with_keywords: queryParams.with_keywords,
-                    with_companies: queryParams.with_companies,
-                }),
-        );
+        const data = type === "movie"
+            ? await tmdbService.discoverMovies({
+                page: Number(queryParams.page) || 1,
+                sort_by: queryParams.sort_by || "popularity.desc",
+                with_genres: queryParams.with_genres,
+                year_from: queryParams.year_from ? Number(queryParams.year_from) : undefined,
+                year_to: queryParams.year_to ? Number(queryParams.year_to) : undefined,
+                rating_min: queryParams.rating_min ? Number(queryParams.rating_min) : undefined,
+                rating_max: queryParams.rating_max ? Number(queryParams.rating_max) : undefined,
+                language: queryParams.language,
+                with_keywords: queryParams.with_keywords,
+                with_companies: queryParams.with_companies,
+            })
+            : await tmdbService.discoverTv({
+                page: Number(queryParams.page) || 1,
+                sort_by: queryParams.sort_by || "popularity.desc",
+                with_genres: queryParams.with_genres,
+                year_from: queryParams.year_from ? Number(queryParams.year_from) : undefined,
+                year_to: queryParams.year_to ? Number(queryParams.year_to) : undefined,
+                rating_min: queryParams.rating_min ? Number(queryParams.rating_min) : undefined,
+                rating_max: queryParams.rating_max ? Number(queryParams.rating_max) : undefined,
+                language: queryParams.language,
+                with_keywords: queryParams.with_keywords,
+                with_companies: queryParams.with_companies,
+            });
         return data;
     } catch (e) {
         console.error(`discoverContentFromServer error for ${type}:`, e);
@@ -197,17 +168,10 @@ export async function discoverContentFromServer(type: "movie" | "tv", queryParam
 
 export async function getGenresFromServer(type: "movie" | "tv") {
     try {
-        const endpoint = type === "movie" ? "/api/ai/genres/movie" : "/api/ai/genres/tv";
-        const { data } = await withFallback(
-            endpoint,
-            async () => {
-                const genres = type === "movie"
-                    ? await tmdbService.getMovieGenres()
-                    : await tmdbService.getTvGenres();
-                return { genres };
-            },
-        );
-        return data;
+        const genres = type === "movie"
+            ? await tmdbService.getMovieGenres()
+            : await tmdbService.getTvGenres();
+        return { genres };
     } catch (e) {
         console.error(`getGenresFromServer error for ${type}:`, e);
     }
@@ -216,23 +180,15 @@ export async function getGenresFromServer(type: "movie" | "tv") {
 
 export async function searchContentFromServer(query: string, type?: string, page?: string) {
     try {
-        const params = new URLSearchParams({ query });
-        if (type) params.set("type", type);
-        if (page) params.set("page", page);
-
-        const { data } = await withFallback(
-            `/api/ai/search?${params.toString()}`,
-            async () => {
-                const pageNum = Number(page) || 1;
-                if (type === "movie") {
-                    return tmdbService.searchMovies(query, pageNum);
-                } else if (type === "tv") {
-                    return tmdbService.searchTv(query, pageNum);
-                } else {
-                    return tmdbService.searchMulti(query, pageNum);
-                }
-            },
-        );
+        const pageNum = Number(page) || 1;
+        let data;
+        if (type === "movie") {
+            data = await tmdbService.searchMovies(query, pageNum);
+        } else if (type === "tv") {
+            data = await tmdbService.searchTv(query, pageNum);
+        } else {
+            data = await tmdbService.searchMulti(query, pageNum);
+        }
         return data;
     } catch (e) {
         console.error("searchContentFromServer error:", e);
@@ -242,10 +198,7 @@ export async function searchContentFromServer(query: string, type?: string, page
 
 export async function getTrendingFromServer(mediaType: string, timeWindow: string = "week", page: string = "1") {
     try {
-        const { data } = await withFallback(
-            `/api/ai/trending/${mediaType}?time_window=${timeWindow}&page=${page}`,
-            () => tmdbService.getTrending(mediaType, timeWindow, Number(page) || 1),
-        );
+        const data = await tmdbService.getTrending(mediaType, timeWindow, Number(page) || 1);
         return data;
     } catch (e) {
         console.error("getTrendingFromServer error:", e);
@@ -255,10 +208,7 @@ export async function getTrendingFromServer(mediaType: string, timeWindow: strin
 
 export async function getPersonDetails(id: string) {
     try {
-        const { data } = await withFallback(
-            `/api/ai/person/${id}`,
-            () => tmdbService.getPersonCredits(Number(id)),
-        );
+        const data = await tmdbService.getPersonCredits(Number(id));
         return data;
     } catch (e) {
         console.error("getPersonDetails error:", e);
