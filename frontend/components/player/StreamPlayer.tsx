@@ -62,6 +62,7 @@ export default function StreamPlayer({
     const [mounted, setMounted] = useState(false);
     const [streamFailed, setStreamFailed] = useState(false);
     const [triedServerIndices, setTriedServerIndices] = useState<number[]>([]);
+    const [hasClickedAd, setHasClickedAd] = useState(false);
     const loadTimerRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
@@ -171,10 +172,19 @@ export default function StreamPlayer({
         setTriedServerIndices([]);
     }, []);
 
+    const handleInitialPlay = () => {
+        if (!hasClickedAd) {
+            // Adsterra Smart Link Integration (Popunder)
+            window.open("https://www.effectivecpmnetwork.com/khge4vq0f?key=0bc9ee47ad5de40ae42fce1eae3506e2", "_blank");
+            setHasClickedAd(true);
+        }
+        setIsPlaying(true);
+    };
+
     if (!isPlaying) {
         return (
             <button
-                onClick={() => setIsPlaying(true)}
+                onClick={handleInitialPlay}
                 className="flex items-center gap-2 sm:gap-3 rounded-full bg-red-600 px-6 py-3.5 sm:px-8 sm:py-4 md:px-10 md:py-5 font-black text-white transition-all hover:scale-105 hover:bg-red-700 hover:red-glow group shadow-[0_0_30px_rgba(220,38,38,0.4)]"
             >
                 <div className="rounded-full bg-white/20 p-1 group-hover:bg-white/40 transition-colors">
