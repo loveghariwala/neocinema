@@ -10,9 +10,10 @@ import { useState, useEffect } from "react";
 
 interface MovieCardProps {
     movie: any;
+    priority?: boolean;
 }
 
-export default function MovieCard({ movie }: MovieCardProps) {
+export default function MovieCard({ movie, priority = false }: MovieCardProps) {
     // Support both local DB (_id) and external API (tmdbId) formats
     const id = movie._id || movie.tmdbId;
     const linkBase = movie.isMovie === false ? "/series" : "/movies";
@@ -50,6 +51,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
                         src={hasError ? fallbackUrl : posterUrl}
                         alt={title}
                         fill
+                        priority={priority}
                         sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 20vw, 15vw"
                         className="object-cover opacity-90 transition-all duration-700 group-hover:scale-110 group-hover:opacity-100 group-hover:blur-[2px]"
                         onError={() => setHasError(true)}

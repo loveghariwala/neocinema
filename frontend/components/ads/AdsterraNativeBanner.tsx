@@ -33,7 +33,7 @@ export default function AdsterraNativeBanner() {
                     <h2 className="text-2xl md:text-4xl font-black tracking-tighter text-white uppercase">
                         <span className="flex items-center gap-3">
                             Recommended For You
-                            <span className="text-[10px] font-bold text-neutral-500 tracking-widest uppercase border border-white/10 rounded-full px-2 py-0.5 translate-y-[-4px]">Ad</span>
+                            <span className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase border border-white/10 rounded-full px-2 py-0.5 translate-y-[-4px]">Ad</span>
                         </span>
                         <span className="block h-1 w-1/2 bg-red-600 mt-2 rounded-full shadow-[0_0_10px_rgba(220,38,38,0.8)]" />
                     </h2>

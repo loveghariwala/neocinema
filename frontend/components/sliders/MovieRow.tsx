@@ -13,6 +13,7 @@ interface Props {
     movies: any[];
     moreLink?: string;
     className?: string;
+    priority?: boolean;
 }
 
 export default function MovieRow({
@@ -20,6 +21,7 @@ export default function MovieRow({
     movies,
     moreLink,
     className,
+    priority = false,
 }: Props) {
     const scrollRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -124,7 +126,7 @@ export default function MovieRow({
                             key={movie._id || movie.tmdbId || index}
                             className="w-[calc(50%-10px)] md:w-[calc(33.33%-13.33px)] lg:w-[calc(20%-16px)] flex-shrink-0 snap-start snap-always"
                         >
-                            <MovieCard movie={movie} />
+                            <MovieCard movie={movie} priority={priority && index < 3} />
                         </div>
                     ))}
                 </div>

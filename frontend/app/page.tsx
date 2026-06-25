@@ -124,6 +124,7 @@ export default async function HomePage() {
                             movies={trendingMovies}
                             className="pt-10"
                             moreLink="/movies?sort=popularity.desc"
+                            priority={true}
                         />
                     </div>
                 )}
