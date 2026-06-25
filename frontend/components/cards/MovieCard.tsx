@@ -38,7 +38,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
     }, [movie.posterPath]);
 
     return (
-        <Link href={`${linkBase}/${id}`} className="block group w-full h-full" aria-label={`View details for ${title}`}>
+        <Link href={`${linkBase}/${id}`} prefetch={false} className="block group w-full h-full" aria-label={`View details for ${title}`}>
             <div
                 className="relative aspect-[2/3] w-full overflow-hidden rounded-2xl bg-neutral-950 shadow-xl border border-white/[0.05] transition-all duration-500 ease-out group-hover:border-white/20 group-hover:shadow-[0_20px_50px_rgba(220,38,38,0.3)] group-hover:-translate-y-2 group-hover:scale-[1.03]"
             >

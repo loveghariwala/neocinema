@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 import HeroBanner from "@/components/hero/HeroBanner";
 import MovieRow from "@/components/sliders/MovieRow";
 import AdsterraNativeBanner from "@/components/ads/AdsterraNativeBanner";

@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 import { NextResponse } from "next/server";
 import { getFallbackStatus } from "@/lib/fallback";
 import { getAIServiceUrl } from "@/lib/config";

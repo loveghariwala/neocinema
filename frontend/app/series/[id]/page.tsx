@@ -1,11 +1,13 @@
+export const runtime = 'edge';
 import { getMovieDetails } from "@/services/movieService";
 import { Star, Clock, Calendar, Globe } from "lucide-react";
-import MovieRow from "@/components/sliders/MovieRow";
+import MovieCard from "@/components/cards/MovieCard";
 import CastRow from "@/components/sliders/CastRow";
 import { MotionDiv } from "@/components/layout/Motion";
 import Image from "next/image";
 import Link from "next/link";
-import StreamPlayer from "@/components/player/StreamPlayer";
+import dynamic from "next/dynamic";
+const StreamPlayer = dynamic(() => import("@/components/player/StreamPlayer"));
 import ShareButton from "@/components/ui/ShareButton";
 import SeasonEpisodeBrowser from "@/components/series/SeasonEpisodeBrowser";
 import { Metadata } from "next";
@@ -275,10 +277,14 @@ export default async function SeriesDetailsPage({
                 {series.similar?.length > 0 && (
                     <div className="space-y-8">
                         <div className="flex items-center gap-4">
-                            <h2 className="text-3xl font-black tracking-tighter text-white">RECOMMENDED SERIES</h2>
-                            <div className="h-px flex-1 bg-gradient-to-r from-red-600/50 to-transparent" />
+                            <h2 className="text-3xl sm:text-4xl font-black tracking-tighter text-white drop-shadow-[0_0_15px_rgba(220,38,38,0.3)]">RECOMMENDED SERIES</h2>
+                            <div className="h-px flex-1 bg-gradient-to-r from-red-600/50 via-red-600/10 to-transparent" />
                         </div>
-                        <MovieRow title="" movies={series.similar} />
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+                            {series.similar.slice(0, 12).map((simSeries: any) => (
+                                <MovieCard key={simSeries.tmdbId} movie={simSeries} />
+                            ))}
+                        </div>
                     </div>
                 )}
             </div>

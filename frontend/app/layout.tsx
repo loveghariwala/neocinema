@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
+import Security from "@/components/ui/Security";
 import { Geist, Geist_Mono, Noto_Sans, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
@@ -184,6 +185,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
         />
         <div className="flex-grow flex flex-col min-w-0">
+          <Security />
           <Navbar />
           <main className="flex-grow">
             {children}

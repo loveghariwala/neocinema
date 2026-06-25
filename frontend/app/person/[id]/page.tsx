@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 import { getPersonDetails } from "@/services/movieService";
 import PersonPageClient from "./PersonPageClient";
 import { Metadata } from "next";

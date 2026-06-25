@@ -1,98 +1,56 @@
 import { MetadataRoute } from 'next';
 import { COLLECTIONS } from '@/lib/collections';
+import { tmdbService } from '@/lib/tmdb';
 
-/**
- * Optimized sitemap — only includes static and collection routes.
- * 
- * WHY: Dynamic movie/series pages from TMDB trending were causing
- * Googlebot to generate millions of edge requests, exceeding Vercel's
- * free tier limit. Trending results change constantly, so Googlebot
- * re-crawls all URLs on every sitemap fetch.
- * 
- * Individual movie/series pages are still indexable via internal links
- * and Google's natural crawling — they don't need to be in the sitemap.
- */
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.neocinematv.com';
 
-  // Static pages with realistic lastModified dates (not new Date() which
-  // signals to crawlers that the page has changed and needs re-crawling)
   const staticRoutes: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
-      lastModified: new Date('2026-06-01'),
-      changeFrequency: 'weekly',
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/movies`,
-      lastModified: new Date('2026-06-01'),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/series`,
-      lastModified: new Date('2026-06-01'),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/search`,
-      lastModified: new Date('2026-06-01'),
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/collections`,
-      lastModified: new Date('2026-06-01'),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: new Date('2026-06-01'),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: new Date('2026-06-01'),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/privacy`,
-      lastModified: new Date('2026-06-01'),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/terms`,
-      lastModified: new Date('2026-06-01'),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/cookies`,
-      lastModified: new Date('2026-06-01'),
-      changeFrequency: 'yearly',
-      priority: 0.2,
-    },
-    {
-      url: `${baseUrl}/disclaimer`,
-      lastModified: new Date('2026-06-01'),
-      changeFrequency: 'yearly',
-      priority: 0.2,
-    },
+    { url: baseUrl, lastModified: new Date(), changeFrequency: 'daily', priority: 1 },
+    { url: `${baseUrl}/movies`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
+    { url: `${baseUrl}/series`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
+    { url: `${baseUrl}/search`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${baseUrl}/collections`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
   ];
 
-  // Collection pages (fixed set, not dynamic API calls)
   const collectionRoutes: MetadataRoute.Sitemap = COLLECTIONS.map((c) => ({
     url: `${baseUrl}/collections/${c.slug}`,
-    lastModified: new Date('2026-06-01'),
+    lastModified: new Date(),
     changeFrequency: 'weekly',
-    priority: 0.9,
+    priority: 0.8,
   }));
 
-  return [...staticRoutes, ...collectionRoutes];
+  // Dynamically fetch top 100 Trending Movies
+  let trendingMovieRoutes: MetadataRoute.Sitemap = [];
+  try {
+      const [mPage1, mPage2] = await Promise.all([
+          tmdbService.getTrending("movie", "week", 1),
+          tmdbService.getTrending("movie", "week", 2)
+      ]);
+      const movies = [...(mPage1.results || []), ...(mPage2.results || [])];
+      trendingMovieRoutes = movies.map((m: any) => ({
+          url: `${baseUrl}/movies/${m.tmdbId}`,
+          lastModified: new Date(),
+          changeFrequency: 'weekly',
+          priority: 0.8,
+      }));
+  } catch(e) {}
+
+  // Dynamically fetch top 100 Trending Series
+  let trendingSeriesRoutes: MetadataRoute.Sitemap = [];
+  try {
+      const [sPage1, sPage2] = await Promise.all([
+          tmdbService.getTrending("tv", "week", 1),
+          tmdbService.getTrending("tv", "week", 2)
+      ]);
+      const series = [...(sPage1.results || []), ...(sPage2.results || [])];
+      trendingSeriesRoutes = series.map((s: any) => ({
+          url: `${baseUrl}/series/${s.tmdbId}`,
+          lastModified: new Date(),
+          changeFrequency: 'weekly',
+          priority: 0.8,
+      }));
+  } catch(e) {}
+
+  return [...staticRoutes, ...collectionRoutes, ...trendingMovieRoutes, ...trendingSeriesRoutes];
 }

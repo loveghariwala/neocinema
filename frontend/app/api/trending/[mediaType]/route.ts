@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 import { NextRequest, NextResponse } from "next/server";
 import { withFallback } from "@/lib/fallback";
 import { tmdbService } from "@/lib/tmdb";

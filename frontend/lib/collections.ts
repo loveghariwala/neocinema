@@ -96,6 +96,69 @@ export const COLLECTIONS: Collection[] = [
             sort_by: "popularity.desc",
         },
         seoKeywords: ["vivamax movies", "18+ pinoy movies", "movies like mamasan", "filipino adult dramas", "tagalog mature movies"]
+    },
+    {
+        slug: "bollywood-blockbusters",
+        title: "Top Rated Hindi Blockbusters",
+        description: "Stream the highest-rated Hindi and Bollywood movies. From intense action to heartwarming family dramas.",
+        image: "/neocinema_logo.png",
+        type: "movie",
+        params: {
+            language: "hi",
+            sort_by: "popularity.desc",
+            rating_min: 6,
+        },
+        seoKeywords: ["watch hindi movies online", "bollywood movies free", "latest hindi dubbed movies", "top rated indian movies", "free bollywood streaming"]
+    },
+    {
+        slug: "korean-dramas",
+        title: "Trending K-Dramas",
+        description: "Binge-watch the most addictive South Korean television series and dramas.",
+        image: "/neocinema_logo.png",
+        type: "tv",
+        params: {
+            language: "ko",
+            sort_by: "popularity.desc",
+        },
+        seoKeywords: ["watch kdrama free", "korean dramas online", "korean series with english subtitles", "best kdramas 2024", "free korean streaming"]
+    },
+    {
+        slug: "anime-masterpieces",
+        title: "Epic Anime Series",
+        description: "The highest-rated Japanese anime series. Watch epic shonen battles, deep psychological thrillers, and beautiful slice-of-life.",
+        image: "/neocinema_logo.png",
+        type: "tv",
+        params: {
+            language: "ja",
+            with_genres: "16", // Animation
+            sort_by: "popularity.desc",
+        },
+        seoKeywords: ["watch anime free", "best anime series", "japanese anime english sub", "top rated anime online", "free anime streaming site"]
+    },
+    {
+        slug: "superhero-universe",
+        title: "Superhero Universe",
+        description: "Epic superhero movies from the biggest comic book universes. Action, explosions, and legendary heroes.",
+        image: "/neocinema_logo.png",
+        type: "movie",
+        params: {
+            with_keywords: "9715", // superhero keyword in TMDB
+            sort_by: "popularity.desc",
+        },
+        seoKeywords: ["marvel movies free", "dc movies online", "superhero movies streaming", "watch avengers free", "batman movies online"]
+    },
+    {
+        slug: "horror-nights",
+        title: "Terrifying Horror Nights",
+        description: "Turn off the lights. These are the most terrifying and highly-rated horror movies ever made.",
+        image: "/neocinema_logo.png",
+        type: "movie",
+        params: {
+            with_genres: "27", // Horror
+            sort_by: "popularity.desc",
+            rating_min: 6,
+        },
+        seoKeywords: ["scary movies online", "watch horror movies free", "best horror films", "slasher movies streaming", "paranormal movies free"]
     }
 ];
 

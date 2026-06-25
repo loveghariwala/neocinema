@@ -366,72 +366,19 @@ export default function StreamPlayer({
                             HD SERVER
                         </span>
                     </div>
-                    <div className="flex flex-col gap-2 flex-grow">
-                        <div className="flex flex-wrap gap-2">
-                            {SERVERS.slice(0, 5).map((server, idx) => (
-                                <button
-                                    key={idx}
-                                    onClick={() => handleServerChange(idx)}
-                                    className={`px-3 py-1.5 md:px-4 md:py-2 rounded text-[10px] md:text-[11px] font-black uppercase transition-all tracking-wider border-b-[3px] cursor-pointer ${selectedServerIndex === idx
-                                        ? "bg-[#0090d0] text-white border-[#006090] shadow-lg shadow-sky-900/30 translate-y-0 active:translate-y-[2px] active:border-b-0"
-                                        : "bg-[#555] hover:bg-[#606060] text-white border-[#333] active:translate-y-[2px] active:border-b-0"
-                                        }`}
-                                >
-                                    {server.name}
-                                </button>
-                            ))}
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {SERVERS.slice(5, 10).map((server, idx) => {
-                                const realIdx = idx + 5;
-                                return (
-                                    <button
-                                        key={realIdx}
-                                        onClick={() => handleServerChange(realIdx)}
-                                        className={`px-3 py-1.5 md:px-4 md:py-2 rounded text-[10px] md:text-[11px] font-black uppercase transition-all tracking-wider border-b-[3px] cursor-pointer ${selectedServerIndex === realIdx
-                                            ? "bg-[#0090d0] text-white border-[#006090] shadow-lg shadow-sky-900/30 translate-y-0 active:translate-y-[2px] active:border-b-0"
-                                            : "bg-[#555] hover:bg-[#606060] text-white border-[#333] active:translate-y-[2px] active:border-b-0"
-                                            }`}
-                                    >
-                                        {server.name}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {SERVERS.slice(10, 15).map((server, idx) => {
-                                const realIdx = idx + 10;
-                                return (
-                                    <button
-                                        key={realIdx}
-                                        onClick={() => handleServerChange(realIdx)}
-                                        className={`px-3 py-1.5 md:px-4 md:py-2 rounded text-[10px] md:text-[11px] font-black uppercase transition-all tracking-wider border-b-[3px] cursor-pointer ${selectedServerIndex === realIdx
-                                            ? "bg-[#0090d0] text-white border-[#006090] shadow-lg shadow-sky-900/30 translate-y-0 active:translate-y-[2px] active:border-b-0"
-                                            : "bg-[#555] hover:bg-[#606060] text-white border-[#333] active:translate-y-[2px] active:border-b-0"
-                                            }`}
-                                    >
-                                        {server.name}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {SERVERS.slice(22, 24).map((server, idx) => {
-                                const realIdx = idx + 22;
-                                return (
-                                    <button
-                                        key={realIdx}
-                                        onClick={() => handleServerChange(realIdx)}
-                                        className={`px-3 py-1.5 md:px-4 md:py-2 rounded text-[10px] md:text-[11px] font-black uppercase transition-all tracking-wider border-b-[3px] cursor-pointer ${selectedServerIndex === realIdx
-                                            ? "bg-[#0090d0] text-white border-[#006090] shadow-lg shadow-sky-900/30 translate-y-0 active:translate-y-[2px] active:border-b-0"
-                                            : "bg-[#555] hover:bg-[#606060] text-white border-[#333] active:translate-y-[2px] active:border-b-0"
-                                            }`}
-                                    >
-                                        {server.name}
-                                    </button>
-                                );
-                            })}
-                        </div>
+                    <div className="flex flex-wrap gap-2 flex-grow">
+                        {SERVERS.map((server, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => handleServerChange(idx)}
+                                className={`px-3 py-1.5 md:px-4 md:py-2 rounded text-[10px] md:text-[11px] font-black uppercase transition-all tracking-wider border-b-[3px] cursor-pointer ${selectedServerIndex === idx
+                                    ? "bg-[#0090d0] text-white border-[#006090] shadow-lg shadow-sky-900/30 translate-y-0 active:translate-y-[2px] active:border-b-0"
+                                    : "bg-[#555] hover:bg-[#606060] text-white border-[#333] active:translate-y-[2px] active:border-b-0"
+                                    }`}
+                            >
+                                {server.name}
+                            </button>
+                        ))}
                     </div>
                 </div>
             </div>
