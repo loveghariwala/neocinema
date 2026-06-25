@@ -1,4 +1,5 @@
 
+export const runtime = 'edge';
 import { Metadata } from "next";
 import SearchPageClient from "./SearchPageClient";
 import { searchContentFromServer, getTrendingFromServer } from "@/services/movieService";

@@ -1,6 +1,7 @@
 
 import { getPersonDetails } from "@/services/movieService";
 import PersonPageClient from "./PersonPageClient";
+export const runtime = 'edge';
 import { Metadata } from "next";
 
 export const revalidate = 86400; // ISR: cache person detail pages for 24 hours
