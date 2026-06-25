@@ -171,9 +171,9 @@ export default function RootLayout({
             gtag('config', 'G-4RGXPG1KWQ');
           `}
         </Script>
-        {/* Adsterra Popunder */}
+        {/* Adsterra Social Bar */}
         <Script 
-          src="https://pl29858256.effectivecpmnetwork.com/c2/8d/3a/c28d3aac5fc463198cc00359f362b421.js" 
+          src="https://pl29894445.effectivecpmnetwork.com/e9/77/ae/e977aec6049f8ae1d848477772d32637.js" 
           strategy="lazyOnload"
         />
       </head>
