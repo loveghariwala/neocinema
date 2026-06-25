@@ -45,14 +45,16 @@ export default function HeroBanner({
                 style={{ animation: "ken-burns 40s linear infinite alternate" }}
             >
                 {backdropUrl ? (
-                    <Image
-                        src={`https://image.tmdb.org/t/p/w1280${backdropUrl}`}
-                        alt={title}
-                        fill
-                        priority
-                        sizes="100vw"
-                        className="object-cover opacity-80"
-                    />
+                    <picture className="absolute inset-0 h-full w-full">
+                        <source media="(max-width: 768px)" srcSet={`https://image.tmdb.org/t/p/w780${backdropUrl}`} />
+                        <source media="(min-width: 769px)" srcSet={`https://image.tmdb.org/t/p/w1280${backdropUrl}`} />
+                        <img
+                            src={`https://image.tmdb.org/t/p/w1280${backdropUrl}`}
+                            alt={title}
+                            className="h-full w-full object-cover opacity-80"
+                            fetchPriority="high"
+                        />
+                    </picture>
                 ) : (
                     <div className="h-full w-full bg-neutral-900" />
                 )}

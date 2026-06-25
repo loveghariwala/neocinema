@@ -67,6 +67,15 @@ export default function StreamPlayer({
     useEffect(() => {
         if (autoPlay) {
             setIsPlaying(true);
+
+            // Hide ?play=true from the URL bar for a cleaner look
+            if (typeof window !== "undefined") {
+                const url = new URL(window.location.href);
+                if (url.searchParams.has("play")) {
+                    url.searchParams.delete("play");
+                    window.history.replaceState({}, document.title, url.pathname + url.search);
+                }
+            }
         }
     }, [autoPlay]);
 
@@ -180,30 +189,19 @@ export default function StreamPlayer({
 
     const playerUI = (
         <div className="fixed inset-0 z-[100000] flex items-center justify-center bg-black/98 backdrop-blur-3xl animate-in fade-in duration-500">
-            {/* Global Close Button (Always on Top) */}
-            <button
-                onClick={() => setIsPlaying(false)}
-                className="absolute top-4 right-4 md:top-8 md:right-8 z-[100001] rounded-full bg-white/10 p-2 md:p-3 text-white transition-all hover:bg-red-600 hover:rotate-90 border border-white/20 backdrop-blur-md shadow-2xl group"
-            >
-                <X className="h-5 w-5 md:h-8 md:w-8 transition-transform group-hover:scale-110" />
-            </button>
-
-            <div className="relative w-full h-full md:max-w-[90vw] md:max-h-[85vh] md:rounded-[2.5rem] border-0 md:border md:border-white/10 bg-neutral-950 shadow-[0_0_150px_rgba(220,38,38,0.25)] flex flex-col overflow-visible">
-
+            <div className="relative w-full h-full md:max-w-[98vw] md:max-h-[96vh] md:rounded-[2rem] border-0 md:border md:border-white/10 bg-neutral-950 shadow-[0_0_150px_rgba(220,38,38,0.25)] flex flex-col overflow-visible">
                 {/* ─── Top Bar ────────────────────────────────────────── */}
-                <div className="relative z-[1000] flex flex-col gap-4 bg-black/95 px-4 py-4 md:px-8 md:py-6 backdrop-blur-3xl border-b border-white/5 md:rounded-t-[2.5rem] lg:flex-row lg:items-center lg:justify-between lg:gap-6">
-                    {/* Top Row: Title / Branding (Left) and Close Button Space / Close Button (Right) */}
-                    <div className="flex items-center justify-between w-full lg:w-auto pr-14 lg:pr-0">
-                        <div className="min-w-0">
-                            <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-red-600 block mb-0.5">Streaming Mode</span>
-                            <h2 className="text-sm md:text-lg font-black text-white text-glow truncate max-w-[220px] sm:max-w-sm md:max-w-md xl:max-w-xl">
-                                {title} {isTv && <span className="text-neutral-500 font-bold ml-2">S{selectedSeason} E{selectedEpisode}</span>}
-                            </h2>
-                        </div>
+                <div className="relative z-[1000] flex flex-row items-center justify-between gap-4 bg-black/95 px-4 py-2.5 md:px-6 md:py-3.5 backdrop-blur-3xl border-b border-white/5 md:rounded-t-[2.5rem]">
+                    {/* Left: Title / Branding */}
+                    <div className="flex flex-col min-w-0 flex-1">
+                        <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] text-red-600 block mb-0.5">Streaming Mode</span>
+                        <h2 className="text-xs sm:text-sm md:text-base font-black text-white text-glow truncate">
+                            {title} {isTv && <span className="text-neutral-500 font-bold ml-2">S{selectedSeason} E{selectedEpisode}</span>}
+                        </h2>
                     </div>
 
-                    {/* Bottom Row / Main Controls: Series Selectors */}
-                    <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full lg:w-auto lg:ml-auto">
+                    {/* Right: Selectors & Close Button */}
+                    <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                         {/* Series Selectors */}
                         {isTv && activeSeasons.length > 0 && (
                             <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
@@ -296,6 +294,14 @@ export default function StreamPlayer({
                                 </div>
                             </div>
                         )}
+
+                        {/* Embedded Close Button */}
+                        <button
+                            onClick={() => setIsPlaying(false)}
+                            className="rounded-full bg-white/10 p-1.5 md:p-2 text-white transition-all hover:bg-red-600 hover:rotate-90 border border-white/20 backdrop-blur-md group ml-2"
+                        >
+                            <X className="h-4 w-4 md:h-5 md:w-5 transition-transform group-hover:scale-110" />
+                        </button>
                     </div>
                 </div>
 

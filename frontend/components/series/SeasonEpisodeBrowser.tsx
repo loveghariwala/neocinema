@@ -34,7 +34,7 @@ interface SeasonEpisodeBrowserProps {
 export default function SeasonEpisodeBrowser({ seriesId, seasons }: SeasonEpisodeBrowserProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
-    
+
     // Filter out specials (season 0)
     const activeSeasons = seasons.filter(s => s.season_number > 0);
     const [selectedSeason, setSelectedSeason] = useState(
@@ -92,11 +92,10 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons }: SeasonEpisod
                                 setSelectedSeason(season.season_number);
                                 setImgErrors({});
                             }}
-                            className={`rounded-xl px-4 py-2.5 text-xs font-black transition-all border shrink-0 snap-start ${
-                                selectedSeason === season.season_number
-                                    ? "bg-red-600 border-red-500 text-white shadow-lg shadow-red-600/30"
-                                    : "bg-white/5 border-white/10 text-neutral-400 hover:bg-white/10 hover:text-white"
-                            }`}
+                            className={`rounded-xl px-4 py-2.5 text-xs font-black transition-all border shrink-0 snap-start ${selectedSeason === season.season_number
+                                ? "bg-red-600 border-red-500 text-white shadow-lg shadow-red-600/30"
+                                : "bg-white/5 border-white/10 text-neutral-400 hover:bg-white/10 hover:text-white"
+                                }`}
                         >
                             Season {season.season_number}
                         </button>
@@ -122,27 +121,27 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons }: SeasonEpisod
                 ) : (
                     <div
                         key="episodes"
-                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                        className="flex flex-col gap-4"
                     >
                         {episodes.map((episode) => {
                             const stillUrl = episode.still_path && !imgErrors[episode.id]
                                 ? `https://image.tmdb.org/t/p/w300${episode.still_path}`
                                 : null;
-                            
+
                             return (
                                 <div
                                     key={episode.id}
                                     onClick={() => playEpisode(episode.episode_number)}
-                                    className="group relative flex flex-col rounded-2xl border border-white/5 bg-white/[0.02] overflow-hidden cursor-pointer hover:border-white/15 hover:bg-white/[0.04] transition-all hover:shadow-[0_0_30px_rgba(220,38,38,0.05)]"
+                                    className="group relative flex flex-row rounded-2xl border border-white/5 bg-white/[0.02] overflow-hidden cursor-pointer hover:border-white/15 hover:bg-white/[0.04] transition-all hover:shadow-[0_0_30px_rgba(220,38,38,0.05)] h-28 sm:h-36 md:h-40"
                                 >
-                                    {/* Thumbnail Image */}
-                                    <div className="relative aspect-[16/9] w-full overflow-hidden bg-neutral-900/60 flex items-center justify-center">
+                                    {/* Thumbnail Image (Left Side) */}
+                                    <div className="relative h-full w-32 sm:w-48 md:w-64 flex-shrink-0 bg-neutral-900/60 flex items-center justify-center overflow-hidden border-r border-white/5">
                                         {stillUrl ? (
                                             <Image
                                                 src={stillUrl}
                                                 alt={episode.name}
                                                 fill
-                                                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                                sizes="(max-width: 768px) 150px, 300px"
                                                 className="object-cover transition-transform duration-500 group-hover:scale-105"
                                                 onError={() => {
                                                     setImgErrors(prev => ({ ...prev, [episode.id]: true }));
@@ -156,36 +155,33 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons }: SeasonEpisod
                                         )}
                                         {/* Play Hover Overlay */}
                                         <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-600 text-white shadow-lg shadow-red-600/30 transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                                            <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-red-600 text-white shadow-lg shadow-red-600/30 transform scale-90 group-hover:scale-100 transition-transform duration-300">
                                                 <Play fill="currentColor" size={20} className="ml-0.5" />
                                             </div>
                                         </div>
-                                        {/* Episode badge */}
-                                        <div className="absolute bottom-2 left-2 rounded bg-black/75 px-1.5 py-0.5 text-[10px] font-black text-white backdrop-blur-sm border border-white/10">
-                                            EP {episode.episode_number}
-                                        </div>
                                     </div>
 
-                                    {/* Text Info */}
-                                    <div className="p-4 flex-grow flex flex-col justify-between space-y-3">
+                                    {/* Text Info (Right Side) */}
+                                    <div className="p-3 sm:p-5 flex-grow flex flex-col justify-between overflow-hidden">
                                         <div>
-                                            <h4 className="font-black text-white text-sm group-hover:text-red-500 transition-colors line-clamp-1">
-                                                {episode.name}
-                                            </h4>
-                                            <p className="text-xs text-neutral-400 font-medium line-clamp-3 leading-relaxed mt-1">
+                                            <div className="flex items-start justify-between gap-2 mb-1 sm:mb-2">
+                                                <h4 className="font-black text-white text-sm sm:text-base group-hover:text-red-500 transition-colors line-clamp-1">
+                                                    {episode.episode_number}. {episode.name}
+                                                </h4>
+                                                {episode.air_date && (
+                                                    <span className="text-[9px] sm:text-[10px] font-bold text-neutral-500 shrink-0 whitespace-nowrap mt-1">
+                                                        {new Date(episode.air_date).toLocaleDateString(undefined, {
+                                                            year: 'numeric',
+                                                            month: 'short',
+                                                            day: 'numeric'
+                                                        })}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className="text-[10px] sm:text-xs md:text-sm text-neutral-400 font-medium line-clamp-2 sm:line-clamp-3 leading-relaxed">
                                                 {episode.overview || "No description available for this episode."}
                                             </p>
                                         </div>
-                                        {episode.air_date && (
-                                            <div className="flex items-center gap-1.5 text-[10px] font-bold text-neutral-500 pt-2 border-t border-white/5">
-                                                <Calendar size={12} className="text-neutral-600" />
-                                                <span>{new Date(episode.air_date).toLocaleDateString(undefined, {
-                                                    year: 'numeric',
-                                                    month: 'short',
-                                                    day: 'numeric'
-                                                })}</span>
-                                            </div>
-                                        )}
                                     </div>
                                 </div>
                             );
