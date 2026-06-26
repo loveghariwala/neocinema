@@ -101,6 +101,7 @@ export default async function MovieDetailsPage({
         "image": movie.posterPath ? `https://image.tmdb.org/t/p/w500${movie.posterPath}` : `${baseUrl}/neocinema_logo.png`,
         "description": movie.overview,
         "dateCreated": movie.releaseDate,
+        "dateModified": new Date().toISOString(),
         "url": `${baseUrl}/movies/${id}`,
         "genre": movie.genres,
         "duration": movie.runtime ? `PT${movie.runtime}M` : undefined,

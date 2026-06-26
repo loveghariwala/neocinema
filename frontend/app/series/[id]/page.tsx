@@ -108,6 +108,7 @@ export default async function SeriesDetailsPage({
         "image": series.posterPath ? `https://image.tmdb.org/t/p/w500${series.posterPath}` : `${baseUrl}/neocinema_logo.png`,
         "description": series.overview,
         "startDate": series.releaseDate,
+        "dateModified": new Date().toISOString(),
         "url": `${baseUrl}/series/${id}`,
         "genre": series.genres,
         "numberOfSeasons": series.number_of_seasons,
