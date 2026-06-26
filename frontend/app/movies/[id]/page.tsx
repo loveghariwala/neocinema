@@ -5,6 +5,7 @@ import Star from "lucide-react/dist/esm/icons/star";
 import Clock from "lucide-react/dist/esm/icons/clock";
 import Calendar from "lucide-react/dist/esm/icons/calendar";
 import Globe from "lucide-react/dist/esm/icons/globe";
+import Download from "lucide-react/dist/esm/icons/download";
 
 import MovieCard from "@/components/cards/MovieCard";
 import CastRow from "@/components/sliders/CastRow";
@@ -247,6 +248,16 @@ export default async function MovieDetailsPage({
                                         title={movie.title}
                                         autoPlay={autoPlay}
                                     />
+
+                                    <a
+                                        href="https://omg10.com/4/11203119"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center gap-2 rounded-full bg-white/10 hover:bg-white/20 px-6 py-3 text-sm font-bold text-white backdrop-blur-md transition-all border border-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+                                    >
+                                        <Download size={18} />
+                                        Download 4K
+                                    </a>
 
                                     <ShareButton title={movie.title} />
                                 </div>

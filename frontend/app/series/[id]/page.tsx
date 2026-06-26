@@ -5,6 +5,7 @@ import Star from "lucide-react/dist/esm/icons/star";
 import Clock from "lucide-react/dist/esm/icons/clock";
 import Calendar from "lucide-react/dist/esm/icons/calendar";
 import Globe from "lucide-react/dist/esm/icons/globe";
+import Download from "lucide-react/dist/esm/icons/download";
 
 import MovieCard from "@/components/cards/MovieCard";
 import CastRow from "@/components/sliders/CastRow";
@@ -257,6 +258,16 @@ export default async function SeriesDetailsPage({
                                     initialSeason={seasonParam}
                                     initialEpisode={episodeParam}
                                 />
+
+                                <a
+                                    href="https://omg10.com/4/11203119"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 rounded-full bg-blue-600/10 hover:bg-blue-600/20 px-6 py-3 text-sm font-bold text-blue-100 backdrop-blur-md transition-all border border-blue-500/20 hover:border-blue-500/40 hover:shadow-[0_0_20px_rgba(37,99,235,0.2)]"
+                                >
+                                    <Download size={18} />
+                                    Download HD
+                                </a>
 
                                 <ShareButton title={series.title} />
                             </div>

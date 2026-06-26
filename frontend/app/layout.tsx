@@ -3,6 +3,8 @@ import Script from "next/script";
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
 import Security from "@/components/ui/Security";
+import AdsterraSocialBar from "@/components/ads/AdsterraSocialBar";
+import MonetagAds from "@/components/ads/MonetagAds";
 import { Geist, Geist_Mono, Noto_Sans, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
@@ -175,11 +177,9 @@ export default function RootLayout({
             gtag('config', 'G-4RGXPG1KWQ');
           `}
         </Script>
-        {/* Adsterra Social Bar */}
-        <Script 
-          src="https://pl29894445.effectivecpmnetwork.com/e9/77/ae/e977aec6049f8ae1d848477772d32637.js" 
-          strategy="lazyOnload"
-        />
+        {/* Global Ad Network Scripts */}
+        <AdsterraSocialBar />
+        <MonetagAds />
       </head>
       <body suppressHydrationWarning className="min-h-full flex flex-row bg-background">
         <script
