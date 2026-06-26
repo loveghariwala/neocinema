@@ -177,6 +177,9 @@ export default function RootLayout({
             gtag('config', 'G-4RGXPG1KWQ');
           `}
         </Script>
+        
+        {/* Ahrefs Webmaster Tools Analytics */}
+        <Script src="https://analytics.ahrefs.com/analytics.js" data-key="+kc1zXGQ8NqACPuHJIlgsw" strategy="afterInteractive" />
         {/* Global Ad Network Scripts */}
         <AdsterraSocialBar />
         <MonetagAds />
