@@ -30,10 +30,22 @@ export async function getTopRatedMovies() {
     }
 }
 
+export async function getTopRatedSeries() {
+    try {
+        const data = await tmdbService.discoverTv({ sort_by: "vote_average.desc", rating_min: 7 });
+        return data?.results?.slice(0, 20) || [];
+    } catch (error) {
+        console.error("Failed to fetch top rated series:", error);
+        return [];
+    }
+}
+
 async function getCollectionParts(collectionId: number) {
     try {
         const API_KEY = process.env.TMDB_API_KEY;
-        const res = await fetch(`https://api.themoviedb.org/3/collection/${collectionId}?api_key=${API_KEY}`);
+        const res = await fetch(`https://api.themoviedb.org/3/collection/${collectionId}?api_key=${API_KEY}`, {
+            next: { revalidate: 3600 } // Cache collections for 1 hour at the Edge
+        });
         if (!res.ok) return [];
         const data = await res.json();
         return data.parts || [];

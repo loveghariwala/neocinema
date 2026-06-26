@@ -96,6 +96,7 @@ async function tmdbGet(endpoint: string, params: Record<string, any> = {}, ttl: 
             const response = await fetch(url.toString(), {
                 headers: { "Content-Type": "application/json" },
                 signal: AbortSignal.timeout(10000), // 10s timeout
+                next: { revalidate: Math.floor(ttl / 1000) }, // Cache persistently at the Edge (Vercel/Cloudflare)
             });
 
             if (!response.ok) {
