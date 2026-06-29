@@ -1,5 +1,5 @@
 
-export const runtime = 'edge';
+
 import { Metadata } from "next";
 import BrowsePageClient from "@/components/browse/BrowsePageClient";
 import { Suspense } from "react";
