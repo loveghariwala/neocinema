@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import ArrowLeft from "lucide-react/dist/esm/icons/arrow-left";
-export const runtime = 'edge';
+
 
 export const revalidate = 86400;
 
