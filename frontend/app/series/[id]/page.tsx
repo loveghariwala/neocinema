@@ -38,7 +38,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     if (!series) {
         return {
             title: "Series Not Found — NeoCinema",
-            description: "The TV series details page you are trying to reach does not exist or has been removed."
+            description: "The TV series details page you are trying to reach does not exist or has been removed.",
+            robots: { index: false, follow: false }
         };
     }
 
@@ -57,11 +58,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         title: titleText,
         description: descriptionText,
         keywords: [series.title, ...(series.genres || []), ...castKeywords, "AI recommendations", "NeoCinema", "stream TV series", "watch series free"],
-        alternates: { canonical: `/series/${id}` },
+        alternates: { 
+            canonical: `/series/${id}`,
+            languages: {
+                'en-US': `/series/${id}`,
+                'en': `/series/${id}`
+            }
+        },
         robots: isBlocked ? { index: false, follow: false } : { index: true, follow: true },
         openGraph: {
             title: titleText,
             description: descriptionText,
+            url: `/series/${id}`,
             type: "video.tv_show",
             images: series.backdropPath
                 ? [{ url: `https://image.tmdb.org/t/p/w780${series.backdropPath}` }]
@@ -188,7 +196,7 @@ export default async function SeriesDetailsPage({
                 >
                     {series.backdropPath ? (
                         <Image 
-                            src={`https://image.tmdb.org/t/p/original${series.backdropPath}`} 
+                            src={`https://image.tmdb.org/t/p/w1280${series.backdropPath}`} 
                             alt={series.title} 
                             fill 
                             priority 

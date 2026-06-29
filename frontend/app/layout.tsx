@@ -48,6 +48,10 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: '/',
+    languages: {
+      'en-US': '/',
+      'en': '/'
+    }
   },
   openGraph: {
     title: "Watch Free Movies & TV Shows Online in HD",

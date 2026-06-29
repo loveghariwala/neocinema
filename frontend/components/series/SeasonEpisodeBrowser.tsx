@@ -139,7 +139,7 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons, initialEpisode
                                                 <h4 className="font-black text-white text-sm sm:text-base group-hover:text-red-500 transition-colors line-clamp-1">
                                                     {episode.episode_number}. {episode.name}
                                                 </h4>
-                                                {episode.air_date && (
+                                                {episode.air_date && !isNaN(new Date(episode.air_date).getTime()) && (
                                                     <span className="text-[9px] sm:text-[10px] font-bold text-neutral-500 shrink-0 whitespace-nowrap mt-1">
                                                         {new Date(episode.air_date).toLocaleDateString(undefined, {
                                                             year: 'numeric',

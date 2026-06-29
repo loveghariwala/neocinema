@@ -35,7 +35,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     if (!movie) {
         return {
             title: "Movie Not Found — NeoCinema",
-            description: "The movie details page you are trying to reach does not exist or has been removed."
+            description: "The movie details page you are trying to reach does not exist or has been removed.",
+            robots: { index: false, follow: false }
         };
     }
 
@@ -54,11 +55,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         title: titleText,
         description: descriptionText,
         keywords: [movie.title, ...(movie.genres || []), ...castKeywords, "AI recommendations", "NeoCinema", "stream movie", "watch online free"],
-        alternates: { canonical: `/movies/${id}` },
+        alternates: { 
+            canonical: `/movies/${id}`,
+            languages: {
+                'en-US': `/movies/${id}`,
+                'en': `/movies/${id}`
+            }
+        },
         robots: isBlocked ? { index: false, follow: false } : { index: true, follow: true },
         openGraph: {
             title: titleText,
             description: descriptionText,
+            url: `/movies/${id}`,
             type: "video.movie",
             images: movie.backdropPath
                 ? [{ url: `https://image.tmdb.org/t/p/w780${movie.backdropPath}` }]
@@ -182,7 +190,7 @@ export default async function MovieDetailsPage({
                     >
                         {movie.backdropPath ? (
                             <Image
-                                src={`https://image.tmdb.org/t/p/original${movie.backdropPath}`}
+                                src={`https://image.tmdb.org/t/p/w1280${movie.backdropPath}`}
                                 alt={movie.title}
                                 fill
                                 priority
