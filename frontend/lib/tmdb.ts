@@ -97,8 +97,7 @@ async function tmdbGet(endpoint: string, params: Record<string, any> = {}, ttl: 
                 headers: { "Content-Type": "application/json" },
                 signal: AbortSignal.timeout(10000), // 10s timeout
                 next: { revalidate: Math.floor(ttl / 1000) }, // Cache persistently at the Edge (Vercel/Cloudflare)
-                cf: { cacheTtl: Math.floor(ttl / 1000) },// Cloudflare Native Edge Cache
-            } as any);
+            });
 
             if (!response.ok) {
                 if (response.status === 429 && i < retries - 1) {
