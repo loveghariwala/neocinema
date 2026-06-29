@@ -6,7 +6,11 @@ import ArrowLeft from "lucide-react/dist/esm/icons/arrow-left";
 import Calendar from "lucide-react/dist/esm/icons/calendar";
 import Clock from "lucide-react/dist/esm/icons/clock";
 
-export const runtime = 'edge';
+export function generateStaticParams() {
+    return BLOG_POSTS.map((post) => ({
+        slug: post.slug,
+    }));
+}
 
 interface PageProps {
     params: Promise<{ slug: string }>;

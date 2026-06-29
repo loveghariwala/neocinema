@@ -5,7 +5,7 @@ import Calendar from "lucide-react/dist/esm/icons/calendar";
 import Clock from "lucide-react/dist/esm/icons/clock";
 import ArrowRight from "lucide-react/dist/esm/icons/arrow-right";
 
-export const runtime = 'edge';
+
 
 export const metadata: Metadata = {
     title: "Blog — Free Streaming Guides, Movie Lists & Recommendations",

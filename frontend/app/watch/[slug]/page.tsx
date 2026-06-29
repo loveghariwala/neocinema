@@ -6,7 +6,11 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import ArrowLeft from "lucide-react/dist/esm/icons/arrow-left";
 
-export const runtime = 'edge';
+export function generateStaticParams() {
+    return WATCH_LANDINGS.map((landing) => ({
+        slug: landing.slug,
+    }));
+}
 export const revalidate = 86400;
 
 interface PageProps {
