@@ -1,4 +1,5 @@
 import { getBlogPostBySlug, BLOG_POSTS } from "@/lib/blog-posts";
+import { BLOG_CONTENT } from "@/lib/blog-content";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -140,7 +141,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                     {/* Content */}
                     <div
                         className="blog-prose max-w-none"
-                        dangerouslySetInnerHTML={{ __html: post.content }}
+                        dangerouslySetInnerHTML={{ __html: BLOG_CONTENT[slug] || "<p>Content not found.</p>" }}
                     />
 
                     {/* Related Articles */}
