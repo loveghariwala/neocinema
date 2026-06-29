@@ -84,6 +84,9 @@ export default function MovieCard({ movie, priority = false }: MovieCardProps) {
                 {/* Secondary Hover Gradient (Red Glow) */}
                 <div className="absolute inset-0 bg-gradient-to-t from-red-900/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
+                {/* Glass Shine Sweep Animation */}
+                <div className="absolute inset-0 -translate-x-[150%] bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 transition-all duration-1000 ease-in-out group-hover:translate-x-[150%] group-hover:opacity-100 z-30 skew-x-[-20deg] pointer-events-none" />
+
                 {/* Content Overlay */}
                 <div className="absolute bottom-0 left-0 w-full p-3 sm:p-4 flex flex-col justify-end translate-y-4 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 z-20">
                     <h3 className="mb-2 text-sm md:text-base font-black leading-tight text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] break-words w-full">

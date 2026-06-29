@@ -53,14 +53,15 @@ export default function Footer() {
                     </div>
 
                     <div>
-                        <h3 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">Genres</h3>
+                        <h3 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">Top Categories</h3>
                         <ul className="space-y-4">
                             {[
-                                { name: "Action", href: "/movies?genre=28" },
-                                { name: "Drama", href: "/movies?genre=18" },
-                                { name: "Sci-Fi", href: "/movies?genre=878" },
-                                { name: "Comedy", href: "/movies?genre=35" },
-                                { name: "Horror", href: "/movies?genre=27" },
+                                { name: "Action Movies Free", href: "/watch/action-movies-free" },
+                                { name: "Horror Movies Free", href: "/watch/horror-movies-free" },
+                                { name: "Sci-Fi Movies Free", href: "/watch/sci-fi-movies-free" },
+                                { name: "Bollywood Movies HD", href: "/watch/bollywood-movies-free" },
+                                { name: "Korean Dramas Free", href: "/watch/korean-dramas-free" },
+                                { name: "New Movies 2025", href: "/watch/new-movies-2025" },
                             ].map((item) => (
                                 <li key={item.name}>
                                     <Link href={item.href} className="text-neutral-500 text-sm hover:text-white transition-colors">{item.name}</Link>

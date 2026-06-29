@@ -108,9 +108,13 @@ export default function HeroBanner({
                             aria-label={`Watch ${title} now`}
                             className="group relative flex items-center gap-3 rounded-full bg-white px-6 py-3.5 sm:px-8 sm:py-4 text-sm sm:text-base font-black text-black transition-all hover:bg-neutral-200 overflow-hidden"
                         >
+                            {/* Glow */}
                             <div className="absolute inset-0 bg-white shadow-[0_0_40px_rgba(255,255,255,0.6)] opacity-0 transition-opacity group-hover:opacity-100" />
-                            <Play fill="currentColor" size={20} className="relative z-10 transition-transform group-hover:scale-110" />
-                            <span className="relative z-10">WATCH NOW</span>
+                            {/* Glass Shine */}
+                            <div className="absolute inset-0 -translate-x-[150%] bg-gradient-to-r from-transparent via-black/10 to-transparent opacity-0 transition-all duration-700 ease-in-out group-hover:translate-x-[150%] group-hover:opacity-100 z-10 skew-x-[-20deg]" />
+
+                            <Play fill="currentColor" size={20} className="relative z-20 transition-transform group-hover:scale-110" />
+                            <span className="relative z-20">WATCH NOW</span>
                         </Link>
 
                         <Link
