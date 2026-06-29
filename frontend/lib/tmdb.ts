@@ -10,7 +10,6 @@
  */
 
 const BASE_URL = "https://api.themoviedb.org/3";
-const API_KEY = process.env.TMDB_API_KEY;
 
 // ─── In-Memory TTL Cache ────────────────────────────────────────────────────
 // Simple Map-based cache with per-entry expiration times.
@@ -84,7 +83,8 @@ async function tmdbGet(endpoint: string, params: Record<string, any> = {}, ttl: 
     if (cached !== null) return cached;
 
     const url = new URL(`${BASE_URL}${endpoint}`);
-    url.searchParams.set("api_key", API_KEY || "");
+    const apiKey = process.env.TMDB_API_KEY || "";
+    url.searchParams.set("api_key", apiKey);
     Object.entries(params).forEach(([k, v]) => {
         if (v !== undefined && v !== null) {
             url.searchParams.set(k, String(v));
