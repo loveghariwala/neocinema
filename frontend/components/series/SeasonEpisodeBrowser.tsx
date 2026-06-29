@@ -40,21 +40,45 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons, initialEpisode
     // Filter out specials (season 0)
     const activeSeasons = seasons.filter(s => s.season_number > 0);
     const [imgErrors, setImgErrors] = useState<Record<number, boolean>>({});
+    const [episodes, setEpisodes] = useState<Episode[]>(initialEpisodes);
+    const [loading, setLoading] = useState(initialEpisodes.length === 0);
+    const [activeSeason, setActiveSeason] = useState(initialSeason);
+
+    // Fetch episodes client-side
+    useEffect(() => {
+        const fetchEpisodes = async () => {
+            setLoading(true);
+            try {
+                const res = await fetch(`/api/season?seriesId=${seriesId}&season=${activeSeason}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setEpisodes(data.episodes || []);
+                } else {
+                    setEpisodes([]);
+                }
+            } catch {
+                setEpisodes([]);
+            }
+            setLoading(false);
+        };
+        fetchEpisodes();
+    }, [seriesId, activeSeason]);
 
     const playEpisode = (episodeNumber: number) => {
         const params = new URLSearchParams(searchParams.toString());
         params.set("play", "true");
-        params.set("season", String(initialSeason));
+        params.set("season", String(activeSeason));
         params.set("episode", String(episodeNumber));
         router.push(`?${params.toString()}`, { scroll: false });
     };
 
     const changeSeason = (seasonNumber: number) => {
+        setActiveSeason(seasonNumber);
+        setImgErrors({});
         const params = new URLSearchParams(searchParams.toString());
         params.set("season", String(seasonNumber));
         params.delete("episode");
         router.push(`?${params.toString()}`, { scroll: false });
-        setImgErrors({});
     };
 
     return (
@@ -73,7 +97,7 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons, initialEpisode
                         <button
                             key={season.id}
                             onClick={() => changeSeason(season.season_number)}
-                            className={`rounded-xl px-4 py-2.5 text-xs font-black transition-all border shrink-0 snap-start ${initialSeason === season.season_number
+                            className={`rounded-xl px-4 py-2.5 text-xs font-black transition-all border shrink-0 snap-start ${activeSeason === season.season_number
                                 ? "bg-red-600 border-red-500 text-white shadow-lg shadow-red-600/30"
                                 : "bg-white/5 border-white/10 text-neutral-400 hover:bg-white/10 hover:text-white"
                                 }`}
@@ -86,15 +110,20 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons, initialEpisode
 
             {/* Episodes List */}
             <div
-                key={`season-${initialSeason}`}
+                key={`season-${activeSeason}`}
                 className="flex flex-col gap-4"
             >
-                {initialEpisodes.length === 0 ? (
+                {loading ? (
+                    <div className="flex h-48 flex-col items-center justify-center text-neutral-500">
+                        <Loader2 size={28} className="animate-spin mb-3 text-red-500" />
+                        <p className="text-sm font-bold">Loading episodes...</p>
+                    </div>
+                ) : episodes.length === 0 ? (
                     <div className="flex h-48 flex-col items-center justify-center text-neutral-500">
                         <p className="text-sm font-bold">No episodes found for this season.</p>
                     </div>
                 ) : (
-                    initialEpisodes.map((episode) => {
+                    episodes.map((episode) => {
                             const stillUrl = episode.still_path && !imgErrors[episode.id]
                                 ? `https://image.tmdb.org/t/p/w300${episode.still_path}`
                                 : null;
@@ -162,3 +191,4 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons, initialEpisode
         </div>
     );
 }
+

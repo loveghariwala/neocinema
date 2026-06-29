@@ -1,5 +1,5 @@
 
-import { getMovieDetails, getTvSeasonDetail } from "@/services/movieService";
+import { getMovieDetails } from "@/services/movieService";
 import Star from "lucide-react/dist/esm/icons/star";
 import Clock from "lucide-react/dist/esm/icons/clock";
 import Calendar from "lucide-react/dist/esm/icons/calendar";
@@ -107,8 +107,6 @@ export default async function SeriesDetailsPage({
     const seasonParam = resolvedSearchParams?.season ? parseInt(resolvedSearchParams.season) : 1;
     const episodeParam = resolvedSearchParams?.episode ? parseInt(resolvedSearchParams.episode) : 1;
     const series = await getMovieDetails(id, "tv");
-    const seasonData = await getTvSeasonDetail(id, seasonParam);
-    const seasonEpisodes = seasonData?.episodes || [];
 
     if (!series) {
         notFound();
@@ -377,7 +375,7 @@ export default async function SeriesDetailsPage({
                     <SeasonEpisodeBrowser
                         seriesId={String(series.tmdbId || series._id)}
                         seasons={series.seasons}
-                        initialEpisodes={seasonEpisodes}
+                        initialEpisodes={[]}
                         initialSeason={seasonParam}
                     />
                 )}
