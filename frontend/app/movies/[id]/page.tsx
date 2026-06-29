@@ -41,12 +41,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
 
     const releaseYear = movie.releaseDate ? new Date(movie.releaseDate).getFullYear() : "";
-    const titleText = `Watch ${movie.title} ${releaseYear ? `(${releaseYear})` : ""} Full Movie Online Free HD - NeoCinema`;
-    const descriptionText = `Stream ${movie.title} in HD for free. ${
-        movie.overview ? movie.overview.substring(0, 110) + '...' : ''
-    } Experience ultra-fast streaming with AI-powered recommendations on NeoCinema.`;
+    const titleText = `Watch ${movie.title} ${releaseYear ? `(${releaseYear})` : ""} Full Movie Online Free HD | Stream Now`;
+    const descriptionText = `Stream ${movie.title}${releaseYear ? ` (${releaseYear})` : ''} in HD for free. ${movie.runtime ? `${movie.runtime} min ${(movie.genres || []).slice(0, 2).join('/')} film` : ''}${movie.rating ? ` rated ${movie.rating}/10` : ''}. ${movie.overview ? movie.overview.substring(0, 90) + '...' : ''} No ads, no sign-up.`;
 
     const castKeywords = (movie.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
+    const genreKeywords = (movie.genres || []).map((g: string) => `${g.toLowerCase()} movies free`);
 
     const blockedIds = ["1180798", "1064137", "1154268", "260471", "1173900", "490005", "1628522", "852042"];
     const isBlocked = blockedIds.includes(String(id));
@@ -54,7 +53,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {
         title: titleText,
         description: descriptionText,
-        keywords: [movie.title, ...(movie.genres || []), ...castKeywords, "AI recommendations", "NeoCinema", "stream movie", "watch online free"],
+        keywords: [
+            movie.title,
+            `${movie.title} full movie`,
+            `watch ${movie.title} online free`,
+            `${movie.title} streaming`,
+            `${movie.title} HD`,
+            `movies like ${movie.title}`,
+            ...(movie.genres || []),
+            ...genreKeywords,
+            ...castKeywords,
+            `${castKeywords[0] || ''} movies`.trim(),
+            "watch free movies online no sign up",
+        ].filter(Boolean),
         alternates: { 
             canonical: `/movies/${id}`,
             languages: {
@@ -99,6 +110,7 @@ export default async function MovieDetailsPage({
     }
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+    const releaseYear = movie.releaseDate ? new Date(movie.releaseDate).getFullYear() : "";
 
     // ─── Movie JSON-LD ───────────────────────────────────────────────────────
     const movieJsonLd = {
@@ -144,6 +156,50 @@ export default async function MovieDetailsPage({
         ],
     };
 
+    // ─── Dynamic FAQ data (unique per movie) ─────────────────────────────────
+    const topCast = (movie.cast || []).slice(0, 3).map((c: any) => c.name).filter(Boolean);
+    const genreList = (movie.genres || []).join(', ');
+    const runtimeHours = movie.runtime ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m` : null;
+
+    const faqJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": `Where can I watch ${movie.title} (${releaseYear}) for free?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `${movie.title} is a ${runtimeHours || ''} ${genreList} film${topCast.length ? ` starring ${topCast.join(', ')}` : ''}. You can stream it in full HD on NeoCinema without any subscription, ads, or registration.`
+                }
+            },
+            {
+                "@type": "Question",
+                "name": `What is ${movie.title} about?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": movie.overview || `${movie.title} is a ${genreList} movie released in ${releaseYear}. Watch it on NeoCinema to experience the full story.`
+                }
+            },
+            {
+                "@type": "Question",
+                "name": `Is ${movie.title} available on Netflix, Prime Video, or Hulu?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `While ${movie.title} may be available on paid platforms, you can watch it completely free in HD quality on NeoCinema. No subscription needed — just press play.`
+                }
+            },
+            {
+                "@type": "Question",
+                "name": `Does ${movie.title} have subtitles?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `Yes, NeoCinema provides English subtitles for ${movie.title}. The player supports multiple subtitle tracks that you can toggle on or off during playback.`
+                }
+            }
+        ]
+    };
+
     // ─── VideoObject JSON-LD ─────────────────────────────────────────────────
     const videoObjectJsonLd = {
         "@context": "https://schema.org",
@@ -177,6 +233,11 @@ export default async function MovieDetailsPage({
                 id="json-ld-video"
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(videoObjectJsonLd).replace(/</g, '\\u003c') }}
+            />
+            <script
+                id="json-ld-faq"
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, '\\u003c') }}
             />
 
             <main className="min-h-screen">
@@ -332,6 +393,7 @@ export default async function MovieDetailsPage({
                             <div className="flex items-center gap-4">
                                 <h2 className="text-3xl sm:text-4xl font-black tracking-tighter text-white drop-shadow-[0_0_15px_rgba(220,38,38,0.3)]">AI RECOMMENDS</h2>
                                 <div className="h-px flex-1 bg-gradient-to-r from-red-600/50 via-red-600/10 to-transparent" />
+                                <Link href={`/movies/${id}/similar`} className="text-[10px] sm:text-xs font-bold text-red-500 hover:text-white uppercase tracking-widest whitespace-nowrap bg-red-500/10 px-3 py-1.5 rounded-full border border-red-500/20">Movies Like {movie.title}</Link>
                             </div>
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
                                 {movie.similar.slice(0, 12).map((simMovie: any) => (
@@ -340,6 +402,37 @@ export default async function MovieDetailsPage({
                             </div>
                         </div>
                     )}
+
+                    {/* SEO FAQ SECTION */}
+                    <div className="space-y-8 mt-16 sm:mt-24 border-t border-white/5 pt-12">
+                        <div className="flex flex-col items-center text-center gap-4 mb-8">
+                            <h2 className="text-2xl sm:text-3xl font-black tracking-tighter text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+                                FREQUENTLY ASKED QUESTIONS
+                            </h2>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+                            <div className="rounded-2xl border border-white/5 bg-neutral-950/50 p-6 backdrop-blur-xl shadow-xl hover:border-white/10 transition-colors">
+                                <h3 className="text-sm font-black text-red-500 mb-2">Where can I watch {movie.title} ({new Date(movie.releaseDate).getFullYear()}) for free?</h3>
+                                <p className="text-xs text-neutral-400 leading-relaxed">{movie.title} is a {movie.runtime ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m` : ''} {movie.genres?.slice(0, 2).join('/')} film{(movie.cast || []).length > 0 ? ` starring ${(movie.cast || []).slice(0, 2).map((c: any) => c.name).join(' and ')}` : ''}. Stream it in full HD on NeoCinema — no subscription, no ads, no sign-up.</p>
+                            </div>
+                            <div className="rounded-2xl border border-white/5 bg-neutral-950/50 p-6 backdrop-blur-xl shadow-xl hover:border-white/10 transition-colors">
+                                <h3 className="text-sm font-black text-red-500 mb-2">What is {movie.title} about?</h3>
+                                <p className="text-xs text-neutral-400 leading-relaxed">{movie.overview?.substring(0, 200) || `${movie.title} is a ${movie.genres?.join(', ')} movie. Watch it on NeoCinema to discover the full story.`}</p>
+                            </div>
+                            <div className="rounded-2xl border border-white/5 bg-neutral-950/50 p-6 backdrop-blur-xl shadow-xl hover:border-white/10 transition-colors">
+                                <h3 className="text-sm font-black text-red-500 mb-2">Is {movie.title} on Netflix or Prime Video?</h3>
+                                <p className="text-xs text-neutral-400 leading-relaxed">While {movie.title} may be available on paid platforms, you can watch it completely free in HD quality on NeoCinema. No subscription needed — just press play.</p>
+                            </div>
+                            <div className="rounded-2xl border border-white/5 bg-neutral-950/50 p-6 backdrop-blur-xl shadow-xl hover:border-white/10 transition-colors">
+                                <h3 className="text-sm font-black text-red-500 mb-2">Does {movie.title} have subtitles?</h3>
+                                <p className="text-xs text-neutral-400 leading-relaxed">Yes, NeoCinema provides English subtitles for {movie.title}. Toggle them on or off directly in the video player during playback.</p>
+                            </div>
+                        </div>
+                        {/* External Authority Link */}
+                        <p className="text-center text-[10px] text-neutral-600 mt-6">
+                            Movie data sourced from <a href={`https://www.themoviedb.org/movie/${id}`} target="_blank" rel="noopener noreferrer" className="text-neutral-500 hover:text-red-500 underline">TMDB</a>.
+                        </p>
+                    </div>
                 </div>
             </main>
         </>

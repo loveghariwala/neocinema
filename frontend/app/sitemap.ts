@@ -1,5 +1,7 @@
 import { MetadataRoute } from 'next';
 import { COLLECTIONS } from '@/lib/collections';
+import { BLOG_POSTS } from '@/lib/blog-posts';
+import { WATCH_LANDINGS } from '@/lib/watch-landings';
 import { tmdbService } from '@/lib/tmdb';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -11,7 +13,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/series`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
     { url: `${baseUrl}/search`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${baseUrl}/collections`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${baseUrl}/blog`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
   ];
+
+  // Blog posts
+  const blogRoutes: MetadataRoute.Sitemap = BLOG_POSTS.map((p) => ({
+    url: `${baseUrl}/blog/${p.slug}`,
+    lastModified: new Date(p.updatedAt),
+    changeFrequency: 'monthly',
+    priority: 0.7,
+  }));
+
+  // Watch landing pages (genre/language hubs)
+  const watchLandingRoutes: MetadataRoute.Sitemap = WATCH_LANDINGS.map((l) => ({
+    url: `${baseUrl}/watch/${l.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 0.8,
+  }));
 
   const collectionRoutes: MetadataRoute.Sitemap = COLLECTIONS.map((c) => ({
     url: `${baseUrl}/collections/${c.slug}`,
@@ -20,7 +39,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  // Dynamically fetch top 100 Trending Movies
+  // Dynamically fetch top 100 Trending Movies + similar pages
   let trendingMovieRoutes: MetadataRoute.Sitemap = [];
   try {
       const [mPage1, mPage2] = await Promise.all([
@@ -28,15 +47,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           tmdbService.getTrending("movie", "week", 2)
       ]);
       const movies = [...(mPage1.results || []), ...(mPage2.results || [])];
-      trendingMovieRoutes = movies.map((m: any) => ({
-          url: `${baseUrl}/movies/${m.tmdbId}`,
-          lastModified: new Date(),
-          changeFrequency: 'weekly',
-          priority: 0.8,
-      }));
+      trendingMovieRoutes = movies.flatMap((m: any) => [
+          {
+              url: `${baseUrl}/movies/${m.tmdbId}`,
+              lastModified: new Date(),
+              changeFrequency: 'weekly' as const,
+              priority: 0.8,
+          },
+          {
+              url: `${baseUrl}/movies/${m.tmdbId}/similar`,
+              lastModified: new Date(),
+              changeFrequency: 'monthly' as const,
+              priority: 0.6,
+          },
+      ]);
   } catch(e) {}
 
-  // Dynamically fetch top 100 Trending Series
+  // Dynamically fetch top 100 Trending Series + similar pages
   let trendingSeriesRoutes: MetadataRoute.Sitemap = [];
   try {
       const [sPage1, sPage2] = await Promise.all([
@@ -44,13 +71,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           tmdbService.getTrending("tv", "week", 2)
       ]);
       const series = [...(sPage1.results || []), ...(sPage2.results || [])];
-      trendingSeriesRoutes = series.map((s: any) => ({
-          url: `${baseUrl}/series/${s.tmdbId}`,
-          lastModified: new Date(),
-          changeFrequency: 'weekly',
-          priority: 0.8,
-      }));
+      trendingSeriesRoutes = series.flatMap((s: any) => [
+          {
+              url: `${baseUrl}/series/${s.tmdbId}`,
+              lastModified: new Date(),
+              changeFrequency: 'weekly' as const,
+              priority: 0.8,
+          },
+          {
+              url: `${baseUrl}/series/${s.tmdbId}/similar`,
+              lastModified: new Date(),
+              changeFrequency: 'monthly' as const,
+              priority: 0.6,
+          },
+      ]);
   } catch(e) {}
 
-  return [...staticRoutes, ...collectionRoutes, ...trendingMovieRoutes, ...trendingSeriesRoutes];
+  return [
+    ...staticRoutes,
+    ...blogRoutes,
+    ...watchLandingRoutes,
+    ...collectionRoutes,
+    ...trendingMovieRoutes,
+    ...trendingSeriesRoutes,
+  ];
 }
+

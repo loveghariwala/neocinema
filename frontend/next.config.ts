@@ -7,7 +7,6 @@ const nextConfig: NextConfig = {
   },
   allowedDevOrigins: ["aggregately-legendary-nettie.ngrok-free.dev"],
   images: {
-    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",

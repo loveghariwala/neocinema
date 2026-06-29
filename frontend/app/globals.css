@@ -176,3 +176,40 @@
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
+
+/* Blog Prose Styles */
+.blog-prose h2 {
+  @apply text-xl md:text-2xl font-black tracking-tight text-white mt-10 mb-4;
+}
+
+.blog-prose h3 {
+  @apply text-lg font-black text-white mt-8 mb-3;
+}
+
+.blog-prose p {
+  @apply text-sm md:text-base text-neutral-400 leading-relaxed mb-4;
+}
+
+.blog-prose strong {
+  @apply text-white font-bold;
+}
+
+.blog-prose a {
+  @apply text-red-500 no-underline hover:text-white transition-colors;
+}
+
+.blog-prose ul, .blog-prose ol {
+  @apply text-sm text-neutral-400 pl-6 mb-4 space-y-2;
+}
+
+.blog-prose ul {
+  @apply list-disc;
+}
+
+.blog-prose ol {
+  @apply list-decimal;
+}
+
+.blog-prose li {
+  @apply text-neutral-400;
+}

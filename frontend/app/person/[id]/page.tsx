@@ -36,12 +36,24 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
     return {
         title: titleText,
         description: descriptionText,
-        keywords: [data.person.name, ...knownForKeywords, "actor", "cast", "filmography", "NeoCinema"],
-        alternates: { canonical: `/person/${id}` },
+        keywords: [
+            data.person.name,
+            `${data.person.name} movies`,
+            `${data.person.name} filmography`,
+            `movies starring ${data.person.name}`,
+            `${data.person.name} best movies`,
+            ...knownForKeywords,
+            "actor", "cast", "filmography",
+        ],
+        alternates: {
+            canonical: `/person/${id}`,
+            languages: { 'en-US': `/person/${id}`, 'en': `/person/${id}` },
+        },
         robots: { index: true, follow: true },
         openGraph: {
             title: titleText,
             description: descriptionText,
+            url: `/person/${id}`,
             type: "profile",
             images: data.person.profilePath 
                 ? [{ url: `https://image.tmdb.org/t/p/h632${data.person.profilePath}` }] 

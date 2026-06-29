@@ -44,12 +44,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
 
     const releaseYear = series.releaseDate ? new Date(series.releaseDate).getFullYear() : "";
-    const titleText = `Watch ${series.title} ${releaseYear ? `(${releaseYear})` : ""} Full Series Online Free HD - NeoCinema`;
-    const descriptionText = `Stream all seasons and episodes of ${series.title} in HD for free. ${
-        series.overview ? series.overview.substring(0, 100) + '...' : ''
-    } Experience ultra-fast streaming with no ads on NeoCinema.`;
+    const titleText = `Watch ${series.title} ${releaseYear ? `(${releaseYear})` : ""} All Seasons Online Free HD | Stream Now`;
+    const descriptionText = `Stream all ${series.number_of_seasons || ''} seasons of ${series.title} in HD for free.${series.rating ? ` Rated ${series.rating}/10.` : ''} ${series.overview ? series.overview.substring(0, 90) + '...' : ''} No ads, no sign-up.`;
 
     const castKeywords = (series.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
+    const genreKeywords = (series.genres || []).map((g: string) => `${g.toLowerCase()} series free`);
 
     const blockedIds = ["1180798", "1064137", "1154268", "260471", "1173900", "490005", "1628522", "852042"];
     const isBlocked = blockedIds.includes(String(id));
@@ -57,7 +56,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {
         title: titleText,
         description: descriptionText,
-        keywords: [series.title, ...(series.genres || []), ...castKeywords, "AI recommendations", "NeoCinema", "stream TV series", "watch series free"],
+        keywords: [
+            series.title,
+            `${series.title} all seasons`,
+            `watch ${series.title} online free`,
+            `${series.title} streaming`,
+            `${series.title} english subtitles`,
+            `shows like ${series.title}`,
+            ...(series.genres || []),
+            ...genreKeywords,
+            ...castKeywords,
+            "watch series online free no sign up",
+        ].filter(Boolean),
         alternates: { 
             canonical: `/series/${id}`,
             languages: {
@@ -152,6 +162,49 @@ export default async function SeriesDetailsPage({
         ],
     };
 
+    // ─── Dynamic FAQ data (unique per series) ────────────────────────────────
+    const topCast = (series.cast || []).slice(0, 3).map((c: any) => c.name).filter(Boolean);
+    const genreList = (series.genres || []).join(', ');
+
+    const faqJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": `Where can I watch ${series.title} for free?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `${series.title} is a ${genreList} series${series.number_of_seasons ? ` with ${series.number_of_seasons} season${series.number_of_seasons > 1 ? 's' : ''}` : ''}${topCast.length ? `, starring ${topCast.join(', ')}` : ''}. You can binge-watch every episode in full HD on NeoCinema without any subscription or registration.`
+                }
+            },
+            {
+                "@type": "Question",
+                "name": `What is ${series.title} about?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": series.overview || `${series.title} is a ${genreList} TV series. Watch it on NeoCinema to discover the full story.`
+                }
+            },
+            {
+                "@type": "Question",
+                "name": `How many seasons of ${series.title} are there?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `${series.title} currently has ${series.number_of_seasons || 'multiple'} season${(series.number_of_seasons || 0) !== 1 ? 's' : ''}${series.number_of_episodes ? ` and ${series.number_of_episodes} episodes in total` : ''}. All seasons are available to stream for free on NeoCinema.`
+                }
+            },
+            {
+                "@type": "Question",
+                "name": `Is ${series.title} available on Netflix, Prime Video, or Hulu?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `While ${series.title} may be available on paid streaming services, you can watch all episodes completely free in HD quality on NeoCinema. No subscription needed.`
+                }
+            }
+        ]
+    };
+
     // ─── VideoObject JSON-LD ─────────────────────────────────────────────────
     const videoObjectJsonLd = {
         "@context": "https://schema.org",
@@ -185,6 +238,11 @@ export default async function SeriesDetailsPage({
                 id="json-ld-video"
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(videoObjectJsonLd).replace(/</g, '\\u003c') }}
+            />
+            <script
+                id="json-ld-faq"
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, '\\u003c') }}
             />
             {/* IMMERSIVE HERO */}
             <section className="relative min-h-[90vh] w-full flex items-center py-20 md:py-28 lg:py-32 overflow-hidden bg-black">
@@ -330,6 +388,7 @@ export default async function SeriesDetailsPage({
                         <div className="flex items-center gap-4">
                             <h2 className="text-3xl sm:text-4xl font-black tracking-tighter text-white drop-shadow-[0_0_15px_rgba(220,38,38,0.3)]">RECOMMENDED SERIES</h2>
                             <div className="h-px flex-1 bg-gradient-to-r from-red-600/50 via-red-600/10 to-transparent" />
+                            <Link href={`/series/${id}/similar`} className="text-[10px] sm:text-xs font-bold text-red-500 hover:text-white uppercase tracking-widest whitespace-nowrap bg-red-500/10 px-3 py-1.5 rounded-full border border-red-500/20">Shows Like {series.title}</Link>
                         </div>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
                             {series.similar.slice(0, 12).map((simSeries: any) => (
@@ -338,6 +397,37 @@ export default async function SeriesDetailsPage({
                         </div>
                     </div>
                 )}
+
+                {/* SEO FAQ SECTION */}
+                <div className="space-y-8 mt-16 sm:mt-24 border-t border-white/5 pt-12">
+                    <div className="flex flex-col items-center text-center gap-4 mb-8">
+                        <h2 className="text-2xl sm:text-3xl font-black tracking-tighter text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+                            FREQUENTLY ASKED QUESTIONS
+                        </h2>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+                        <div className="rounded-2xl border border-white/5 bg-neutral-950/50 p-6 backdrop-blur-xl shadow-xl hover:border-white/10 transition-colors">
+                            <h3 className="text-sm font-black text-red-500 mb-2">Where can I watch {series.title} for free?</h3>
+                            <p className="text-xs text-neutral-400 leading-relaxed">{series.title} is a {series.genres?.slice(0, 2).join('/')} series{series.number_of_seasons ? ` with ${series.number_of_seasons} season${series.number_of_seasons > 1 ? 's' : ''}` : ''}{(series.cast || []).length > 0 ? ` starring ${(series.cast || []).slice(0, 2).map((c: any) => c.name).join(' and ')}` : ''}. Stream it in full HD on NeoCinema — no subscription, no ads.</p>
+                        </div>
+                        <div className="rounded-2xl border border-white/5 bg-neutral-950/50 p-6 backdrop-blur-xl shadow-xl hover:border-white/10 transition-colors">
+                            <h3 className="text-sm font-black text-red-500 mb-2">What is {series.title} about?</h3>
+                            <p className="text-xs text-neutral-400 leading-relaxed">{series.overview?.substring(0, 200) || `${series.title} is a ${series.genres?.join(', ')} TV series. Watch it on NeoCinema to discover the full story.`}</p>
+                        </div>
+                        <div className="rounded-2xl border border-white/5 bg-neutral-950/50 p-6 backdrop-blur-xl shadow-xl hover:border-white/10 transition-colors">
+                            <h3 className="text-sm font-black text-red-500 mb-2">How many seasons does {series.title} have?</h3>
+                            <p className="text-xs text-neutral-400 leading-relaxed">{series.title} currently has {series.number_of_seasons || 'multiple'} season{(series.number_of_seasons || 0) !== 1 ? 's' : ''}{series.number_of_episodes ? ` and ${series.number_of_episodes} episodes` : ''}. All are available for free on NeoCinema.</p>
+                        </div>
+                        <div className="rounded-2xl border border-white/5 bg-neutral-950/50 p-6 backdrop-blur-xl shadow-xl hover:border-white/10 transition-colors">
+                            <h3 className="text-sm font-black text-red-500 mb-2">Is {series.title} on Netflix or Prime Video?</h3>
+                            <p className="text-xs text-neutral-400 leading-relaxed">While {series.title} may be on paid platforms, you can watch all episodes completely free in HD quality on NeoCinema. No subscription needed.</p>
+                        </div>
+                    </div>
+                    {/* External Authority Link */}
+                    <p className="text-center text-[10px] text-neutral-600 mt-6">
+                        Series data sourced from <a href={`https://www.themoviedb.org/tv/${id}`} target="_blank" rel="noopener noreferrer" className="text-neutral-500 hover:text-red-500 underline">TMDB</a>.
+                    </p>
+                </div>
             </div>
         </main>
     );
