@@ -97,13 +97,14 @@ async function tmdbGet(endpoint: string, params: Record<string, any> = {}, ttl: 
                 headers: { "Content-Type": "application/json" },
                 signal: AbortSignal.timeout(10000), // 10s timeout
                 next: { revalidate: Math.floor(ttl / 1000) }, // Cache persistently at the Edge (Vercel/Cloudflare)
-            });
+                cf: { cacheTtl: Math.floor(ttl / 1000) },// Cloudflare Native Edge Cache
+            } as any);
 
             if (!response.ok) {
                 if (response.status === 429 && i < retries - 1) {
                     // TMDB Rate Limit: wait and retry
-                    const retryAfter = response.headers.get("retry-after") 
-                        ? parseInt(response.headers.get("retry-after") as string) * 1000 
+                    const retryAfter = response.headers.get("retry-after")
+                        ? parseInt(response.headers.get("retry-after") as string) * 1000
                         : (i + 1) * 1000;
                     console.warn(`[TMDB] 429 Rate Limited on ${endpoint}. Retrying in ${retryAfter}ms...`);
                     await new Promise(resolve => setTimeout(resolve, retryAfter));
