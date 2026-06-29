@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "opennext:build": "npx opennextjs-cloudflare build && echo 'export { default } from \"../worker.js\"; export * from \"../worker.js\";' > .open-next/assets/_worker.js",
+    "opennext:build": "npx opennextjs-cloudflare build",
     "start": "next start",
     "lint": "eslint"
   },
