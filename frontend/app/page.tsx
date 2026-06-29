@@ -82,7 +82,7 @@ export async function generateMetadata(): Promise<Metadata> {
             description: "Discover the best movies and TV series with NeoCinema's AI-powered recommendations. Experience an ultra-dark cinematic UI with personalized content discovery.",
             url: '/',
             type: "website",
-            images: [{ url: "/neocinema_logo.png", width: 800, height: 600, alt: "NeoCinema — AI Movie & TV Series Discovery" }],
+            images: [{ url: "/og_banner.png", width: 1200, height: 630, alt: "NeoCinema — Watch Free Movies & Series Online in HD" }],
         },
         twitter: {
             card: "summary_large_image",
@@ -101,7 +101,7 @@ export default async function HomePage() {
     const heroMovie = trendingMovies[0] || null;
     return (
         <main className="min-h-screen">
-            <h1 className="sr-only">NeoCinema - AI Powered Movie & TV Series Discovery</h1>
+            <h1 className="sr-only">Watch Free Movies & TV Shows Online in HD — NeoCinema</h1>
             {heroMovie && <HeroBanner movie={heroMovie} />}
 
             <div className="relative z-20 -mt-32 space-y-24 px-6 pb-20 pt-32 md:px-16 pointer-events-none">

@@ -14,6 +14,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/search`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${baseUrl}/collections`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${baseUrl}/blog`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
+    // Legal & trust pages (critical for E-E-A-T)
+    { url: `${baseUrl}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${baseUrl}/contact`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${baseUrl}/privacy`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.4 },
+    { url: `${baseUrl}/terms`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.4 },
+    { url: `${baseUrl}/cookies`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
+    { url: `${baseUrl}/disclaimer`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
+    // High-value SEO landing page
+    { url: `${baseUrl}/best-fmovies-alternative-2024`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
   ];
 
   // Blog posts
@@ -87,7 +96,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ]);
   } catch(e) {}
 
-  return [
+  // De-duplicate URLs (trending pages 1 & 2 can overlap)
+  const allRoutes = [
     ...staticRoutes,
     ...blogRoutes,
     ...watchLandingRoutes,
@@ -95,5 +105,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...trendingMovieRoutes,
     ...trendingSeriesRoutes,
   ];
+
+  const seen = new Set<string>();
+  return allRoutes.filter(route => {
+    if (seen.has(route.url)) return false;
+    seen.add(route.url);
+    return true;
+  });
 }
 
