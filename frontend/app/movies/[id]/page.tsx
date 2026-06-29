@@ -1,5 +1,4 @@
-
-
+export const runtime = 'edge';
 import { getMovieDetails } from "@/services/movieService";
 import Star from "lucide-react/dist/esm/icons/star";
 import Clock from "lucide-react/dist/esm/icons/clock";
