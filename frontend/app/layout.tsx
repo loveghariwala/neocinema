@@ -186,7 +186,7 @@ export default function RootLayout({
         <Script src="https://analytics.ahrefs.com/analytics.js" data-key="+kc1zXGQ8NqACPuHJIlgsw" strategy="afterInteractive" />
         {/* Global Ad Network Scripts */}
         <AdsterraSocialBar />
-        <MonetagAds />
+        {/* <MonetagAds /> */}
       </head>
       <body suppressHydrationWarning className="min-h-full flex flex-row bg-background">
         <script
