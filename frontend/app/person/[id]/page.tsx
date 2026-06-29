@@ -1,5 +1,5 @@
-
 import { getPersonDetails } from "@/services/movieService";
+import PersonPageClient from "./PersonPageClient";
 export const runtime = 'edge';
 import { Metadata } from "next";
 
