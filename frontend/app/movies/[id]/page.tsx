@@ -319,7 +319,7 @@ export default async function MovieDetailsPage({
                                     />
 
                                     <a
-                                        href="https://omg10.com/4/11203119"
+                                        href="https://discussionanymore.com/khge4vq0f?key=0bc9ee47ad5de40ae42fce1eae3506e2"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="flex items-center gap-2 rounded-full bg-white/10 hover:bg-white/20 px-6 py-3 text-sm font-bold text-white backdrop-blur-md transition-all border border-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]"

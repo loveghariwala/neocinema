@@ -326,7 +326,7 @@ export default async function SeriesDetailsPage({
                                 />
 
                                 <a
-                                    href="https://omg10.com/4/11203119"
+                                    href="https://discussionanymore.com/khge4vq0f?key=0bc9ee47ad5de40ae42fce1eae3506e2"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex items-center gap-2 rounded-full bg-blue-600/10 hover:bg-blue-600/20 px-6 py-3 text-sm font-bold text-blue-100 backdrop-blur-md transition-all border border-blue-500/20 hover:border-blue-500/40 hover:shadow-[0_0_20px_rgba(37,99,235,0.2)]"
