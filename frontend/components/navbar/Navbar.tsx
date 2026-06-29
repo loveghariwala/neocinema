@@ -10,7 +10,7 @@ import Sparkles from "lucide-react/dist/esm/icons/sparkles";
 import Film from "lucide-react/dist/esm/icons/film";
 import Tv from "lucide-react/dist/esm/icons/tv";
 import Library from "lucide-react/dist/esm/icons/library";
-
+import BookOpen from "lucide-react/dist/esm/icons/book-open";
 
 
 export default function Navbar() {
@@ -43,6 +43,7 @@ export default function Navbar() {
         { name: "Discover", href: "/search", icon: Sparkles },
         { name: "Movies", href: "/movies", icon: Film },
         { name: "Series", href: "/series", icon: Tv },
+        { name: "Blog", href: "/blog", icon: BookOpen },
     ];
 
     return (

@@ -40,6 +40,7 @@ export default function Footer() {
                                 { name: "Discover", href: "/search" },
                                 { name: "Movies", href: "/movies" },
                                 { name: "Series", href: "/series" },
+                                { name: "Blog", href: "/blog" },
                                 { name: "FMovies Alternative", href: "/best-fmovies-alternative-2024" },
                                 { name: "About Us", href: "/about" },
                                 { name: "Contact", href: "/contact" },
