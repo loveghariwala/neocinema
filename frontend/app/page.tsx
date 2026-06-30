@@ -1,7 +1,7 @@
-
 import HeroBanner from "@/components/hero/HeroBanner";
 import MovieRow from "@/components/sliders/MovieRow";
 import AdsterraNativeBanner from "@/components/ads/AdsterraNativeBanner";
+import HomeFAQ from "@/components/seo/HomeFAQ";
 import { getTrendingFromServer, discoverContentFromServer, getTopRatedMovies } from "@/services/movieService";
 import { Metadata } from "next";
 import { cache } from "react";
@@ -49,19 +49,16 @@ export async function generateMetadata(): Promise<Metadata> {
         .filter(Boolean);
 
     return {
-        title: 'NeoCinema — Discover Movies, Series & Anime in HD',
-        description: 'Explore trending movies, top-rated TV series, and anime on NeoCinema. AI-powered recommendations, curated collections, and a cinematic browsing experience.',
+        title: 'Best Trending Movies to Stream at Home for Free | NeoCinema',
+        description: 'Discover what new movies to watch online free this week. Stream top HD movies without paying and find good movies to watch right now free online on NeoCinema.',
         keywords: [
+            'best trending movies to stream at home for free',
+            'what new movies to watch online free this week',
+            'top hd movies to stream without paying',
+            'good movies to watch right now free online',
             'NeoCinema',
             'movie streaming 2026',
             'watch movies online',
-            'best movies 2026',
-            'trending movies this week',
-            'top rated series 2026',
-            'bollywood movies online',
-            'korean drama streaming',
-            'anime english sub',
-            'movie recommendations',
             'AI movie discovery',
             ...movieKeywords,
             ...seriesKeywords,
@@ -74,16 +71,16 @@ export async function generateMetadata(): Promise<Metadata> {
             follow: true,
         },
         openGraph: {
-            title: "NeoCinema — Discover Movies, Series & Anime in HD",
-            description: "Explore trending movies, top-rated TV series, and anime on NeoCinema. AI-powered recommendations and a cinematic browsing experience.",
+            title: "Best Trending Movies to Stream at Home for Free | NeoCinema",
+            description: "Discover what new movies to watch online free this week. Stream top HD movies without paying and find good movies to watch right now free online on NeoCinema.",
             url: '/',
             type: "website",
             images: [{ url: "/og_banner.png", width: 1200, height: 630, alt: "NeoCinema — Discover Movies & Series" }],
         },
         twitter: {
             card: "summary_large_image",
-            title: "NeoCinema — Discover Movies, Series & Anime in HD",
-            description: "Explore trending movies, top-rated TV series, and anime with AI-powered recommendations.",
+            title: "Best Trending Movies to Stream at Home for Free | NeoCinema",
+            description: "Discover what new movies to watch online free this week. Stream top HD movies without paying.",
             images: ["/neocinema_logo.png"],
         },
     };
@@ -97,7 +94,7 @@ export default async function HomePage() {
     const heroMovie = trendingMovies[0] || null;
     return (
         <main className="min-h-screen">
-            <h1 className="sr-only">NeoCinema — Discover Trending Movies, Series & Anime in HD</h1>
+            <h1 className="sr-only">Best Trending Movies to Stream at Home for Free</h1>
             {heroMovie && <HeroBanner movie={heroMovie} />}
 
             <div className="relative z-20 -mt-32 space-y-24 px-6 pb-20 pt-32 md:px-16 pointer-events-none">
@@ -156,6 +153,8 @@ export default async function HomePage() {
                     </div>
                 )}
             </div>
+            
+            <HomeFAQ />
         </main>
     );
 }

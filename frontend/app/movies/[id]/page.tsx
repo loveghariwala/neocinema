@@ -41,8 +41,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     const releaseYear = movie.releaseDate ? new Date(movie.releaseDate).getFullYear() : "";
     const genreLabel = (movie.genres || []).slice(0, 2).join(' & ') || 'Movie';
-    const titleText = `${movie.title}${releaseYear ? ` (${releaseYear})` : ""} — ${genreLabel} | NeoCinema`;
-    const descriptionText = `${movie.overview ? movie.overview.substring(0, 140).trim() + '.' : `Discover ${movie.title}, a ${genreLabel.toLowerCase()} film.`}${movie.runtime ? ` ${movie.runtime} min.` : ''}${movie.rating ? ` ★ ${movie.rating.toFixed(1)}/10.` : ''} Watch now on NeoCinema.`;
+    const titleText = `Where to Watch ${movie.title} Online Free HD${releaseYear ? ` (${releaseYear})` : ""} | NeoCinema`;
+    const descriptionText = `Stream ${movie.title} full movie no registration. ${movie.overview ? movie.overview.substring(0, 100).trim() + '...' : `Play ${movie.title} free streaming english.`} Watch online via our free web app.`;
 
     const castKeywords = (movie.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
     const genreKeywords = (movie.genres || []).map((g: string) => `${g.toLowerCase()} movies free`);
@@ -54,11 +54,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         title: titleText,
         description: descriptionText,
         keywords: [
+            `where to watch ${movie.title} online free hd`,
+            `stream ${movie.title} full movie no registration`,
+            `play ${movie.title} free streaming english`,
+            `${movie.title} free watch online web app`,
             movie.title,
             `${movie.title} ${releaseYear}`,
             `${movie.title} cast`,
-            `${movie.title} review`,
-            `${movie.title} where to watch`,
             `movies like ${movie.title}`,
             ...(movie.genres || []),
             ...genreKeywords,
@@ -161,7 +163,7 @@ export default async function MovieDetailsPage({
         "@context": "https://schema.org",
         "@type": "VideoObject",
         "name": `${movie.title} Full Movie HD`,
-        "description": movie.overview || `Watch ${movie.title} Full Movie Online Free in HD`,
+        "description": `Where to watch ${movie.title} online free HD. Stream ${movie.title} full movie no registration. ${movie.overview || ''}`,
         "thumbnailUrl": movie.backdropPath ? `https://image.tmdb.org/t/p/w780${movie.backdropPath}` : `${baseUrl}/neocinema_logo.png`,
         "uploadDate": movie.releaseDate || new Date().toISOString().split('T')[0],
         "contentUrl": `${baseUrl}/movies/${id}?play=true`,

@@ -26,11 +26,17 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com"),
   title: {
-    default: "NeoCinema — Movies, Series & Anime Discovery",
+    default: "NeoCinema — Best Free Movie Streaming Sites No Sign Up Required",
     template: "%s | NeoCinema"
   },
-  description: "Discover trending movies, TV series, and anime on NeoCinema. AI-powered recommendations, curated collections, and a cinematic browsing experience in HD.",
-  keywords: ["movies", "series", "streaming", "AI recommendations", "NeoCinema", "movie discovery", "TV shows", "anime", "trending movies", "top rated series"],
+  description: "One of the best free movie streaming sites no sign up required. Explore safe free movie streaming web apps no download, with free movies online no ads high quality.",
+  keywords: [
+    "best free movie streaming sites no sign up required",
+    "safe free movie streaming web apps no download",
+    "free movies online no ads high quality",
+    "best free alternatives to fmovies safely",
+    "movies", "series", "streaming", "AI recommendations", "NeoCinema", "movie discovery", "anime"
+  ],
   authors: [{ name: "Love Ghariwala", url: "https://github.com/loveghariwala" }],
   creator: "Love Ghariwala",
   publisher: "NeoCinema",
@@ -124,7 +130,7 @@ export default function RootLayout({
         "@id": `${baseUrl}#website`,
         "url": baseUrl,
         "name": "NeoCinema",
-        "description": "Experience the future of cinematic discovery with NeoCinema. AI-powered recommendations, semantic search, and an ultra-dark cinematic experience for movies and TV shows.",
+        "description": "One of the best free movie streaming sites no sign up required. Safe free movie streaming web apps no download with no ads and high quality.",
         "publisher": { "@id": `${baseUrl}#org` },
         "potentialAction": {
           "@type": "SearchAction",
