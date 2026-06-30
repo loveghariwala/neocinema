@@ -1,6 +1,6 @@
 export const BLOG_CONTENT: Record<string, string> = {
-    "best-free-movie-streaming-sites-2025": `
-<p>Finding a reliable free movie streaming site in 2025 can feel like searching for a needle in a haystack. Most sites are riddled with pop-ups, broken links, or require you to create an account before you can watch anything. We tested dozens of platforms and narrowed it down to the 7 that actually deliver.</p>
+    "best-free-movie-streaming-sites-2026": `
+<p>Finding a reliable free movie streaming site in 2026 can feel like searching for a needle in a haystack. Most sites are riddled with pop-ups, broken links, or require you to create an account before you can watch anything. We tested dozens of platforms and narrowed it down to the 7 that actually deliver.</p>
 
 <h2>What Makes a Good Free Streaming Site?</h2>
 <p>Before we dive into the list, here's what we evaluated each site on:</p>
@@ -122,8 +122,8 @@ export const BLOG_CONTENT: Record<string, string> = {
 <h2>Where to Stream All MCU Movies Free</h2>
 <p>Every single Marvel movie listed above is available to stream for free in HD on <strong>NeoCinema</strong>. No Disney+ subscription required — just search for any title and press play.</p>
 `,
-    "best-korean-dramas-2025": `
-<p>Korean dramas have taken over the world, and 2025 is proving to be another incredible year for K-Drama fans. Whether you're a seasoned viewer or just getting into the genre, this list covers the absolute best shows airing right now — all available with English subtitles.</p>
+    "best-korean-dramas-2026": `
+<p>Korean dramas have taken over the world, and 2026 is proving to be another incredible year for K-Drama fans. Whether you're a seasoned viewer or just getting into the genre, this list covers the absolute best shows airing right now — all available with English subtitles.</p>
 
 <h2>Why Korean Dramas Are So Addictive</h2>
 <p>K-Dramas hit different. Unlike Western shows that can drag on for 10+ seasons, most K-Dramas tell a complete story in 16-20 episodes. The production quality rivals Hollywood, the soundtracks are incredible, and the cliffhangers will keep you up past midnight pressing "next episode."</p>
@@ -135,7 +135,7 @@ export const BLOG_CONTENT: Record<string, string> = {
 <p>You can stream all of the K-Dramas mentioned in this article for free on <strong>NeoCinema</strong>. Every title comes with English subtitles, and you don't need to create an account or pay for a subscription.</p>
 <p>Visit our <a href="/watch/korean-dramas-free">Korean Dramas collection</a> to start browsing.</p>
 `,
-    "best-anime-for-beginners-2025": `
+    "best-anime-for-beginners-2026": `
 <p>You've heard your friends talk about anime. You've seen the memes. You know you should start watching, but there are thousands of shows and you have no idea where to begin. Don't worry — we've curated the perfect starter list.</p>
 
 <h2>A Note on Subtitles vs. Dubbed</h2>

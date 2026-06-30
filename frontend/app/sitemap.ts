@@ -7,22 +7,27 @@ import { tmdbService } from '@/lib/tmdb';
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.neocinematv.com';
 
+  // Use a stable date for static content — not new Date() which changes every crawl
+  // and teaches Google to ignore your lastmod signals entirely
+  const stableDate = new Date('2026-06-30');
+  const weeklyDate = new Date('2026-06-29');
+
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: baseUrl, lastModified: new Date(), changeFrequency: 'daily', priority: 1 },
     { url: `${baseUrl}/movies`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
     { url: `${baseUrl}/series`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
-    { url: `${baseUrl}/search`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
-    { url: `${baseUrl}/collections`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${baseUrl}/blog`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${baseUrl}/search`, lastModified: stableDate, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${baseUrl}/collections`, lastModified: weeklyDate, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${baseUrl}/blog`, lastModified: weeklyDate, changeFrequency: 'weekly', priority: 0.8 },
     // Legal & trust pages (critical for E-E-A-T)
-    { url: `${baseUrl}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
-    { url: `${baseUrl}/contact`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
-    { url: `${baseUrl}/privacy`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.4 },
-    { url: `${baseUrl}/terms`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.4 },
-    { url: `${baseUrl}/cookies`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
-    { url: `${baseUrl}/disclaimer`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
+    { url: `${baseUrl}/about`, lastModified: stableDate, changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${baseUrl}/contact`, lastModified: stableDate, changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${baseUrl}/privacy`, lastModified: stableDate, changeFrequency: 'monthly', priority: 0.4 },
+    { url: `${baseUrl}/terms`, lastModified: stableDate, changeFrequency: 'monthly', priority: 0.4 },
+    { url: `${baseUrl}/cookies`, lastModified: stableDate, changeFrequency: 'monthly', priority: 0.3 },
+    { url: `${baseUrl}/disclaimer`, lastModified: stableDate, changeFrequency: 'monthly', priority: 0.3 },
     // High-value SEO landing page
-    { url: `${baseUrl}/best-fmovies-alternative-2024`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/best-fmovies-alternative-2024`, lastModified: stableDate, changeFrequency: 'monthly', priority: 0.8 },
   ];
 
   // Blog posts

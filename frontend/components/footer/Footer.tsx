@@ -61,7 +61,7 @@ export default function Footer() {
                                 { name: "Sci-Fi Movies Free", href: "/watch/sci-fi-movies-free" },
                                 { name: "Bollywood Movies HD", href: "/watch/bollywood-movies-free" },
                                 { name: "Korean Dramas Free", href: "/watch/korean-dramas-free" },
-                                { name: "New Movies 2025", href: "/watch/new-movies-2025" },
+                                { name: "New Movies 2026", href: "/watch/new-movies-2026" },
                             ].map((item) => (
                                 <li key={item.name}>
                                     <Link href={item.href} className="text-neutral-500 text-sm hover:text-white transition-colors">{item.name}</Link>

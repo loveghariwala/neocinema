@@ -49,24 +49,20 @@ export async function generateMetadata(): Promise<Metadata> {
         .filter(Boolean);
 
     return {
-        title: 'Watch Free Movies Online in HD | NeoCinema',
-        description: 'Stream top-rated free movies, series, and anime on NeoCinema. AI-powered recommendations, fast streaming, no ads, HD quality.',
+        title: 'NeoCinema — Discover Movies, Series & Anime in HD',
+        description: 'Explore trending movies, top-rated TV series, and anime on NeoCinema. AI-powered recommendations, curated collections, and a cinematic browsing experience.',
         keywords: [
             'NeoCinema',
-            'watch free movies online no sign up',
-            'free movie streaming site 2025',
-            'watch movies online free HD',
-            'stream movies free no ads',
-            'best free streaming site',
-            'watch series online free',
-            'free HD movies no registration',
-            'watch bollywood movies online free',
-            'korean drama free streaming',
-            'anime streaming free english sub',
+            'movie streaming 2026',
+            'watch movies online',
+            'best movies 2026',
             'trending movies this week',
-            'top rated movies to watch',
-            'new movies 2025 free',
-            'AI movie recommendations',
+            'top rated series 2026',
+            'bollywood movies online',
+            'korean drama streaming',
+            'anime english sub',
+            'movie recommendations',
+            'AI movie discovery',
             ...movieKeywords,
             ...seriesKeywords,
         ],
@@ -78,16 +74,16 @@ export async function generateMetadata(): Promise<Metadata> {
             follow: true,
         },
         openGraph: {
-            title: "Watch Free Movies & Series Online | NeoCinema",
-            description: "Discover the best movies and TV series with NeoCinema's AI-powered recommendations. Experience an ultra-dark cinematic UI with personalized content discovery.",
+            title: "NeoCinema — Discover Movies, Series & Anime in HD",
+            description: "Explore trending movies, top-rated TV series, and anime on NeoCinema. AI-powered recommendations and a cinematic browsing experience.",
             url: '/',
             type: "website",
-            images: [{ url: "/og_banner.png", width: 1200, height: 630, alt: "NeoCinema — Watch Free Movies & Series Online in HD" }],
+            images: [{ url: "/og_banner.png", width: 1200, height: 630, alt: "NeoCinema — Discover Movies & Series" }],
         },
         twitter: {
             card: "summary_large_image",
-            title: "Watch Free Movies & Series Online | NeoCinema",
-            description: "Discover the best movies and TV series with NeoCinema's AI-powered recommendations.",
+            title: "NeoCinema — Discover Movies, Series & Anime in HD",
+            description: "Explore trending movies, top-rated TV series, and anime with AI-powered recommendations.",
             images: ["/neocinema_logo.png"],
         },
     };
@@ -101,7 +97,7 @@ export default async function HomePage() {
     const heroMovie = trendingMovies[0] || null;
     return (
         <main className="min-h-screen">
-            <h1 className="sr-only">Watch Free Movies & TV Shows Online in HD — NeoCinema</h1>
+            <h1 className="sr-only">NeoCinema — Discover Trending Movies, Series & Anime in HD</h1>
             {heroMovie && <HeroBanner movie={heroMovie} />}
 
             <div className="relative z-20 -mt-32 space-y-24 px-6 pb-20 pt-32 md:px-16 pointer-events-none">

@@ -130,6 +130,15 @@ export const WATCH_LANDINGS: WatchLanding[] = [
         params: { year_from: 2024, year_to: 2024, sort_by: "popularity.desc" },
         keywords: ["best movies 2024", "movies 2024 free", "2024 films online", "watch 2024 movies free", "top movies 2024"],
     },
+    {
+        slug: "new-movies-2026",
+        title: "New Movies 2026 — Watch Online in HD",
+        h1: "Latest Movies of 2026 — Watch Online",
+        description: "Discover and stream the newest 2026 movie releases in HD. Stay up to date with the latest films on NeoCinema.",
+        type: "movie",
+        params: { year_from: 2026, year_to: 2026, sort_by: "popularity.desc" },
+        keywords: ["new movies 2026", "latest movies 2026", "2026 movie releases", "new releases 2026", "best movies 2026"],
+    },
 ];
 
 export function getWatchLandingBySlug(slug: string): WatchLanding | undefined {

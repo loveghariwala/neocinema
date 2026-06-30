@@ -26,15 +26,15 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com"),
   title: {
-    default: "Watch Free Movies & TV Shows Online in HD",
-    template: "%s | Watch Free Movies Online"
+    default: "NeoCinema — Movies, Series & Anime Discovery",
+    template: "%s | NeoCinema"
   },
-  description: "Watch and stream free movies and TV series online in HD. Find the latest trending movies, top-rated series, and new releases with zero ads.",
-  keywords: ["movies", "series", "streaming", "AI recommendations", "NeoCinema", "cinematic platform", "movie discovery", "TV shows", "free movies", "watch movies online", "HD movies", "trending movies", "top rated series"],
+  description: "Discover trending movies, TV series, and anime on NeoCinema. AI-powered recommendations, curated collections, and a cinematic browsing experience in HD.",
+  keywords: ["movies", "series", "streaming", "AI recommendations", "NeoCinema", "movie discovery", "TV shows", "anime", "trending movies", "top rated series"],
   authors: [{ name: "Love Ghariwala", url: "https://github.com/loveghariwala" }],
   creator: "Love Ghariwala",
-  publisher: "Watch Free Movies",
-  applicationName: "Watch Free Movies Online",
+  publisher: "NeoCinema",
+  applicationName: "NeoCinema",
   robots: {
     index: true,
     follow: true,
@@ -54,18 +54,18 @@ export const metadata: Metadata = {
     }
   },
   openGraph: {
-    title: "Watch Free Movies & TV Shows Online in HD",
-    description: "Watch and stream free movies and TV series online in HD. Find the latest trending movies, top-rated series, and new releases with zero ads.",
+    title: "NeoCinema — Movies, Series & Anime Discovery",
+    description: "Discover trending movies, TV series, and anime on NeoCinema. AI-powered recommendations and a cinematic browsing experience.",
     url: '/',
-    siteName: "Watch Movies Online Free",
+    siteName: "NeoCinema",
     locale: "en_US",
     type: "website",
-    images: [{ url: "/og_banner.png", width: 1200, height: 630, alt: "Watch Free Movies & TV Series Online" }],
+    images: [{ url: "/og_banner.png", width: 1200, height: 630, alt: "NeoCinema — Discover Movies & Series" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Watch Free Movies & TV Shows Online in HD",
-    description: "Watch and stream free movies and TV series online in HD. Find the latest trending movies, top-rated series, and new releases with zero ads.",
+    title: "NeoCinema — Movies, Series & Anime Discovery",
+    description: "Discover trending movies, TV series, and anime with AI-powered recommendations on NeoCinema.",
     images: ["/og_banner.png"],
     creator: "@neocinema",
   },

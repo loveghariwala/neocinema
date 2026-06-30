@@ -19,6 +19,25 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/blog/best-free-movie-streaming-sites-2025',
+        destination: '/blog/best-free-movie-streaming-sites-2026',
+        permanent: true,
+      },
+      {
+        source: '/blog/best-korean-dramas-2025',
+        destination: '/blog/best-korean-dramas-2026',
+        permanent: true,
+      },
+      {
+        source: '/blog/best-anime-for-beginners-2025',
+        destination: '/blog/best-anime-for-beginners-2026',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
@@ -26,7 +45,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Referrer-Policy",
-            value: "no-referrer",
+            value: "strict-origin-when-cross-origin",
           },
           {
             key: "Content-Security-Policy",
