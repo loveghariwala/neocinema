@@ -4,8 +4,6 @@ import { BLOG_POSTS } from '@/lib/blog-posts';
 import { WATCH_LANDINGS } from '@/lib/watch-landings';
 import { tmdbService } from '@/lib/tmdb';
 
-export const revalidate = 86400; // Cache for 24 hours
-
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.neocinematv.com';
 
