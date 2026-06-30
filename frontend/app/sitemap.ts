@@ -26,8 +26,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/terms`, lastModified: stableDate, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${baseUrl}/cookies`, lastModified: stableDate, changeFrequency: 'monthly', priority: 0.3 },
     { url: `${baseUrl}/disclaimer`, lastModified: stableDate, changeFrequency: 'monthly', priority: 0.3 },
-    // High-value SEO landing page
+    // High-value SEO landing pages
     { url: `${baseUrl}/best-fmovies-alternative-2024`, lastModified: stableDate, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/duta-movie-21-alternative`, lastModified: stableDate, changeFrequency: 'monthly', priority: 0.8 },
   ];
 
   // Blog posts
