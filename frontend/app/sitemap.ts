@@ -54,55 +54,38 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  // Dynamically fetch top 100 Trending Movies + similar pages
+  // Fetch Top 30 Movies (Lightweight - no similar pages)
   let trendingMovieRoutes: MetadataRoute.Sitemap = [];
   try {
       const [mPage1, mPage2] = await Promise.all([
           tmdbService.getTrending("movie", "week", 1),
           tmdbService.getTrending("movie", "week", 2)
       ]);
-      const movies = [...(mPage1.results || []), ...(mPage2.results || [])];
-      trendingMovieRoutes = movies.flatMap((m: any) => [
-          {
-              url: `${baseUrl}/movies/${m.tmdbId}`,
-              lastModified: weeklyDate,
-              changeFrequency: 'weekly' as const,
-              priority: 0.8,
-          },
-          {
-              url: `${baseUrl}/movies/${m.tmdbId}/similar`,
-              lastModified: stableDate,
-              changeFrequency: 'monthly' as const,
-              priority: 0.6,
-          },
-      ]);
+      const movies = [...(mPage1.results || []), ...(mPage2.results || [])].slice(0, 30);
+      trendingMovieRoutes = movies.map((m: any) => ({
+          url: `${baseUrl}/movies/${m.tmdbId}`,
+          lastModified: weeklyDate,
+          changeFrequency: 'weekly' as const,
+          priority: 0.8,
+      }));
   } catch(e) {}
 
-  // Dynamically fetch top 100 Trending Series + similar pages
+  // Fetch Top 30 Series (Lightweight - no similar pages)
   let trendingSeriesRoutes: MetadataRoute.Sitemap = [];
   try {
       const [sPage1, sPage2] = await Promise.all([
           tmdbService.getTrending("tv", "week", 1),
           tmdbService.getTrending("tv", "week", 2)
       ]);
-      const series = [...(sPage1.results || []), ...(sPage2.results || [])];
-      trendingSeriesRoutes = series.flatMap((s: any) => [
-          {
-              url: `${baseUrl}/series/${s.tmdbId}`,
-              lastModified: weeklyDate,
-              changeFrequency: 'weekly' as const,
-              priority: 0.8,
-          },
-          {
-              url: `${baseUrl}/series/${s.tmdbId}/similar`,
-              lastModified: stableDate,
-              changeFrequency: 'monthly' as const,
-              priority: 0.6,
-          },
-      ]);
+      const series = [...(sPage1.results || []), ...(sPage2.results || [])].slice(0, 30);
+      trendingSeriesRoutes = series.map((s: any) => ({
+          url: `${baseUrl}/series/${s.tmdbId}`,
+          lastModified: weeklyDate,
+          changeFrequency: 'weekly' as const,
+          priority: 0.8,
+      }));
   } catch(e) {}
 
-  // De-duplicate URLs (trending pages 1 & 2 can overlap)
   const allRoutes = [
     ...staticRoutes,
     ...blogRoutes,
