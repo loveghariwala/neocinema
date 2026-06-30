@@ -64,13 +64,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       trendingMovieRoutes = movies.flatMap((m: any) => [
           {
               url: `${baseUrl}/movies/${m.tmdbId}`,
-              lastModified: new Date(),
+              lastModified: weeklyDate,
               changeFrequency: 'weekly' as const,
               priority: 0.8,
           },
           {
               url: `${baseUrl}/movies/${m.tmdbId}/similar`,
-              lastModified: new Date(),
+              lastModified: stableDate,
               changeFrequency: 'monthly' as const,
               priority: 0.6,
           },
@@ -88,13 +88,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       trendingSeriesRoutes = series.flatMap((s: any) => [
           {
               url: `${baseUrl}/series/${s.tmdbId}`,
-              lastModified: new Date(),
+              lastModified: weeklyDate,
               changeFrequency: 'weekly' as const,
               priority: 0.8,
           },
           {
               url: `${baseUrl}/series/${s.tmdbId}/similar`,
-              lastModified: new Date(),
+              lastModified: stableDate,
               changeFrequency: 'monthly' as const,
               priority: 0.6,
           },
