@@ -84,13 +84,11 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/neocinema_logo.png" },
-      { url: "/neocinema_logo.png", sizes: "16x16", type: "image/png" },
-      { url: "/neocinema_logo.png", sizes: "32x32", type: "image/png" },
-      { url: "/neocinema_logo.png", sizes: "96x96", type: "image/png" },
+      { url: "/favicon.ico", sizes: "48x48", type: "image/x-icon" },
+      { url: "/icon.png", sizes: "192x192", type: "image/png" },
     ],
-    shortcut: "/neocinema_logo.png",
-    apple: [{ url: "/neocinema_logo.png", sizes: "180x180" }],
+    shortcut: "/icon.png",
+    apple: [{ url: "/apple-icon.png", sizes: "512x512", type: "image/png" }],
   },
 };
 
