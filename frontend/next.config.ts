@@ -52,10 +52,6 @@ const nextConfig: NextConfig = {
             value: "frame-src *; img-src * data: blob:;",
           },
           {
-            key: "Cache-Control",
-            value: "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400",
-          },
-          {
             key: "X-Robots-Tag",
             value: "index, follow",
           },
