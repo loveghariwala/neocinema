@@ -75,7 +75,7 @@ export async function generateMetadata(): Promise<Metadata> {
             description: "Discover what new movies to watch online free this week. Stream top HD movies without paying and find good movies to watch right now free online on NeoCinema.",
             url: '/',
             type: "website",
-            images: [{ url: "/og_banner.png", width: 1200, height: 630, alt: "NeoCinema — Discover Movies & Series" }],
+            images: [{ url: "/og_banner.jpg", width: 1200, height: 630, alt: "NeoCinema — Discover Movies & Series" }],
         },
         twitter: {
             card: "summary_large_image",

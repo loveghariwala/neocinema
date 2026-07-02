@@ -66,13 +66,13 @@ export const metadata: Metadata = {
     siteName: "NeoCinema",
     locale: "en_US",
     type: "website",
-    images: [{ url: "/og_banner.png", width: 1200, height: 630, alt: "NeoCinema — Discover Movies & Series" }],
+    images: [{ url: "/og_banner.jpg", width: 1200, height: 630, alt: "NeoCinema — Discover Movies & Series" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "NeoCinema — Movies, Series & Anime Discovery",
     description: "Discover trending movies, TV series, and anime with AI-powered recommendations on NeoCinema.",
-    images: ["/og_banner.png"],
+    images: ["/og_banner.jpg"],
     creator: "@neocinema",
   },
   verification: {
