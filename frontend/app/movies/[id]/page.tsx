@@ -165,7 +165,7 @@ export default async function MovieDetailsPage({
         "name": `${movie.title} Full Movie HD`,
         "description": `Where to watch ${movie.title} online free HD. Stream ${movie.title} full movie no registration. ${movie.overview || ''}`,
         "thumbnailUrl": movie.backdropPath ? `https://image.tmdb.org/t/p/w780${movie.backdropPath}` : `${baseUrl}/neocinema_logo.png`,
-        "uploadDate": movie.releaseDate || new Date().toISOString().split('T')[0],
+        "uploadDate": movie.releaseDate ? new Date(movie.releaseDate).toISOString() : new Date().toISOString(),
         "contentUrl": `${baseUrl}/movies/${id}?play=true`,
         "embedUrl": `${baseUrl}/movies/${id}?play=true`,
         "interactionStatistic": {

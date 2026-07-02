@@ -168,7 +168,7 @@ export default async function SeriesDetailsPage({
         "name": `${series.title} Full Series HD`,
         "description": series.overview || `Watch ${series.title} Full TV Series Online Free in HD`,
         "thumbnailUrl": series.backdropPath ? `https://image.tmdb.org/t/p/w780${series.backdropPath}` : `${baseUrl}/neocinema_logo.png`,
-        "uploadDate": series.releaseDate || new Date().toISOString().split('T')[0],
+        "uploadDate": series.releaseDate ? new Date(series.releaseDate).toISOString() : new Date().toISOString(),
         "contentUrl": `${baseUrl}/series/${id}?play=true`,
         "embedUrl": `${baseUrl}/series/${id}?play=true`,
         "interactionStatistic": {
