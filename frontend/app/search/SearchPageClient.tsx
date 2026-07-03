@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback, useTransition } from "react";
+import { useState, useEffect, useCallback, useTransition, useRef } from "react";
 import MovieCard from "@/components/cards/MovieCard";
+import { searchContentFromServer } from "@/services/movieService";
 
 import Search from "lucide-react/dist/esm/icons/search";
 import Film from "lucide-react/dist/esm/icons/film";
@@ -39,6 +40,7 @@ export default function SearchPageClient({
     const [page, setPage] = useState(initialPage);
     const [data, setData] = useState<any>(initialData);
     const [isPending, startTransition] = useTransition();
+    const isInitialMount = useRef(true);
 
     const router = useRouter();
     const pathname = usePathname();
@@ -46,10 +48,27 @@ export default function SearchPageClient({
     const isLoading = isPending;
     const trending = initialTrending;
 
-    // Sync search data when server-side data is refetched
+    // Fetch data when search params change
     useEffect(() => {
-        setData(initialData);
-    }, [initialData]);
+        if (isInitialMount.current && query === initialQuery && type === initialType && page === initialPage) {
+            isInitialMount.current = false;
+            return;
+        }
+
+        isInitialMount.current = false;
+
+        startTransition(() => {
+            const fetchNewData = async () => {
+                if (query && query.trim().length >= 2) {
+                    const newData = await searchContentFromServer(query, type, String(page));
+                    if (newData) setData(newData);
+                } else {
+                    setData({ results: [], totalResults: 0, totalPages: 1, currentPage: 1 });
+                }
+            };
+            fetchNewData();
+        });
+    }, [query, type, page]);
 
     useEffect(() => {
         setPage(initialPage);

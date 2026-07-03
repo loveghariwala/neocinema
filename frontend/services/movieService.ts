@@ -1,3 +1,5 @@
+"use server";
+
 import { tmdbService } from "@/lib/tmdb";
 
 export async function getTrendingMovies() {

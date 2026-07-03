@@ -2,7 +2,8 @@ import { MetadataRoute } from 'next';
 import { COLLECTIONS } from '@/lib/collections';
 import { BLOG_POSTS } from '@/lib/blog-posts';
 import { WATCH_LANDINGS } from '@/lib/watch-landings';
-import { tmdbService } from '@/lib/tmdb';
+
+export const revalidate = 86400; // Cache for 24 hours to prevent Cloudflare Worker resource limits
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.neocinematv.com';
@@ -54,45 +55,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  // Fetch Top 30 Movies (Lightweight - no similar pages)
-  let trendingMovieRoutes: MetadataRoute.Sitemap = [];
-  try {
-      const [mPage1, mPage2] = await Promise.all([
-          tmdbService.getTrending("movie", "week", 1),
-          tmdbService.getTrending("movie", "week", 2)
-      ]);
-      const movies = [...(mPage1.results || []), ...(mPage2.results || [])].slice(0, 30);
-      trendingMovieRoutes = movies.map((m: any) => ({
-          url: `${baseUrl}/movies/${m.tmdbId}`,
-          lastModified: weeklyDate,
-          changeFrequency: 'weekly' as const,
-          priority: 0.8,
-      }));
-  } catch(e) {}
+  const spiderManMovieIds = [
+    969681, // Spider-Man: Brand New Day
+    828168, // Beyond the Spider-Verse
+    634649, // No Way Home
+    569094, // Across the Spider-Verse
+    557,    // Spider-Man (2002)
+    558,    // Spider-Man 2
+    559,    // Spider-Man 3
+  ];
 
-  // Fetch Top 30 Series (Lightweight - no similar pages)
-  let trendingSeriesRoutes: MetadataRoute.Sitemap = [];
-  try {
-      const [sPage1, sPage2] = await Promise.all([
-          tmdbService.getTrending("tv", "week", 1),
-          tmdbService.getTrending("tv", "week", 2)
-      ]);
-      const series = [...(sPage1.results || []), ...(sPage2.results || [])].slice(0, 30);
-      trendingSeriesRoutes = series.map((s: any) => ({
-          url: `${baseUrl}/series/${s.tmdbId}`,
-          lastModified: weeklyDate,
-          changeFrequency: 'weekly' as const,
-          priority: 0.8,
-      }));
-  } catch(e) {}
+  const spiderManRoutes: MetadataRoute.Sitemap = spiderManMovieIds.map(id => ({
+    url: `${baseUrl}/movies/${id}`,
+    lastModified: stableDate,
+    changeFrequency: 'weekly',
+    priority: 0.9,
+  }));
 
   const allRoutes = [
     ...staticRoutes,
     ...blogRoutes,
     ...watchLandingRoutes,
     ...collectionRoutes,
-    ...trendingMovieRoutes,
-    ...trendingSeriesRoutes,
+    ...spiderManRoutes,
   ];
 
   const seen = new Set<string>();

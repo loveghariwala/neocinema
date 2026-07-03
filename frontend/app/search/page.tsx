@@ -62,16 +62,9 @@ interface SearchPageProps {
     }>;
 }
 
-export async function generateMetadata({ searchParams }: SearchPageProps): Promise<Metadata> {
-    const resolvedSearchParams = (await searchParams) || {};
-    const query = resolvedSearchParams.q || "";
-
-    const title = query
-        ? `Search results for "${query}"`
-        : "Global Search & Discovery";
-    const description = query
-        ? `Find movies, TV shows, and cast members matching "${query}" on NeoCinema.`
-        : "Search across millions of movies, TV shows, and cast members. NeoCinema's global search engine helps you find exactly what you want to watch.";
+export async function generateMetadata(): Promise<Metadata> {
+    const title = "Global Search & Discovery";
+    const description = "Search across millions of movies, TV shows, and cast members. NeoCinema's global search engine helps you find exactly what you want to watch.";
 
     return {
         title,
@@ -80,7 +73,6 @@ export async function generateMetadata({ searchParams }: SearchPageProps): Promi
             "movie search", "search TV shows", "find actors",
             "NeoCinema search", "global movie database", "content discovery",
             "search movies online", "find series",
-            ...(query ? [query] : []),
         ],
         alternates: { canonical: '/search' },
         robots: { index: false, follow: true },
@@ -100,14 +92,12 @@ export async function generateMetadata({ searchParams }: SearchPageProps): Promi
     };
 }
 
-// ─── Page Component ──────────────────────────────────────────────────────────
-export default async function SearchPage({ searchParams }: SearchPageProps) {
-    const resolvedSearchParams = (await searchParams) || {};
-    const query = resolvedSearchParams.q || "";
-    const type = resolvedSearchParams.type || "";
-    const page = resolvedSearchParams.page || "1";
+import { Suspense } from "react";
+import Loader2 from "lucide-react/dist/esm/icons/loader-2";
 
-    const { data, trending } = await getSearchPageData(query, type, page);
+// ─── Page Component ──────────────────────────────────────────────────────────
+export default async function SearchPage() {
+    const { data, trending } = await getSearchPageData("", "", "1");
 
     return (
         <>
@@ -118,13 +108,15 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                     __html: JSON.stringify(generateSearchJsonLd()).replace(/</g, '\\u003c'),
                 }}
             />
-            <SearchPageClient
-                initialQuery={query}
-                initialType={type}
-                initialPage={parseInt(page)}
-                initialData={data}
-                initialTrending={trending}
-            />
+            <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-red-500" /></div>}>
+                <SearchPageClient
+                    initialQuery={""}
+                    initialType={""}
+                    initialPage={1}
+                    initialData={data}
+                    initialTrending={trending}
+                />
+            </Suspense>
         </>
     );
 }

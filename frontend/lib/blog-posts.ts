@@ -74,6 +74,51 @@ export const BLOG_POSTS: BlogPost[] = [
         readTime: "6 min read",
         category: "Anime Guides",
     },
+    {
+        slug: "upcoming-spiderman-movies",
+        title: "Spider-Man 4 & Brand New Day (2026): Cast, Plot Leaks & Where to Watch",
+        metaTitle: "Spider-Man 4: Brand New Day (2026) Plot Leaks & Watch Guide",
+        description: "The definitive guide to Spider-Man 4: Brand New Day and Beyond the Spider-Verse. Discover insane plot leaks, Tom Holland's return, and where to stream all Spider-Man movies for free.",
+        keywords: [
+            "upcoming spiderman movies", 
+            "spiderman brand new day", 
+            "spiderman 4 plot leaks", 
+            "peter parker 2026", 
+            "where to watch spiderman brand new day free",
+            "spider-man brand new day 2026 trailer",
+            "will tobey maguire be in spiderman 4",
+            "spider-man beyond the spider-verse release date delay",
+            "watch spiderman brand new day full movie free online",
+            "spider-man 4 cast rumors"
+        ],
+        publishedAt: "2026-07-03",
+        updatedAt: "2026-07-03",
+        readTime: "5 min read",
+        category: "Movie News",
+    },
+    {
+        slug: "gta-6-game-discussion-release-date",
+        title: "GTA 6 Leaks: Massive Map Size, PC Release Date & Crossplay Rumors",
+        metaTitle: "GTA 6 Leaks: Map Size vs GTA 5 & PC Release Date Exposed",
+        description: "Everything you MUST know about GTA 6 before launch. We break down the leaked map size vs GTA 5, the truth about the $150 price tag rumor, PC release delays, and the dual protagonists.",
+        keywords: [
+            "gta 6 game discussion", 
+            "gta 6 release date", 
+            "gta 6 map size", 
+            "gta 6 leaks", 
+            "gta 6 game size", 
+            "is gta 6 ran on pc or only playstation 5",
+            "gta 6 map size compared to gta 5",
+            "gta 6 pc release date leaked",
+            "will gta 6 have crossplay",
+            "grand theft auto 6 price 150 dollars rumor",
+            "gta 6 lucia and jason story leak"
+        ],
+        publishedAt: "2026-07-03",
+        updatedAt: "2026-07-03",
+        readTime: "6 min read",
+        category: "Gaming",
+    },
 ];
 
 export function getBlogPostBySlug(slug: string): BlogPost | undefined {

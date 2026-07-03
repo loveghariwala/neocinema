@@ -107,11 +107,10 @@ interface PageProps {
     }>;
 }
 
-export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
-    const resolvedSearchParams = (await searchParams) || {};
-    const { data } = await getMoviesPageData(resolvedSearchParams as Record<string, string>);
+export async function generateMetadata(): Promise<Metadata> {
+    const { data } = await getMoviesPageData({});
 
-    const page = resolvedSearchParams.page || "1";
+    const page = "1";
 
     const movieKeywords = (data?.results || [])
         .slice(0, 10)
@@ -149,9 +148,8 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 }
 
 // ─── Page Content ────────────────────────────────────────────────────────────
-async function MoviesPageContent({ searchParams }: PageProps) {
-    const resolvedSearchParams = (await searchParams) || {};
-    const { data, genres } = await getMoviesPageData(resolvedSearchParams as Record<string, string>);
+async function MoviesPageContent() {
+    const { data, genres } = await getMoviesPageData({});
     const movies = data?.results || [];
 
     return (
@@ -163,17 +161,19 @@ async function MoviesPageContent({ searchParams }: PageProps) {
                     __html: JSON.stringify(generateMoviesJsonLd(movies)).replace(/</g, '\\u003c'),
                 }}
             />
-            <BrowsePageClient
-                type="movie"
-                title="Browse Movies"
-                subtitle="1M+ movies from every country — filter, sort, discover"
-                initialData={data}
-                initialGenres={genres}
-            />
+            <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-red-500" /></div>}>
+                <BrowsePageClient
+                    type="movie"
+                    title="Browse Movies"
+                    subtitle="1M+ movies from every country — filter, sort, discover"
+                    initialData={data}
+                    initialGenres={genres}
+                />
+            </Suspense>
         </>
     );
 }
 
-export default function MoviesPage({ searchParams }: PageProps) {
-    return <MoviesPageContent searchParams={searchParams} />;
+export default function MoviesPage() {
+    return <MoviesPageContent />;
 }

@@ -107,11 +107,10 @@ interface PageProps {
     }>;
 }
 
-export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
-    const resolvedSearchParams = (await searchParams) || {};
-    const { data } = await getSeriesPageData(resolvedSearchParams as Record<string, string>);
+export async function generateMetadata(): Promise<Metadata> {
+    const { data } = await getSeriesPageData({});
 
-    const page = resolvedSearchParams.page || "1";
+    const page = "1";
 
     const seriesKeywords = (data?.results || [])
         .slice(0, 10)
@@ -146,9 +145,8 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 }
 
 // ─── Page Content ────────────────────────────────────────────────────────────
-async function SeriesPageContent({ searchParams }: PageProps) {
-    const resolvedSearchParams = (await searchParams) || {};
-    const { data, genres } = await getSeriesPageData(resolvedSearchParams as Record<string, string>);
+async function SeriesPageContent() {
+    const { data, genres } = await getSeriesPageData({});
     const seriesList = data?.results || [];
 
     return (
@@ -160,17 +158,19 @@ async function SeriesPageContent({ searchParams }: PageProps) {
                     __html: JSON.stringify(generateSeriesJsonLd(seriesList)).replace(/</g, '\\u003c'),
                 }}
             />
-            <BrowsePageClient
-                type="tv"
-                title="Browse Series"
-                subtitle="200K+ series from every country — filter, sort, discover"
-                initialData={data}
-                initialGenres={genres}
-            />
+            <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-red-500" /></div>}>
+                <BrowsePageClient
+                    type="tv"
+                    title="Browse Series"
+                    subtitle="200K+ series from every country — filter, sort, discover"
+                    initialData={data}
+                    initialGenres={genres}
+                />
+            </Suspense>
         </>
     );
 }
 
-export default function SeriesPage({ searchParams }: PageProps) {
-    return <SeriesPageContent searchParams={searchParams} />;
+export default function SeriesPage() {
+    return <SeriesPageContent />;
 }

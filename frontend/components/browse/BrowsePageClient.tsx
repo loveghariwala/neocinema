@@ -9,6 +9,8 @@ import Sparkles from "lucide-react/dist/esm/icons/sparkles";
 
 
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useRef } from "react";
+import { discoverContentFromServer, searchContentFromServer } from "@/services/movieService";
 
 interface Genre {
     id: number;
@@ -37,13 +39,9 @@ export default function BrowsePageClient({ type, title, subtitle, initialData, i
 
     const [data, setData] = useState<BrowseData>(initialData);
     const [isPending, startTransition] = useTransition();
+    const isInitialMount = useRef(true);
 
     const isLoading = isPending;
-
-    // Sync state when server data updates
-    useEffect(() => {
-        setData(initialData);
-    }, [initialData]);
 
     // Compute currentFilters directly from URL searchParams
     const currentFilters = useMemo<FilterState>(() => {
@@ -69,6 +67,49 @@ export default function BrowsePageClient({ type, title, subtitle, initialData, i
             language,
         };
     }, [searchParams]);
+
+    // Fetch data when filters change
+    useEffect(() => {
+        const isDefault = 
+            currentFilters.page === 1 && 
+            currentFilters.sortBy === "popularity.desc" && 
+            currentFilters.genreIds.length === 0 &&
+            !currentFilters.yearFrom && !currentFilters.yearTo &&
+            currentFilters.ratingMin === null && currentFilters.ratingMax === null &&
+            !currentFilters.language && !currentFilters.search;
+
+        if (isInitialMount.current && isDefault) {
+            isInitialMount.current = false;
+            return;
+        }
+
+        isInitialMount.current = false;
+
+        startTransition(() => {
+            const fetchNewData = async () => {
+                let newData;
+                if (currentFilters.search && currentFilters.search.trim().length >= 2) {
+                    newData = await searchContentFromServer(currentFilters.search, type, String(currentFilters.page));
+                } else {
+                    const params: Record<string, string> = {
+                        page: String(currentFilters.page),
+                        sort_by: currentFilters.sortBy,
+                    };
+                    if (currentFilters.genreIds.length > 0) params.with_genres = currentFilters.genreIds.join(",");
+                    if (currentFilters.yearFrom) params.year_from = String(currentFilters.yearFrom);
+                    if (currentFilters.yearTo) params.year_to = String(currentFilters.yearTo);
+                    if (currentFilters.ratingMin !== null) params.rating_min = String(currentFilters.ratingMin);
+                    if (currentFilters.ratingMax !== null) params.rating_max = String(currentFilters.ratingMax);
+                    if (currentFilters.language) params.language = currentFilters.language;
+
+                    newData = await discoverContentFromServer(type, params);
+                }
+                
+                if (newData) setData(newData);
+            };
+            fetchNewData();
+        });
+    }, [currentFilters, type]);
 
     // Sync all filter changes to the URL query string
     const handleFilterChange = useCallback((filters: FilterState) => {
