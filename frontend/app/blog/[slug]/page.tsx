@@ -3,6 +3,7 @@ import { BLOG_CONTENT } from "@/lib/blog-content";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import ArrowLeft from "lucide-react/dist/esm/icons/arrow-left";
 import Calendar from "lucide-react/dist/esm/icons/calendar";
 import Clock from "lucide-react/dist/esm/icons/clock";
@@ -38,11 +39,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
             publishedTime: post.publishedAt,
             modifiedTime: post.updatedAt,
             authors: ["NeoCinema Editorial"],
+            ...(post.imageUrl ? { images: [{ url: post.imageUrl }] } : {}),
         },
         twitter: {
             card: "summary_large_image",
             title: post.metaTitle,
             description: post.description,
+            ...(post.imageUrl ? { images: [post.imageUrl] } : {}),
         },
     };
 }
@@ -137,6 +140,20 @@ export default async function BlogPostPage({ params }: PageProps) {
                             <span className="flex items-center gap-1">Updated: {new Date(post.updatedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
                         </div>
                     </header>
+
+                    {/* Hero Image */}
+                    {post.imageUrl && (
+                        <div className="relative aspect-video rounded-3xl overflow-hidden mb-12 ">
+                            <Image
+                                src={post.imageUrl}
+                                alt={post.title}
+                                fill
+                                priority
+                                unoptimized
+                                className="object-contain"
+                            />
+                        </div>
+                    )}
 
                     {/* Content */}
                     <div

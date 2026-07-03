@@ -16,6 +16,7 @@ export interface BlogPost {
     updatedAt: string;
     readTime: string;
     category: string;
+    imageUrl?: string;
 }
 
 export const BLOG_POSTS: BlogPost[] = [
@@ -95,6 +96,7 @@ export const BLOG_POSTS: BlogPost[] = [
         updatedAt: "2026-07-03",
         readTime: "5 min read",
         category: "Movie News",
+        imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRssrSNz5N7D_IQneQHC5dLuDRhlCnMU2WXuupzrdCXL42zDGCMSUGwKMM&s=10",
     },
     {
         slug: "gta-6-game-discussion-release-date",
@@ -118,6 +120,7 @@ export const BLOG_POSTS: BlogPost[] = [
         updatedAt: "2026-07-03",
         readTime: "6 min read",
         category: "Gaming",
+        imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZcZVgD2dWe4N-XSKKVHfqzYSg_HrgDb7uVOp8fZO3YyxK0HsaByqM3b8&s=10",
     },
 ];
 
