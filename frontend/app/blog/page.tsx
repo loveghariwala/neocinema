@@ -4,6 +4,7 @@ import Link from "next/link";
 import Calendar from "lucide-react/dist/esm/icons/calendar";
 import Clock from "lucide-react/dist/esm/icons/clock";
 import ArrowRight from "lucide-react/dist/esm/icons/arrow-right";
+import Image from "next/image";
 
 
 
@@ -35,7 +36,7 @@ export default function BlogIndexPage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {BLOG_POSTS.map((post) => (
+                    {[...BLOG_POSTS].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()).map((post) => (
                         <Link
                             key={post.slug}
                             href={`/blog/${post.slug}`}
@@ -50,9 +51,14 @@ export default function BlogIndexPage() {
                                 </span>
                             </div>
 
-                            <h2 className="text-lg md:text-xl font-black text-white mb-3 group-hover:text-red-500 transition-colors line-clamp-2">
-                                {post.title}
-                            </h2>
+                            <div className="flex flex-row items-center gap-4 mb-3">
+                                {post.imageUrl && (
+                                    <Image src={post.imageUrl} alt={post.title} width={80} height={80} unoptimized className="w-20 h-20 rounded-xl object-cover" />
+                                )}
+                                <h2 className="text-lg md:text-xl font-black text-white group-hover:text-red-500 transition-colors line-clamp-2">
+                                    {post.title}
+                                </h2>
+                            </div>
 
                             <p className="text-xs text-neutral-500 leading-relaxed mb-4 line-clamp-3">
                                 {post.description}
