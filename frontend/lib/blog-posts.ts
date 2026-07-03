@@ -122,6 +122,28 @@ export const BLOG_POSTS: BlogPost[] = [
         category: "Gaming",
         imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZcZVgD2dWe4N-XSKKVHfqzYSg_HrgDb7uVOp8fZO3YyxK0HsaByqM3b8&s=10",
     },
+    {
+        slug: "gta-6-ai-npcs-leaks-features",
+        title: "GTA 6 AI Leaks: How Artificial Intelligence Will Change NPCs Forever",
+        metaTitle: "GTA 6 AI Leaks: Revolutionary AI NPCs & Dynamic Worlds",
+        description: "Rockstar's GTA 6 is secretly using cutting-edge AI to revolutionize open-world gaming. Discover how AI NPCs, dynamic police chases, and generative voices will blow your mind.",
+        keywords: [
+            "gta 6 ai",
+            "gta 6 npcs",
+            "will gta 6 use ai",
+            "gta 6 artificial intelligence",
+            "gta 6 leaks ai",
+            "gta 6 dynamic world",
+            "rockstar games ai patent",
+            "gta 6 police ai leaks",
+            "gta 6 chatgpt npcs"
+        ],
+        publishedAt: "2026-07-03",
+        updatedAt: "2026-07-03",
+        readTime: "4 min read",
+        category: "Gaming News",
+        imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrg8Hqrrzn4Zp9lvePP4U7YfrzeZI0TYf2wp7bBE7UwA&s=10"
+    }
 ];
 
 export function getBlogPostBySlug(slug: string): BlogPost | undefined {

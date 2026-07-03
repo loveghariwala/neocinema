@@ -196,5 +196,24 @@ export const BLOG_CONTENT: Record<string, string> = {
 <h2>Will it Live Up to the Hype?</h2>
 <p>Given Rockstar's pedigree, expectations are astronomically high. The level of detail—from the realistic beach crowds to the dynamic vehicle physics and "Florida Man" antics—indicates that GTA 6 aims to set a new benchmark for open-world gaming.</p>
 <p><em>What are you most excited about in GTA 6? What features do you hope they bring back from older games? The countdown to 2025 has officially begun.</em></p>
+`,
+    "gta-6-ai-npcs-leaks-features": `
+<p>While the graphics and map size of <strong>Grand Theft Auto VI</strong> have dominated the conversation, the real game-changer might be something invisible: <strong>Artificial Intelligence</strong>. According to recent leaks and Rockstar patents, GTA 6 is poised to completely redefine how non-playable characters (NPCs) behave in open-world games.</p>
+
+<h2>The End of "Robotic" NPCs</h2>
+<p>In previous iterations, NPCs followed strict, pre-programmed paths. If you blocked a car in GTA V, the driver would wait a few seconds and then blindly ram into you. <strong>Not anymore.</strong> Rockstar recently filed patents for advanced virtual navigation and dynamic NPC behavior. This means NPCs will actively assess their surroundings, find alternative routes, and react to your actions with unprecedented realism.</p>
+
+<h2>Generative AI Voices and Dialogue?</h2>
+<p>We've all heard the same three lines of dialogue repeated by pedestrians in Los Santos. However, industry insiders suggest that Rockstar is exploring <strong>dynamic dialogue systems</strong>. While full LLM (like ChatGPT) integration for every NPC is unlikely due to hardware constraints, the game will utilize highly advanced state-machines allowing NPCs to remember past interactions, comment on your specific clothing or vehicle, and hold context-aware conversations.</p>
+
+<h2>A Revolutionary Police AI System</h2>
+<p>Say goodbye to police cars spawning out of thin air directly in front of you. The leaked AI systems indicate that the police in Vice City will have to actually <em>search</em> for you. They will utilize last-known locations, communicate with dispatch dynamically, and use realistic flanking tactics rather than just mindlessly driving into your gunfire.</p>
+
+<h2>Living, Breathing Factions</h2>
+<p>The AI upgrades extend to the game's various gangs and factions. Leaks suggest a persistent world where NPC factions will fight for territory and remember your allegiances. If you help a specific gang in an early mission, their members might organically assist you in random street encounters hours later.</p>
+
+<h2>What This Means for the Open World</h2>
+<p>The integration of advanced AI means that no two playthroughs of GTA 6 will be exactly alike. Vice City won't just be a backdrop for the story; it will be a <strong>living, breathing simulation</strong> that reacts, remembers, and evolves based on your actions.</p>
+<p><em>Are you ready for a world where every NPC has a mind of their own? The wait for 2025 just got even harder.</em></p>
 `
 };
