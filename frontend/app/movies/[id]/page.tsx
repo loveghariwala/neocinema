@@ -39,7 +39,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         };
     }
 
-    const releaseYear = movie.releaseDate ? new Date(movie.releaseDate).getFullYear() : "";
+    const safeDate = movie.releaseDate && !isNaN(new Date(movie.releaseDate).getTime()) 
+        ? new Date(movie.releaseDate) 
+        : null;
+    const releaseYear = safeDate ? safeDate.getFullYear() : "";
     const genreLabel = (movie.genres || []).slice(0, 2).join(' & ') || 'Movie';
     const titleText = `Where to Watch ${movie.title} Online Free HD${releaseYear ? ` (${releaseYear})` : ""} | NeoCinema`;
     const descriptionText = `Stream ${movie.title} full movie no registration. ${movie.overview ? movie.overview.substring(0, 100).trim() + '...' : `Play ${movie.title} free streaming english.`} Watch online via our free web app.`;
@@ -110,7 +113,10 @@ export default async function MovieDetailsPage({
     }
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
-    const releaseYear = movie.releaseDate ? new Date(movie.releaseDate).getFullYear() : "";
+    const safeDate = movie.releaseDate && !isNaN(new Date(movie.releaseDate).getTime()) 
+        ? new Date(movie.releaseDate) 
+        : null;
+    const releaseYear = safeDate ? safeDate.getFullYear() : "";
 
     // ─── Movie JSON-LD ───────────────────────────────────────────────────────
     const movieJsonLd = {
@@ -165,7 +171,7 @@ export default async function MovieDetailsPage({
         "name": `${movie.title} Full Movie HD`,
         "description": `Where to watch ${movie.title} online free HD. Stream ${movie.title} full movie no registration. ${movie.overview || ''}`,
         "thumbnailUrl": movie.backdropPath ? `https://image.tmdb.org/t/p/w780${movie.backdropPath}` : `${baseUrl}/neocinema_logo.png`,
-        "uploadDate": movie.releaseDate ? new Date(movie.releaseDate).toISOString() : new Date().toISOString(),
+        "uploadDate": safeDate ? safeDate.toISOString() : new Date().toISOString(),
         "contentUrl": `${baseUrl}/movies/${id}?play=true`,
         "embedUrl": `${baseUrl}/movies/${id}?play=true`,
         "interactionStatistic": {
@@ -253,7 +259,7 @@ export default async function MovieDetailsPage({
                                     </div>
                                     <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
                                         <Calendar size={16} className="text-red-500" />
-                                        <span className="text-white">{new Date(movie.releaseDate).getFullYear()}</span>
+                                        <span className="text-white">{releaseYear || "TBA"}</span>
                                     </div>
                                     <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
                                         <Globe size={16} className="text-red-500" />
