@@ -1,5 +1,36 @@
+# ──────────────────────────────────────────────────
+# NeoCinema — robots.txt
+# Allow all major search engine bots full access
+# ──────────────────────────────────────────────────
+
+# Google
+User-Agent: Googlebot
+Allow: /
+Disallow: /api/
+
+# Google Images (allow poster/backdrop indexing)
+User-Agent: Googlebot-Image
+Allow: /
+
+# Yandex
+User-Agent: YandexBot
+Allow: /
+Disallow: /api/
+Crawl-delay: 2
+
+# Yandex Images
+User-Agent: YandexImages
+Allow: /
+
+# Bing
+User-Agent: Bingbot
+Allow: /
+Disallow: /api/
+
+# All other bots
 User-Agent: *
 Allow: /
 Disallow: /api/
 
+# Sitemap location
 Sitemap: https://www.neocinematv.com/sitemap.xml
