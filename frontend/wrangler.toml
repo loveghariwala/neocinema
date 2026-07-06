@@ -11,5 +11,3 @@ binding = "ASSETS"
 enabled = true
 invocation_logs = true
 
-[placement]
-mode = "smart"
