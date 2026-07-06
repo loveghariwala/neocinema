@@ -143,6 +143,34 @@ export const BLOG_POSTS: BlogPost[] = [
         readTime: "4 min read",
         category: "Gaming News",
         imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrg8Hqrrzn4Zp9lvePP4U7YfrzeZI0TYf2wp7bBE7UwA&s=10"
+    },
+    {
+        slug: "gta-6-pre-order-guide-editions-bonuses",
+        title: "GTA 6 Pre-Order Guide: Every Edition, Bonus & Price Breakdown (2026)",
+        metaTitle: "GTA 6 Pre-Order Guide — Editions, Bonuses & Pricing | NeoCinema",
+        description: "Everything you need to know before pre-ordering GTA 6. Compare the Standard vs Ultimate Edition, discover exclusive pre-order bonuses like the Vintage Vice City Pack, pricing in every region, and key dates.",
+        keywords: [
+            "gta 6 pre order",
+            "gta 6 pre order bonuses",
+            "gta 6 editions",
+            "gta 6 ultimate edition",
+            "gta 6 standard edition vs ultimate edition",
+            "gta 6 price",
+            "gta 6 vintage vice city pack",
+            "how to pre order gta 6",
+            "gta 6 pre order ps5",
+            "gta 6 pre order xbox",
+            "gta 6 release date november 2026",
+            "gta 6 pre load date",
+            "gta 6 gta plus free month",
+            "is gta 6 on pc",
+            "grand theft auto 6 pre order guide"
+        ],
+        publishedAt: "2026-07-06",
+        updatedAt: "2026-07-06",
+        readTime: "7 min read",
+        category: "Gaming",
+        imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZcZVgD2dWe4N-XSKKVHfqzYSg_HrgDb7uVOp8fZO3YyxK0HsaByqM3b8&s=10",
     }
 ];
 

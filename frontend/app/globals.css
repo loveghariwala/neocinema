@@ -114,6 +114,15 @@
     text-shadow: 0 0 15px rgba(255, 255, 255, 0.3), 0 0 30px rgba(220, 38, 38, 0.2);
   }
 
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   .double-border-animation {
     @apply relative overflow-hidden rounded-3xl p-[1.5px];
     background: linear-gradient(0deg, rgba(220, 38, 38, 0.1), rgba(220, 38, 38, 0.1));
