@@ -26,7 +26,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com"),
   title: {
-    default: "Watch Free Movies Online in HD | NeoCinema",
+    default: "NeoCinema — Best Free Movie Streaming Sites No Sign Up Required",
     template: "%s | Watch Free Movies Online"
   },
   description: "One of the best free movie streaming sites no sign up required. Explore safe free movie streaming web apps no download, with free movies online no ads high quality.",
@@ -185,7 +185,7 @@ export default function RootLayout({
             gtag('config', 'G-4RGXPG1KWQ');
           `}
         </Script>
-        
+
         {/* Ahrefs Webmaster Tools Analytics */}
         <Script src="https://analytics.ahrefs.com/analytics.js" data-key="+kc1zXGQ8NqACPuHJIlgsw" strategy="afterInteractive" />
         {/* Global Ad Network Scripts */}
