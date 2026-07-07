@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const genreLabel = (movie.genres || []).slice(0, 2).join(' & ') || 'Movie';
     const titleText = isUpcoming
         ? `Cast of ${movie.title}, Release Date & Everything We Know | NeoCinema`
-        : `Where to Watch ${movie.title} Online Free HD${releaseYear ? ` (${releaseYear})` : ""} | NeoCinema`;
+        : `Watch ${movie.title} ${releaseYear ? `(${releaseYear}) ` : ""}Online Free — NeoCinema`;
     const descriptionText = isUpcoming
         ? `Discover the cast of ${movie.title}${releaseYear ? ` (${releaseYear})` : ""}, release date, characters, and plot summary. Read latest updates about ${movie.title} on NeoCinema.`
         : `Stream ${movie.title} full movie no registration. ${movie.overview ? movie.overview.substring(0, 100).trim() + '...' : `Play ${movie.title} free streaming english.`} Watch online via our free web app.`;
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const isBlocked = blockedIds.includes(String(id));
 
     return {
-        title: titleText,
+        title: isUpcoming ? { absolute: titleText } : titleText,
         description: descriptionText,
         keywords: [
             `cast of ${movie.title}`,

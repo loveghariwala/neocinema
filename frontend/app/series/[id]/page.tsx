@@ -52,7 +52,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     
     const titleText = isUpcoming
         ? `Cast of ${series.title}, Release Date & Everything We Know | NeoCinema`
-        : `${series.title}${releaseYear ? ` (${releaseYear})` : ""} — ${genreLabel} | NeoCinema`;
+        : `Watch ${series.title} ${releaseYear ? `(${releaseYear}) ` : ""}Online Free — NeoCinema`;
         
     const descriptionText = isUpcoming
         ? `Discover the cast of ${series.title}${releaseYear ? ` (${releaseYear})` : ""}, release date, characters, and seasons. View full details on NeoCinema.`
@@ -65,7 +65,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const isBlocked = blockedIds.includes(String(id));
 
     return {
-        title: titleText,
+        title: isUpcoming ? { absolute: titleText } : titleText,
         description: descriptionText,
         keywords: [
             `cast of ${series.title}`,

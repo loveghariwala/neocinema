@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
         .filter(Boolean);
 
     return {
-        title: titleText,
+        title: { absolute: titleText },
         description: descriptionText,
         keywords: [
             data.person.name,

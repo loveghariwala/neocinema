@@ -49,7 +49,7 @@ export async function generateMetadata(): Promise<Metadata> {
         .filter(Boolean);
 
     return {
-        title: 'Best Trending Movies to Stream at Home for Free | NeoCinema',
+        title: { absolute: "Watch Free Movies Online in HD | NeoCinema" },
         description: 'Discover what new movies to watch online free this week. Stream top HD movies without paying and find good movies to watch right now free online on NeoCinema.',
         keywords: [
             'best trending movies to stream at home for free',

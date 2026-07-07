@@ -26,8 +26,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com"),
   title: {
-    default: "NeoCinema — Best Free Movie Streaming Sites No Sign Up Required",
-    template: "%s | NeoCinema"
+    default: "Watch Free Movies Online in HD | NeoCinema",
+    template: "%s | Watch Free Movies Online"
   },
   description: "One of the best free movie streaming sites no sign up required. Explore safe free movie streaming web apps no download, with free movies online no ads high quality.",
   keywords: [
