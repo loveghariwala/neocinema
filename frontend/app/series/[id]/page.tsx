@@ -43,9 +43,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
 
     const releaseYear = series.releaseDate ? new Date(series.releaseDate).getFullYear() : "";
+    const safeDate = series.releaseDate && !isNaN(new Date(series.releaseDate).getTime())
+        ? new Date(series.releaseDate)
+        : null;
+    const isUpcoming = safeDate ? safeDate.getTime() > Date.now() : false;
+
     const genreLabel = (series.genres || []).slice(0, 2).join(' & ') || 'TV Series';
-    const titleText = `${series.title}${releaseYear ? ` (${releaseYear})` : ""} — ${genreLabel} | NeoCinema`;
-    const descriptionText = `${series.overview ? series.overview.substring(0, 140).trim() + '.' : `Discover ${series.title}, a ${genreLabel.toLowerCase()} series.`}${series.number_of_seasons ? ` ${series.number_of_seasons} season${series.number_of_seasons > 1 ? 's' : ''}.` : ''}${series.rating ? ` ★ ${series.rating.toFixed(1)}/10.` : ''} Watch now on NeoCinema.`;
+    
+    const titleText = isUpcoming
+        ? `Cast of ${series.title}, Release Date & Everything We Know | NeoCinema`
+        : `${series.title}${releaseYear ? ` (${releaseYear})` : ""} — ${genreLabel} | NeoCinema`;
+        
+    const descriptionText = isUpcoming
+        ? `Discover the cast of ${series.title}${releaseYear ? ` (${releaseYear})` : ""}, release date, characters, and seasons. View full details on NeoCinema.`
+        : `${series.overview ? series.overview.substring(0, 140).trim() + '.' : `Discover ${series.title}, a ${genreLabel.toLowerCase()} series.`}${series.number_of_seasons ? ` ${series.number_of_seasons} season${series.number_of_seasons > 1 ? 's' : ''}.` : ''}${series.rating ? ` ★ ${series.rating.toFixed(1)}/10.` : ''} Watch now on NeoCinema.`;
 
     const castKeywords = (series.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
     const genreKeywords = (series.genres || []).map((g: string) => `${g.toLowerCase()} series free`);
@@ -57,6 +68,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         title: titleText,
         description: descriptionText,
         keywords: [
+            `cast of ${series.title}`,
+            `where to watch ${series.title}`,
             series.title,
             `${series.title} ${releaseYear}`,
             `${series.title} cast`,

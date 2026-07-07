@@ -22,10 +22,10 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
         };
     }
     
-    const titleText = `${data.person.name} — NeoCinema`;
+    const titleText = `${data.person.name} Movies and TV Shows | NeoCinema`;
     const descriptionText = data.person.biography 
-        ? `${data.person.biography.substring(0, 150)}...` 
-        : `Discover movies and series starring ${data.person.name} on NeoCinema.`;
+        ? `Find all movies and TV shows starring ${data.person.name}. ${data.person.biography.substring(0, 120)}...` 
+        : `Discover the full list of movies and TV shows starring ${data.person.name} on NeoCinema.`;
 
     const knownForKeywords = (data.results || [])
         .slice(0, 5)
@@ -37,6 +37,8 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
         description: descriptionText,
         keywords: [
             data.person.name,
+            `${data.person.name} movies and tv shows`,
+            `tv shows with ${data.person.name}`,
             `${data.person.name} movies`,
             `${data.person.name} filmography`,
             `movies starring ${data.person.name}`,

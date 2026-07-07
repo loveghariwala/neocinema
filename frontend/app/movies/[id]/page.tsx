@@ -43,9 +43,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         ? new Date(movie.releaseDate) 
         : null;
     const releaseYear = safeDate ? safeDate.getFullYear() : "";
+    
+    // Check if the movie is upcoming (release date is in the future)
+    const isUpcoming = safeDate ? safeDate.getTime() > Date.now() : false;
+
     const genreLabel = (movie.genres || []).slice(0, 2).join(' & ') || 'Movie';
-    const titleText = `Where to Watch ${movie.title} Online Free HD${releaseYear ? ` (${releaseYear})` : ""} | NeoCinema`;
-    const descriptionText = `Stream ${movie.title} full movie no registration. ${movie.overview ? movie.overview.substring(0, 100).trim() + '...' : `Play ${movie.title} free streaming english.`} Watch online via our free web app.`;
+    const titleText = isUpcoming
+        ? `Cast of ${movie.title}, Release Date & Everything We Know | NeoCinema`
+        : `Where to Watch ${movie.title} Online Free HD${releaseYear ? ` (${releaseYear})` : ""} | NeoCinema`;
+    const descriptionText = isUpcoming
+        ? `Discover the cast of ${movie.title}${releaseYear ? ` (${releaseYear})` : ""}, release date, characters, and plot summary. Read latest updates about ${movie.title} on NeoCinema.`
+        : `Stream ${movie.title} full movie no registration. ${movie.overview ? movie.overview.substring(0, 100).trim() + '...' : `Play ${movie.title} free streaming english.`} Watch online via our free web app.`;
 
     const castKeywords = (movie.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
     const genreKeywords = (movie.genres || []).map((g: string) => `${g.toLowerCase()} movies free`);
@@ -57,6 +65,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         title: titleText,
         description: descriptionText,
         keywords: [
+            `cast of ${movie.title}`,
             `where to watch ${movie.title} online free hd`,
             `stream ${movie.title} full movie no registration`,
             `play ${movie.title} free streaming english`,
