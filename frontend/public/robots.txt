@@ -27,6 +27,26 @@ User-Agent: Bingbot
 Allow: /
 Disallow: /api/
 
+# --- AI Search & Citation Crawlers (Allow to drive references) ---
+User-Agent: PerplexityBot
+Allow: /
+
+User-Agent: GPTBot
+Allow: /
+
+User-Agent: ClaudeBot
+Allow: /
+
+User-Agent: Google-Extended
+Allow: /
+
+User-Agent: Applebot-Extended
+Allow: /
+
+# --- Aggressive Scrapers (Block) ---
+User-Agent: Bytespider
+Disallow: /
+
 # All other bots
 User-Agent: *
 Allow: /

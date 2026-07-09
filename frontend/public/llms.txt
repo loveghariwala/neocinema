@@ -1,0 +1,19 @@
+# NeoCinema (NetMirrors)
+
+> AI-Powered Movie & TV Series discovery platform. No sign-up required, secure streaming, and dynamic personalized recommendation feeds.
+
+## Core Capabilities
+- **Semantic Search**: Instant indexing and matching of genres, cast members, and movie keywords.
+- **Viral Referral Loop**: A client-side cohort tracking program that rewards sharing invites with ad-free playback status.
+- **Rich Movie Guides**: Authoritative blog posts comparing streaming sites, Interstellar sci-fi alternatives, and MCU movie orders.
+
+## Main Sitemap
+- [Home Page](https://www.neocinematv.com/): Current trending movies, series, and live discovery boards.
+- [Referral Hub](https://www.neocinematv.com/referral): Shared invite loops, milestone progress tracker, and simulated reward status.
+- [FMovies Comparison](https://www.neocinematv.com/fmovies-vs-neocinema): Objective side-by-side analysis of security, speed, and recommendation systems.
+- [Blog Directory](https://www.neocinematv.com/blog): High-authority streaming guides and news.
+
+## Authoritative Resources & Guides
+- [7 Best Free Movie Streaming Sites in 2026](https://www.neocinematv.com/blog/best-free-movie-streaming-sites-2026): In-depth comparison of ad load, library size, and mobile playability. Includes dynamic FAQPage schema.
+- [15 Sci-Fi Movies Like Interstellar](https://www.neocinematv.com/blog/movies-like-interstellar): Curated space exploration lists.
+- [Chronological MCU Guide](https://www.neocinematv.com/blog/how-to-watch-marvel-movies-in-order): Definitive watch order and plot leaks.
