@@ -22,7 +22,7 @@ export const COLLECTIONS: Collection[] = [
         slug: "cyberpunk-classics",
         title: "Modern Cyberpunk & Dystopia",
         description: "Dive into a dystopian future with the best modern cyberpunk and neo-noir sci-fi films.",
-        image: "/neocinema_logo.png", // We can use a generic image or fetch dynamically later
+        image: "/netmirrors_logo.jpg", // We can use a generic image or fetch dynamically later
         type: "movie",
         params: {
             with_genres: "878,53", // Sci-Fi, Thriller
@@ -36,7 +36,7 @@ export const COLLECTIONS: Collection[] = [
         slug: "adrenaline-action",
         title: "Adrenaline Rush Action",
         description: "Heart-pounding, high-octane action movies guaranteed to keep you on the edge of your seat.",
-        image: "/neocinema_logo.png",
+        image: "/netmirrors_logo.jpg",
         type: "movie",
         params: {
             with_genres: "28,80", // Action, Crime
@@ -49,7 +49,7 @@ export const COLLECTIONS: Collection[] = [
         slug: "feel-good-comedies",
         title: "Feel-Good Comedies",
         description: "Need a laugh? These highly-rated comedies are guaranteed to boost your mood.",
-        image: "/neocinema_logo.png",
+        image: "/netmirrors_logo.jpg",
         type: "movie",
         params: {
             with_genres: "35,10751", // Comedy, Family
@@ -62,7 +62,7 @@ export const COLLECTIONS: Collection[] = [
         slug: "timeless-romance",
         title: "Timeless Romance",
         description: "From epic love stories to modern rom-coms, explore the most captivating romantic movies ever made.",
-        image: "/neocinema_logo.png",
+        image: "/netmirrors_logo.jpg",
         type: "movie",
         params: {
             with_genres: "10749", // Romance
@@ -75,7 +75,7 @@ export const COLLECTIONS: Collection[] = [
         slug: "mystery-thrillers",
         title: "Mystery & Thriller",
         description: "Suspenseful, unpredictable, and edge-of-your-seat thrillers that will keep you guessing until the very end.",
-        image: "/neocinema_logo.png",
+        image: "/netmirrors_logo.jpg",
         type: "movie",
         params: {
             with_genres: "53|964", // Thriller OR Mystery
@@ -88,7 +88,7 @@ export const COLLECTIONS: Collection[] = [
         slug: "late-night-thrillers",
         title: "Late Night Thrillers",
         description: "Controversial, provocative, and unapologetically mature. Explore adult-oriented dramas, sensual romances, and international hits like Mamasan.",
-        image: "/neocinema_logo.png",
+        image: "/netmirrors_logo.jpg",
         type: "movie",
         params: {
             with_genres: "18|10749", // Drama OR Romance
@@ -101,7 +101,7 @@ export const COLLECTIONS: Collection[] = [
         slug: "bollywood-blockbusters",
         title: "Top Rated Hindi Blockbusters",
         description: "Stream the highest-rated Hindi and Bollywood movies. From intense action to heartwarming family dramas.",
-        image: "/neocinema_logo.png",
+        image: "/netmirrors_logo.jpg",
         type: "movie",
         params: {
             language: "hi",
@@ -114,7 +114,7 @@ export const COLLECTIONS: Collection[] = [
         slug: "korean-dramas",
         title: "Trending K-Dramas",
         description: "Binge-watch the most addictive South Korean television series and dramas.",
-        image: "/neocinema_logo.png",
+        image: "/netmirrors_logo.jpg",
         type: "tv",
         params: {
             language: "ko",
@@ -126,7 +126,7 @@ export const COLLECTIONS: Collection[] = [
         slug: "anime-masterpieces",
         title: "Epic Anime Series",
         description: "The highest-rated Japanese anime series. Watch epic shonen battles, deep psychological thrillers, and beautiful slice-of-life.",
-        image: "/neocinema_logo.png",
+        image: "/netmirrors_logo.jpg",
         type: "tv",
         params: {
             language: "ja",
@@ -139,7 +139,7 @@ export const COLLECTIONS: Collection[] = [
         slug: "superhero-universe",
         title: "Superhero Universe",
         description: "Epic superhero movies from the biggest comic book universes. Action, explosions, and legendary heroes.",
-        image: "/neocinema_logo.png",
+        image: "/netmirrors_logo.jpg",
         type: "movie",
         params: {
             with_keywords: "9715", // superhero keyword in TMDB
@@ -151,7 +151,7 @@ export const COLLECTIONS: Collection[] = [
         slug: "horror-nights",
         title: "Terrifying Horror Nights",
         description: "Turn off the lights. These are the most terrifying and highly-rated horror movies ever made.",
-        image: "/neocinema_logo.png",
+        image: "/netmirrors_logo.jpg",
         type: "movie",
         params: {
             with_genres: "27", // Horror

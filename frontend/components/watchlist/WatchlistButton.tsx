@@ -16,7 +16,7 @@ export default function WatchlistButton({ movie, variant = "large" }: WatchlistB
 
     useEffect(() => {
         setMounted(true);
-        const stored = localStorage.getItem("neocinema-watchlist");
+        const stored = localStorage.getItem("netmirrors-watchlist");
         if (stored) {
             const list = JSON.parse(stored);
             setIsInWatchlist(list.some((m: any) => m._id === String(movie._id || movie.tmdbId)));
@@ -27,7 +27,7 @@ export default function WatchlistButton({ movie, variant = "large" }: WatchlistB
         e.preventDefault();
         e.stopPropagation();
 
-        const stored = localStorage.getItem("neocinema-watchlist");
+        const stored = localStorage.getItem("netmirrors-watchlist");
         let list = stored ? JSON.parse(stored) : [];
 
         if (isInWatchlist) {
@@ -49,7 +49,7 @@ export default function WatchlistButton({ movie, variant = "large" }: WatchlistB
             setIsInWatchlist(true);
         }
 
-        localStorage.setItem("neocinema-watchlist", JSON.stringify(list));
+        localStorage.setItem("netmirrors-watchlist", JSON.stringify(list));
         
         // Dispatch custom event for real-time updates if needed
         window.dispatchEvent(new Event("watchlist-updated"));

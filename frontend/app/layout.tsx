@@ -26,8 +26,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com"),
   title: {
-    default: "NeoCinema — Best Free Movie Streaming Sites No Sign Up Required",
-    template: "%s | NeoCinema"
+    default: "NetMirrors — Best Free Movie Streaming Sites No Sign Up Required",
+    template: "%s | NetMirrors"
   },
   description: "One of the best free movie streaming sites no sign up required. Explore safe free movie streaming web apps no download, with free movies online no ads high quality.",
   keywords: [
@@ -35,12 +35,12 @@ export const metadata: Metadata = {
     "safe free movie streaming web apps no download",
     "free movies online no ads high quality",
     "best free alternatives to fmovies safely",
-    "movies", "series", "streaming", "AI recommendations", "NeoCinema", "movie discovery", "anime"
+    "movies", "series", "streaming", "AI recommendations", "NetMirrors", "movie discovery", "anime"
   ],
   authors: [{ name: "Love Ghariwala", url: "https://github.com/loveghariwala" }],
   creator: "Love Ghariwala",
-  publisher: "NeoCinema",
-  applicationName: "NeoCinema",
+  publisher: "NetMirrors",
+  applicationName: "NetMirrors",
   robots: {
     index: true,
     follow: true,
@@ -60,23 +60,23 @@ export const metadata: Metadata = {
     }
   },
   openGraph: {
-    title: "NeoCinema — Movies, Series & Anime Discovery",
-    description: "Discover trending movies, TV series, and anime on NeoCinema. AI-powered recommendations and a cinematic browsing experience.",
+    title: "NetMirrors — Movies, Series & Anime Discovery",
+    description: "Discover trending movies, TV series, and anime on NetMirrors. AI-powered recommendations and a cinematic browsing experience.",
     url: '/',
-    siteName: "NeoCinema",
+    siteName: "NetMirrors",
     locale: "en_US",
     type: "website",
-    images: [{ url: "/og_banner.jpg", width: 1200, height: 630, alt: "NeoCinema — Discover Movies & Series" }],
+    images: [{ url: "/og_banner.jpg", width: 1200, height: 630, alt: "NetMirrors — Discover Movies & Series" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "NeoCinema — Movies, Series & Anime Discovery",
-    description: "Discover trending movies, TV series, and anime with AI-powered recommendations on NeoCinema.",
+    title: "NetMirrors — Movies, Series & Anime Discovery",
+    description: "Discover trending movies, TV series, and anime with AI-powered recommendations on NetMirrors.",
     images: ["/og_banner.jpg"],
-    creator: "@neocinema",
+    creator: "@netmirrors",
   },
   verification: {
-    google: "II4VqINTxDD9hlZqBSTqyO7vBQApjT92YCHylPQflfg",
+    google: ["II4VqINTxDD9hlZqBSTqyO7vBQApjT92YCHylPQflfg", "eA4ZNRp53PMpPh1NyjoV3fo_kJi-rv_9ISEl0gH8KMo"],
     yandex: "50ea89eefcbf151d",
     other: {
       monetag: "7bdf3366d833c7c08b7f5695cf6ae3d9",
@@ -106,10 +106,10 @@ export default function RootLayout({
       {
         "@type": "Organization",
         "@id": `${baseUrl}#org`,
-        "name": "NeoCinema",
+        "name": "NetMirrors",
         "url": baseUrl,
-        "logo": `${baseUrl}/neocinema_logo.png`,
-        "legalName": "NeoCinema",
+        "logo": `${baseUrl}/netmirrors_logo.jpg`,
+        "legalName": "NetMirrors",
         "description": "AI-powered cinematic movie and series discovery platform with semantic search and personalized recommendations.",
         "foundingDate": "2025",
         "founders": [
@@ -119,7 +119,7 @@ export default function RootLayout({
           },
         ],
         "sameAs": [
-          "https://twitter.com/neocinema",
+          "https://twitter.com/netmirrors",
           "https://github.com/loveghariwala"
         ],
       },
@@ -127,7 +127,7 @@ export default function RootLayout({
         "@type": "WebSite",
         "@id": `${baseUrl}#website`,
         "url": baseUrl,
-        "name": "NeoCinema",
+        "name": "NetMirrors",
         "description": "One of the best free movie streaming sites no sign up required. Safe free movie streaming web apps no download with no ads and high quality.",
         "publisher": { "@id": `${baseUrl}#org` },
         "potentialAction": {
@@ -139,7 +139,7 @@ export default function RootLayout({
       {
         "@type": "SoftwareApplication",
         "@id": `${baseUrl}#app`,
-        "name": "NeoCinema",
+        "name": "NetMirrors",
         "url": baseUrl,
         "description": "A platform for discovering movies, TV series, and anime with AI-powered semantic recommendations, advanced filtering, and personalized watchlists.",
         "applicationCategory": "EntertainmentApplication",

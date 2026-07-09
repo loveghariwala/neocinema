@@ -55,8 +55,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         : `Watch ${series.title} ${releaseYear ? `(${releaseYear}) ` : ""}Online Free`;
         
     const descriptionText = isUpcoming
-        ? `Discover the cast of ${series.title}${releaseYear ? ` (${releaseYear})` : ""}, release date, characters, and seasons. View full details on NeoCinema.`
-        : `${series.overview ? series.overview.substring(0, 140).trim() + '.' : `Discover ${series.title}, a ${genreLabel.toLowerCase()} series.`}${series.number_of_seasons ? ` ${series.number_of_seasons} season${series.number_of_seasons > 1 ? 's' : ''}.` : ''}${series.rating ? ` ★ ${series.rating.toFixed(1)}/10.` : ''} Watch now on NeoCinema.`;
+        ? `Discover the cast of ${series.title}${releaseYear ? ` (${releaseYear})` : ""}, release date, characters, and seasons. View full details on NetMirrors.`
+        : `${series.overview ? series.overview.substring(0, 140).trim() + '.' : `Discover ${series.title}, a ${genreLabel.toLowerCase()} series.`}${series.number_of_seasons ? ` ${series.number_of_seasons} season${series.number_of_seasons > 1 ? 's' : ''}.` : ''}${series.rating ? ` ★ ${series.rating.toFixed(1)}/10.` : ''} Watch now on NetMirrors.`;
 
     const castKeywords = (series.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
     const genreKeywords = (series.genres || []).map((g: string) => `${g.toLowerCase()} series free`);
@@ -89,7 +89,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         },
         robots: isBlocked ? { index: false, follow: false } : { index: true, follow: true },
         openGraph: {
-            title: `${titleText} | NeoCinema`,
+            title: `${titleText} | NetMirrors`,
             description: descriptionText,
             url: `/series/${id}`,
             type: "video.tv_show",
@@ -97,13 +97,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
                 ? [{ url: `https://image.tmdb.org/t/p/w780${series.backdropPath}` }]
                 : series.posterPath
                     ? [{ url: `https://image.tmdb.org/t/p/w500${series.posterPath}` }]
-                    : [{ url: "/neocinema_logo.png" }],
+                    : [{ url: "/netmirrors_logo.jpg" }],
         },
         twitter: {
             card: "summary_large_image",
-            title: `${titleText} | NeoCinema`,
+            title: `${titleText} | NetMirrors`,
             description: descriptionText,
-            images: series.backdropPath ? [`https://image.tmdb.org/t/p/w780${series.backdropPath}`] : ["/neocinema_logo.png"],
+            images: series.backdropPath ? [`https://image.tmdb.org/t/p/w780${series.backdropPath}`] : ["/netmirrors_logo.jpg"],
         }
     };
 }
@@ -133,7 +133,7 @@ export default async function SeriesDetailsPage({
         "@type": "TVSeries",
         "@id": `${baseUrl}/series/${id}#tvseries`,
         "name": series.title,
-        "image": series.posterPath ? `https://image.tmdb.org/t/p/w500${series.posterPath}` : `${baseUrl}/neocinema_logo.png`,
+        "image": series.posterPath ? `https://image.tmdb.org/t/p/w500${series.posterPath}` : `${baseUrl}/netmirrors_logo.jpg`,
         "description": series.overview,
         "startDate": series.releaseDate,
         "dateModified": new Date().toISOString(),
@@ -180,7 +180,7 @@ export default async function SeriesDetailsPage({
         "@type": "VideoObject",
         "name": `${series.title} Full Series HD`,
         "description": series.overview || `Watch ${series.title} Full TV Series Online Free in HD`,
-        "thumbnailUrl": series.backdropPath ? `https://image.tmdb.org/t/p/w780${series.backdropPath}` : `${baseUrl}/neocinema_logo.png`,
+        "thumbnailUrl": series.backdropPath ? `https://image.tmdb.org/t/p/w780${series.backdropPath}` : `${baseUrl}/netmirrors_logo.jpg`,
         "uploadDate": series.releaseDate ? new Date(series.releaseDate).toISOString() : new Date().toISOString(),
         "contentUrl": `${baseUrl}/series/${id}?play=true`,
         "embedUrl": `${baseUrl}/series/${id}?play=true`,

@@ -2,7 +2,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "Cookie Policy",
-    description: "NeoCinema Cookie Policy. Learn how we use cookies, tracking technologies, and how to manage your cookie preferences.",
+    description: "NetMirrors Cookie Policy. Learn how we use cookies, tracking technologies, and how to manage your cookie preferences.",
     alternates: { canonical: "/cookies" },
     robots: { index: true, follow: true },
 };
@@ -18,7 +18,7 @@ export default function CookiePolicyPage() {
                     <section>
                         <h2 className="text-2xl font-bold text-white mb-4">1. What Are Cookies</h2>
                         <p className="text-neutral-400 leading-relaxed">
-                            Cookies are small text files that are placed on your computer or mobile device by websites that you visit. They are widely used to make websites work more efficiently, provide a better user experience, and supply reporting information. Cookies set by the website owner (in this case, NeoCinema) are called &quot;first-party cookies.&quot; Cookies set by parties other than the website owner are called &quot;third-party cookies.&quot;
+                            Cookies are small text files that are placed on your computer or mobile device by websites that you visit. They are widely used to make websites work more efficiently, provide a better user experience, and supply reporting information. Cookies set by the website owner (in this case, NetMirrors) are called &quot;first-party cookies.&quot; Cookies set by parties other than the website owner are called &quot;third-party cookies.&quot;
                         </p>
                     </section>
 

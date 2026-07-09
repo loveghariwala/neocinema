@@ -13,7 +13,7 @@ export default function Footer() {
                     <div>
                         <Link href="/" className="group">
                             <h2 className="text-3xl font-black tracking-tighter text-white mb-6">
-                                NEO<span className="text-red-600">CINEMA</span>
+                                NET<span className="text-red-600">MIRRORS</span>
                             </h2>
                         </Link>
                         <p className="text-neutral-500 text-sm leading-relaxed mb-8 text-justify">
@@ -106,7 +106,7 @@ export default function Footer() {
 
                 <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/5 gap-4">
                     <p className="text-neutral-600 text-xs">
-                        &copy; {new Date().getFullYear()} NeoCinema. All rights reserved.
+                        &copy; {new Date().getFullYear()} NetMirrors. All rights reserved.
                     </p>
                     <div className="flex flex-wrap gap-4 md:gap-6">
                         <Link href="/privacy" className="text-neutral-600 text-xs hover:text-white">Privacy Policy</Link>

@@ -49,14 +49,14 @@ export async function generateMetadata(): Promise<Metadata> {
         .filter(Boolean);
 
     return {
-        title: { absolute: "Watch Free Movies Online in HD | NeoCinema" },
-        description: 'Discover what new movies to watch online free this week. Stream top HD movies without paying and find good movies to watch right now free online on NeoCinema.',
+        title: { absolute: "Watch Free Movies Online in HD | NetMirrors" },
+        description: 'Discover what new movies to watch online free this week. Stream top HD movies without paying and find good movies to watch right now free online on NetMirrors.',
         keywords: [
             'best trending movies to stream at home for free',
             'what new movies to watch online free this week',
             'top hd movies to stream without paying',
             'good movies to watch right now free online',
-            'NeoCinema',
+            'NetMirrors',
             'movie streaming 2026',
             'watch movies online',
             'AI movie discovery',
@@ -71,17 +71,17 @@ export async function generateMetadata(): Promise<Metadata> {
             follow: true,
         },
         openGraph: {
-            title: "Best Trending Movies to Stream at Home for Free | NeoCinema",
-            description: "Discover what new movies to watch online free this week. Stream top HD movies without paying and find good movies to watch right now free online on NeoCinema.",
+            title: "Best Trending Movies to Stream at Home for Free | NetMirrors",
+            description: "Discover what new movies to watch online free this week. Stream top HD movies without paying and find good movies to watch right now free online on NetMirrors.",
             url: '/',
             type: "website",
-            images: [{ url: "/og_banner.jpg", width: 1200, height: 630, alt: "NeoCinema — Discover Movies & Series" }],
+            images: [{ url: "/og_banner.jpg", width: 1200, height: 630, alt: "NetMirrors — Discover Movies & Series" }],
         },
         twitter: {
             card: "summary_large_image",
-            title: "Best Trending Movies to Stream at Home for Free | NeoCinema",
+            title: "Best Trending Movies to Stream at Home for Free | NetMirrors",
             description: "Discover what new movies to watch online free this week. Stream top HD movies without paying.",
-            images: ["/neocinema_logo.png"],
+            images: ["/netmirrors_logo.jpg"],
         },
     };
 }

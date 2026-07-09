@@ -49,35 +49,33 @@ export default function Navbar() {
     return (
         <>
             <header
-                className={`fixed left-0 top-0 z-50 w-full transition-all duration-500 ${
-                    isScrolled
-                        ? "py-2"
-                        : "py-4"
-                }`}
+                className={`fixed left-0 top-0 z-50 w-full transition-all duration-500 ${isScrolled
+                    ? "py-2"
+                    : "py-4"
+                    }`}
             >
                 {/* Glassmorphism background layer */}
                 <div
-                    className={`absolute inset-0 transition-all duration-500 ${
-                        isScrolled
-                            ? "bg-black/70 backdrop-blur-2xl border-b border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.6)]"
-                            : "bg-transparent border-b border-transparent"
-                    }`}
+                    className={`absolute inset-0 transition-all duration-500 ${isScrolled
+                        ? "bg-black/70 backdrop-blur-2xl border-b border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.6)]"
+                        : "bg-transparent border-b border-transparent"
+                        }`}
                 />
 
                 <div className="relative mx-auto flex max-w-[1600px] items-center justify-between gap-6 px-6 md:px-12">
                     {/* ─── LOGO ─────────────────────────────────── */}
-                    <Link href="/" className="group flex items-center gap-3 z-10">
+                    <Link href="/" className="group flex items-center z-10">
                         <div className="relative">
                             <img
-                                src="/neocinema_logo.png"
-                                alt="NeoCinema Logo"
-                                className="h-10 w-10 object-contain transition-transform duration-300 group-hover:scale-110"
+                                src="/netmirrors_logo.jpg"
+                                alt="NetMirrors Logo"
+                                className="h-10 w-20 object-contain transition-transform duration-300 group-hover:scale-110"
                             />
                             {/* Glow ring on hover */}
-                            <div className="absolute inset-0 rounded-full bg-red-600/0 transition-all duration-500 group-hover:bg-red-600/20 group-hover:shadow-[0_0_20px_rgba(220,38,38,0.4)] group-hover:scale-150" />
+                            <div className="absolute inset-0 rounded-full bg-red-500/0 transition-all duration-500 group-hover:bg-red-600/20 group-hover:shadow-[0_0_50px_rgba(220,38,38,0.4)] group-hover:scale-90" />
                         </div>
                         <h1 className="text-xl font-black tracking-tighter text-white transition-all">
-                            NEO<span className="text-red-600">CINEMA</span>
+                            NET<span className="text-red-600">MIRRORS</span>
                         </h1>
                     </Link>
 
@@ -90,11 +88,10 @@ export default function Navbar() {
                                     <Link
                                         key={link.name}
                                         href={link.href}
-                                        className={`relative flex items-center gap-2 rounded-full px-5 py-2.5 text-[13px] font-bold transition-all duration-300 ${
-                                            isActive
-                                                ? "text-white"
-                                                : "text-neutral-400 hover:text-white"
-                                        }`}
+                                        className={`relative flex items-center gap-2 rounded-full px-5 py-2.5 text-[13px] font-bold transition-all duration-300 ${isActive
+                                            ? "text-white"
+                                            : "text-neutral-400 hover:text-white"
+                                            }`}
                                     >
                                         {/* Active indicator background */}
                                         {isActive && (
@@ -159,17 +156,15 @@ export default function Navbar() {
                                             >
                                                 <Link
                                                     href={link.href}
-                                                    className={`flex items-center gap-4 rounded-2xl px-5 py-4 text-sm font-bold transition-all ${
-                                                        isActive
-                                                            ? "bg-red-600/10 text-red-500 shadow-[inset_0_0_20px_rgba(220,38,38,0.1)]"
-                                                            : "text-neutral-400 hover:bg-white/5 hover:text-white"
-                                                    }`}
+                                                    className={`flex items-center gap-4 rounded-2xl px-5 py-4 text-sm font-bold transition-all ${isActive
+                                                        ? "bg-red-600/10 text-red-500 shadow-[inset_0_0_20px_rgba(220,38,38,0.1)]"
+                                                        : "text-neutral-400 hover:bg-white/5 hover:text-white"
+                                                        }`}
                                                 >
-                                                    <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${
-                                                        isActive
-                                                            ? "bg-red-600/20 text-red-500"
-                                                            : "bg-white/5 text-neutral-500"
-                                                    }`}>
+                                                    <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${isActive
+                                                        ? "bg-red-600/20 text-red-500"
+                                                        : "bg-white/5 text-neutral-500"
+                                                        }`}>
                                                         <link.icon size={18} />
                                                     </div>
                                                     <span className="tracking-wide">{link.name}</span>

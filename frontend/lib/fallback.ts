@@ -1,5 +1,5 @@
 /**
- * NeoCinema Fallback Layer
+ * NetMirrors Fallback Layer
  * 
  * Implements the "FastAPI first, Next.js fallback" pattern.
  * Every external-data call goes through this: it tries FastAPI first,
@@ -42,7 +42,7 @@ function recordFailure(): void {
     if (consecutiveFailures >= MAX_FAILURES) {
         circuitOpenUntil = Date.now() + COOLDOWN_MS;
         console.warn(
-            `[NeoCinema Fallback] Circuit OPEN — skipping FastAPI for ${COOLDOWN_MS / 1000}s after ${consecutiveFailures} consecutive failures`
+            `[NetMirrors Fallback] Circuit OPEN — skipping FastAPI for ${COOLDOWN_MS / 1000}s after ${consecutiveFailures} consecutive failures`
         );
     }
 }
@@ -96,15 +96,15 @@ export async function withFallback<T>(
             }
 
             // Non-OK but the service responded — still a failure for fallback purposes
-            console.warn(`[NeoCinema Fallback] FastAPI returned ${response.status} for ${fastApiEndpoint}`);
+            console.warn(`[NetMirrors Fallback] FastAPI returned ${response.status} for ${fastApiEndpoint}`);
             recordFailure();
         } catch (error: any) {
             const reason = error?.name === "AbortError" ? "timeout" : error?.message || "unknown";
-            console.warn(`[NeoCinema Fallback] FastAPI failed for ${fastApiEndpoint}: ${reason}`);
+            console.warn(`[NetMirrors Fallback] FastAPI failed for ${fastApiEndpoint}: ${reason}`);
             recordFailure();
         }
     } else {
-        console.info(`[NeoCinema Fallback] Circuit open — skipping FastAPI for ${fastApiEndpoint}`);
+        console.info(`[NetMirrors Fallback] Circuit open — skipping FastAPI for ${fastApiEndpoint}`);
     }
 
     // Fallback to Next.js TMDB service
@@ -112,7 +112,7 @@ export async function withFallback<T>(
         const data = await fallbackFn();
         return { data, source: "nextjs" };
     } catch (fallbackError) {
-        console.error(`[NeoCinema Fallback] Both FastAPI and TMDB fallback failed for ${fastApiEndpoint}:`, fallbackError);
+        console.error(`[NetMirrors Fallback] Both FastAPI and TMDB fallback failed for ${fastApiEndpoint}:`, fallbackError);
         throw fallbackError;
     }
 }

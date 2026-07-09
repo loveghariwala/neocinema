@@ -59,7 +59,7 @@ const generateMoviesJsonLd = (movies: any[]) => {
             "url": baseUrl,
             "logo": {
                 "@type": "ImageObject",
-                "url": `${baseUrl}/neocinema_logo.png`,
+                "url": `${baseUrl}/netmirrors_logo.jpg`,
             },
         },
         "mainEntity": {
@@ -75,7 +75,7 @@ const generateMoviesJsonLd = (movies: any[]) => {
                     "description": movie.overview,
                     "image": movie.poster_path
                         ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                        : `${baseUrl}/neocinema_logo.png`,
+                        : `${baseUrl}/netmirrors_logo.jpg`,
                     "url": `${baseUrl}/movies/${movie.id || movie.tmdbId}`,
                     "dateCreated": movie.release_date,
                     ...(movie.rating && movie.voteCount ? {
@@ -136,13 +136,13 @@ export async function generateMetadata(): Promise<Metadata> {
             description: "Explore an extensive library of over 1 million movies from around the globe. Filter by genre, release year, rating, and language.",
             url: '/movies',
             type: "website",
-            images: [{ url: "/neocinema_logo.png", width: 800, height: 600, alt: "Browse Movies on NeoCinema" }],
+            images: [{ url: "/netmirrors_logo.jpg", width: 800, height: 600, alt: "Browse Movies on NeoCinema" }],
         },
         twitter: {
             card: "summary_large_image",
             title: "Browse Movies | NeoCinema",
             description: "Explore an extensive library of over 1 million movies from around the globe.",
-            images: ["/neocinema_logo.png"],
+            images: ["/netmirrors_logo.jpg"],
         },
     };
 }

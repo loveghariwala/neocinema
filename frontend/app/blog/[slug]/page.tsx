@@ -76,7 +76,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         "publisher": {
             "@type": "Organization",
             "name": "NeoCinema",
-            "logo": { "@type": "ImageObject", "url": `${baseUrl}/neocinema_logo.png` },
+            "logo": { "@type": "ImageObject", "url": `${baseUrl}/netmirrors_logo.jpg` },
         },
         "mainEntityOfPage": {
             "@type": "WebPage",

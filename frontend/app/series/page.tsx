@@ -59,7 +59,7 @@ const generateSeriesJsonLd = (seriesList: any[]) => {
             "url": baseUrl,
             "logo": {
                 "@type": "ImageObject",
-                "url": `${baseUrl}/neocinema_logo.png`,
+                "url": `${baseUrl}/netmirrors_logo.jpg`,
             },
         },
         "mainEntity": {
@@ -75,7 +75,7 @@ const generateSeriesJsonLd = (seriesList: any[]) => {
                     "description": series.overview,
                     "image": series.poster_path
                         ? `https://image.tmdb.org/t/p/w500${series.poster_path}`
-                        : `${baseUrl}/neocinema_logo.png`,
+                        : `${baseUrl}/netmirrors_logo.jpg`,
                     "url": `${baseUrl}/series/${series.id || series.tmdbId}`,
                     "startDate": series.first_air_date,
                     ...(series.rating && series.voteCount ? {
@@ -133,13 +133,13 @@ export async function generateMetadata(): Promise<Metadata> {
             description: "Discover over 200,000 television series, documentaries, and anime from around the world.",
             url: '/series',
             type: "website",
-            images: [{ url: "/neocinema_logo.png", width: 800, height: 600, alt: "Browse TV Series on NeoCinema" }],
+            images: [{ url: "/netmirrors_logo.jpg", width: 800, height: 600, alt: "Browse TV Series on NeoCinema" }],
         },
         twitter: {
             card: "summary_large_image",
             title: "Browse TV Series | NeoCinema",
             description: "Discover over 200,000 television series, documentaries, and anime from around the world.",
-            images: ["/neocinema_logo.png"],
+            images: ["/netmirrors_logo.jpg"],
         },
     };
 }

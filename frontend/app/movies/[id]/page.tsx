@@ -52,7 +52,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         ? `Cast of ${movie.title}, Release Date & Everything We Know`
         : `Watch ${movie.title} ${releaseYear ? `(${releaseYear}) ` : ""}Online Free`;
     const descriptionText = isUpcoming
-        ? `Discover the cast of ${movie.title}${releaseYear ? ` (${releaseYear})` : ""}, release date, characters, and plot summary. Read latest updates about ${movie.title} on NeoCinema.`
+        ? `Discover the cast of ${movie.title}${releaseYear ? ` (${releaseYear})` : ""}, release date, characters, and plot summary. Read latest updates about ${movie.title} on NetMirrors.`
         : `Stream ${movie.title} full movie no registration. ${movie.overview ? movie.overview.substring(0, 100).trim() + '...' : `Play ${movie.title} free streaming english.`} Watch online via our free web app.`;
 
     const castKeywords = (movie.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
@@ -87,7 +87,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         },
         robots: isBlocked ? { index: false, follow: false } : { index: true, follow: true },
         openGraph: {
-            title: `${titleText} | NeoCinema`,
+            title: `${titleText} | NetMirrors`,
             description: descriptionText,
             url: `/movies/${id}`,
             type: "video.movie",
@@ -95,13 +95,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
                 ? [{ url: `https://image.tmdb.org/t/p/w780${movie.backdropPath}` }]
                 : movie.posterPath
                     ? [{ url: `https://image.tmdb.org/t/p/w500${movie.posterPath}` }]
-                    : [{ url: "/neocinema_logo.png" }],
+                    : [{ url: "/netmirrors_logo.jpg" }],
         },
         twitter: {
             card: "summary_large_image",
-            title: `${titleText} | NeoCinema`,
+            title: `${titleText} | NetMirrors`,
             description: descriptionText,
-            images: movie.backdropPath ? [`https://image.tmdb.org/t/p/w780${movie.backdropPath}`] : ["/neocinema_logo.png"],
+            images: movie.backdropPath ? [`https://image.tmdb.org/t/p/w780${movie.backdropPath}`] : ["/netmirrors_logo.jpg"],
         }
     };
 }
@@ -133,7 +133,7 @@ export default async function MovieDetailsPage({
         "@type": "Movie",
         "@id": `${baseUrl}/movies/${id}#movie`,
         "name": movie.title,
-        "image": movie.posterPath ? `https://image.tmdb.org/t/p/w500${movie.posterPath}` : `${baseUrl}/neocinema_logo.png`,
+        "image": movie.posterPath ? `https://image.tmdb.org/t/p/w500${movie.posterPath}` : `${baseUrl}/netmirrors_logo.jpg`,
         "description": movie.overview,
         "dateCreated": movie.releaseDate,
         "dateModified": new Date().toISOString(),
@@ -179,7 +179,7 @@ export default async function MovieDetailsPage({
         "@type": "VideoObject",
         "name": `${movie.title} Full Movie HD`,
         "description": `Where to watch ${movie.title} online free HD. Stream ${movie.title} full movie no registration. ${movie.overview || ''}`,
-        "thumbnailUrl": movie.backdropPath ? `https://image.tmdb.org/t/p/w780${movie.backdropPath}` : `${baseUrl}/neocinema_logo.png`,
+        "thumbnailUrl": movie.backdropPath ? `https://image.tmdb.org/t/p/w780${movie.backdropPath}` : `${baseUrl}/netmirrors_logo.jpg`,
         "uploadDate": safeDate ? safeDate.toISOString() : new Date().toISOString(),
         "contentUrl": `${baseUrl}/movies/${id}?play=true`,
         "embedUrl": `${baseUrl}/movies/${id}?play=true`,

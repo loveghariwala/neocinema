@@ -2,7 +2,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "Terms of Service",
-    description: "NeoCinema Terms of Service. Read our terms and conditions governing the use of our movie and TV series discovery platform.",
+    description: "NetMirrors Terms of Service. Read our terms and conditions governing the use of our movie and TV series discovery platform.",
     alternates: { canonical: "/terms" },
     robots: { index: true, follow: true },
 };
@@ -20,21 +20,21 @@ export default function TermsOfServicePage() {
                     <section>
                         <h2 className="text-2xl font-bold text-white mb-4">1. Agreement to Terms</h2>
                         <p className="text-neutral-400 leading-relaxed">
-                            By accessing or using NeoCinema (&quot;the Site&quot;), located at www.neocinematv.com, you agree to be bound by these Terms of Service (&quot;Terms&quot;). If you disagree with any part of these Terms, you may not access the Site.
+                            By accessing or using NetMirrors (&quot;the Site&quot;), located at www.neocinematv.com, you agree to be bound by these Terms of Service (&quot;Terms&quot;). If you disagree with any part of these Terms, you may not access the Site.
                         </p>
                     </section>
 
                     <section>
                         <h2 className="text-2xl font-bold text-white mb-4">2. Description of Service</h2>
                         <p className="text-neutral-400 leading-relaxed">
-                            NeoCinema is a movie and television series discovery platform that provides information about films, TV shows, cast members, and related content. Our platform uses AI-powered recommendations and semantic search to help users discover entertainment content. We aggregate publicly available metadata from sources including The Movie Database (TMDB) API.
+                            NetMirrors is a movie and television series discovery platform that provides information about films, TV shows, cast members, and related content. Our platform uses AI-powered recommendations and semantic search to help users discover entertainment content. We aggregate publicly available metadata from sources including The Movie Database (TMDB) API.
                         </p>
                     </section>
 
                     <section>
                         <h2 className="text-2xl font-bold text-white mb-4">3. Intellectual Property</h2>
                         <p className="text-neutral-400 leading-relaxed mb-4">
-                            The Site and its original content (excluding content provided by third-party APIs), features, and functionality are owned by NeoCinema and are protected by international copyright, trademark, and other intellectual property laws.
+                            The Site and its original content (excluding content provided by third-party APIs), features, and functionality are owned by NetMirrors and are protected by international copyright, trademark, and other intellectual property laws.
                         </p>
                         <p className="text-neutral-400 leading-relaxed">
                             Movie and TV show metadata, images, and descriptions are provided by The Movie Database (TMDB). This product uses the TMDB API but is not endorsed or certified by TMDB. All movie posters, backdrop images, and related media are the property of their respective copyright holders.
@@ -64,14 +64,14 @@ export default function TermsOfServicePage() {
                     <section>
                         <h2 className="text-2xl font-bold text-white mb-4">6. Limitation of Liability</h2>
                         <p className="text-neutral-400 leading-relaxed">
-                            In no event shall NeoCinema, its directors, employees, partners, or affiliates be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation loss of profits, data, or other intangible losses, resulting from your access to or use of (or inability to access or use) the Site.
+                            In no event shall NetMirrors, its directors, employees, partners, or affiliates be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation loss of profits, data, or other intangible losses, resulting from your access to or use of (or inability to access or use) the Site.
                         </p>
                     </section>
 
                     <section>
                         <h2 className="text-2xl font-bold text-white mb-4">7. Third-Party Content</h2>
                         <p className="text-neutral-400 leading-relaxed">
-                            Our Site may contain links to third-party websites or services that are not owned or controlled by NeoCinema. We have no control over, and assume no responsibility for, the content, privacy policies, or practices of any third-party websites or services. You acknowledge and agree that NeoCinema shall not be liable for any damage or loss caused by the use of any such content, goods, or services available through any third-party websites.
+                            Our Site may contain links to third-party websites or services that are not owned or controlled by NetMirrors. We have no control over, and assume no responsibility for, the content, privacy policies, or practices of any third-party websites or services. You acknowledge and agree that NetMirrors shall not be liable for any damage or loss caused by the use of any such content, goods, or services available through any third-party websites.
                         </p>
                     </section>
 

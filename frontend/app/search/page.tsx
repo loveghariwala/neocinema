@@ -26,23 +26,23 @@ const generateSearchJsonLd = () => {
         "@context": "https://schema.org",
         "@type": "SearchResultsPage",
         "@id": `${baseUrl}/search#searchpage`,
-        "name": "Search Movies & TV Series — NeoCinema",
-        "description": "Search across millions of movies, TV shows, and cast members with NeoCinema's global search engine.",
+        "name": "Search Movies & TV Series — NetMirrors",
+        "description": "Search across millions of movies, TV shows, and cast members with NetMirrors' global search engine.",
         "url": `${baseUrl}/search`,
         "isPartOf": {
             "@type": "WebSite",
             "@id": `${baseUrl}#website`,
-            "name": "NeoCinema",
+            "name": "NetMirrors",
             "url": baseUrl,
         },
         "publisher": {
             "@type": "Organization",
             "@id": `${baseUrl}#org`,
-            "name": "NeoCinema",
+            "name": "NetMirrors",
             "url": baseUrl,
             "logo": {
                 "@type": "ImageObject",
-                "url": `${baseUrl}/neocinema_logo.png`,
+                "url": `${baseUrl}/netmirrors_logo.jpg`,
             },
         },
         "potentialAction": {
@@ -64,30 +64,30 @@ interface SearchPageProps {
 
 export async function generateMetadata(): Promise<Metadata> {
     const title = "Global Search & Discovery";
-    const description = "Search across millions of movies, TV shows, and cast members. NeoCinema's global search engine helps you find exactly what you want to watch.";
+    const description = "Search across millions of movies, TV shows, and cast members. NetMirrors' global search engine helps you find exactly what you want to watch.";
 
     return {
         title,
         description,
         keywords: [
             "movie search", "search TV shows", "find actors",
-            "NeoCinema search", "global movie database", "content discovery",
+            "NetMirrors search", "global movie database", "content discovery",
             "search movies online", "find series",
         ],
         alternates: { canonical: '/search' },
         robots: { index: false, follow: true },
         openGraph: {
-            title: `${title} | NeoCinema`,
+            title: `${title} | NetMirrors`,
             description,
             url: '/search',
             type: "website",
-            images: [{ url: "/neocinema_logo.png", width: 800, height: 600, alt: "Search NeoCinema" }],
+            images: [{ url: "/netmirrors_logo.jpg", width: 800, height: 600, alt: "Search NetMirrors" }],
         },
         twitter: {
             card: "summary_large_image",
-            title: `${title} | NeoCinema`,
+            title: `${title} | NetMirrors`,
             description,
-            images: ["/neocinema_logo.png"],
+            images: ["/netmirrors_logo.jpg"],
         },
     };
 }
