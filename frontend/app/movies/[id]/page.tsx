@@ -49,8 +49,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     const genreLabel = (movie.genres || []).slice(0, 2).join(' & ') || 'Movie';
     const titleText = isUpcoming
-        ? `Cast of ${movie.title}, Release Date & Everything We Know | NeoCinema`
-        : `Watch ${movie.title} ${releaseYear ? `(${releaseYear}) ` : ""}Online Free — NeoCinema`;
+        ? `Cast of ${movie.title}, Release Date & Everything We Know`
+        : `Watch ${movie.title} ${releaseYear ? `(${releaseYear}) ` : ""}Online Free`;
     const descriptionText = isUpcoming
         ? `Discover the cast of ${movie.title}${releaseYear ? ` (${releaseYear})` : ""}, release date, characters, and plot summary. Read latest updates about ${movie.title} on NeoCinema.`
         : `Stream ${movie.title} full movie no registration. ${movie.overview ? movie.overview.substring(0, 100).trim() + '...' : `Play ${movie.title} free streaming english.`} Watch online via our free web app.`;
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const isBlocked = blockedIds.includes(String(id));
 
     return {
-        title: isUpcoming ? { absolute: titleText } : titleText,
+        title: titleText,
         description: descriptionText,
         keywords: [
             `cast of ${movie.title}`,
@@ -87,7 +87,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         },
         robots: isBlocked ? { index: false, follow: false } : { index: true, follow: true },
         openGraph: {
-            title: titleText,
+            title: `${titleText} | NeoCinema`,
             description: descriptionText,
             url: `/movies/${id}`,
             type: "video.movie",
@@ -99,7 +99,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         },
         twitter: {
             card: "summary_large_image",
-            title: titleText,
+            title: `${titleText} | NeoCinema`,
             description: descriptionText,
             images: movie.backdropPath ? [`https://image.tmdb.org/t/p/w780${movie.backdropPath}`] : ["/neocinema_logo.png"],
         }

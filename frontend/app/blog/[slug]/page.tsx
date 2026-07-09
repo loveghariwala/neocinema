@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
 
     return {
-        title: post.metaTitle,
+        title: { absolute: post.metaTitle },
         description: post.description,
         keywords: post.keywords,
         alternates: { canonical: `/blog/${slug}` },

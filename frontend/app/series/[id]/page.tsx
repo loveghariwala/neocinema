@@ -51,8 +51,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const genreLabel = (series.genres || []).slice(0, 2).join(' & ') || 'TV Series';
     
     const titleText = isUpcoming
-        ? `Cast of ${series.title}, Release Date & Everything We Know | NeoCinema`
-        : `Watch ${series.title} ${releaseYear ? `(${releaseYear}) ` : ""}Online Free — NeoCinema`;
+        ? `Cast of ${series.title}, Release Date & Everything We Know`
+        : `Watch ${series.title} ${releaseYear ? `(${releaseYear}) ` : ""}Online Free`;
         
     const descriptionText = isUpcoming
         ? `Discover the cast of ${series.title}${releaseYear ? ` (${releaseYear})` : ""}, release date, characters, and seasons. View full details on NeoCinema.`
@@ -65,7 +65,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const isBlocked = blockedIds.includes(String(id));
 
     return {
-        title: isUpcoming ? { absolute: titleText } : titleText,
+        title: titleText,
         description: descriptionText,
         keywords: [
             `cast of ${series.title}`,
@@ -89,7 +89,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         },
         robots: isBlocked ? { index: false, follow: false } : { index: true, follow: true },
         openGraph: {
-            title: titleText,
+            title: `${titleText} | NeoCinema`,
             description: descriptionText,
             url: `/series/${id}`,
             type: "video.tv_show",
@@ -101,7 +101,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         },
         twitter: {
             card: "summary_large_image",
-            title: titleText,
+            title: `${titleText} | NeoCinema`,
             description: descriptionText,
             images: series.backdropPath ? [`https://image.tmdb.org/t/p/w780${series.backdropPath}`] : ["/neocinema_logo.png"],
         }

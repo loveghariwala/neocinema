@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
         };
     }
     
-    const titleText = `${data.person.name} Movies and TV Shows | NeoCinema`;
+    const titleText = `${data.person.name} Movies and TV Shows`;
     const descriptionText = data.person.biography 
         ? `Find all movies and TV shows starring ${data.person.name}. ${data.person.biography.substring(0, 120)}...` 
         : `Discover the full list of movies and TV shows starring ${data.person.name} on NeoCinema.`;
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
         .filter(Boolean);
 
     return {
-        title: { absolute: titleText },
+        title: titleText,
         description: descriptionText,
         keywords: [
             data.person.name,
@@ -52,7 +52,7 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
         },
         robots: { index: true, follow: true },
         openGraph: {
-            title: titleText,
+            title: `${titleText} | NeoCinema`,
             description: descriptionText,
             url: `/person/${id}`,
             type: "profile",
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
         },
         twitter: {
             card: "summary_large_image",
-            title: titleText,
+            title: `${titleText} | NeoCinema`,
             description: descriptionText,
             images: data.person.profilePath ? [`https://image.tmdb.org/t/p/h632${data.person.profilePath}`] : ["/neocinema_logo.png"],
         }
