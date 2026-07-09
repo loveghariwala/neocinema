@@ -33,6 +33,7 @@ const SERVERS = [
     { name: "OMEGA", providerId: 11 },
     { name: "ALPHA", providerId: 1 },
     { name: "GAMMA", providerId: 3 },
+    { name: "SIGMA", providerId: 22 },
     { name: "DELTA", providerId: 4 },
     { name: "EPSILON", providerId: 5 },
     { name: "ZETA", providerId: 6 },
@@ -122,6 +123,7 @@ export default function StreamPlayer({
         if (provider === 13) return `${atob("aHR0cHM6Ly92aWRuZXN0LmZ1bi8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?server=alfa`;
         if (provider === 14) return `${atob("aHR0cHM6Ly92aWRuZXN0LmZ1bi8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?server=lamda`;
         if (provider === 15) return `${atob("aHR0cHM6Ly92aWRuZXN0LmZ1bi8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?server=sigma`;
+        if (provider === 22) return `${atob("aHR0cHM6Ly92aWRzcmMuc2JzL2VtYmVkLw==")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?autoplay=1&color=e50914&sub=en&controls=0`;
         return `${atob("aHR0cHM6Ly9wbGF5ZXIudmlkZWFzeS5uZXQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
     }, [selectedServerIndex, tmdbId, typePath, isTv, selectedSeason, selectedEpisode]);
 
@@ -176,7 +178,7 @@ export default function StreamPlayer({
         if (!hasClickedAd) {
             // Check if it is a mobile device
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            
+
             // Adsterra Smart Link Integration (Popunder) - Desktop Only
             if (!isMobile) {
                 window.open("https://www.effectivecpmnetwork.com/khge4vq0f?key=0bc9ee47ad5de40ae42fce1eae3506e2", "_blank");

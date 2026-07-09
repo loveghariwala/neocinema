@@ -2,7 +2,7 @@ import HeroBanner from "@/components/hero/HeroBanner";
 import MovieRow from "@/components/sliders/MovieRow";
 import AdsterraNativeBanner from "@/components/ads/AdsterraNativeBanner";
 import HomeFAQ from "@/components/seo/HomeFAQ";
-import { getTrendingFromServer, discoverContentFromServer, getTopRatedMovies } from "@/services/movieService";
+import { getTrendingFromServer, discoverContentFromServer, getTopRatedMovies, getMovieDetails } from "@/services/movieService";
 import { Metadata } from "next";
 import { cache } from "react";
 
@@ -10,13 +10,14 @@ export const revalidate = 300; // ISR: regenerate home page every 5 minutes
 
 // ─── Cached data fetch (shared between generateMetadata + page render) ───────
 const getHomeDataCached = cache(async () => {
-    const [trendingMoviesRes, trendingSeriesRes, topRatedMoviesRes, topRatedSeriesRes, trendingHindiRes] =
+    const [trendingMoviesRes, trendingSeriesRes, topRatedMoviesRes, topRatedSeriesRes, trendingHindiRes, spiderManMovie] =
         await Promise.all([
             getTrendingFromServer("movie", "week", "1"),
             getTrendingFromServer("tv", "week", "1"),
             discoverContentFromServer("movie", { sort_by: "popularity.desc", with_genres: "27,878", page: "1" }),
             discoverContentFromServer("tv", { sort_by: "vote_average.asc", rating_min: "8.3", rating_max: "9.0", page: "1", language: "ko", with_genres: "80" }),
             discoverContentFromServer("movie", { sort_by: "popularity.desc", language: "hi", page: "1" }),
+            getMovieDetails("969681", "movie"),
         ]);
 
     const trendingMovies = trendingMoviesRes?.results || [];
@@ -25,7 +26,7 @@ const getHomeDataCached = cache(async () => {
     const topRatedSeries = topRatedSeriesRes?.results || [];
     const trendingHindi = trendingHindiRes?.results || [];
 
-    return { trendingMovies, trendingSeries, topRatedMovies, topRatedSeries, trendingHindi };
+    return { trendingMovies, trendingSeries, topRatedMovies, topRatedSeries, trendingHindi, spiderManMovie };
 });
 
 // ─── Dynamic Metadata (SEO keywords auto-generated from live movie data) ─────
@@ -88,14 +89,20 @@ export async function generateMetadata(): Promise<Metadata> {
 
 // ─── Page Component ──────────────────────────────────────────────────────────
 export default async function HomePage() {
-    const { trendingMovies, trendingSeries, topRatedMovies, topRatedSeries, trendingHindi } =
+    const { trendingMovies, trendingSeries, topRatedMovies, topRatedSeries, trendingHindi, spiderManMovie } =
         await getHomeDataCached();
 
-    const heroMovie = trendingMovies[0] || null;
+    const heroMovies = trendingMovies.slice(0, 8);
+    if (spiderManMovie) {
+        const exists = heroMovies.some((m: any) => String(m.id || m.tmdbId || m._id) === "969681");
+        if (!exists) {
+            heroMovies.unshift(spiderManMovie);
+        }
+    }
     return (
         <main className="min-h-screen">
             <h1 className="sr-only">Best Trending Movies to Stream at Home for Free</h1>
-            {heroMovie && <HeroBanner movie={heroMovie} />}
+            {heroMovies.length > 0 && <HeroBanner movies={heroMovies} />}
 
             <div className="relative z-20 -mt-32 space-y-24 px-6 pb-20 pt-32 md:px-16 pointer-events-none">
                 {trendingMovies.length > 0 && (

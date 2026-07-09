@@ -222,3 +222,12 @@
 .blog-prose li {
   @apply text-neutral-400;
 }
+
+@keyframes ken-burns {
+  0% {
+    transform: scale(1.03) translate(0%, 0%);
+  }
+  100% {
+    transform: scale(1.10) translate(-0.8%, -0.4%);
+  }
+}
