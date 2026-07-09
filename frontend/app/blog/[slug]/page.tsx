@@ -95,6 +95,20 @@ export default async function BlogPostPage({ params }: PageProps) {
         ],
     };
 
+    // FAQ JSON-LD
+    const faqJsonLd = post.faqs ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": post.faqs.map(f => ({
+            "@type": "Question",
+            "name": f.question,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": f.answer
+            }
+        }))
+    } : null;
+
     return (
         <>
             <script
@@ -107,6 +121,13 @@ export default async function BlogPostPage({ params }: PageProps) {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, '\\u003c') }}
             />
+            {faqJsonLd && (
+                <script
+                    id="json-ld-faq"
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, '\\u003c') }}
+                />
+            )}
 
             <main className="min-h-screen pt-24 pb-20 px-6 md:px-16">
                 <article className="max-w-3xl mx-auto">

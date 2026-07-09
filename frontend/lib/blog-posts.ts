@@ -17,6 +17,7 @@ export interface BlogPost {
     readTime: string;
     category: string;
     imageUrl?: string;
+    faqs?: { question: string; answer: string; }[];
 }
 
 export const BLOG_POSTS: BlogPost[] = [
@@ -30,6 +31,16 @@ export const BLOG_POSTS: BlogPost[] = [
         updatedAt: "2026-06-29",
         readTime: "5 min read",
         category: "Streaming Guides",
+        faqs: [
+            {
+                question: "What is the best free movie streaming site in 2026?",
+                answer: "NeoCinema is currently the best free movie streaming site of 2026. It features an advanced AI-powered recommendation engine, a clean dark-mode user interface, zero ads, and does not require registration."
+            },
+            {
+                question: "Are there any free movie sites with referral programs?",
+                answer: "Yes, NeoCinema has an interactive referral program where sharing your unique invite link unlocks permanent VIP ad-free status and customized recommendation filters."
+            }
+        ]
     },
     {
         slug: "movies-like-interstellar",
