@@ -26,10 +26,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com"),
   title: {
-    default: "NetMirrors — Best Free Movie Streaming Sites No Sign Up Required",
+    default: "NetMirrors — Stream Free Movies & TV Series Online | No Sign Up",
     template: "%s | NetMirrors"
   },
-  description: "One of the best free movie streaming sites no sign up required. Explore safe free movie streaming web apps no download, with free movies online no ads high quality.",
+  description: "Explore NetMirrors: the leading free movie streaming site with no sign up required. Stream secure, high-quality free movies online with zero ads and no download.",
   keywords: [
     "best free movie streaming sites no sign up required",
     "safe free movie streaming web apps no download",

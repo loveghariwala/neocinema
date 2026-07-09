@@ -13,6 +13,9 @@ import Library from "lucide-react/dist/esm/icons/library";
 import BookOpen from "lucide-react/dist/esm/icons/book-open";
 
 
+import Gift from "lucide-react/dist/esm/icons/gift";
+
+
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
@@ -44,6 +47,7 @@ export default function Navbar() {
         { name: "Movies", href: "/movies", icon: Film },
         { name: "Series", href: "/series", icon: Tv },
         { name: "Blog", href: "/blog", icon: BookOpen },
+        { name: "Refer & Earn", href: "/referral", icon: Gift },
     ];
 
     return (
