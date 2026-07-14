@@ -29,11 +29,15 @@ export const metadata: Metadata = {
     default: "NetMirrors — Stream Free Movies & TV Series Online | No Sign Up",
     template: "%s | NetMirrors"
   },
-  description: "Explore NetMirrors: the leading free movie streaming site with no sign up required. Stream secure, high-quality free movies online with minimal interruptions.",
+  description: "Explore NetMirrors: search and stream free movies & TV series online. Use our advanced filter to select multiple genres, combine with ratings or release years, and sort precisely to find exactly what to watch with no sign up.",
   keywords: [
     "best free movie streaming sites no sign up required",
     "safe free movie streaming web apps no download",
     "free movies online high quality streaming",
+    "filter movies by multiple genres",
+    "select multiple genres movie search",
+    "advanced movie search filter",
+    "precise movie discovery sort",
     "best free alternatives to fmovies safely",
     "best netmirrors netmovies streaming alternative",
     "free full movie streaming online",
@@ -165,7 +169,7 @@ export default function RootLayout({
         "featureList": [
           "AI-powered movie recommendations",
           "Semantic search with vector embeddings",
-          "Advanced genre, year, and rating filters",
+          "Multi-genre combination search and precise filtering",
           "Personalized watchlists",
           "Trending and top-rated discovery",
           "Cast and crew exploration",

@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { Film, Globe, Search, Shield, Sparkles, Users } from 'lucide-react';
+import { Globe, Search, Shield, SlidersHorizontal, Sparkles, Users } from 'lucide-react';
 
 
 export const metadata: Metadata = {
@@ -11,9 +11,9 @@ export const metadata: Metadata = {
 
 const features = [
     {
-        icon: Film,
-        title: "Cinematic Discovery",
-        description: "Browse thousands of movies and TV series with rich metadata, trailers, cast information, and user ratings sourced from trusted databases.",
+        icon: SlidersHorizontal,
+        title: "Multi-Genre Filter & Sort",
+        description: "Select and combine multiple genres at the same time (e.g. Action + Comedy + Sci-Fi). Narrow down results by year, rating, or language, and sort precisely to find the perfect title.",
     },
     {
         icon: Search,

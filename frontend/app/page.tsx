@@ -50,9 +50,13 @@ export async function generateMetadata(): Promise<Metadata> {
         .filter(Boolean);
 
     return {
-        title: { absolute: "Watch Free Movies Online in HD | NetMirrors" },
-        description: 'Discover what new movies to watch online free this week. Stream top HD movies without paying and find good movies to watch right now free online on NetMirrors.',
+        title: { absolute: "Watch Free Movies Online in HD | NetMirrors Advanced Multi-Genre Discovery" },
+        description: 'Discover trending movies and TV series on NetMirrors. Use our unique multi-genre selection and advanced filtering to combine genres, filter by ratings/years, and sort precisely to find the perfect movie to watch online free.',
         keywords: [
+            'filter movies by multiple genres',
+            'combine movie genres filter',
+            'precise movie discovery sort',
+            'advanced movie search filter',
             'best trending movies to stream at home for free',
             'what new movies to watch online free this week',
             'top hd movies to stream without paying',
@@ -72,16 +76,16 @@ export async function generateMetadata(): Promise<Metadata> {
             follow: true,
         },
         openGraph: {
-            title: "Best Trending Movies to Stream at Home for Free | NetMirrors",
-            description: "Discover what new movies to watch online free this week. Stream top HD movies without paying and find good movies to watch right now free online on NetMirrors.",
+            title: "Best Trending Movies to Stream with Advanced Multi-Genre Filtering | NetMirrors",
+            description: "Use our unique multi-genre selection and advanced filtering to combine genres, filter by ratings/years, and sort precisely to find the perfect movie to watch online free on NetMirrors.",
             url: '/',
             type: "website",
             images: [{ url: "/og_banner.jpg", width: 1200, height: 630, alt: "NetMirrors — Discover Movies & Series" }],
         },
         twitter: {
             card: "summary_large_image",
-            title: "Best Trending Movies to Stream at Home for Free | NetMirrors",
-            description: "Discover what new movies to watch online free this week. Stream top HD movies without paying.",
+            title: "Advanced Multi-Genre Movie Filtering & Streaming | NetMirrors",
+            description: "Combine multiple genres, filter by ratings/years, and sort precisely to discover the perfect movie.",
             images: ["/netmirrors_logo.jpg"],
         },
     };

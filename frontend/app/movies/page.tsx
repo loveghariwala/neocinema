@@ -118,9 +118,13 @@ export async function generateMetadata(): Promise<Metadata> {
         .filter(Boolean);
 
     return {
-        title: page === "1" ? "Watch Free Movies Online | NetMirrors Browse" : `Watch Free Movies Online - Page ${page} | NetMirrors`,
-        description: "Explore an extensive library of over 1 million movies from around the globe. Filter by genre, release year, rating, and language using our advanced discovery engine.",
+        title: page === "1" ? "Watch Free Movies Online | Advanced Multi-Genre Filter & Browse | NetMirrors" : `Watch Free Movies Online - Page ${page} | NetMirrors`,
+        description: "Explore our database of over 1 million movies. Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to find exactly what you want to watch online free.",
         keywords: [
+            "filter movies by multiple genres",
+            "select multiple genres movie search",
+            "combine genres filter",
+            "precise movie discovery sort",
             "movies list", "browse movies", "global cinema", "film database",
             "movie search", "filter movies by genre", "free movies online",
             "HD movies", "trending movies", "top rated movies",
@@ -131,16 +135,16 @@ export async function generateMetadata(): Promise<Metadata> {
         alternates: { canonical: '/movies' },
         robots: page === "1" ? { index: true, follow: true } : { index: false, follow: true },
         openGraph: {
-            title: "Browse Movies | NetMirrors",
-            description: "Explore an extensive library of over 1 million movies from around the globe. Filter by genre, release year, rating, and language.",
+            title: "Browse Movies with Advanced Multi-Genre Filtering | NetMirrors",
+            description: "Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to discover the perfect movie to watch free on NetMirrors.",
             url: '/movies',
             type: "website",
             images: [{ url: "/netmirrors_logo.jpg", width: 800, height: 600, alt: "Browse Movies on NetMirrors" }],
         },
         twitter: {
             card: "summary_large_image",
-            title: "Browse Movies | NetMirrors",
-            description: "Explore an extensive library of over 1 million movies from around the globe.",
+            title: "Browse Movies with Advanced Multi-Genre Filters | NetMirrors",
+            description: "Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to discover the perfect movie.",
             images: ["/netmirrors_logo.jpg"],
         },
     };

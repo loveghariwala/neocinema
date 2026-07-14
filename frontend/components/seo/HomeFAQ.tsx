@@ -17,6 +17,10 @@ export default function HomeFAQ() {
         {
             question: "What is the best free alternative to JustWatch for streaming?",
             answer: "If you're tired of JustWatch only showing paid subscription services, NetMirrors is the ultimate free alternative. We instantly connect you to free streams for almost any movie or series you search for."
+        },
+        {
+            question: "Can I filter movies by multiple genres and sort them on NetMirrors?",
+            answer: "Yes! NetMirrors allows you to select and combine multiple genres at the same time (e.g. Action + Comedy + Sci-Fi). You can combine these genre filters with release years, minimum/maximum ratings, or languages, and sort precisely by popularity, release date, or rating to discover exactly what you want."
         }
     ];
 

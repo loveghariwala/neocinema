@@ -118,9 +118,13 @@ export async function generateMetadata(): Promise<Metadata> {
         .filter(Boolean);
 
     return {
-        title: page === "1" ? "Watch TV Series Online Free | NetMirrors Browse" : `Watch TV Series Online Free - Page ${page} | NetMirrors`,
-        description: "Discover over 200,000 television series, documentaries, and anime from around the world. Find your next binge-watch with our AI-powered recommendation filters.",
+        title: page === "1" ? "Watch TV Series Online Free | Advanced Multi-Genre Filter & Browse | NetMirrors" : `Watch TV Series Online Free - Page ${page} | NetMirrors`,
+        description: "Discover over 200,000 television series, documentaries, and anime from around the world. Select multiple genres at once, filter by rating/year/language, and sort precisely to find exactly what to watch free online.",
         keywords: [
+            "filter tv shows by multiple genres",
+            "select multiple genres series search",
+            "combine genres filter",
+            "precise series discovery sort",
             "TV series", "television shows", "browse series", "binge-watch",
             "documentaries", "anime series", "top rated tv shows",
             "free series online", "streaming series", "trending series",
@@ -131,16 +135,16 @@ export async function generateMetadata(): Promise<Metadata> {
         alternates: { canonical: '/series' },
         robots: page === "1" ? { index: true, follow: true } : { index: false, follow: true },
         openGraph: {
-            title: "Browse TV Series | NetMirrors",
-            description: "Discover over 200,000 television series, documentaries, and anime from around the world.",
+            title: "Browse TV Series with Advanced Multi-Genre Filtering | NetMirrors",
+            description: "Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to discover the perfect television show or anime to watch free on NetMirrors.",
             url: '/series',
             type: "website",
             images: [{ url: "/netmirrors_logo.jpg", width: 800, height: 600, alt: "Browse TV Series on NetMirrors" }],
         },
         twitter: {
             card: "summary_large_image",
-            title: "Browse TV Series | NetMirrors",
-            description: "Discover over 200,000 television series, documentaries, and anime from around the world.",
+            title: "Browse TV Series with Advanced Multi-Genre Filters | NetMirrors",
+            description: "Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to discover the perfect television show or anime.",
             images: ["/netmirrors_logo.jpg"],
         },
     };
