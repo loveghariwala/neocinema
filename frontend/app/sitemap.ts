@@ -9,10 +9,11 @@ export const revalidate = 86400; // Cache for 24 hours to prevent Cloudflare Wor
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.neocinematv.com';
 
-  // Use a stable date for static content — not new Date() which changes every crawl
-  // and teaches Google to ignore your lastmod signals entirely
-  const stableDate = new Date('2026-06-30');
-  const weeklyDate = new Date('2026-06-29');
+  // Rebrand date (July 14, 2026) when the entire site was rebranded to NetMirrors.
+  // Using this as the baseline/stable date ensures Google recognizes the content updates.
+  const rebrandDate = new Date('2026-07-14');
+  const stableDate = rebrandDate;
+  const weeklyDate = rebrandDate;
 
   // ────────────────────────────────────────────────────────────────────────────
   // PRIORITY 1: Blog posts — placed FIRST so Google indexes them earliest
@@ -133,7 +134,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })
       .map((m: any) => ({
         url: `${baseUrl}/movies/${m.tmdbId}`,
-        lastModified: m.releaseDate && !isNaN(new Date(m.releaseDate).getTime()) ? new Date(m.releaseDate) : new Date(),
+        lastModified: rebrandDate,
         changeFrequency: 'weekly' as const,
         priority: 0.7,
       }));
@@ -152,7 +153,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })
       .map((s: any) => ({
         url: `${baseUrl}/series/${s.tmdbId}`,
-        lastModified: s.releaseDate && !isNaN(new Date(s.releaseDate).getTime()) ? new Date(s.releaseDate) : new Date(),
+        lastModified: rebrandDate,
         changeFrequency: 'weekly' as const,
         priority: 0.7,
       }));
