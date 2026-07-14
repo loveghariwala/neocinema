@@ -131,11 +131,17 @@ export default async function MovieDetailsPage({
         "name": movie.title,
         "image": movie.posterPath ? `https://image.tmdb.org/t/p/w500${movie.posterPath}` : `${baseUrl}/netmirrors_logo.jpg`,
         "description": movie.overview,
-        "dateCreated": movie.releaseDate,
+        "dateCreated": movie.releaseDate || undefined,
         "dateModified": new Date().toISOString(),
         "url": `${baseUrl}/movies/${id}`,
         "genre": movie.genres,
         "duration": movie.runtime ? `PT${movie.runtime}M` : undefined,
+        ...(movie.director ? {
+            "director": {
+                "@type": "Person",
+                "name": movie.director,
+            }
+        } : {}),
         ...(movie.rating && movie.voteCount ? {
             "aggregateRating": {
                 "@type": "AggregateRating",

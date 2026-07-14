@@ -123,6 +123,7 @@ export async function getMovieDetails(id: string, type: "movie" | "tv" = "movie"
                 character: c.character,
                 profilePath: c.profile_path
             })) || [],
+            director: data.credits?.crew?.find((c: any) => c.job === "Director")?.name || null,
             similar: similarMovies,
             isMovie: type === "movie",
             videos: data.videos?.results || [],
