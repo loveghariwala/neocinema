@@ -1,14 +1,11 @@
 import { Metadata } from "next";
-import Mail from "lucide-react/dist/esm/icons/mail";
-import MapPin from "lucide-react/dist/esm/icons/map-pin";
-import Globe from "lucide-react/dist/esm/icons/globe";
-import Code from "lucide-react/dist/esm/icons/code";
+import { Code, Globe, Mail, MapPin } from 'lucide-react';
 
 import Link from "next/link";
 
 export const metadata: Metadata = {
     title: "Contact Us",
-    description: "Get in touch with the NeoCinema team for support, feedback, or DMCA requests.",
+    description: "Get in touch with the NetMirrors team for support, feedback, or DMCA requests.",
     alternates: { canonical: "/contact" },
     robots: { index: true, follow: true },
 };
@@ -41,7 +38,7 @@ export default function ContactPage() {
                                 <p className="text-neutral-400 text-sm mb-4">{card.subtitle}</p>
                                 {card.href ? (
                                     <Link href={card.href} className="text-red-500 font-bold hover:text-red-400 transition-colors">{card.value}</Link>
-                                ) : (
+                               ) : (
                                     <p className="text-white font-bold">{card.value}</p>
                                 )}
                             </div>
@@ -52,7 +49,7 @@ export default function ContactPage() {
                 <div className="rounded-3xl border border-white/10 bg-neutral-950/50 p-8 md:p-12 backdrop-blur-xl">
                     <h2 className="text-2xl font-bold text-white mb-4">DMCA / Copyright Notices</h2>
                     <p className="text-neutral-400 leading-relaxed mb-4">
-                        NeoCinema respects intellectual property rights. If you believe content on our platform infringes your copyright, please send a DMCA takedown notice to our email with a description of the copyrighted work, the infringing URL, and your contact information.
+                        NetMirrors respects intellectual property rights. If you believe content on our platform infringes your copyright, please send a DMCA takedown notice to our email with a description of the copyrighted work, the infringing URL, and your contact information.
                     </p>
                     <p className="text-neutral-400">
                         Send notices to: <a href="mailto:contact@neocinematv.com" className="text-red-500 font-bold hover:text-red-400">contact@neocinematv.com</a>

@@ -4,7 +4,7 @@ import MovieCard from "@/components/cards/MovieCard";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import ArrowLeft from "lucide-react/dist/esm/icons/arrow-left";
+import { ArrowLeft } from 'lucide-react';
 
 export function generateStaticParams() {
     return WATCH_LANDINGS.map((landing) => ({

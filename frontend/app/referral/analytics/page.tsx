@@ -2,15 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import ArrowLeft from "lucide-react/dist/esm/icons/arrow-left";
-import TrendingUp from "lucide-react/dist/esm/icons/trending-up";
-import Users from "lucide-react/dist/esm/icons/users";
-import Percent from "lucide-react/dist/esm/icons/percent";
-import Activity from "lucide-react/dist/esm/icons/activity";
-import BarChart2 from "lucide-react/dist/esm/icons/bar-chart-2";
-import Search from "lucide-react/dist/esm/icons/search";
-import Plus from "lucide-react/dist/esm/icons/plus";
-import RefreshCw from "lucide-react/dist/esm/icons/refresh-cw";
+import { Activity, ArrowLeft, BarChart2, Percent, Plus, RefreshCw, Search, TrendingUp, Users } from 'lucide-react';
 import { MotionDiv } from "@/components/layout/Motion";
 
 export default function ReferralAnalyticsPage() {

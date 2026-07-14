@@ -2,9 +2,7 @@
 
 
 import MovieCard from "../cards/MovieCard";
-import Film from "lucide-react/dist/esm/icons/film";
-import Tv from "lucide-react/dist/esm/icons/tv";
-import Loader2 from "lucide-react/dist/esm/icons/loader-2";
+import { Film, Loader2, Tv } from 'lucide-react';
 
 
 interface Props {

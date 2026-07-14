@@ -1,11 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import Play from "lucide-react/dist/esm/icons/play";
-import Info from "lucide-react/dist/esm/icons/info";
-import Star from "lucide-react/dist/esm/icons/star";
-import ChevronLeft from "lucide-react/dist/esm/icons/chevron-left";
-import ChevronRight from "lucide-react/dist/esm/icons/chevron-right";
+import { ChevronLeft, ChevronRight, Info, Play, Star } from 'lucide-react';
 import Link from "next/link";
 
 export default function HeroBanner({
@@ -86,7 +82,7 @@ export default function HeroBanner({
 
             {/* Content */}
             <div className="relative z-10 flex flex-1 flex-col justify-end pb-32 pt-32 md:justify-center md:pb-32 px-5 sm:px-8 md:px-16 lg:px-24">
-                <div className="relative max-w-4xl w-full h-[360px] sm:h-[320px] md:h-[380px] lg:h-[420px]">
+                <div className="grid grid-cols-1 grid-rows-1 max-w-4xl w-full">
                     {list.map((item: any, index: number) => {
                         const isActive = index === currentIndex;
                         const itemTitle = item.title || item.name || "Unknown";
@@ -97,7 +93,7 @@ export default function HeroBanner({
                         return (
                             <div
                                 key={itemId}
-                                className={`absolute inset-0 flex flex-col justify-end transition-all duration-700 cubic-bezier(0.16, 1, 0.3, 1) ${
+                                className={`col-start-1 row-start-1 flex flex-col justify-end transition-all duration-700 cubic-bezier(0.16, 1, 0.3, 1) ${
                                     isActive
                                         ? "opacity-100 translate-y-0 scale-100 pointer-events-auto z-10 filter blur-none"
                                         : "opacity-0 translate-y-8 scale-95 pointer-events-none z-0 filter blur-sm"

@@ -3,7 +3,7 @@ import MovieCard from "@/components/cards/MovieCard";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import ArrowLeft from "lucide-react/dist/esm/icons/arrow-left";
+import { ArrowLeft } from 'lucide-react';
 
 
 export const revalidate = 86400;
@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     if (!movie) return { title: "Not Found", robots: { index: false } };
 
     const titleText = `Top 12 Movies Like ${movie.title} (${new Date(movie.releaseDate).getFullYear()}) to Watch Free`;
-    const descriptionText = `Loved ${movie.title}? Here are the best similar movies to watch online for free in HD on NeoCinema.`;
+    const descriptionText = `Loved ${movie.title}? Here are the best similar movies to watch online for free in HD on NetMirrors.`;
 
     return {
         title: titleText,
@@ -48,7 +48,7 @@ export default async function SimilarMoviesPage({ params }: PageProps) {
                         Movies Like <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-400">{movie.title}</span>
                     </h1>
                     <p className="text-neutral-400 max-w-3xl">
-                        If you enjoyed the cinematic experience of {movie.title}, you'll love these similar films. Stream them all in HD for free on NeoCinema.
+                        If you enjoyed the cinematic experience of {movie.title}, you'll love these similar films. Stream them all in HD for free on NetMirrors.
                     </p>
                 </div>
 

@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Share2 from "lucide-react/dist/esm/icons/share-2";
-import Check from "lucide-react/dist/esm/icons/check";
+import { Check, Share2 } from 'lucide-react';
 
 
 interface ShareButtonProps {

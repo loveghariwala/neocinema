@@ -1,10 +1,6 @@
 
 import { getMovieDetails } from "@/services/movieService";
-import Star from "lucide-react/dist/esm/icons/star";
-import Clock from "lucide-react/dist/esm/icons/clock";
-import Calendar from "lucide-react/dist/esm/icons/calendar";
-import Globe from "lucide-react/dist/esm/icons/globe";
-import Download from "lucide-react/dist/esm/icons/download";
+import { Calendar, Clock, Download, Globe, Star } from 'lucide-react';
 
 import MovieCard from "@/components/cards/MovieCard";
 import CastRow from "@/components/sliders/CastRow";
@@ -33,7 +29,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     if (!movie) {
         return {
-            title: "Movie Not Found — NeoCinema",
+            title: "Movie Not Found — NetMirrors",
             description: "The movie details page you are trying to reach does not exist or has been removed.",
             robots: { index: false, follow: false }
         };
@@ -69,7 +65,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
             `where to watch ${movie.title} online free hd`,
             `stream ${movie.title} full movie no registration`,
             `play ${movie.title} free streaming english`,
-            `${movie.title} free watch online web app`,
+            `${movie.title} free watch online netmirrors`,
             movie.title,
             `${movie.title} ${releaseYear}`,
             `${movie.title} cast`,
@@ -156,7 +152,7 @@ export default async function MovieDetailsPage({
         "publisher": {
             "@type": "Organization",
             "@id": `${baseUrl}#org`,
-            "name": "NeoCinema",
+            "name": "NetMirrors",
         },
     };
 
@@ -173,7 +169,8 @@ export default async function MovieDetailsPage({
 
     // Removed templated FAQ JSON-LD to avoid thin content penalties
 
-    // ─── VideoObject JSON-LD ─────────────────────────────────────────────────
+    // VideoObject disabled to prevent structured data spam warnings
+    /*
     const videoObjectJsonLd = {
         "@context": "https://schema.org",
         "@type": "VideoObject",
@@ -189,6 +186,7 @@ export default async function MovieDetailsPage({
             "userInteractionCount": (movie.voteCount || 10) * 142
         }
     };
+    */
 
     return (
         <>
@@ -201,11 +199,6 @@ export default async function MovieDetailsPage({
                 id="json-ld-breadcrumb"
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, '\\u003c') }}
-            />
-            <script
-                id="json-ld-video"
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(videoObjectJsonLd).replace(/</g, '\\u003c') }}
             />
 
 
@@ -288,6 +281,7 @@ export default async function MovieDetailsPage({
                                         autoPlay={autoPlay}
                                     />
 
+                                    {/* 
                                     <a
                                         href="https://discussionanymore.com/khge4vq0f?key=0bc9ee47ad5de40ae42fce1eae3506e2"
                                         target="_blank"
@@ -297,6 +291,7 @@ export default async function MovieDetailsPage({
                                         <Download size={18} />
                                         Download 4K
                                     </a>
+                                    */}
 
                                     <ShareButton title={movie.title} />
                                 </div>

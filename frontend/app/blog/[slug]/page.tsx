@@ -4,9 +4,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import ArrowLeft from "lucide-react/dist/esm/icons/arrow-left";
-import Calendar from "lucide-react/dist/esm/icons/calendar";
-import Clock from "lucide-react/dist/esm/icons/clock";
+import { ArrowLeft, Calendar, Clock } from 'lucide-react';
 
 export function generateStaticParams() {
     return BLOG_POSTS.map((post) => ({
@@ -38,7 +36,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
             type: "article",
             publishedTime: post.publishedAt,
             modifiedTime: post.updatedAt,
-            authors: ["NeoCinema Editorial"],
+            authors: ["NetMirrors Editorial"],
             ...(post.imageUrl ? { images: [{ url: post.imageUrl }] } : {}),
         },
         twitter: {
@@ -70,12 +68,12 @@ export default async function BlogPostPage({ params }: PageProps) {
         "dateModified": post.updatedAt,
         "author": {
             "@type": "Organization",
-            "name": "NeoCinema",
+            "name": "NetMirrors",
             "url": baseUrl,
         },
         "publisher": {
             "@type": "Organization",
-            "name": "NeoCinema",
+            "name": "NetMirrors",
             "logo": { "@type": "ImageObject", "url": `${baseUrl}/netmirrors_logo.jpg` },
         },
         "mainEntityOfPage": {

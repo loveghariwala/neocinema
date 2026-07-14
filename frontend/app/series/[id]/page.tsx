@@ -1,10 +1,6 @@
 
 import { getMovieDetails } from "@/services/movieService";
-import Star from "lucide-react/dist/esm/icons/star";
-import Clock from "lucide-react/dist/esm/icons/clock";
-import Calendar from "lucide-react/dist/esm/icons/calendar";
-import Globe from "lucide-react/dist/esm/icons/globe";
-import Download from "lucide-react/dist/esm/icons/download";
+import { Calendar, Clock, Download, Globe, Star } from 'lucide-react';
 
 import MovieCard from "@/components/cards/MovieCard";
 import CastRow from "@/components/sliders/CastRow";
@@ -36,7 +32,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     if (!series) {
         return {
-            title: "Series Not Found — NeoCinema",
+            title: "Series Not Found — NetMirrors",
             description: "The TV series details page you are trying to reach does not exist or has been removed.",
             robots: { index: false, follow: false }
         };
@@ -157,7 +153,7 @@ export default async function SeriesDetailsPage({
         "publisher": {
             "@type": "Organization",
             "@id": `${baseUrl}#org`,
-            "name": "NeoCinema",
+            "name": "NetMirrors",
         },
     };
 
@@ -291,6 +287,7 @@ export default async function SeriesDetailsPage({
                                     initialEpisode={episodeParam}
                                 />
 
+                                {/* 
                                 <a
                                     href="https://discussionanymore.com/khge4vq0f?key=0bc9ee47ad5de40ae42fce1eae3506e2"
                                     target="_blank"
@@ -300,6 +297,7 @@ export default async function SeriesDetailsPage({
                                     <Download size={18} />
                                     Download HD
                                 </a>
+                                */}
 
                                 <ShareButton title={series.title} />
                             </div>

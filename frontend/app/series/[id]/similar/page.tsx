@@ -3,7 +3,7 @@ import MovieCard from "@/components/cards/MovieCard";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import ArrowLeft from "lucide-react/dist/esm/icons/arrow-left";
+import { ArrowLeft } from 'lucide-react';
 
 
 export const revalidate = 86400;
@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     if (!series) return { title: "Not Found", robots: { index: false } };
 
     const titleText = `Top 12 TV Series Like ${series.title} to Watch Free`;
-    const descriptionText = `Loved ${series.title}? Here are the best similar TV shows to binge-watch online for free in HD on NeoCinema.`;
+    const descriptionText = `Loved ${series.title}? Here are the best similar TV shows to binge-watch online for free in HD on NetMirrors.`;
 
     return {
         title: titleText,
@@ -48,7 +48,7 @@ export default async function SimilarSeriesPage({ params }: PageProps) {
                         TV Shows Like <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400">{series.title}</span>
                     </h1>
                     <p className="text-neutral-400 max-w-3xl">
-                        If you enjoyed the epic storytelling of {series.title}, you'll love these similar TV series. Binge-watch them all in HD for free on NeoCinema.
+                        If you enjoyed the epic storytelling of {series.title}, you'll love these similar TV series. Binge-watch them all in HD for free on NetMirrors.
                     </p>
                 </div>
 

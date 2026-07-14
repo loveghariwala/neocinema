@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import BrowsePageClient from "@/components/browse/BrowsePageClient";
 import { Suspense } from "react";
 import { cache } from "react";
-import Loader2 from "lucide-react/dist/esm/icons/loader-2";
+import { Loader2 } from 'lucide-react';
 
 import { discoverContentFromServer, getGenresFromServer, searchContentFromServer } from "@/services/movieService";
 
@@ -43,19 +43,19 @@ const generateSeriesJsonLd = (seriesList: any[]) => {
         "@context": "https://schema.org",
         "@type": "CollectionPage",
         "@id": `${baseUrl}/series#collection`,
-        "name": "Browse TV Series — NeoCinema",
+        "name": "Browse TV Series — NetMirrors",
         "description": "Discover over 200,000 television series, documentaries, and anime from around the world.",
         "url": `${baseUrl}/series`,
         "isPartOf": {
             "@type": "WebSite",
             "@id": `${baseUrl}#website`,
-            "name": "NeoCinema",
+            "name": "NetMirrors",
             "url": baseUrl,
         },
         "publisher": {
             "@type": "Organization",
             "@id": `${baseUrl}#org`,
-            "name": "NeoCinema",
+            "name": "NetMirrors",
             "url": baseUrl,
             "logo": {
                 "@type": "ImageObject",
@@ -118,26 +118,28 @@ export async function generateMetadata(): Promise<Metadata> {
         .filter(Boolean);
 
     return {
-        title: page === "1" ? "Browse TV Series" : `Browse TV Series - Page ${page}`,
+        title: page === "1" ? "Watch TV Series Online Free | NetMirrors Browse" : `Watch TV Series Online Free - Page ${page} | NetMirrors`,
         description: "Discover over 200,000 television series, documentaries, and anime from around the world. Find your next binge-watch with our AI-powered recommendation filters.",
         keywords: [
             "TV series", "television shows", "browse series", "binge-watch",
             "documentaries", "anime series", "top rated tv shows",
             "free series online", "streaming series", "trending series",
+            "stream tv shows free", "watch free series online", "tv series online free hd",
+            "binge tv shows online no registration", "latest tv series free stream",
             ...seriesKeywords,
         ],
         alternates: { canonical: '/series' },
         robots: page === "1" ? { index: true, follow: true } : { index: false, follow: true },
         openGraph: {
-            title: "Browse TV Series | NeoCinema",
+            title: "Browse TV Series | NetMirrors",
             description: "Discover over 200,000 television series, documentaries, and anime from around the world.",
             url: '/series',
             type: "website",
-            images: [{ url: "/netmirrors_logo.jpg", width: 800, height: 600, alt: "Browse TV Series on NeoCinema" }],
+            images: [{ url: "/netmirrors_logo.jpg", width: 800, height: 600, alt: "Browse TV Series on NetMirrors" }],
         },
         twitter: {
             card: "summary_large_image",
-            title: "Browse TV Series | NeoCinema",
+            title: "Browse TV Series | NetMirrors",
             description: "Discover over 200,000 television series, documentaries, and anime from around the world.",
             images: ["/netmirrors_logo.jpg"],
         },

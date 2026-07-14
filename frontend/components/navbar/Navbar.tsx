@@ -3,17 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Menu from "lucide-react/dist/esm/icons/menu";
-import X from "lucide-react/dist/esm/icons/x";
-import Home from "lucide-react/dist/esm/icons/home";
-import Sparkles from "lucide-react/dist/esm/icons/sparkles";
-import Film from "lucide-react/dist/esm/icons/film";
-import Tv from "lucide-react/dist/esm/icons/tv";
-import Library from "lucide-react/dist/esm/icons/library";
-import BookOpen from "lucide-react/dist/esm/icons/book-open";
+import { BookOpen, Film, Gift, Home, Library, Menu, Sparkles, Tv, X } from 'lucide-react';
 
 
-import Gift from "lucide-react/dist/esm/icons/gift";
 
 
 export default function Navbar() {

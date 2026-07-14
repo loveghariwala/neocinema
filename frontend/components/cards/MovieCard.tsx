@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 
-import Star from "lucide-react/dist/esm/icons/star";
-import Play from "lucide-react/dist/esm/icons/play";
+import { Play, Star } from 'lucide-react';
 
 import Image from "next/image";
 import { useState, useEffect } from "react";

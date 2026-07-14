@@ -1,21 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Search from "lucide-react/dist/esm/icons/search";
-import SlidersHorizontal from "lucide-react/dist/esm/icons/sliders-horizontal";
-import X from "lucide-react/dist/esm/icons/x";
-import ChevronDown from "lucide-react/dist/esm/icons/chevron-down";
-import ChevronUp from "lucide-react/dist/esm/icons/chevron-up";
-import RotateCcw from "lucide-react/dist/esm/icons/rotate-ccw";
-import Sparkles from "lucide-react/dist/esm/icons/sparkles";
-import Globe from "lucide-react/dist/esm/icons/globe";
-import Check from "lucide-react/dist/esm/icons/check";
-import Flame from "lucide-react/dist/esm/icons/flame";
-import Star from "lucide-react/dist/esm/icons/star";
-import TrendingDown from "lucide-react/dist/esm/icons/trending-down";
-import Clock from "lucide-react/dist/esm/icons/clock";
-import History from "lucide-react/dist/esm/icons/history";
-import CircleDollarSign from "lucide-react/dist/esm/icons/circle-dollar-sign";
+import { Check, ChevronDown, ChevronUp, CircleDollarSign, Clock, Flame, Globe, History, RotateCcw, Search, SlidersHorizontal, Sparkles, Star, TrendingDown, X } from 'lucide-react';
 
 
 

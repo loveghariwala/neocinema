@@ -93,7 +93,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 import { Suspense } from "react";
-import Loader2 from "lucide-react/dist/esm/icons/loader-2";
+import { Loader2 } from 'lucide-react';
 
 // ─── Page Component ──────────────────────────────────────────────────────────
 export default async function SearchPage() {

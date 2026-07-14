@@ -1,9 +1,7 @@
 "use client";
 import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
-import ChevronLeft from "lucide-react/dist/esm/icons/chevron-left";
-import ChevronRight from "lucide-react/dist/esm/icons/chevron-right";
-import ArrowRight from "lucide-react/dist/esm/icons/arrow-right";
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 import MovieCard from "../cards/MovieCard";
 

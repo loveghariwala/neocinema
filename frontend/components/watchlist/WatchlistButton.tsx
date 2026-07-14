@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Heart from "lucide-react/dist/esm/icons/heart";
+import { Heart } from 'lucide-react';
 
 
 

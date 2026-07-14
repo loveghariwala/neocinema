@@ -1,8 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import Link from "next/link";
-import ChevronLeft from "lucide-react/dist/esm/icons/chevron-left";
-import ChevronRight from "lucide-react/dist/esm/icons/chevron-right";
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 
 import Image from "next/image";

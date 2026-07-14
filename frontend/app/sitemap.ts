@@ -133,7 +133,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })
       .map((m: any) => ({
         url: `${baseUrl}/movies/${m.tmdbId}`,
-        lastModified: weeklyDate,
+        lastModified: m.releaseDate && !isNaN(new Date(m.releaseDate).getTime()) ? new Date(m.releaseDate) : new Date(),
         changeFrequency: 'weekly' as const,
         priority: 0.7,
       }));
@@ -152,7 +152,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })
       .map((s: any) => ({
         url: `${baseUrl}/series/${s.tmdbId}`,
-        lastModified: weeklyDate,
+        lastModified: s.releaseDate && !isNaN(new Date(s.releaseDate).getTime()) ? new Date(s.releaseDate) : new Date(),
         changeFrequency: 'weekly' as const,
         priority: 0.7,
       }));

@@ -35,7 +35,7 @@ export const WATCH_LANDINGS: WatchLanding[] = [
         slug: "action-movies-free",
         title: "Watch Action Movies Online Free in HD",
         h1: "Watch Action Movies Online Free",
-        description: "Stream the best action movies for free in HD. Explosions, car chases, and epic fight scenes — all free with no ads on NetMirrors.",
+        description: "Stream the best action movies for free in HD. Explosions, car chases, and epic fight scenes — all free with no sign-up on NetMirrors.",
         type: "movie",
         params: { with_genres: "28", sort_by: "popularity.desc", rating_min: 5.5 },
         keywords: ["action movies free", "watch action movies online", "best action films free", "free action movies HD", "action movies no sign up"],

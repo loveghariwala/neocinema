@@ -2,10 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Play from "lucide-react/dist/esm/icons/play";
-import Calendar from "lucide-react/dist/esm/icons/calendar";
-import Loader2 from "lucide-react/dist/esm/icons/loader-2";
-import Monitor from "lucide-react/dist/esm/icons/monitor";
+import { Calendar, Loader2, Monitor, Play } from 'lucide-react';
 
 
 import Image from "next/image";

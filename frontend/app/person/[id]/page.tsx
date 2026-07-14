@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
     
     if (!data || !data.person) {
         return {
-            title: "Cast Member Not Found — NeoCinema",
+            title: "Cast Member Not Found — NetMirrors",
             description: "The cast member details page you are trying to reach does not exist or has been removed."
         };
     }

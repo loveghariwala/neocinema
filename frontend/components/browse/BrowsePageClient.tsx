@@ -3,9 +3,7 @@
 import { useState, useCallback, useEffect, useMemo, useTransition } from "react";
 import BrowseFilterPanel, { FilterState } from "./BrowseFilterPanel";
 import BrowseGrid from "./BrowseGrid";
-import Film from "lucide-react/dist/esm/icons/film";
-import Tv from "lucide-react/dist/esm/icons/tv";
-import Sparkles from "lucide-react/dist/esm/icons/sparkles";
+import { Film, Sparkles, Tv } from 'lucide-react';
 
 
 import { useSearchParams, useRouter, usePathname } from "next/navigation";

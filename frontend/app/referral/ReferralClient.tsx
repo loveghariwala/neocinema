@@ -2,15 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Gift from "lucide-react/dist/esm/icons/gift";
-import Copy from "lucide-react/dist/esm/icons/copy";
-import Check from "lucide-react/dist/esm/icons/check";
-import Users from "lucide-react/dist/esm/icons/users";
-import Sparkles from "lucide-react/dist/esm/icons/sparkles";
-import Trophy from "lucide-react/dist/esm/icons/trophy";
-import Shield from "lucide-react/dist/esm/icons/shield";
-import Flame from "lucide-react/dist/esm/icons/flame";
-import ArrowRight from "lucide-react/dist/esm/icons/arrow-right";
+import { ArrowRight, Check, Copy, Flame, Gift, Shield, Sparkles, Trophy, Users } from 'lucide-react';
 import { MotionDiv } from "@/components/layout/Motion";
 
 export default function ReferralClient() {
@@ -100,7 +92,7 @@ export default function ReferralClient() {
                             <span className="bg-gradient-to-r from-red-600 to-rose-500 bg-clip-text text-transparent">Unlock Premium Free.</span>
                         </h1>
                         <p className="text-neutral-400 text-base md:text-lg leading-relaxed">
-                            Share NeoCinema with friends and earn permanent ad-free status, personalized custom recommendation profiles, and premium priority stream pipelines.
+                            Share NetMirrors with friends and earn permanent VIP status, personalized custom recommendation profiles, and premium priority stream pipelines.
                         </p>
                     </MotionDiv>
                 </div>
@@ -119,7 +111,7 @@ export default function ReferralClient() {
                                 Invite Friends & Family
                             </h2>
                             <p className="text-neutral-400 text-sm mb-6 leading-relaxed">
-                                Copy your personal invite code or link below. When people visit or open NeoCinema, they will be registered under your cohort, earning you exclusive rewards.
+                                Copy your personal invite code or link below. When people visit or open NetMirrors, they will be registered under your cohort, earning you exclusive rewards.
                             </p>
 
                             <div className="space-y-4">
@@ -273,13 +265,13 @@ export default function ReferralClient() {
                         <div>
                             <h4 className="text-sm font-bold text-white mb-2">How do referrers earn rewards?</h4>
                             <p className="text-xs text-neutral-400 leading-relaxed">
-                                When someone opens NeoCinema for the first time using your unique invite link, our system cookies them under your cohort. Any milestones you hit are unlocked instantly.
+                                When someone opens NetMirrors for the first time using your unique invite link, our system cookies them under your cohort. Any milestones you hit are unlocked instantly.
                             </p>
                         </div>
                         <div>
                             <h4 className="text-sm font-bold text-white mb-2">Is the referral limit permanent?</h4>
                             <p className="text-xs text-neutral-400 leading-relaxed">
-                                Yes! Once you reach 10 active referrals, your NeoCinema profile gains permanent VIP status, unlocking a lifetime of ad-free streaming.
+                                Yes! Once you reach 10 active referrals, your NetMirrors profile gains permanent VIP status, unlocking a lifetime of premium features and priority streaming servers.
                             </p>
                         </div>
                     </div>

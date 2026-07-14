@@ -1,21 +1,19 @@
 import { BLOG_POSTS } from "@/lib/blog-posts";
 import { Metadata } from "next";
 import Link from "next/link";
-import Calendar from "lucide-react/dist/esm/icons/calendar";
-import Clock from "lucide-react/dist/esm/icons/clock";
-import ArrowRight from "lucide-react/dist/esm/icons/arrow-right";
+import { ArrowRight, Calendar, Clock } from 'lucide-react';
 import Image from "next/image";
 
 
 
 export const metadata: Metadata = {
     title: "Blog — Free Streaming Guides, Movie Lists & Recommendations",
-    description: "Explore NeoCinema's blog for the best movie lists, streaming guides, anime recommendations, and K-Drama picks. Updated weekly with fresh content.",
+    description: "Explore NetMirrors's blog for the best movie lists, streaming guides, anime recommendations, and K-Drama picks. Updated weekly with fresh content.",
     keywords: ["free movie streaming guides", "best movies to watch", "anime recommendations", "kdrama guide", "streaming tips"],
     alternates: { canonical: "/blog" },
     robots: { index: true, follow: true },
     openGraph: {
-        title: "NeoCinema Blog — Movie Guides & Streaming Tips",
+        title: "NetMirrors Blog — Movie Guides & Streaming Tips",
         description: "Your ultimate guide to free movie streaming, curated movie lists, and entertainment recommendations.",
         url: "/blog",
         type: "website",
@@ -28,7 +26,7 @@ export default function BlogIndexPage() {
             <div className="max-w-5xl mx-auto space-y-12">
                 <div className="text-center space-y-4">
                     <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white">
-                        The <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-400">NeoCinema</span> Blog
+                        The <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-400">NetMirrors</span> Blog
                     </h1>
                     <p className="text-neutral-400 max-w-2xl mx-auto">
                         Movie lists, streaming guides, anime recommendations, and K-Drama picks — updated weekly.

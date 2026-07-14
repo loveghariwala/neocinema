@@ -2,11 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import ArrowLeft from "lucide-react/dist/esm/icons/arrow-left";
-import Film from "lucide-react/dist/esm/icons/film";
-import Calendar from "lucide-react/dist/esm/icons/calendar";
-import MapPin from "lucide-react/dist/esm/icons/map-pin";
-import User from "lucide-react/dist/esm/icons/user";
+import { ArrowLeft, Calendar, Film, MapPin, User } from 'lucide-react';
 
 
 import MovieCard from "@/components/cards/MovieCard";

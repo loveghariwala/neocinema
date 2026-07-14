@@ -6,6 +6,8 @@ export const runtime = "edge";
 export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const refCode = searchParams.get("ref") || "VIP";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+    const hostName = new URL(baseUrl).hostname.toUpperCase();
 
     return new ImageResponse(
         (
@@ -102,7 +104,7 @@ export async function GET(request: NextRequest) {
                             lineHeight: 1.1,
                         }}
                     >
-                        Stream Ad-Free on NeoCinema
+                        Stream HD Free on NetMirrors
                     </div>
 
                     {/* Description */}
@@ -158,7 +160,7 @@ export async function GET(request: NextRequest) {
                             fontWeight: "bold",
                         }}
                     >
-                        NEOCINEMATV.COM • AI-POWERED STREAMING
+                        {hostName} • AI-POWERED STREAMING
                     </div>
                 </div>
             </div>

@@ -4,13 +4,7 @@ import { useState, useEffect, useCallback, useTransition, useRef } from "react";
 import MovieCard from "@/components/cards/MovieCard";
 import { searchContentFromServer } from "@/services/movieService";
 
-import Search from "lucide-react/dist/esm/icons/search";
-import Film from "lucide-react/dist/esm/icons/film";
-import Tv from "lucide-react/dist/esm/icons/tv";
-import Sparkles from "lucide-react/dist/esm/icons/sparkles";
-import X from "lucide-react/dist/esm/icons/x";
-import Loader2 from "lucide-react/dist/esm/icons/loader-2";
-import TrendingUp from "lucide-react/dist/esm/icons/trending-up";
+import { Film, Loader2, Search, Sparkles, TrendingUp, Tv, X } from 'lucide-react';
 
 import { useRouter, usePathname } from "next/navigation";
 

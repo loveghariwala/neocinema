@@ -118,7 +118,7 @@ export default async function HomePage() {
                 )}
 
                 {/* Adsterra Native Banner (Matches the horizontal layout) */}
-                <AdsterraNativeBanner />
+                {/* <AdsterraNativeBanner /> */}
 
                 {trendingSeries.length > 0 && (
                     <div className="pointer-events-auto">

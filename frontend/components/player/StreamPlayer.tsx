@@ -2,13 +2,7 @@
 
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
-import Play from "lucide-react/dist/esm/icons/play";
-import X from "lucide-react/dist/esm/icons/x";
-import ChevronDown from "lucide-react/dist/esm/icons/chevron-down";
-import Monitor from "lucide-react/dist/esm/icons/monitor";
-import Layers from "lucide-react/dist/esm/icons/layers";
-import AlertCircle from "lucide-react/dist/esm/icons/alert-circle";
-import RefreshCw from "lucide-react/dist/esm/icons/refresh-cw";
+import { AlertCircle, ChevronDown, Layers, Monitor, Play, RefreshCw, X } from 'lucide-react';
 
 
 
@@ -96,6 +90,17 @@ export default function StreamPlayer({
         setMounted(true);
     }, []);
 
+    useEffect(() => {
+        if (isPlaying) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [isPlaying]);
+
     // Filter out specials (season 0) if any, unless user wants them
     const activeSeasons = useMemo(() =>
         seasons.filter(s => s.season_number > 0)
@@ -175,6 +180,7 @@ export default function StreamPlayer({
     }, []);
 
     const handleInitialPlay = () => {
+        /*
         if (!hasClickedAd) {
             // Check if it is a mobile device
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -185,6 +191,7 @@ export default function StreamPlayer({
             }
             setHasClickedAd(true);
         }
+        */
         setIsPlaying(true);
     };
 
@@ -210,7 +217,7 @@ export default function StreamPlayer({
                 {/* ─── Top Bar ────────────────────────────────────────── */}
                 <div className="relative z-[1000] flex flex-wrap items-center justify-between gap-2 sm:gap-4 bg-black/95 px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3.5 backdrop-blur-3xl border-b border-white/5 md:rounded-t-[2.5rem]">
                     {/* Left: Title / Branding */}
-                    <div className="flex flex-col min-w-0 flex-1">
+                    <div className="flex flex-col min-w-0 flex-1 order-1">
                         <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] text-red-600 block mb-0.5">Streaming Mode</span>
                         <h2 className="text-[11px] sm:text-sm md:text-base font-black text-white text-glow truncate">
                             {title} {isTv && <span className="text-neutral-400 font-bold ml-1 sm:ml-2">S{selectedSeason} E{selectedEpisode}</span>}
@@ -220,14 +227,14 @@ export default function StreamPlayer({
                     {/* Close Button — always visible top-right on mobile */}
                     <button
                         onClick={() => setIsPlaying(false)}
-                        className="rounded-full bg-white/10 p-2 sm:p-1.5 md:p-2 text-white transition-all hover:bg-red-600 hover:rotate-90 border border-white/20 backdrop-blur-md group flex-shrink-0 order-last sm:order-none touch-manipulation"
+                        className="rounded-full bg-white/10 p-2 sm:p-1.5 md:p-2 text-white transition-all hover:bg-red-600 hover:rotate-90 border border-white/20 backdrop-blur-md group flex-shrink-0 order-2 sm:order-3 touch-manipulation"
                     >
                         <X className="h-5 w-5 sm:h-4 sm:w-4 md:h-5 md:w-5 transition-transform group-hover:scale-110" />
                     </button>
 
                     {/* Series Selectors — full width row on mobile, inline on larger */}
                     {isTv && activeSeasons.length > 0 && (
-                        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto order-last sm:order-none flex-shrink-0">
+                        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto order-3 sm:order-2 flex-shrink-0">
                             {/* Season Selector */}
                             <div className="relative flex-1 sm:flex-initial">
                                 <button

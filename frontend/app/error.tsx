@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect } from 'react';
-import RotateCcw from "lucide-react/dist/esm/icons/rotate-ccw";
-import Home from "lucide-react/dist/esm/icons/home";
+import { Home, RotateCcw } from 'lucide-react';
 
 import Link from 'next/link';
 

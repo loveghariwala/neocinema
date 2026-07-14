@@ -29,13 +29,18 @@ export const metadata: Metadata = {
     default: "NetMirrors — Stream Free Movies & TV Series Online | No Sign Up",
     template: "%s | NetMirrors"
   },
-  description: "Explore NetMirrors: the leading free movie streaming site with no sign up required. Stream secure, high-quality free movies online with zero ads and no download.",
+  description: "Explore NetMirrors: the leading free movie streaming site with no sign up required. Stream secure, high-quality free movies online with minimal interruptions.",
   keywords: [
     "best free movie streaming sites no sign up required",
     "safe free movie streaming web apps no download",
-    "free movies online no ads high quality",
+    "free movies online high quality streaming",
     "best free alternatives to fmovies safely",
-    "movies", "series", "streaming", "AI recommendations", "NetMirrors", "movie discovery", "anime"
+    "best netmirrors netmovies streaming alternative",
+    "free full movie streaming online",
+    "watch series online free hd",
+    "discover movies online free",
+    "AI movie recommender free",
+    "movies", "series", "streaming", "AI recommendations", "NetMirrors", "NetMovies", "movie discovery", "anime"
   ],
   authors: [{ name: "Love Ghariwala", url: "https://github.com/loveghariwala" }],
   creator: "Love Ghariwala",
@@ -128,7 +133,7 @@ export default function RootLayout({
         "@id": `${baseUrl}#website`,
         "url": baseUrl,
         "name": "NetMirrors",
-        "description": "One of the best free movie streaming sites no sign up required. Safe free movie streaming web apps no download with no ads and high quality.",
+        "description": "One of the best free movie streaming sites no sign up required. Safe free movie streaming web apps no download with high quality.",
         "publisher": { "@id": `${baseUrl}#org` },
         "potentialAction": {
           "@type": "SearchAction",
@@ -189,7 +194,7 @@ export default function RootLayout({
         {/* Ahrefs Webmaster Tools Analytics */}
         <Script src="https://analytics.ahrefs.com/analytics.js" data-key="+kc1zXGQ8NqACPuHJIlgsw" strategy="afterInteractive" />
         {/* Global Ad Network Scripts */}
-        <AdsterraSocialBar />
+        {/* <AdsterraSocialBar /> */}
         {/* <MonetagAds /> */}
       </head>
       <body suppressHydrationWarning className="min-h-full flex flex-row bg-background">

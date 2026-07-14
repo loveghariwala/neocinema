@@ -1,13 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import X from "lucide-react/dist/esm/icons/x";
-import Copy from "lucide-react/dist/esm/icons/copy";
-import Check from "lucide-react/dist/esm/icons/check";
-import Gift from "lucide-react/dist/esm/icons/gift";
-import Users from "lucide-react/dist/esm/icons/users";
-import Sparkles from "lucide-react/dist/esm/icons/sparkles";
-import Share2 from "lucide-react/dist/esm/icons/share-2";
+import { Check, Copy, Gift, Share2, Sparkles, Users, X } from 'lucide-react';
 
 interface ReferralModalProps {
     isOpen: boolean;
@@ -85,7 +79,7 @@ export default function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
                     <div className="flex items-center gap-2">
                         <Gift className="text-red-500 h-6 w-6 animate-pulse" />
                         <h2 className="text-xl md:text-2xl font-black tracking-tight text-white">
-                            NeoCinema Referral Program
+                            NetMirrors Referral Program
                         </h2>
                     </div>
                     <button 
@@ -99,7 +93,7 @@ export default function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
 
                 {/* Subtitle / Call-to-action */}
                 <p className="text-neutral-400 text-sm md:text-base mb-6 relative z-10 leading-relaxed">
-                    Invite your friends to NeoCinema. When they visit or sign up via your link, you both unlock premium perks, ad-free hours, and custom theme layouts!
+                    Invite your friends to NetMirrors. When they visit or sign up via your link, you both unlock premium perks and custom theme layouts!
                 </p>
 
                 {/* Referral Link Copy Area */}
@@ -144,7 +138,7 @@ export default function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
                     </label>
                     <div className="grid grid-cols-4 gap-3">
                         <a
-                            href={`https://wa.me/?text=${encodeURIComponent(`Check out NeoCinema! The best free movie streaming alternative with AI recommendations: ${referralUrl}`)}`}
+                            href={`https://wa.me/?text=${encodeURIComponent(`Check out NetMirrors! The best free movie streaming alternative with AI recommendations: ${referralUrl}`)}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex flex-col items-center justify-center gap-1.5 py-2.5 rounded-xl border border-white/5 bg-white/[0.02] text-xs text-neutral-400 hover:text-white hover:bg-white/5 transition-all"
@@ -160,7 +154,7 @@ export default function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
                             <span className="font-bold text-sky-400 text-center">Twitter</span>
                         </a>
                         <a
-                            href={`https://t.me/share/url?url=${encodeURIComponent(referralUrl)}&text=${encodeURIComponent("Nontstop free movies in HD. Check out NeoCinema!")}`}
+                            href={`https://t.me/share/url?url=${encodeURIComponent(referralUrl)}&text=${encodeURIComponent("Nontstop free movies in HD. Check out NetMirrors!")}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex flex-col items-center justify-center gap-1.5 py-2.5 rounded-xl border border-white/5 bg-white/[0.02] text-xs text-neutral-400 hover:text-white hover:bg-white/5 transition-all"
@@ -168,7 +162,7 @@ export default function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
                             <span className="font-bold text-sky-500 text-center">Telegram</span>
                         </a>
                         <a
-                            href={`mailto:?subject=Free Movie Streaming Site!&body=Hey, check out NeoCinema: ${referralUrl}`}
+                            href={`mailto:?subject=Free Movie Streaming Site!&body=Hey, check out NetMirrors: ${referralUrl}`}
                             className="flex flex-col items-center justify-center gap-1.5 py-2.5 rounded-xl border border-white/5 bg-white/[0.02] text-xs text-neutral-400 hover:text-white hover:bg-white/5 transition-all"
                         >
                             <span className="font-bold text-red-500 text-center">Email</span>
