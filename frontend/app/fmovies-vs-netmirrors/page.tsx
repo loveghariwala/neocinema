@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     description: "Compare FMovies and NetMirrors side-by-side. Discover differences in streaming safety, ad-block requirements, UI design, AI recommendation engines, and referral programs.",
     keywords: ["fmovies vs netmirrors", "fmovies alternative 2026", "free movie streaming comparison", "safe movie streaming sites", "netmirrors vs fmovies"],
     alternates: {
-        canonical: "/fmovies-vs-neocinema",
+        canonical: "/fmovies-vs-netmirrors",
     },
 };
 

@@ -120,7 +120,7 @@ export const COLLECTIONS: Collection[] = [
             language: "ko",
             sort_by: "popularity.desc",
         },
-        seoKeywords: ["watch kdrama free", "korean dramas online", "korean series with english subtitles", "best kdramas 2024", "free korean streaming"]
+        seoKeywords: ["watch kdrama free", "korean dramas online", "korean series with english subtitles", "best kdramas 2026", "free korean streaming"]
     },
     {
         slug: "anime-masterpieces",

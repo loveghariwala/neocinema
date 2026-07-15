@@ -1,4 +1,4 @@
-# NeoCinema (NetMirrors)
+# NetMirrors
 
 > AI-Powered Movie & TV Series discovery platform. No sign-up required, secure streaming, and dynamic personalized recommendation feeds.
 
@@ -10,7 +10,7 @@
 ## Main Sitemap
 - [Home Page](https://www.neocinematv.com/): Current trending movies, series, and live discovery boards.
 - [Referral Hub](https://www.neocinematv.com/referral): Shared invite loops, milestone progress tracker, and simulated reward status.
-- [FMovies Comparison](https://www.neocinematv.com/fmovies-vs-neocinema): Objective side-by-side analysis of security, speed, and recommendation systems.
+- [FMovies Comparison](https://www.neocinematv.com/fmovies-vs-netmirrors): Objective side-by-side analysis of security, speed, and recommendation systems.
 - [Blog Directory](https://www.neocinematv.com/blog): High-authority streaming guides and news.
 
 ## Authoritative Resources & Guides

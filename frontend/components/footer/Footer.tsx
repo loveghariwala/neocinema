@@ -38,7 +38,7 @@ export default function Footer() {
                                 { name: "Movies", href: "/movies" },
                                 { name: "Series", href: "/series" },
                                 { name: "Blog", href: "/blog" },
-                                { name: "FMovies Alternative", href: "/best-fmovies-alternative-2024" },
+                                { name: "FMovies Alternative", href: "/best-fmovies-alternative-2026" },
                                 { name: "Duta Movie 21", href: "/duta-movie-21-alternative" },
                                 { name: "About Us", href: "/about" },
                                 { name: "Contact", href: "/contact" },

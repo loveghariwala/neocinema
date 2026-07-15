@@ -40,6 +40,16 @@ const nextConfig: NextConfig = {
         destination: '/blog/best-anime-for-beginners-2026',
         permanent: true,
       },
+      {
+        source: '/best-fmovies-alternative-2024',
+        destination: '/best-fmovies-alternative-2026',
+        permanent: true,
+      },
+      {
+        source: '/fmovies-vs-neocinema',
+        destination: '/fmovies-vs-netmirrors',
+        permanent: true,
+      },
     ];
   },
   async headers() {

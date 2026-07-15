@@ -4,7 +4,7 @@ import { MotionDiv } from "@/components/layout/Motion";
 import { Play, Search, ShieldCheck, Zap } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: "Best Fmovies Alternative 2024: Watch Free Movies Online (123Movies Replacement)",
+    title: "Best Fmovies Alternative 2026: Watch Free Movies Online (123Movies Replacement)",
     description: "Looking for an Fmovies alternative or a replacement for 123movies? Stream free movies online in HD with NetMirrors in the USA and India. No viruses, ultra-fast streaming, and AI recommendations.",
     keywords: [
         "fmovies", 
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
         "vegamovies alternative"
     ],
     alternates: {
-        canonical: "/best-fmovies-alternative-2024",
+        canonical: "/best-fmovies-alternative-2026",
     },
 };
 
@@ -34,7 +34,7 @@ export default function FMoviesAlternativePage() {
         "mainEntity": [
             {
                 "@type": "Question",
-                "name": "What is the best Fmovies alternative in 2024?",
+                "name": "What is the best Fmovies alternative in 2026?",
                 "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "NetMirrors is currently the best Fmovies alternative. Unlike older streaming sites, it is built on modern architecture ensuring ultra-fast HD streaming without the constant barrage of malicious popups."
@@ -81,7 +81,7 @@ export default function FMoviesAlternativePage() {
                     transition={{ duration: 0.6 }}
                 >
                     <div className="mb-4 inline-block rounded-full bg-red-500/20 px-3 py-1 text-xs font-black uppercase tracking-widest text-red-500 border border-red-500/20">
-                        Streaming Guide 2024
+                        Streaming Guide 2026
                     </div>
                     
                     <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter mb-6 leading-tight">

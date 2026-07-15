@@ -82,7 +82,7 @@ export default async function WatchLandingPage({ params }: PageProps) {
             "@type": "ListItem",
             "position": i + 1,
             "url": `${baseUrl}/${landing.type === 'movie' ? 'movies' : 'series'}/${item.tmdbId}`,
-            "name": item.title,
+            "name": item.title || item.name,
         })),
     };
 
