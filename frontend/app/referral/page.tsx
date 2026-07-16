@@ -17,6 +17,9 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     return {
         title: `Invite Pass from ${refCode} | NetMirrors`,
         description: `Join NetMirrors using referral code ${refCode} and unlock premium movie & series streaming features.`,
+        alternates: {
+            canonical: "/referral",
+        },
         openGraph: {
             title: `Claim Your NetMirrors Invite Pass (${refCode})`,
             description: `Unlock premium movie & series streaming features on NetMirrors.`,

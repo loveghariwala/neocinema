@@ -18,7 +18,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     if (!movie) return { title: "Not Found", robots: { index: false } };
 
-    const titleText = `Top 12 Movies Like ${movie.title} (${new Date(movie.releaseDate).getFullYear()}) to Watch Free`;
+    const releaseYear = movie.releaseDate && !isNaN(new Date(movie.releaseDate).getTime())
+        ? new Date(movie.releaseDate).getFullYear()
+        : null;
+    const titleText = `Top 12 Movies Like ${movie.title}${releaseYear ? ` (${releaseYear})` : ""} to Watch Free`;
     const descriptionText = `Loved ${movie.title}? Here are the best similar movies to watch online for free in HD on NetMirrors.`;
 
     return {

@@ -38,10 +38,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         };
     }
 
-    const releaseYear = series.releaseDate ? new Date(series.releaseDate).getFullYear() : "";
     const safeDate = series.releaseDate && !isNaN(new Date(series.releaseDate).getTime())
         ? new Date(series.releaseDate)
         : null;
+    const releaseYear = safeDate ? safeDate.getFullYear() : "";
     const isUpcoming = safeDate ? safeDate.getTime() > Date.now() : false;
 
     const genreLabel = (series.genres || []).slice(0, 2).join(' & ') || 'TV Series';
@@ -121,6 +121,11 @@ export default async function SeriesDetailsPage({
         notFound();
     }
 
+    const safeDate = series.releaseDate && !isNaN(new Date(series.releaseDate).getTime())
+        ? new Date(series.releaseDate)
+        : null;
+    const releaseYear = safeDate ? safeDate.getFullYear() : "";
+
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
 
     // ─── TVSeries JSON-LD ────────────────────────────────────────────────────
@@ -177,7 +182,7 @@ export default async function SeriesDetailsPage({
         "name": `${series.title} Full Series HD`,
         "description": series.overview || `Watch ${series.title} Full TV Series Online Free in HD`,
         "thumbnailUrl": series.backdropPath ? `https://image.tmdb.org/t/p/w780${series.backdropPath}` : `${baseUrl}/netmirrors_logo.jpg`,
-        "uploadDate": series.releaseDate ? new Date(series.releaseDate).toISOString() : new Date().toISOString(),
+        "uploadDate": safeDate ? safeDate.toISOString() : new Date().toISOString(),
         "contentUrl": `${baseUrl}/series/${id}?play=true`,
         "embedUrl": `${baseUrl}/series/${id}?play=true`,
         "interactionStatistic": {
@@ -261,10 +266,10 @@ export default async function SeriesDetailsPage({
                                     <Clock size={16} className="text-red-500" />
                                     <span className="text-white">{series.runtime} MIN / EP</span>
                                 </div>
-                                <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
-                                    <Calendar size={16} className="text-red-500" />
-                                    <span className="text-white">{series.releaseDate ? new Date(series.releaseDate).getFullYear() : "N/A"}</span>
-                                </div>
+                                    <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
+                                        <Calendar size={16} className="text-red-500" />
+                                        <span className="text-white">{releaseYear || "TBA"}</span>
+                                    </div>
                                 <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
                                     <Globe size={16} className="text-red-500" />
                                     <span className="text-white">{series.language?.toUpperCase()}</span>
