@@ -12,6 +12,7 @@ const StreamPlayer = dynamic(() => import("@/components/player/StreamPlayer"));
 import ShareButton from "@/components/ui/ShareButton";
 import SeasonEpisodeBrowser from "@/components/series/SeasonEpisodeBrowser";
 import { Metadata } from "next";
+import ServerNoteBanner from "@/components/ui/ServerNoteBanner";
 
 export const revalidate = 86400; // ISR: cache series detail pages for 24 hours
 
@@ -194,6 +195,7 @@ export default async function SeriesDetailsPage({
 
     return (
         <main className="min-h-screen">
+            <ServerNoteBanner />
             <script
                 id="json-ld-series"
                 type="application/ld+json"

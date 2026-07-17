@@ -11,6 +11,7 @@ import dynamic from "next/dynamic";
 const StreamPlayer = dynamic(() => import("@/components/player/StreamPlayer"));
 import ShareButton from "@/components/ui/ShareButton";
 import { Metadata } from "next";
+import ServerNoteBanner from "@/components/ui/ServerNoteBanner";
 
 export const revalidate = 86400; // ISR: cache movie detail pages for 24 hours
 
@@ -209,6 +210,7 @@ export default async function MovieDetailsPage({
 
 
             <main className="min-h-screen">
+                <ServerNoteBanner />
                 {/* IMMERSIVE HERO */}
                 <section className="relative min-h-[90vh] w-full flex items-center py-20 md:py-28 lg:py-32 overflow-hidden bg-black">
                     <MotionDiv
