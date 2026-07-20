@@ -27,8 +27,9 @@ interface PageProps {
     }>;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
     const { id } = await params;
+    const resolvedSearchParams = await searchParams;
     const series = await getMovieDetails(id, "tv");
 
     if (!series) {
@@ -79,12 +80,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         ].filter(Boolean),
         alternates: { 
             canonical: `/series/${id}`,
-            languages: {
-                'en-US': `/series/${id}`,
-                'en': `/series/${id}`
-            }
         },
-        robots: isBlocked ? { index: false, follow: false } : { index: true, follow: true },
+        robots: isBlocked || resolvedSearchParams?.play === 'true'
+            ? { index: false, follow: false }
+            : { index: true, follow: true },
         openGraph: {
             title: `${titleText} | NetMirrors`,
             description: descriptionText,

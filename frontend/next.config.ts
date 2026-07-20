@@ -65,10 +65,7 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: "frame-src *; img-src * data: blob:;",
           },
-          {
-            key: "X-Robots-Tag",
-            value: "index, follow",
-          },
+
         ],
       },
     ];

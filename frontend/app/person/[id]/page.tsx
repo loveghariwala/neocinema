@@ -18,7 +18,8 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
     if (!data || !data.person) {
         return {
             title: "Cast Member Not Found — NetMirrors",
-            description: "The cast member details page you are trying to reach does not exist or has been removed."
+            description: "The cast member details page you are trying to reach does not exist or has been removed.",
+            robots: { index: false, follow: false }
         };
     }
     
@@ -48,7 +49,6 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
         ],
         alternates: {
             canonical: `/person/${id}`,
-            languages: { 'en-US': `/person/${id}`, 'en': `/person/${id}` },
         },
         robots: { index: true, follow: true },
         openGraph: {

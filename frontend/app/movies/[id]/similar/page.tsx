@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         description: descriptionText,
         keywords: [`movies like ${movie.title}`, `similar to ${movie.title}`, `what to watch after ${movie.title}`, `watch free`],
         alternates: { canonical: `/movies/${id}/similar` },
-        robots: { index: true, follow: true },
+        robots: { index: false, follow: true },
     };
 }
 

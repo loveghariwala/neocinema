@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         description: descriptionText,
         keywords: [`series like ${series.title}`, `shows similar to ${series.title}`, `what to watch after ${series.title}`, `watch free`],
         alternates: { canonical: `/series/${id}/similar` },
-        robots: { index: true, follow: true },
+        robots: { index: false, follow: true },
     };
 }
 

@@ -63,10 +63,6 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: '/',
-    languages: {
-      'en-US': '/',
-      'en': '/'
-    }
   },
   openGraph: {
     title: "NetMirrors — Movies, Series & Anime Discovery",
