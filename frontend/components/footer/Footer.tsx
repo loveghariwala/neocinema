@@ -103,7 +103,7 @@ export default function Footer() {
 
                 <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/5 gap-4">
                     <p className="text-neutral-600 text-xs">
-                        &copy; {new Date().getFullYear()} NetMirrors. All rights reserved.
+                        &copy; {new Date().getFullYear()} Neocinema. All rights reserved.
                     </p>
                     <div className="flex flex-wrap gap-4 md:gap-6">
                         <Link href="/privacy" className="text-neutral-600 text-xs hover:text-white">Privacy Policy</Link>

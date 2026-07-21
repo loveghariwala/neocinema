@@ -1,5 +1,5 @@
 # --------------------------------------------------
-# NetMirrors - robots.txt
+# Neocinema - robots.txt
 # Allow all major search engine bots full access
 # --------------------------------------------------
 

@@ -1,5 +1,5 @@
 /**
- * NetMirrors TMDB Direct Service (Next.js Fallback Backend)
+ * Neocinema TMDB Direct Service (Next.js Fallback Backend)
  * 
  * Mirrors the FastAPI external_api.py logic exactly — same normalization,
  * same response shapes. This service is used as a fallback when the 

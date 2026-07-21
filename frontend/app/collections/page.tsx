@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     keywords: ["curated movie lists", "best movies by genre", "movie collections", "what to watch tonight", "top rated film lists"],
     alternates: { canonical: "/collections" },
     openGraph: {
-        title: "Curated Movie Collections | NetMirrors",
+        title: "Curated Movie Collections | Neocinema",
         description: "Discover hand-picked lists of the best movies and TV series.",
         url: "/collections",
         type: "website",

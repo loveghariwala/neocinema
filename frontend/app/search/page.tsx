@@ -26,23 +26,23 @@ const generateSearchJsonLd = () => {
         "@context": "https://schema.org",
         "@type": "SearchResultsPage",
         "@id": `${baseUrl}/search#searchpage`,
-        "name": "Search Movies & TV Series — NetMirrors",
-        "description": "Search across millions of movies, TV shows, and cast members with NetMirrors' global search engine.",
+        "name": "Search Movies & TV Series — Neocinema",
+        "description": "Search across millions of movies, TV shows, and cast members with Neocinema' global search engine.",
         "url": `${baseUrl}/search`,
         "isPartOf": {
             "@type": "WebSite",
             "@id": `${baseUrl}#website`,
-            "name": "NetMirrors",
+            "name": "Neocinema",
             "url": baseUrl,
         },
         "publisher": {
             "@type": "Organization",
             "@id": `${baseUrl}#org`,
-            "name": "NetMirrors",
+            "name": "Neocinema",
             "url": baseUrl,
             "logo": {
                 "@type": "ImageObject",
-                "url": `${baseUrl}/netmirrors_logo.jpg`,
+                "url": `${baseUrl}/logo.png`,
             },
         },
         "potentialAction": {
@@ -64,30 +64,30 @@ interface SearchPageProps {
 
 export async function generateMetadata(): Promise<Metadata> {
     const title = "Global Search & Discovery";
-    const description = "Search across millions of movies, TV shows, and cast members. NetMirrors' global search engine helps you find exactly what you want to watch.";
+    const description = "Search across millions of movies, TV shows, and cast members. Neocinema' global search engine helps you find exactly what you want to watch.";
 
     return {
         title,
         description,
         keywords: [
             "movie search", "search TV shows", "find actors",
-            "NetMirrors search", "global movie database", "content discovery",
+            "Neocinema search", "global movie database", "content discovery",
             "search movies online", "find series",
         ],
         alternates: { canonical: '/search' },
         robots: { index: false, follow: true },
         openGraph: {
-            title: `${title} | NetMirrors`,
+            title: `${title} | Neocinema`,
             description,
             url: '/search',
             type: "website",
-            images: [{ url: "/netmirrors_logo.jpg", width: 800, height: 600, alt: "Search NetMirrors" }],
+            images: [{ url: "/logo.png", width: 800, height: 600, alt: "Search Neocinema" }],
         },
         twitter: {
             card: "summary_large_image",
-            title: `${title} | NetMirrors`,
+            title: `${title} | Neocinema`,
             description,
-            images: ["/netmirrors_logo.jpg"],
+            images: ["/logo.png"],
         },
     };
 }

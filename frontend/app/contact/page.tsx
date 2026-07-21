@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
     title: "Contact Us",
-    description: "Get in touch with the NetMirrors team for support, feedback, or DMCA requests.",
+    description: "Get in touch with the Neocinema team for support, feedback, or DMCA requests.",
     alternates: { canonical: "/contact" },
     robots: { index: true, follow: true },
 };
@@ -49,7 +49,7 @@ export default function ContactPage() {
                 <div className="rounded-3xl border border-white/10 bg-neutral-950/50 p-8 md:p-12 backdrop-blur-xl">
                     <h2 className="text-2xl font-bold text-white mb-4">DMCA / Copyright Notices</h2>
                     <p className="text-neutral-400 leading-relaxed mb-4">
-                        NetMirrors respects intellectual property rights. If you believe content on our platform infringes your copyright, please send a DMCA takedown notice to our email with a description of the copyrighted work, the infringing URL, and your contact information.
+                        Neocinema respects intellectual property rights. If you believe content on our platform infringes your copyright, please send a DMCA takedown notice to our email with a description of the copyrighted work, the infringing URL, and your contact information.
                     </p>
                     <p className="text-neutral-400">
                         Send notices to: <a href="mailto:contact@neocinematv.com" className="text-red-500 font-bold hover:text-red-400">contact@neocinematv.com</a>

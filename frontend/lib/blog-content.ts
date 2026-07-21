@@ -12,8 +12,8 @@ export const BLOG_CONTENT: Record<string, string> = {
 <li><strong>Mobile-friendly</strong> — Works well on phones and tablets</li>
 </ul>
 
-<h2>1. NetMirrors — Best Overall Free Streaming Site</h2>
-<p>NetMirrors stands out from every other free streaming platform thanks to its AI-powered recommendation engine. Instead of endless scrolling, the platform learns your taste and serves you movies you'll actually enjoy. The UI is stunning — a dark, cinematic experience that feels more like a premium app than a free website.</p>
+<h2>1. Neocinema — Best Overall Free Streaming Site</h2>
+<p>Neocinema stands out from every other free streaming platform thanks to its AI-powered recommendation engine. Instead of endless scrolling, the platform learns your taste and serves you movies you'll actually enjoy. The UI is stunning — a dark, cinematic experience that feels more like a premium app than a free website.</p>
 <p><strong>Highlights:</strong> High-quality streaming, no registration, AI recommendations, 4K support, English subtitles on every title.</p>
 
 <h2>2. Tubi — Best for Older Movies</h2>
@@ -35,7 +35,7 @@ export const BLOG_CONTENT: Record<string, string> = {
 <p>Kanopy is free through most public libraries. It specializes in independent films, classic cinema, and documentaries — a goldmine for film enthusiasts.</p>
 
 <h2>The Verdict</h2>
-<p>For the best all-around experience, <strong>NetMirrors is our top pick</strong>. The combination of easy access, no sign-up, AI recommendations, and a premium UI makes it the clear winner. If you want something more traditional with a massive back catalog, Tubi is your best alternative.</p>
+<p>For the best all-around experience, <strong>Neocinema is our top pick</strong>. The combination of easy access, no sign-up, AI recommendations, and a premium UI makes it the clear winner. If you want something more traditional with a massive back catalog, Tubi is your best alternative.</p>
 `,
     "movies-like-interstellar": `
 <p>Christopher Nolan's Interstellar is one of those films that stays with you long after the credits roll. The combination of hard science, emotional storytelling, and Hans Zimmer's haunting score created something truly special. If you're craving more movies that deliver that same sense of cosmic wonder, here are 15 films you need to add to your watchlist.</p>
@@ -71,7 +71,7 @@ export const BLOG_CONTENT: Record<string, string> = {
 <p>Alex Garland's trippy sci-fi horror follows a team of scientists into a mysterious zone where the laws of nature don't apply. It's unsettling, beautiful, and will leave you thinking for days.</p>
 
 <h2>Where to Watch These Movies</h2>
-<p>All of these films are available to stream for free on <strong>NetMirrors</strong>. Just search for any title and hit play — no subscription, no sign-up required.</p>
+<p>All of these films are available to stream for free on <strong>Neocinema</strong>. Just search for any title and hit play — no subscription, no sign-up required.</p>
 `,
     "how-to-watch-marvel-movies-in-order": `
 <p>The Marvel Cinematic Universe has grown from a single Iron Man movie in 2008 to a sprawling multiverse of 35+ films and dozens of TV shows. Whether you're a first-time viewer or doing a re-watch, the order you watch them in matters. Here's the definitive guide.</p>
@@ -124,7 +124,7 @@ export const BLOG_CONTENT: Record<string, string> = {
 </ol>
 
 <h2>Where to Stream All MCU Movies Free</h2>
-<p>Every single Marvel movie listed above is available to stream for free in HD on <strong>NetMirrors</strong>. No Disney+ subscription required — just search for any title and press play.</p>
+<p>Every single Marvel movie listed above is available to stream for free in HD on <strong>Neocinema</strong>. No Disney+ subscription required — just search for any title and press play.</p>
 `,
     "best-korean-dramas-2026": `
 <p>Korean dramas have taken over the world, and 2026 is proving to be another incredible year for K-Drama fans. Whether you're a seasoned viewer or just getting into the genre, this list covers the absolute best shows airing right now — all available with English subtitles.</p>
@@ -136,7 +136,7 @@ export const BLOG_CONTENT: Record<string, string> = {
 <p>If you've never watched a K-Drama before, start with a genre you already enjoy. Love romance? Try a rom-com K-Drama. Into thrillers? Korean revenge thrillers are in a league of their own. The English subtitles are high quality on most platforms.</p>
 
 <h2>Where to Watch K-Dramas for Free</h2>
-<p>You can stream all of the K-Dramas mentioned in this article for free on <strong>NetMirrors</strong>. Every title comes with English subtitles, and you don't need to create an account or pay for a subscription.</p>
+<p>You can stream all of the K-Dramas mentioned in this article for free on <strong>Neocinema</strong>. Every title comes with English subtitles, and you don't need to create an account or pay for a subscription.</p>
 <p>Visit our <a href="/watch/korean-dramas-free">Korean Dramas collection</a> to start browsing.</p>
 `,
     "best-anime-for-beginners-2026": `
@@ -155,7 +155,7 @@ export const BLOG_CONTENT: Record<string, string> = {
 <p>The perfect entry point for superhero fans. Think X-Men meets Japanese school drama. Fun, action-packed, and emotionally resonant.</p>
 
 <h2>Where to Watch Anime Free</h2>
-<p>All anime listed in this article is available on <strong>NetMirrors</strong> with English subtitles. Visit our <a href="/watch/anime-series-free">Anime collection</a> to start watching.</p>
+<p>All anime listed in this article is available on <strong>Neocinema</strong> with English subtitles. Visit our <a href="/watch/anime-series-free">Anime collection</a> to start watching.</p>
 `,
     "upcoming-spiderman-movies": `
 <p>The web-slinger's cinematic future has never looked more exciting. With the massive success of <em>Spider-Man: No Way Home</em> and the animated <em>Spider-Verse</em> films, Marvel and Sony are gearing up to deliver some of the most highly anticipated superhero movies in the coming years. Here's your definitive guide to the upcoming Spider-Man movies you need to watch out for.</p>
@@ -176,7 +176,7 @@ export const BLOG_CONTENT: Record<string, string> = {
 <p>While technically a spin-off, Tom Hardy's final outing as Eddie Brock/Venom is expected to have major implications for the wider Spider-Man cinematic multiverse. Whether or not Spider-Man himself makes a cameo remains one of the film's biggest mysteries.</p>
 
 <h2>Where to Watch Previous Spider-Man Movies</h2>
-<p>Looking to catch up on the Spider-Man legacy? You can stream all previous Spider-Man movies, from Tobey Maguire's classic trilogy to Andrew Garfield's <em>The Amazing Spider-Man</em> and Tom Holland's MCU adventures, right here on <strong>NetMirrors</strong>. Just search for "Spider-Man" and start watching for free!</p>
+<p>Looking to catch up on the Spider-Man legacy? You can stream all previous Spider-Man movies, from Tobey Maguire's classic trilogy to Andrew Garfield's <em>The Amazing Spider-Man</em> and Tom Holland's MCU adventures, right here on <strong>Neocinema</strong>. Just search for "Spider-Man" and start watching for free!</p>
 `,
     "gta-6-game-discussion-release-date": `
 <p>It's finally happening. After over a decade of waiting, Rockstar Games is preparing to launch <strong>Grand Theft Auto VI</strong>, easily the most anticipated video game of the generation. From the confirmed release window to the mind-blowing leaks, here is the ultimate GTA 6 game discussion on everything we know so far.</p>
@@ -294,6 +294,6 @@ export const BLOG_CONTENT: Record<string, string> = {
 <p>One thing is certain: GTA 6 is the biggest game release of the decade, and Vice City is about to come alive like never before. The only question is whether you're ready for it.</p>
 
 <h2>Catch Up on Every GTA Movie & Gaming Content</h2>
-<p>While you wait for November 19, dive into gaming-related movies and shows on <strong>NetMirrors</strong>. From heist thrillers inspired by GTA's storylines to documentaries about the gaming industry — stream everything for free, no sign-up required.</p>
+<p>While you wait for November 19, dive into gaming-related movies and shows on <strong>Neocinema</strong>. From heist thrillers inspired by GTA's storylines to documentaries about the gaming industry — stream everything for free, no sign-up required.</p>
 `
 };

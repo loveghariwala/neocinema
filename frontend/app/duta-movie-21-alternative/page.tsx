@@ -5,7 +5,7 @@ import { Play, Search, ShieldCheck, Zap } from 'lucide-react';
 
 export const metadata: Metadata = {
     title: "Best Duta Movie 21 Alternative: Watch Free Movies Online",
-    description: "Looking for a Duta Movie or Duta Movie 21 alternative? Stream free movies and TV series online in HD with NetMirrors. No viruses, ultra-fast streaming.",
+    description: "Looking for a Duta Movie or Duta Movie 21 alternative? Stream free movies and TV series online in HD with Neocinema. No viruses, ultra-fast streaming.",
     keywords: ["duta movie", "duta movie 21", "dutamovie21", "duta film", "duta movie alternative", "watch free movies online", "free movies", "nonton film gratis", "nonton movie"],
     alternates: {
         canonical: "/duta-movie-21-alternative",
@@ -23,7 +23,7 @@ export default function DutaMovieAlternativePage() {
                 "name": "What is the best Duta Movie 21 alternative?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "NetMirrors is currently the best Duta Movie 21 alternative. It offers ultra-fast HD streaming without the constant barrage of malicious popups often found on older streaming sites."
+                    "text": "Neocinema is currently the best Duta Movie 21 alternative. It offers ultra-fast HD streaming without the constant barrage of malicious popups often found on older streaming sites."
                 }
             },
             {
@@ -31,15 +31,15 @@ export default function DutaMovieAlternativePage() {
                 "name": "Is Duta Movie down? Where can I watch free movies online?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Many proxy domains for Duta Movie frequently go down or get blocked. You can watch free movies online securely on platforms like NetMirrors, which offers a massive library of trending movies and TV series."
+                    "text": "Many proxy domains for Duta Movie frequently go down or get blocked. You can watch free movies online securely on platforms like Neocinema, which offers a massive library of trending movies and TV series."
                 }
             },
             {
                 "@type": "Question",
-                "name": "Does NetMirrors have Indonesian subtitles like Duta Movie?",
+                "name": "Does Neocinema have Indonesian subtitles like Duta Movie?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Yes, NetMirrors provides multiple subtitle options including English and Indonesian for a vast majority of its movies and TV shows, making it the perfect Duta Movie replacement."
+                    "text": "Yes, Neocinema provides multiple subtitle options including English and Indonesian for a vast majority of its movies and TV shows, making it the perfect Duta Movie replacement."
                 }
             }
         ]
@@ -67,7 +67,7 @@ export default function DutaMovieAlternativePage() {
                     </h1>
 
                     <p className="text-lg md:text-xl text-neutral-400 mb-12 leading-relaxed">
-                        If you've been searching for a reliable <strong>Duta Movie 21</strong> alternative or a faster way to stream new movies online without dealing with broken links or endless pop-ups—you've finally found it. Welcome to NetMirrors.
+                        If you've been searching for a reliable <strong>Duta Movie 21</strong> alternative or a faster way to stream new movies online without dealing with broken links or endless pop-ups—you've finally found it. Welcome to Neocinema.
                     </p>
 
                     <div className="flex flex-wrap gap-4 mb-16">
@@ -109,12 +109,12 @@ export default function DutaMovieAlternativePage() {
 
                     <h2 className="text-3xl font-bold text-white mb-4 mt-12">The Ultimate Streaming Replacement</h2>
                     <p className="mb-6">
-                        For users who loved the simplicity of Dutamovie21, NetMirrors offers a vastly superior alternative. Why risk downloading files from unknown sources when you can stream the exact same Hollywood blockbusters, Asian dramas, and trending films directly in your browser? Our player supports fast-forwarding, subtitle selection, and seamless streaming even on slower connections.
+                        For users who loved the simplicity of Dutamovie21, Neocinema offers a vastly superior alternative. Why risk downloading files from unknown sources when you can stream the exact same Hollywood blockbusters, Asian dramas, and trending films directly in your browser? Our player supports fast-forwarding, subtitle selection, and seamless streaming even on slower connections.
                     </p>
 
                     <div className="bg-neutral-900 border border-red-500/20 p-8 rounded-2xl mt-12 text-center">
                         <h3 className="text-2xl font-black text-white mb-4">Ready to upgrade your streaming experience?</h3>
-                        <p className="text-neutral-400 mb-6">Stop searching for Duta Movie proxy sites. Bookmark NetMirrors today and start watching instantly.</p>
+                        <p className="text-neutral-400 mb-6">Stop searching for Duta Movie proxy sites. Bookmark Neocinema today and start watching instantly.</p>
                         <Link href="/" className="inline-flex items-center gap-2 rounded-full bg-red-600 px-8 py-4 text-sm font-bold text-white transition-all hover:bg-red-700 shadow-[0_0_20px_rgba(220,38,38,0.4)]">
                             Start Watching Now
                         </Link>

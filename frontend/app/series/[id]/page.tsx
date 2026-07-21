@@ -34,7 +34,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
 
     if (!series) {
         return {
-            title: "Series Not Found — NetMirrors",
+            title: "Series Not Found — Neocinema",
             description: "The TV series details page you are trying to reach does not exist or has been removed.",
             robots: { index: false, follow: false }
         };
@@ -53,13 +53,13 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
         : `Watch ${series.title} ${releaseYear ? `(${releaseYear}) ` : ""}Online Free`;
         
     const descriptionText = isUpcoming
-        ? `Discover the cast of ${series.title}${releaseYear ? ` (${releaseYear})` : ""}, release date, characters, and seasons. View full details on NetMirrors.`
-        : `${series.overview ? series.overview.substring(0, 140).trim() + '.' : `Discover ${series.title}, a ${genreLabel.toLowerCase()} series.`}${series.number_of_seasons ? ` ${series.number_of_seasons} season${series.number_of_seasons > 1 ? 's' : ''}.` : ''}${series.rating ? ` ★ ${series.rating.toFixed(1)}/10.` : ''} Watch now on NetMirrors.`;
+        ? `Discover the cast of ${series.title}${releaseYear ? ` (${releaseYear})` : ""}, release date, characters, and seasons. View full details on Neocinema.`
+        : `${series.overview ? series.overview.substring(0, 140).trim() + '.' : `Discover ${series.title}, a ${genreLabel.toLowerCase()} series.`}${series.number_of_seasons ? ` ${series.number_of_seasons} season${series.number_of_seasons > 1 ? 's' : ''}.` : ''}${series.rating ? ` ★ ${series.rating.toFixed(1)}/10.` : ''} Watch now on Neocinema.`;
 
     const castKeywords = (series.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
     const genreKeywords = (series.genres || []).map((g: string) => `${g.toLowerCase()} series free`);
 
-    const blockedIds = ["1180798", "1064137", "1154268", "260471", "1173900", "490005", "1628522", "852042"];
+    const blockedIds: string[] = [];
     const isBlocked = blockedIds.includes(String(id));
 
     return {
@@ -85,7 +85,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
             ? { index: false, follow: false }
             : { index: true, follow: true },
         openGraph: {
-            title: `${titleText} | NetMirrors`,
+            title: `${titleText} | Neocinema`,
             description: descriptionText,
             url: `/series/${id}`,
             type: "video.tv_show",
@@ -93,13 +93,13 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
                 ? [{ url: `https://image.tmdb.org/t/p/w780${series.backdropPath}` }]
                 : series.posterPath
                     ? [{ url: `https://image.tmdb.org/t/p/w500${series.posterPath}` }]
-                    : [{ url: "/netmirrors_logo.jpg" }],
+                    : [{ url: "/logo.png" }],
         },
         twitter: {
             card: "summary_large_image",
-            title: `${titleText} | NetMirrors`,
+            title: `${titleText} | Neocinema`,
             description: descriptionText,
-            images: series.backdropPath ? [`https://image.tmdb.org/t/p/w780${series.backdropPath}`] : ["/netmirrors_logo.jpg"],
+            images: series.backdropPath ? [`https://image.tmdb.org/t/p/w780${series.backdropPath}`] : ["/logo.png"],
         }
     };
 }
@@ -134,7 +134,7 @@ export default async function SeriesDetailsPage({
         "@type": "TVSeries",
         "@id": `${baseUrl}/series/${id}#tvseries`,
         "name": series.title,
-        "image": series.posterPath ? `https://image.tmdb.org/t/p/w500${series.posterPath}` : `${baseUrl}/netmirrors_logo.jpg`,
+        "image": series.posterPath ? `https://image.tmdb.org/t/p/w500${series.posterPath}` : `${baseUrl}/logo.png`,
         "description": series.overview,
         "startDate": series.releaseDate,
         "dateModified": new Date().toISOString(),
@@ -158,7 +158,7 @@ export default async function SeriesDetailsPage({
         "publisher": {
             "@type": "Organization",
             "@id": `${baseUrl}#org`,
-            "name": "NetMirrors",
+            "name": "Neocinema",
         },
     };
 
@@ -181,7 +181,7 @@ export default async function SeriesDetailsPage({
         "@type": "VideoObject",
         "name": `${series.title} Full Series HD`,
         "description": series.overview || `Watch ${series.title} Full TV Series Online Free in HD`,
-        "thumbnailUrl": series.backdropPath ? `https://image.tmdb.org/t/p/w780${series.backdropPath}` : `${baseUrl}/netmirrors_logo.jpg`,
+        "thumbnailUrl": series.backdropPath ? `https://image.tmdb.org/t/p/w780${series.backdropPath}` : `${baseUrl}/logo.png`,
         "uploadDate": safeDate ? safeDate.toISOString() : new Date().toISOString(),
         "contentUrl": `${baseUrl}/series/${id}?play=true`,
         "embedUrl": `${baseUrl}/series/${id}?play=true`,

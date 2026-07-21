@@ -1,5 +1,5 @@
 /**
- * NetMirrors Blog System
+ * Neocinema Blog System
  * 
  * Lightweight static blog using hardcoded articles.
  * Each post targets a specific long-tail keyword cluster (KD ≤ 30).
@@ -24,7 +24,7 @@ export const BLOG_POSTS: BlogPost[] = [
     {
         slug: "best-free-movie-streaming-sites-2026",
         title: "7 Best Free Movie Streaming Sites in 2026 (No Sign-Up Required)",
-        metaTitle: "7 Best Free Movie Streaming Sites 2026 — No Sign-Up | NetMirrors",
+        metaTitle: "7 Best Free Movie Streaming Sites 2026 — No Sign-Up | Neocinema",
         description: "Looking for free movie streaming sites that actually work in 2026? Here are the top 7 platforms where you can watch movies online without creating an account or paying a subscription.",
         keywords: ["free movie streaming sites 2026", "watch movies free no sign up", "best free streaming sites", "movies online free", "free movie websites", "free movie streaming sites 2026"],
         publishedAt: "2026-01-15",
@@ -34,11 +34,11 @@ export const BLOG_POSTS: BlogPost[] = [
         faqs: [
             {
                 question: "What is the best free movie streaming site in 2026?",
-                answer: "NetMirrors is currently the best free movie streaming site of 2026. It features an advanced AI-powered recommendation engine, a clean dark-mode user interface, minimal interruptions, and does not require registration."
+                answer: "Neocinema is currently the best free movie streaming site of 2026. It features an advanced AI-powered recommendation engine, a clean dark-mode user interface, minimal interruptions, and does not require registration."
             },
             {
                 question: "Are there any free movie sites with referral programs?",
-                answer: "Yes, NetMirrors has an interactive referral program where sharing your unique invite link unlocks permanent VIP ad-free status and customized recommendation filters."
+                answer: "Yes, Neocinema has an interactive referral program where sharing your unique invite link unlocks permanent VIP ad-free status and customized recommendation filters."
             }
         ]
     },
@@ -56,7 +56,7 @@ export const BLOG_POSTS: BlogPost[] = [
     {
         slug: "how-to-watch-marvel-movies-in-order",
         title: "How to Watch Marvel Movies in Order (Complete MCU Timeline 2026)",
-        metaTitle: "Marvel Movies in Order — Complete MCU Watch Guide 2026 | NetMirrors",
+        metaTitle: "Marvel Movies in Order — Complete MCU Watch Guide 2026 | Neocinema",
         description: "Confused by the Marvel timeline? Here's the definitive guide to watching all MCU movies in chronological order, from Captain America: The First Avenger to the latest 2026 releases.",
         keywords: ["marvel movies in order", "MCU timeline", "watch marvel movies chronological order", "marvel movie order 2026", "all marvel movies list"],
         publishedAt: "2026-01-20",
@@ -78,7 +78,7 @@ export const BLOG_POSTS: BlogPost[] = [
     {
         slug: "best-anime-for-beginners-2026",
         title: "10 Best Anime Series for Beginners — Where to Start Watching in 2026",
-        metaTitle: "10 Best Anime for Beginners 2026 — Start Watching Guide | NetMirrors",
+        metaTitle: "10 Best Anime for Beginners 2026 — Start Watching Guide | Neocinema",
         description: "New to anime? Here are 10 beginner-friendly anime series that will hook you instantly. From action epics to emotional dramas — with English sub recommendations.",
         keywords: ["best anime for beginners", "anime recommendations", "where to start watching anime", "beginner anime 2026", "top anime series", "beginner anime 2026"],
         publishedAt: "2026-02-25",
@@ -158,7 +158,7 @@ export const BLOG_POSTS: BlogPost[] = [
     {
         slug: "gta-6-pre-order-guide-editions-bonuses",
         title: "GTA 6 Pre-Order Guide: Every Edition, Bonus & Price Breakdown (2026)",
-        metaTitle: "GTA 6 Pre-Order Guide — Editions, Bonuses & Pricing | NetMirrors",
+        metaTitle: "GTA 6 Pre-Order Guide — Editions, Bonuses & Pricing | Neocinema",
         description: "Everything you need to know before pre-ordering GTA 6. Compare the Standard vs Ultimate Edition, discover exclusive pre-order bonuses like the Vintage Vice City Pack, pricing in every region, and key dates.",
         keywords: [
             "gta 6 pre order",

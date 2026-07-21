@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         ? new Date(movie.releaseDate).getFullYear()
         : null;
     const titleText = `Top 12 Movies Like ${movie.title}${releaseYear ? ` (${releaseYear})` : ""} to Watch Free`;
-    const descriptionText = `Loved ${movie.title}? Here are the best similar movies to watch online for free in HD on NetMirrors.`;
+    const descriptionText = `Loved ${movie.title}? Here are the best similar movies to watch online for free in HD on Neocinema.`;
 
     return {
         title: titleText,
@@ -51,7 +51,7 @@ export default async function SimilarMoviesPage({ params }: PageProps) {
                         Movies Like <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-400">{movie.title}</span>
                     </h1>
                     <p className="text-neutral-400 max-w-3xl">
-                        If you enjoyed the cinematic experience of {movie.title}, you'll love these similar films. Stream them all in HD for free on NetMirrors.
+                        If you enjoyed the cinematic experience of {movie.title}, you'll love these similar films. Stream them all in HD for free on Neocinema.
                     </p>
                 </div>
 

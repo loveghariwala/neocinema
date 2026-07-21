@@ -63,15 +63,15 @@ export default function Navbar() {
                     <Link href="/" className="group flex items-center z-10">
                         <div className="relative">
                             <img
-                                src="/netmirrors_logo.jpg"
-                                alt="NetMirrors Logo"
+                                src="/logo.png"
+                                alt="Neocinema Logo"
                                 className="h-10 w-20 object-contain transition-transform duration-300 group-hover:scale-110"
                             />
                             {/* Glow ring on hover */}
                             <div className="absolute inset-0 rounded-full bg-red-500/0 transition-all duration-500 group-hover:bg-red-600/20 group-hover:shadow-[0_0_50px_rgba(220,38,38,0.4)] group-hover:scale-90" />
                         </div>
                         <h1 className="text-xl font-black tracking-tighter text-white transition-all">
-                            NET<span className="text-red-600">MIRRORS</span>
+                            NEO<span className="text-red-600">CINEMA</span>
                         </h1>
                     </Link>
 

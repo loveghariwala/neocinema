@@ -43,23 +43,23 @@ const generateMoviesJsonLd = (movies: any[]) => {
         "@context": "https://schema.org",
         "@type": "CollectionPage",
         "@id": `${baseUrl}/movies#collection`,
-        "name": "Browse Movies — NetMirrors",
+        "name": "Browse Movies — Neocinema",
         "description": "Explore an extensive library of over 1 million movies from around the globe. Filter by genre, release year, rating, and language.",
         "url": `${baseUrl}/movies`,
         "isPartOf": {
             "@type": "WebSite",
             "@id": `${baseUrl}#website`,
-            "name": "NetMirrors",
+            "name": "Neocinema",
             "url": baseUrl,
         },
         "publisher": {
             "@type": "Organization",
             "@id": `${baseUrl}#org`,
-            "name": "NetMirrors",
+            "name": "Neocinema",
             "url": baseUrl,
             "logo": {
                 "@type": "ImageObject",
-                "url": `${baseUrl}/netmirrors_logo.jpg`,
+                "url": `${baseUrl}/logo.png`,
             },
         },
         "mainEntity": {
@@ -75,7 +75,7 @@ const generateMoviesJsonLd = (movies: any[]) => {
                     "description": movie.overview,
                     "image": movie.poster_path
                         ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                        : `${baseUrl}/netmirrors_logo.jpg`,
+                        : `${baseUrl}/logo.png`,
                     "url": `${baseUrl}/movies/${movie.id || movie.tmdbId}`,
                     "dateCreated": movie.release_date,
                     ...(movie.rating && movie.voteCount ? {
@@ -118,7 +118,7 @@ export async function generateMetadata(): Promise<Metadata> {
         .filter(Boolean);
 
     return {
-        title: page === "1" ? "Watch Free Movies Online | Advanced Multi-Genre Filter & Browse | NetMirrors" : `Watch Free Movies Online - Page ${page} | NetMirrors`,
+        title: page === "1" ? "Watch Free Movies Online | Advanced Multi-Genre Filter & Browse | Neocinema" : `Watch Free Movies Online - Page ${page} | Neocinema`,
         description: "Explore our database of over 1 million movies. Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to find exactly what you want to watch online free.",
         keywords: [
             "filter movies by multiple genres",
@@ -135,17 +135,17 @@ export async function generateMetadata(): Promise<Metadata> {
         alternates: { canonical: '/movies' },
         robots: page === "1" ? { index: true, follow: true } : { index: false, follow: true },
         openGraph: {
-            title: "Browse Movies with Advanced Multi-Genre Filtering | NetMirrors",
-            description: "Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to discover the perfect movie to watch free on NetMirrors.",
+            title: "Browse Movies with Advanced Multi-Genre Filtering | Neocinema",
+            description: "Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to discover the perfect movie to watch free on Neocinema.",
             url: '/movies',
             type: "website",
-            images: [{ url: "/netmirrors_logo.jpg", width: 800, height: 600, alt: "Browse Movies on NetMirrors" }],
+            images: [{ url: "/logo.png", width: 800, height: 600, alt: "Browse Movies on Neocinema" }],
         },
         twitter: {
             card: "summary_large_image",
-            title: "Browse Movies with Advanced Multi-Genre Filters | NetMirrors",
+            title: "Browse Movies with Advanced Multi-Genre Filters | Neocinema",
             description: "Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to discover the perfect movie.",
-            images: ["/netmirrors_logo.jpg"],
+            images: ["/logo.png"],
         },
     };
 }

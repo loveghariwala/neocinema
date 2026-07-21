@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
             type: "article",
             publishedTime: post.publishedAt,
             modifiedTime: post.updatedAt,
-            authors: ["NetMirrors Editorial"],
+            authors: ["Neocinema Editorial"],
             ...(post.imageUrl ? { images: [{ url: post.imageUrl }] } : {}),
         },
         twitter: {
@@ -68,13 +68,13 @@ export default async function BlogPostPage({ params }: PageProps) {
         "dateModified": post.updatedAt,
         "author": {
             "@type": "Organization",
-            "name": "NetMirrors",
+            "name": "Neocinema",
             "url": baseUrl,
         },
         "publisher": {
             "@type": "Organization",
-            "name": "NetMirrors",
-            "logo": { "@type": "ImageObject", "url": `${baseUrl}/netmirrors_logo.jpg` },
+            "name": "Neocinema",
+            "logo": { "@type": "ImageObject", "url": `${baseUrl}/logo.png` },
         },
         "mainEntityOfPage": {
             "@type": "WebPage",

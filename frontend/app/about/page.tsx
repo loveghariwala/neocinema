@@ -4,7 +4,7 @@ import { Globe, Search, Shield, SlidersHorizontal, Sparkles, Users } from 'lucid
 
 export const metadata: Metadata = {
     title: "About Us",
-    description: "Learn about NetMirrors — an AI-powered movie and TV series discovery platform. Discover our mission, technology, and the team behind the cinematic experience.",
+    description: "Learn about Neocinema — an AI-powered movie and TV series discovery platform. Discover our mission, technology, and the team behind the cinematic experience.",
     alternates: { canonical: "/about" },
     robots: { index: true, follow: true },
 };
@@ -49,10 +49,10 @@ export default function AboutPage() {
                 {/* Hero */}
                 <div className="mb-16">
                     <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white mb-6 pb-2">
-                        About <span className="text-red-600">NetMirrors</span>
+                        About <span className="text-red-600">Neocinema</span>
                     </h1>
                     <p className="text-neutral-400 text-lg md:text-xl leading-relaxed max-w-3xl">
-                        NetMirrors is an AI-powered cinematic discovery platform designed to help movie and television enthusiasts
+                        Neocinema is an AI-powered cinematic discovery platform designed to help movie and television enthusiasts
                         find their next favorite watch. We combine cutting-edge technology with a passion for cinema to create
                         a seamless, beautiful, and intelligent browsing experience.
                     </p>
@@ -66,7 +66,7 @@ export default function AboutPage() {
                             <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">Our Mission</h2>
                             <p className="text-neutral-400 leading-relaxed text-lg mb-6">
                                 We believe discovering great entertainment should be effortless and enjoyable. In a world overflowing
-                                with content choices, NetMirrors cuts through the noise by combining AI-powered recommendations with
+                                with content choices, Neocinema cuts through the noise by combining AI-powered recommendations with
                                 a beautifully crafted interface that makes browsing feel like an experience in itself.
                             </p>
                             <p className="text-neutral-400 leading-relaxed text-lg">
@@ -105,7 +105,7 @@ export default function AboutPage() {
                     <div className="rounded-3xl border border-white/10 bg-neutral-950/50 p-8 md:p-12 backdrop-blur-xl">
                         <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">Our Technology</h2>
                         <p className="text-neutral-400 leading-relaxed mb-6">
-                            NetMirrors is built with modern web technologies to deliver a fast, responsive, and visually stunning experience:
+                            Neocinema is built with modern web technologies to deliver a fast, responsive, and visually stunning experience:
                         </p>
                         <ul className="space-y-4 text-neutral-400">
                             <li className="flex items-start gap-3">
@@ -135,13 +135,13 @@ export default function AboutPage() {
                         <div className="relative z-10">
                             <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">The Team</h2>
                             <p className="text-neutral-400 leading-relaxed mb-6">
-                                NetMirrors was founded by <strong className="text-white">Love Ghariwala</strong>, a full-stack developer and AI engineer
+                                Neocinema was founded by <strong className="text-white">Love Ghariwala</strong>, a full-stack developer and AI engineer
                                 with a deep passion for cinema and emerging web technologies. What started as a personal project to explore
                                 AI-powered content discovery has grown into a comprehensive platform used by film enthusiasts worldwide.
                             </p>
                             <p className="text-neutral-400 leading-relaxed">
                                 We are a small, dedicated team committed to continuous improvement. We actively listen to user feedback
-                                and regularly ship new features, performance optimizations, and design enhancements to make NetMirrors
+                                and regularly ship new features, performance optimizations, and design enhancements to make Neocinema
                                 the best movie discovery experience on the web.
                             </p>
                         </div>
@@ -153,13 +153,13 @@ export default function AboutPage() {
                     <div className="rounded-3xl border border-white/10 bg-neutral-950/50 p-8 md:p-12 backdrop-blur-xl">
                         <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">Content Attribution</h2>
                         <p className="text-neutral-400 leading-relaxed mb-4">
-                            NetMirrors is a content discovery and information platform. All movie and TV series metadata, including
+                            Neocinema is a content discovery and information platform. All movie and TV series metadata, including
                             titles, descriptions, poster images, and cast information, is sourced from The Movie Database (TMDB) API.
                             This product uses the TMDB API but is not endorsed or certified by TMDB.
                         </p>
                         <p className="text-neutral-400 leading-relaxed">
                             All movie posters, backdrop images, trailers, and related media are the property of their respective
-                            copyright holders. NetMirrors does not claim ownership of any third-party content displayed on the platform.
+                            copyright holders. Neocinema does not claim ownership of any third-party content displayed on the platform.
                         </p>
                     </div>
                 </section>

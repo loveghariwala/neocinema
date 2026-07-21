@@ -104,7 +104,7 @@ export async function GET(request: NextRequest) {
                             lineHeight: 1.1,
                         }}
                     >
-                        Stream HD Free on NetMirrors
+                        Stream HD Free on Neocinema
                     </div>
 
                     {/* Description */}

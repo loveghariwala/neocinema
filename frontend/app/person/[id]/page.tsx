@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
     
     if (!data || !data.person) {
         return {
-            title: "Cast Member Not Found — NetMirrors",
+            title: "Cast Member Not Found — Neocinema",
             description: "The cast member details page you are trying to reach does not exist or has been removed.",
             robots: { index: false, follow: false }
         };
@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
     const titleText = `${data.person.name} Movies and TV Shows`;
     const descriptionText = data.person.biography 
         ? `Find all movies and TV shows starring ${data.person.name}. ${data.person.biography.substring(0, 120)}...` 
-        : `Discover the full list of movies and TV shows starring ${data.person.name} on NetMirrors.`;
+        : `Discover the full list of movies and TV shows starring ${data.person.name} on Neocinema.`;
 
     const knownForKeywords = (data.results || [])
         .slice(0, 5)
@@ -52,19 +52,19 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
         },
         robots: { index: true, follow: true },
         openGraph: {
-            title: `${titleText} | NetMirrors`,
+            title: `${titleText} | Neocinema`,
             description: descriptionText,
             url: `/person/${id}`,
             type: "profile",
             images: data.person.profilePath 
                 ? [{ url: `https://image.tmdb.org/t/p/h632${data.person.profilePath}` }] 
-                : [{ url: "/netmirrors_logo.jpg" }],
+                : [{ url: "/logo.png" }],
         },
         twitter: {
             card: "summary_large_image",
-            title: `${titleText} | NetMirrors`,
+            title: `${titleText} | Neocinema`,
             description: descriptionText,
-            images: data.person.profilePath ? [`https://image.tmdb.org/t/p/h632${data.person.profilePath}`] : ["/netmirrors_logo.jpg"],
+            images: data.person.profilePath ? [`https://image.tmdb.org/t/p/h632${data.person.profilePath}`] : ["/logo.png"],
         }
     };
 }
@@ -84,7 +84,7 @@ export default async function PersonPage({ params }: PersonPageProps) {
         "@id": `${baseUrl}/person/${resolvedParams.id}#person`,
         "name": data.person.name,
         "url": `${baseUrl}/person/${resolvedParams.id}`,
-        "image": data.person.profilePath ? `https://image.tmdb.org/t/p/h632${data.person.profilePath}` : `${baseUrl}/netmirrors_logo.jpg`,
+        "image": data.person.profilePath ? `https://image.tmdb.org/t/p/h632${data.person.profilePath}` : `${baseUrl}/logo.png`,
         "description": data.person.biography,
         "jobTitle": (data.person as any).knownForDepartment || "Actor",
         "birthDate": (data.person as any).birthday || undefined,

@@ -2,7 +2,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "Privacy Policy",
-    description: "NetMirrors' Privacy Policy. Learn how we collect, use, and protect your personal information when you use our movie and TV series discovery platform.",
+    description: "Neocinema' Privacy Policy. Learn how we collect, use, and protect your personal information when you use our movie and TV series discovery platform.",
     alternates: { canonical: "/privacy" },
     robots: { index: true, follow: true },
 };
@@ -20,7 +20,7 @@ export default function PrivacyPolicyPage() {
                     <section>
                         <h2 className="text-2xl font-bold text-white mb-4">1. Introduction</h2>
                         <p className="text-neutral-400 leading-relaxed">
-                            Welcome to NetMirrors (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website at www.neocinematv.com (the &quot;Site&quot;).
+                            Welcome to Neocinema (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website at www.neocinematv.com (the &quot;Site&quot;).
                         </p>
                     </section>
 

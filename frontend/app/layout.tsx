@@ -26,10 +26,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com"),
   title: {
-    default: "NetMirrors — Stream Free Movies & TV Series Online | No Sign Up",
-    template: "%s | NetMirrors"
+    default: "Neocinema — Stream Free Movies & TV Series Online | No Sign Up",
+    template: "%s | Neocinema"
   },
-  description: "Explore NetMirrors: search and stream free movies & TV series online. Use our advanced filter to select multiple genres, combine with ratings or release years, and sort precisely to find exactly what to watch with no sign up.",
+  description: "Explore Neocinema: search and stream free movies & TV series online. Use our advanced filter to select multiple genres, combine with ratings or release years, and sort precisely to find exactly what to watch with no sign up.",
   keywords: [
     "best free movie streaming sites no sign up required",
     "safe free movie streaming web apps no download",
@@ -39,17 +39,17 @@ export const metadata: Metadata = {
     "advanced movie search filter",
     "precise movie discovery sort",
     "best free alternatives to fmovies safely",
-    "best netmirrors netmovies streaming alternative",
+    "best neocinema streaming alternative",
     "free full movie streaming online",
     "watch series online free hd",
     "discover movies online free",
     "AI movie recommender free",
-    "movies", "series", "streaming", "AI recommendations", "NetMirrors", "NetMovies", "movie discovery", "anime"
+    "movies", "series", "streaming", "AI recommendations", "Neocinema", "NeocinemaTV", "movie discovery", "anime"
   ],
   authors: [{ name: "Love Ghariwala", url: "https://github.com/loveghariwala" }],
   creator: "Love Ghariwala",
-  publisher: "NetMirrors",
-  applicationName: "NetMirrors",
+  publisher: "Neocinema",
+  applicationName: "Neocinema",
   robots: {
     index: true,
     follow: true,
@@ -65,20 +65,20 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: "NetMirrors — Movies, Series & Anime Discovery",
-    description: "Discover trending movies, TV series, and anime on NetMirrors. AI-powered recommendations and a cinematic browsing experience.",
+    title: "Neocinema — Movies, Series & Anime Discovery",
+    description: "Discover trending movies, TV series, and anime on Neocinema. AI-powered recommendations and a cinematic browsing experience.",
     url: '/',
-    siteName: "NetMirrors",
+    siteName: "Neocinema",
     locale: "en_US",
     type: "website",
-    images: [{ url: "/og_banner.jpg", width: 1200, height: 630, alt: "NetMirrors — Discover Movies & Series" }],
+    images: [{ url: "/og_banner.png", width: 1200, height: 630, alt: "Neocinema — Discover Movies & Series" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "NetMirrors — Movies, Series & Anime Discovery",
-    description: "Discover trending movies, TV series, and anime with AI-powered recommendations on NetMirrors.",
-    images: ["/og_banner.jpg"],
-    creator: "@netmirrors",
+    title: "Neocinema — Movies, Series & Anime Discovery",
+    description: "Discover trending movies, TV series, and anime with AI-powered recommendations on Neocinema.",
+    images: ["/og_banner.png"],
+    creator: "@neocinematv",
   },
   verification: {
     google: ["II4VqINTxDD9hlZqBSTqyO7vBQApjT92YCHylPQflfg", "eA4ZNRp53PMpPh1NyjoV3fo_kJi-rv_9ISEl0gH8KMo"],
@@ -111,10 +111,10 @@ export default function RootLayout({
       {
         "@type": "Organization",
         "@id": `${baseUrl}#org`,
-        "name": "NetMirrors",
+        "name": "Neocinema",
         "url": baseUrl,
-        "logo": `${baseUrl}/netmirrors_logo.jpg`,
-        "legalName": "NetMirrors",
+        "logo": `${baseUrl}/logo.png`,
+        "legalName": "Neocinema",
         "description": "AI-powered cinematic movie and series discovery platform with semantic search and personalized recommendations.",
         "foundingDate": "2025",
         "founders": [
@@ -124,7 +124,7 @@ export default function RootLayout({
           },
         ],
         "sameAs": [
-          "https://twitter.com/netmirrors",
+          "https://twitter.com/neocinematv",
           "https://github.com/loveghariwala"
         ],
       },
@@ -132,7 +132,7 @@ export default function RootLayout({
         "@type": "WebSite",
         "@id": `${baseUrl}#website`,
         "url": baseUrl,
-        "name": "NetMirrors",
+        "name": "Neocinema",
         "description": "One of the best free movie streaming sites no sign up required. Safe free movie streaming web apps no download with high quality.",
         "publisher": { "@id": `${baseUrl}#org` },
         "potentialAction": {
@@ -144,7 +144,7 @@ export default function RootLayout({
       {
         "@type": "SoftwareApplication",
         "@id": `${baseUrl}#app`,
-        "name": "NetMirrors",
+        "name": "Neocinema",
         "url": baseUrl,
         "description": "A platform for discovering movies, TV series, and anime with AI-powered semantic recommendations, advanced filtering, and personalized watchlists.",
         "applicationCategory": "EntertainmentApplication",

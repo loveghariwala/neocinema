@@ -31,7 +31,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
 
     if (!movie) {
         return {
-            title: "Movie Not Found — NetMirrors",
+            title: "Movie Not Found — Neocinema",
             description: "The movie details page you are trying to reach does not exist or has been removed.",
             robots: { index: false, follow: false }
         };
@@ -50,13 +50,13 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
         ? `Cast of ${movie.title}, Release Date & Everything We Know`
         : `Watch ${movie.title} ${releaseYear ? `(${releaseYear}) ` : ""}Online Free`;
     const descriptionText = isUpcoming
-        ? `Discover the cast of ${movie.title}${releaseYear ? ` (${releaseYear})` : ""}, release date, characters, and plot summary. Read latest updates about ${movie.title} on NetMirrors.`
+        ? `Discover the cast of ${movie.title}${releaseYear ? ` (${releaseYear})` : ""}, release date, characters, and plot summary. Read latest updates about ${movie.title} on Neocinema.`
         : `Stream ${movie.title} full movie no registration. ${movie.overview ? movie.overview.substring(0, 100).trim() + '...' : `Play ${movie.title} free streaming english.`} Watch online via our free web app.`;
 
     const castKeywords = (movie.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
     const genreKeywords = (movie.genres || []).map((g: string) => `${g.toLowerCase()} movies free`);
 
-    const blockedIds = ["1180798", "1064137", "1154268", "260471", "1173900", "490005", "1628522", "852042"];
+    const blockedIds: string[] = [];
     const isBlocked = blockedIds.includes(String(id));
 
     return {
@@ -67,7 +67,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
             `where to watch ${movie.title} online free hd`,
             `stream ${movie.title} full movie no registration`,
             `play ${movie.title} free streaming english`,
-            `${movie.title} free watch online netmirrors`,
+            `${movie.title} free watch online neocinema`,
             movie.title,
             `${movie.title} ${releaseYear}`,
             `${movie.title} cast`,
@@ -83,7 +83,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
             ? { index: false, follow: false }
             : { index: true, follow: true },
         openGraph: {
-            title: `${titleText} | NetMirrors`,
+            title: `${titleText} | Neocinema`,
             description: descriptionText,
             url: `/movies/${id}`,
             type: "video.movie",
@@ -91,13 +91,13 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
                 ? [{ url: `https://image.tmdb.org/t/p/w780${movie.backdropPath}` }]
                 : movie.posterPath
                     ? [{ url: `https://image.tmdb.org/t/p/w500${movie.posterPath}` }]
-                    : [{ url: "/netmirrors_logo.jpg" }],
+                    : [{ url: "/logo.png" }],
         },
         twitter: {
             card: "summary_large_image",
-            title: `${titleText} | NetMirrors`,
+            title: `${titleText} | Neocinema`,
             description: descriptionText,
-            images: movie.backdropPath ? [`https://image.tmdb.org/t/p/w780${movie.backdropPath}`] : ["/netmirrors_logo.jpg"],
+            images: movie.backdropPath ? [`https://image.tmdb.org/t/p/w780${movie.backdropPath}`] : ["/logo.png"],
         }
     };
 }
@@ -129,7 +129,7 @@ export default async function MovieDetailsPage({
         "@type": "Movie",
         "@id": `${baseUrl}/movies/${id}#movie`,
         "name": movie.title,
-        "image": movie.posterPath ? `https://image.tmdb.org/t/p/w500${movie.posterPath}` : `${baseUrl}/netmirrors_logo.jpg`,
+        "image": movie.posterPath ? `https://image.tmdb.org/t/p/w500${movie.posterPath}` : `${baseUrl}/logo.png`,
         "description": movie.overview,
         "dateCreated": movie.releaseDate || undefined,
         "dateModified": new Date().toISOString(),
@@ -158,7 +158,7 @@ export default async function MovieDetailsPage({
         "publisher": {
             "@type": "Organization",
             "@id": `${baseUrl}#org`,
-            "name": "NetMirrors",
+            "name": "Neocinema",
         },
     };
 
@@ -182,7 +182,7 @@ export default async function MovieDetailsPage({
         "@type": "VideoObject",
         "name": `${movie.title} Full Movie HD`,
         "description": `Where to watch ${movie.title} online free HD. Stream ${movie.title} full movie no registration. ${movie.overview || ''}`,
-        "thumbnailUrl": movie.backdropPath ? `https://image.tmdb.org/t/p/w780${movie.backdropPath}` : `${baseUrl}/netmirrors_logo.jpg`,
+        "thumbnailUrl": movie.backdropPath ? `https://image.tmdb.org/t/p/w780${movie.backdropPath}` : `${baseUrl}/logo.png`,
         "uploadDate": safeDate ? safeDate.toISOString() : new Date().toISOString(),
         "contentUrl": `${baseUrl}/movies/${id}?play=true`,
         "embedUrl": `${baseUrl}/movies/${id}?play=true`,

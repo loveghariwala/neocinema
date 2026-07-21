@@ -33,7 +33,7 @@ const getHomeDataCached = cache(async () => {
 export async function generateMetadata(): Promise<Metadata> {
     const { trendingMovies, trendingSeries } = await getHomeDataCached();
 
-    const blockedIds = ["1180798", "1064137", "1154268", "260471", "1173900", "490005", "1628522", "852042"];
+    const blockedIds: string[] = [];
     const isAllowed = (item: any) => !blockedIds.includes(String(item.id || item.tmdbId || item._id));
 
     // Auto-inject real trending movie & series titles as SEO keywords
@@ -50,8 +50,8 @@ export async function generateMetadata(): Promise<Metadata> {
         .filter(Boolean);
 
     return {
-        title: { absolute: "Watch Free Movies Online in HD | NetMirrors Advanced Multi-Genre Discovery" },
-        description: 'Discover trending movies and TV series on NetMirrors. Use our unique multi-genre selection and advanced filtering to combine genres, filter by ratings/years, and sort precisely to find the perfect movie to watch online free.',
+        title: { absolute: "Watch Free Movies Online in HD | Neocinema Advanced Multi-Genre Discovery" },
+        description: 'Discover trending movies and TV series on Neocinema. Use our unique multi-genre selection and advanced filtering to combine genres, filter by ratings/years, and sort precisely to find the perfect movie to watch online free.',
         keywords: [
             'filter movies by multiple genres',
             'combine movie genres filter',
@@ -61,7 +61,7 @@ export async function generateMetadata(): Promise<Metadata> {
             'what new movies to watch online free this week',
             'top hd movies to stream without paying',
             'good movies to watch right now free online',
-            'NetMirrors',
+            'Neocinema',
             'movie streaming 2026',
             'watch movies online',
             'AI movie discovery',
@@ -76,17 +76,17 @@ export async function generateMetadata(): Promise<Metadata> {
             follow: true,
         },
         openGraph: {
-            title: "Best Trending Movies to Stream with Advanced Multi-Genre Filtering | NetMirrors",
-            description: "Use our unique multi-genre selection and advanced filtering to combine genres, filter by ratings/years, and sort precisely to find the perfect movie to watch online free on NetMirrors.",
+            title: "Best Trending Movies to Stream with Advanced Multi-Genre Filtering | Neocinema",
+            description: "Use our unique multi-genre selection and advanced filtering to combine genres, filter by ratings/years, and sort precisely to find the perfect movie to watch online free on Neocinema.",
             url: '/',
             type: "website",
-            images: [{ url: "/og_banner.jpg", width: 1200, height: 630, alt: "NetMirrors — Discover Movies & Series" }],
+            images: [{ url: "/og_banner.png", width: 1200, height: 630, alt: "Neocinema — Discover Movies & Series" }],
         },
         twitter: {
             card: "summary_large_image",
-            title: "Advanced Multi-Genre Movie Filtering & Streaming | NetMirrors",
+            title: "Advanced Multi-Genre Movie Filtering & Streaming | Neocinema",
             description: "Combine multiple genres, filter by ratings/years, and sort precisely to discover the perfect movie.",
-            images: ["/netmirrors_logo.jpg"],
+            images: ["/logo.png"],
         },
     };
 }

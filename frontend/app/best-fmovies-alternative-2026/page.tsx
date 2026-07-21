@@ -5,7 +5,7 @@ import { Play, Search, ShieldCheck, Zap } from 'lucide-react';
 
 export const metadata: Metadata = {
     title: "Best Fmovies Alternative 2026: Watch Free Movies Online (123Movies Replacement)",
-    description: "Looking for an Fmovies alternative or a replacement for 123movies? Stream free movies online in HD with NetMirrors in the USA and India. No viruses, ultra-fast streaming, and AI recommendations.",
+    description: "Looking for an Fmovies alternative or a replacement for 123movies? Stream free movies online in HD with Neocinema in the USA and India. No viruses, ultra-fast streaming, and AI recommendations.",
     keywords: [
         "fmovies", 
         "fmovies alternative", 
@@ -37,7 +37,7 @@ export default function FMoviesAlternativePage() {
                 "name": "What is the best Fmovies alternative in 2026?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "NetMirrors is currently the best Fmovies alternative. Unlike older streaming sites, it is built on modern architecture ensuring ultra-fast HD streaming without the constant barrage of malicious popups."
+                    "text": "Neocinema is currently the best Fmovies alternative. Unlike older streaming sites, it is built on modern architecture ensuring ultra-fast HD streaming without the constant barrage of malicious popups."
                 }
             },
             {
@@ -45,23 +45,23 @@ export default function FMoviesAlternativePage() {
                 "name": "Is 123movies down? Where can I watch free movies online?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Many proxy domains for 123movies frequently go down. You can watch free movies online securely on platforms like NetMirrors, which offers a massive library of trending movies and TV series."
+                    "text": "Many proxy domains for 123movies frequently go down. You can watch free movies online securely on platforms like Neocinema, which offers a massive library of trending movies and TV series."
                 }
             },
             {
                 "@type": "Question",
-                "name": "How is NetMirrors different from Vegamovies or Bappam movies?",
+                "name": "How is Neocinema different from Vegamovies or Bappam movies?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "While Vegamovies and Bappam movies often require downloading massive files, NetMirrors allows you to stream directly in your browser with zero downloads required."
+                    "text": "While Vegamovies and Bappam movies often require downloading massive files, Neocinema allows you to stream directly in your browser with zero downloads required."
                 }
             },
             {
                 "@type": "Question",
-                "name": "Does NetMirrors work in the USA and India?",
+                "name": "Does Neocinema work in the USA and India?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Yes, NetMirrors uses a global CDN to provide ultra-fast streaming speeds. Whether you are searching for an Fmovies alternative in the USA or want to stream Bollywood hits in India, the platform works seamlessly without a VPN."
+                    "text": "Yes, Neocinema uses a global CDN to provide ultra-fast streaming speeds. Whether you are searching for an Fmovies alternative in the USA or want to stream Bollywood hits in India, the platform works seamlessly without a VPN."
                 }
             }
         ]
@@ -131,15 +131,15 @@ export default function FMoviesAlternativePage() {
 
                     <h2 className="text-3xl font-bold text-white mb-4 mt-12">The Ultimate Streaming Site for the USA & India</h2>
                     <p className="mb-6">
-                        For users in regions where downloading from sites like Vegamovies is the norm (especially across India), NetMirrors offers a vastly superior streaming alternative. Why risk downloading a massive file that might contain malware when you can stream "Trending Hindi Movies" or Hollywood blockbusters directly in your browser? 
+                        For users in regions where downloading from sites like Vegamovies is the norm (especially across India), Neocinema offers a vastly superior streaming alternative. Why risk downloading a massive file that might contain malware when you can stream "Trending Hindi Movies" or Hollywood blockbusters directly in your browser? 
                     </p>
                     <p className="mb-6">
-                        Similarly, for viewers in the USA dealing with constant ISP blocks on older sites, NetMirrors's global edge network guarantees that you can watch free movies online in HD without buffering or needing a complex VPN setup. It truly is the ultimate global <strong>FMovies alternative</strong>.
+                        Similarly, for viewers in the USA dealing with constant ISP blocks on older sites, Neocinema's global edge network guarantees that you can watch free movies online in HD without buffering or needing a complex VPN setup. It truly is the ultimate global <strong>FMovies alternative</strong>.
                     </p>
  
                     <div className="bg-neutral-900 border border-red-500/20 p-8 rounded-2xl mt-12 text-center">
                         <h3 className="text-2xl font-black text-white mb-4">Ready to upgrade your streaming experience?</h3>
-                        <p className="text-neutral-400 mb-6">Stop searching for Fmovies proxies. Bookmark NetMirrors today and start watching instantly.</p>
+                        <p className="text-neutral-400 mb-6">Stop searching for Fmovies proxies. Bookmark Neocinema today and start watching instantly.</p>
                         <Link href="/" className="inline-flex items-center gap-2 rounded-full bg-red-600 px-8 py-4 text-sm font-bold text-white transition-all hover:bg-red-700 shadow-[0_0_20px_rgba(220,38,38,0.4)]">
                             Start Watching Now
                         </Link>

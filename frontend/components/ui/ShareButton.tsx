@@ -13,8 +13,8 @@ export default function ShareButton({ title }: ShareButtonProps) {
 
     const handleShare = async () => {
         const shareData = {
-            title: `${title} — NetMirrors`,
-            text: `Check out "${title}" on NetMirrors!`,
+            title: `${title} — Neocinema`,
+            text: `Check out "${title}" on Neocinema!`,
             url: typeof window !== "undefined" ? window.location.href : "",
         };
 

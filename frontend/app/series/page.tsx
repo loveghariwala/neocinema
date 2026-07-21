@@ -43,23 +43,23 @@ const generateSeriesJsonLd = (seriesList: any[]) => {
         "@context": "https://schema.org",
         "@type": "CollectionPage",
         "@id": `${baseUrl}/series#collection`,
-        "name": "Browse TV Series — NetMirrors",
+        "name": "Browse TV Series — Neocinema",
         "description": "Discover over 200,000 television series, documentaries, and anime from around the world.",
         "url": `${baseUrl}/series`,
         "isPartOf": {
             "@type": "WebSite",
             "@id": `${baseUrl}#website`,
-            "name": "NetMirrors",
+            "name": "Neocinema",
             "url": baseUrl,
         },
         "publisher": {
             "@type": "Organization",
             "@id": `${baseUrl}#org`,
-            "name": "NetMirrors",
+            "name": "Neocinema",
             "url": baseUrl,
             "logo": {
                 "@type": "ImageObject",
-                "url": `${baseUrl}/netmirrors_logo.jpg`,
+                "url": `${baseUrl}/logo.png`,
             },
         },
         "mainEntity": {
@@ -75,7 +75,7 @@ const generateSeriesJsonLd = (seriesList: any[]) => {
                     "description": series.overview,
                     "image": series.poster_path
                         ? `https://image.tmdb.org/t/p/w500${series.poster_path}`
-                        : `${baseUrl}/netmirrors_logo.jpg`,
+                        : `${baseUrl}/logo.png`,
                     "url": `${baseUrl}/series/${series.id || series.tmdbId}`,
                     "startDate": series.first_air_date,
                     ...(series.rating && series.voteCount ? {
@@ -118,7 +118,7 @@ export async function generateMetadata(): Promise<Metadata> {
         .filter(Boolean);
 
     return {
-        title: page === "1" ? "Watch TV Series Online Free | Advanced Multi-Genre Filter & Browse | NetMirrors" : `Watch TV Series Online Free - Page ${page} | NetMirrors`,
+        title: page === "1" ? "Watch TV Series Online Free | Advanced Multi-Genre Filter & Browse | Neocinema" : `Watch TV Series Online Free - Page ${page} | Neocinema`,
         description: "Discover over 200,000 television series, documentaries, and anime from around the world. Select multiple genres at once, filter by rating/year/language, and sort precisely to find exactly what to watch free online.",
         keywords: [
             "filter tv shows by multiple genres",
@@ -135,17 +135,17 @@ export async function generateMetadata(): Promise<Metadata> {
         alternates: { canonical: '/series' },
         robots: page === "1" ? { index: true, follow: true } : { index: false, follow: true },
         openGraph: {
-            title: "Browse TV Series with Advanced Multi-Genre Filtering | NetMirrors",
-            description: "Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to discover the perfect television show or anime to watch free on NetMirrors.",
+            title: "Browse TV Series with Advanced Multi-Genre Filtering | Neocinema",
+            description: "Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to discover the perfect television show or anime to watch free on Neocinema.",
             url: '/series',
             type: "website",
-            images: [{ url: "/netmirrors_logo.jpg", width: 800, height: 600, alt: "Browse TV Series on NetMirrors" }],
+            images: [{ url: "/logo.png", width: 800, height: 600, alt: "Browse TV Series on Neocinema" }],
         },
         twitter: {
             card: "summary_large_image",
-            title: "Browse TV Series with Advanced Multi-Genre Filters | NetMirrors",
+            title: "Browse TV Series with Advanced Multi-Genre Filters | Neocinema",
             description: "Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to discover the perfect television show or anime.",
-            images: ["/netmirrors_logo.jpg"],
+            images: ["/logo.png"],
         },
     };
 }

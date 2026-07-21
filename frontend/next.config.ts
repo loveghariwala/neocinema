@@ -46,8 +46,8 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: '/fmovies-vs-neocinema',
-        destination: '/fmovies-vs-netmirrors',
+        source: '/fmovies-vs-netmirrors',
+        destination: '/fmovies-vs-neocinema',
         permanent: true,
       },
     ];
