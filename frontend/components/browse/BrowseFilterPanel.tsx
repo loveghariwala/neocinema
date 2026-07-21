@@ -68,7 +68,7 @@ export default function BrowseFilterPanel({
     totalResults,
     genres,
 }: Props) {
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [isFilterOpen, setIsFilterOpen] = useState(true);
     const [searchInput, setSearchInput] = useState(filters.search);
 
     // Custom dropdown states
