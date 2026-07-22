@@ -86,7 +86,7 @@ export async function generateMetadata(): Promise<Metadata> {
             card: "summary_large_image",
             title: "Advanced Multi-Genre Movie Filtering & Streaming | Neocinema",
             description: "Combine multiple genres, filter by ratings/years, and sort precisely to discover the perfect movie.",
-            images: ["/logo.png"],
+            images: ["/og_banner.png"],
         },
     };
 }
