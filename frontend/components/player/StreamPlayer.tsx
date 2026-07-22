@@ -1,10 +1,8 @@
 "use client";
 
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
-import { createPortal } from "react-dom";
-import { AlertCircle, ChevronDown, Layers, Monitor, Play, RefreshCw, Shield, ShieldCheck, Signal, X, Zap, Lock, Server, Wifi } from 'lucide-react';
-
-
+import { AlertCircle, ChevronDown, ChevronLeft, ChevronRight, Layers, Monitor, Play, RefreshCw, Server, Shield, ShieldCheck, Signal, Zap } from 'lucide-react';
+import { saveWatchProgress } from "@/services/historyService";
 
 interface Season {
     id: number;
@@ -17,6 +15,8 @@ interface StreamPlayerProps {
     tmdbId: number;
     imdbId?: string;
     title: string;
+    posterPath?: string;
+    backdropPath?: string;
     isTv?: boolean;
     seasons?: Season[];
     autoPlay?: boolean;
@@ -27,20 +27,23 @@ interface StreamPlayerProps {
 interface ServerConfig {
     name: string;
     providerId: number;
+    baseUrl: string;
     encryption: "AES-256" | "SSL/TLS" | "E2E" | "AES-128";
     quality: "4K" | "1080p" | "720p";
-    speed: 1 | 2 | 3; // signal bars
+    speed: 1 | 2 | 3;
 }
 
 const SERVERS: ServerConfig[] = [
-    { name: "OMEGA", providerId: 11, encryption: "AES-256", quality: "4K", speed: 3 },
-    { name: "ALPHA", providerId: 1, encryption: "AES-256", quality: "4K", speed: 3 },
-    { name: "GAMMA", providerId: 3, encryption: "SSL/TLS", quality: "1080p", speed: 3 },
-    { name: "SIGMA", providerId: 22, encryption: "AES-256", quality: "4K", speed: 2 },
-    { name: "EPSILON", providerId: 5, encryption: "SSL/TLS", quality: "1080p", speed: 2 },
-    { name: "LAMBDA", providerId: 12, encryption: "AES-256", quality: "4K", speed: 3 },
+    { name: "ALPHA", providerId: 1, baseUrl: "https://vidnest.fun", encryption: "AES-256", quality: "4K", speed: 3 },
+    { name: "BETA", providerId: 2, baseUrl: "https://vidsrc.sbs/embed", encryption: "SSL/TLS", quality: "1080p", speed: 3 },
+    { name: "GAMMA", providerId: 3, baseUrl: "https://player.videasy.to", encryption: "SSL/TLS", quality: "1080p", speed: 3 },
+    { name: "DELTA", providerId: 4, baseUrl: "https://vidlink.pro", encryption: "SSL/TLS", quality: "1080p", speed: 3 },
+    { name: "EPSILON", providerId: 5, baseUrl: "https://vidfast.vc", encryption: "AES-256", quality: "4K", speed: 3 },
+    { name: "ZETA", providerId: 6, baseUrl: "https://peachify.pro/embed", encryption: "AES-256", quality: "4K", speed: 2 },
+    { name: "ETA", providerId: 7, baseUrl: "https://www.vidking.net/embed", encryption: "E2E", quality: "1080p", speed: 3 },
+    { name: "THETA", providerId: 8, baseUrl: "https://nontongo.win/embed", encryption: "AES-128", quality: "720p", speed: 2 },
+    { name: "IOTA", providerId: 9, baseUrl: "https://vidrock.ru/embed", encryption: "SSL/TLS", quality: "1080p", speed: 2 },
 ];
-
 
 const encryptionColor: Record<string, string> = {
     "AES-256": "text-emerald-400",
@@ -66,37 +69,21 @@ export default function StreamPlayer({
     tmdbId,
     imdbId,
     title,
+    posterPath,
+    backdropPath,
     isTv = false,
     seasons = [],
     autoPlay = false,
     initialSeason = 1,
     initialEpisode = 1
 }: StreamPlayerProps) {
-    const [isPlaying, setIsPlaying] = useState(false);
     const [selectedServerIndex, setSelectedServerIndex] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
-    const [mounted, setMounted] = useState(false);
     const [streamFailed, setStreamFailed] = useState(false);
     const [triedServerIndices, setTriedServerIndices] = useState<number[]>([]);
-    const [hasClickedAd, setHasClickedAd] = useState(false);
     const [showServerPanel, setShowServerPanel] = useState(false);
-    const [hoveredServer, setHoveredServer] = useState<number | null>(null);
     const loadTimerRef = useRef<NodeJS.Timeout | null>(null);
-
-    useEffect(() => {
-        if (autoPlay) {
-            setIsPlaying(true);
-
-            // Hide ?play=true from the URL bar for a cleaner look
-            if (typeof window !== "undefined") {
-                const url = new URL(window.location.href);
-                if (url.searchParams.has("play")) {
-                    url.searchParams.delete("play");
-                    window.history.replaceState({}, document.title, url.pathname + url.search);
-                }
-            }
-        }
-    }, [autoPlay]);
+    const playerContainerRef = useRef<HTMLDivElement>(null);
 
     // Series state
     const [selectedSeason, setSelectedSeason] = useState(initialSeason);
@@ -109,41 +96,47 @@ export default function StreamPlayer({
         setSelectedEpisode(initialEpisode);
     }, [initialSeason, initialEpisode]);
 
+    // Automatically record watch progress to localStorage
     useEffect(() => {
-        setMounted(true);
-    }, []);
+        if (!tmdbId || !title) return;
+        saveWatchProgress({
+            id: tmdbId,
+            title,
+            poster_path: posterPath || "",
+            backdrop_path: backdropPath || "",
+            type: isTv ? "tv" : "movie",
+            season: isTv ? selectedSeason : undefined,
+            episode: isTv ? selectedEpisode : undefined,
+            serverIndex: selectedServerIndex,
+        });
+    }, [tmdbId, title, posterPath, backdropPath, isTv, selectedSeason, selectedEpisode, selectedServerIndex]);
 
-    useEffect(() => {
-        if (isPlaying) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "";
-        }
-        return () => {
-            document.body.style.overflow = "";
-        };
-    }, [isPlaying]);
-
-    // Filter out specials (season 0) if any, unless user wants them
-    const activeSeasons = useMemo(() =>
-        seasons.filter(s => s.season_number > 0)
-        , [seasons]);
-
+    // Active seasons filtering
+    const activeSeasons = useMemo(() => seasons.filter(s => s.season_number > 0), [seasons]);
     const currentSeasonData = useMemo(() =>
         activeSeasons.find(s => s.season_number === selectedSeason) || activeSeasons[0]
         , [activeSeasons, selectedSeason]);
 
     const typePath = isTv ? "tv" : "movie";
 
+    // Embed URL construction with requested parameters: autoplay, nextButton, episodeSelector
     const streamUrl = useMemo(() => {
-        const provider = SERVERS[selectedServerIndex]?.providerId ?? 1;
-        if (provider === 1) return `${atob("aHR0cHM6Ly9wbGF5ZXIudmlkZWFzeS5uZXQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 3) return `${atob("aHR0cHM6Ly92aWRsaW5rLnByby8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?primaryColor=dc2626`;
-        if (provider === 5) return `${atob("aHR0cHM6Ly93d3cuMmVtYmVkLmNjL2VtYmVkLw==")}${tmdbId}`;
-        if (provider === 11) return `${atob("aHR0cHM6Ly92aWRuZXN0LmZ1bi8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
-        if (provider === 12) return `${atob("aHR0cHM6Ly92aWRuZXN0LmZ1bi8=")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?server=gama`;
-        if (provider === 22) return `${atob("aHR0cHM6Ly92aWRzcmMuc2JzL2VtYmVkLw==")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?autoplay=1&color=e50914&sub=en&controls=0`;
-        return `${atob("aHR0cHM6Ly9wbGF5ZXIudmlkZWFzeS5uZXQv")}${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}`;
+        const server = SERVERS[selectedServerIndex] || SERVERS[0];
+        const tvParams = "autoplay=1&autoPlay=true&nextButton=true&autoNext=true&episodeSelector=true&nextEpisode=true";
+        const movieParams = "autoplay=1&autoPlay=true";
+        const params = isTv ? tvParams : movieParams;
+
+        // Server 3: Videasy
+        if (server.providerId === 3) {
+            return `https://player.videasy.to/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?color=dc2626&${params}`;
+        }
+
+        // Server 4: VidLink Pro
+        if (server.providerId === 4) {
+            return `https://vidlink.pro/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?primaryColor=dc2626&${params}`;
+        }
+
+        return `${server.baseUrl}/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?${params}`;
     }, [selectedServerIndex, tmdbId, typePath, isTv, selectedSeason, selectedEpisode]);
 
     // Reset loading state when stream changes
@@ -154,7 +147,7 @@ export default function StreamPlayer({
 
     // Auto-try next server after 15 seconds of loading
     useEffect(() => {
-        if (!isPlaying || !isLoading) {
+        if (!isLoading) {
             if (loadTimerRef.current) clearTimeout(loadTimerRef.current);
             return;
         }
@@ -163,12 +156,10 @@ export default function StreamPlayer({
             const newTried = [...triedServerIndices, selectedServerIndex];
             setTriedServerIndices(newTried);
 
-            // Find next untried server index
             const nextServerIndex = SERVERS.findIndex((_, idx) => !newTried.includes(idx));
             if (nextServerIndex !== -1) {
                 setSelectedServerIndex(nextServerIndex);
             } else {
-                // All servers tried
                 setIsLoading(false);
                 setStreamFailed(true);
             }
@@ -177,7 +168,7 @@ export default function StreamPlayer({
         return () => {
             if (loadTimerRef.current) clearTimeout(loadTimerRef.current);
         };
-    }, [isPlaying, isLoading, selectedServerIndex, triedServerIndices]);
+    }, [isLoading, selectedServerIndex, triedServerIndices]);
 
     const handleRetryAll = useCallback(() => {
         setTriedServerIndices([]);
@@ -194,426 +185,316 @@ export default function StreamPlayer({
         setShowServerPanel(false);
     }, []);
 
-    const handleInitialPlay = () => {
-        /*
-        if (!hasClickedAd) {
-            // Check if it is a mobile device
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-            // Adsterra Smart Link Integration (Popunder) - Desktop Only
-            if (!isMobile) {
-                window.open("https://www.effectivecpmnetwork.com/khge4vq0f?key=0bc9ee47ad5de40ae42fce1eae3506e2", "_blank");
-            }
-            setHasClickedAd(true);
+    // TV episode navigation helper functions
+    const handleNextEpisode = useCallback(() => {
+        const totalEpisodes = currentSeasonData?.episode_count || 1;
+        if (selectedEpisode < totalEpisodes) {
+            setSelectedEpisode(prev => prev + 1);
+        } else if (selectedSeason < activeSeasons.length) {
+            setSelectedSeason(prev => prev + 1);
+            setSelectedEpisode(1);
         }
-        */
-        setIsPlaying(true);
-    };
+    }, [selectedEpisode, currentSeasonData, selectedSeason, activeSeasons.length]);
 
-    // Signal strength bars component
+    const handlePrevEpisode = useCallback(() => {
+        if (selectedEpisode > 1) {
+            setSelectedEpisode(prev => prev - 1);
+        } else if (selectedSeason > 1) {
+            const prevSeason = activeSeasons.find(s => s.season_number === selectedSeason - 1);
+            setSelectedSeason(selectedSeason - 1);
+            setSelectedEpisode(prevSeason?.episode_count || 1);
+        }
+    }, [selectedEpisode, selectedSeason, activeSeasons]);
+
     const SignalBars = ({ level }: { level: number }) => (
         <div className="flex items-end gap-[2px] h-3">
             {[1, 2, 3].map((bar) => (
                 <div
                     key={bar}
-                    className={`w-[3px] rounded-full transition-all duration-300 ${
-                        bar <= level
-                            ? level === 3 ? "bg-emerald-400" : level === 2 ? "bg-amber-400" : "bg-red-400"
-                            : "bg-white/10"
-                    }`}
+                    className={`w-[3px] rounded-full transition-all duration-300 ${bar <= level
+                        ? level === 3 ? "bg-emerald-400" : level === 2 ? "bg-amber-400" : "bg-red-400"
+                        : "bg-white/10"
+                        }`}
                     style={{ height: `${bar * 4}px` }}
                 />
             ))}
         </div>
     );
 
-    if (!isPlaying) {
-        return (
-            <button
-                onClick={handleInitialPlay}
-                className="flex items-center gap-2 sm:gap-3 rounded-full bg-red-600 px-6 py-3.5 sm:px-8 sm:py-4 md:px-10 md:py-5 font-black text-white transition-all hover:scale-105 hover:bg-red-700 hover:red-glow group shadow-[0_0_30px_rgba(220,38,38,0.4)]"
-            >
-                <div className="rounded-full bg-white/20 p-1 group-hover:bg-white/40 transition-colors">
-                    <Play fill="currentColor" className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
-                </div>
-                <span className="text-sm sm:text-base md:text-lg tracking-tight text-white">WATCH NOW</span>
-            </button>
-        );
-    }
-
-    if (!mounted) return null;
-
     const currentServer = SERVERS[selectedServerIndex];
+    const maxEpisodes = currentSeasonData?.episode_count || 1;
+    const hasNextEpisode = isTv && (selectedEpisode < maxEpisodes || selectedSeason < activeSeasons.length);
+    const hasPrevEpisode = isTv && (selectedEpisode > 1 || selectedSeason > 1);
 
-    const playerUI = (
-        <div className="fixed inset-0 z-[100000] flex items-center justify-center bg-black/98 backdrop-blur-3xl" style={{ animation: "playerFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)" }}>
-            <style>{`
-                @keyframes playerFadeIn {
-                    from { opacity: 0; transform: scale(0.97); }
-                    to { opacity: 1; transform: scale(1); }
-                }
-                @keyframes pulseGlow {
-                    0%, 100% { box-shadow: 0 0 20px rgba(220, 38, 38, 0.15); }
-                    50% { box-shadow: 0 0 40px rgba(220, 38, 38, 0.3); }
-                }
-                @keyframes shimmer {
-                    0% { background-position: -200% 0; }
-                    100% { background-position: 200% 0; }
-                }
-                @keyframes slideUp {
-                    from { opacity: 0; transform: translateY(20px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-                @keyframes serverPanelIn {
-                    from { opacity: 0; transform: translateY(10px) scale(0.98); }
-                    to { opacity: 1; transform: translateY(0) scale(1); }
-                }
-                .server-card-hover:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 8px 30px -10px rgba(220, 38, 38, 0.25);
-                }
-                .shimmer-line {
-                    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%);
-                    background-size: 200% 100%;
-                    animation: shimmer 2s infinite;
-                }
-            `}</style>
+    return (
+        <div id="inline-stream-player" ref={playerContainerRef} className="w-full my-6 sm:my-8 rounded-2xl md:rounded-3xl border border-white/10 bg-neutral-950/90 shadow-[0_20px_80px_rgba(0,0,0,0.8)] transition-all duration-500 backdrop-blur-2xl relative z-30">
+            {/* Click-outside Backdrop for Dropdowns */}
+            {(showSeasonDropdown || showEpisodeDropdown) && (
+                <div
+                    className="fixed inset-0 z-[80] bg-black/10"
+                    onClick={() => {
+                        setShowSeasonDropdown(false);
+                        setShowEpisodeDropdown(false);
+                    }}
+                />
+            )}
 
-            <div className="relative w-full h-full md:max-w-[98vw] md:max-h-[96vh] md:rounded-[2rem] border-0 md:border md:border-white/10 bg-neutral-950 shadow-[0_0_150px_rgba(220,38,38,0.25)] flex flex-col overflow-hidden">
-                {/* ─── Top Bar ────────────────────────────────────────── */}
-                <div className="relative z-[1000] flex flex-wrap items-center justify-between gap-2 sm:gap-4 bg-gradient-to-r from-black/95 via-neutral-950/95 to-black/95 px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3.5 backdrop-blur-3xl border-b border-white/5 md:rounded-t-[2.5rem]">
-                    {/* Left: Title / Branding + Active Server Info */}
-                    <div className="flex flex-col min-w-0 flex-1 order-1">
-                        <div className="flex items-center gap-2 mb-0.5">
-                            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] text-red-600 block">Streaming Mode</span>
-                            <div className="hidden sm:flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                                <span className="text-[7px] font-black uppercase tracking-wider text-emerald-400">ENCRYPTED</span>
-                            </div>
-                        </div>
-                        <h2 className="text-[11px] sm:text-sm md:text-base font-black text-white text-glow truncate">
-                            {title} {isTv && <span className="text-neutral-400 font-bold ml-1 sm:ml-2">S{selectedSeason} E{selectedEpisode}</span>}
-                        </h2>
+            {/* ─── Top Player Bar ────────────────────────────────────────── */}
+            <div className="relative z-50 flex flex-wrap items-center justify-between gap-2.5 bg-neutral-900/90 px-3 py-2.5 sm:px-6 sm:py-4 border-b border-white/5 backdrop-blur-xl">
+                {/* Left: Stream Info */}
+                <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-red-600 animate-ping" />
+                        <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.25em] text-red-500">
+                            STREAMING PLAYER
+                        </span>
                     </div>
-
-                    {/* Active server badge — compact inline */}
-                    <div className="hidden md:flex items-center gap-2 order-2">
-                        <button
-                            onClick={() => setShowServerPanel(!showServerPanel)}
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer group"
-                        >
-                            <ShieldCheck size={13} className={encryptionColor[currentServer.encryption]} />
-                            <span className="text-[10px] font-black text-white uppercase tracking-wider">{currentServer.name}</span>
-                            <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border ${encryptionBg[currentServer.encryption]} ${encryptionColor[currentServer.encryption]}`}>
-                                {currentServer.encryption}
-                            </span>
-                            <SignalBars level={currentServer.speed} />
-                            <ChevronDown size={10} className={`text-neutral-500 transition-transform duration-300 ${showServerPanel ? "rotate-180" : ""}`} />
-                        </button>
+                    <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                        <ShieldCheck size={12} className="text-emerald-400" />
+                        <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-emerald-400">
+                            {currentServer.encryption} SECURED
+                        </span>
                     </div>
-
-                    {/* Close Button */}
-                    <button
-                        onClick={() => setIsPlaying(false)}
-                        className="rounded-full bg-white/10 p-2 sm:p-1.5 md:p-2 text-white transition-all hover:bg-red-600 hover:rotate-90 border border-white/20 backdrop-blur-md group flex-shrink-0 order-3 sm:order-4 touch-manipulation"
-                    >
-                        <X className="h-5 w-5 sm:h-4 sm:w-4 md:h-5 md:w-5 transition-transform group-hover:scale-110" />
-                    </button>
-
-                    {/* Series Selectors — full width row on mobile, inline on larger */}
-                    {isTv && activeSeasons.length > 0 && (
-                        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto order-4 sm:order-3 flex-shrink-0">
-                            {/* Season Selector */}
-                            <div className="relative flex-1 sm:flex-initial">
-                                <button
-                                    onClick={() => {
-                                        setShowSeasonDropdown(!showSeasonDropdown);
-                                        setShowEpisodeDropdown(false);
-                                    }}
-                                    className={`flex items-center justify-center gap-1.5 sm:gap-2.5 rounded-xl w-full sm:w-auto px-3 py-2.5 sm:py-2 text-[10px] sm:text-xs font-black text-white border transition-all touch-manipulation ${showSeasonDropdown
-                                        ? "bg-red-600 border-red-500 ring-2 ring-red-600/20"
-                                        : "bg-white/5 border-white/10 hover:bg-white/10"
-                                        }`}
-                                >
-                                    <Layers size={14} className={`sm:w-3 sm:h-3 ${showSeasonDropdown ? "text-white" : "text-red-600"}`} />
-                                    <span className="opacity-70">S</span>{selectedSeason}
-                                    <ChevronDown size={12} className={`transition-transform duration-300 ${showSeasonDropdown ? "rotate-180" : ""}`} />
-                                </button>
-
-                                <>
-                                    {showSeasonDropdown && (
-                                        <div
-                                            className="absolute top-full left-0 right-0 sm:right-auto mt-2 z-[1100] max-h-56 sm:w-40 overflow-y-auto rounded-xl border border-white/10 bg-neutral-900 shadow-[0_20px_50px_rgba(0,0,0,0.8)] backdrop-blur-3xl p-1.5"
-                                        >
-                                            {activeSeasons.map((s) => (
-                                                <button
-                                                    key={s.id}
-                                                    onClick={() => {
-                                                        setSelectedSeason(s.season_number);
-                                                        setSelectedEpisode(1);
-                                                        setShowSeasonDropdown(false);
-                                                    }}
-                                                    className={`w-full rounded-lg px-3 py-2.5 sm:py-2 text-left text-xs sm:text-[11px] font-bold transition-all mb-1 last:mb-0 touch-manipulation ${selectedSeason === s.season_number
-                                                        ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
-                                                        : "text-neutral-400 hover:bg-white/10 hover:text-white"
-                                                        }`}
-                                                >
-                                                    Season {s.season_number}
-                                                    <span className="block text-[9px] text-neutral-300 font-medium">{s.episode_count} Episodes</span>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    )}
-                                </>
-                            </div>
-
-                            {/* Episode Selector */}
-                            <div className="relative flex-1 sm:flex-initial">
-                                <button
-                                    onClick={() => {
-                                        setShowEpisodeDropdown(!showEpisodeDropdown);
-                                        setShowSeasonDropdown(false);
-                                    }}
-                                    className={`flex items-center justify-center gap-1.5 sm:gap-2.5 rounded-xl w-full sm:w-auto px-3 py-2.5 sm:py-2 text-[10px] sm:text-xs font-black text-white border transition-all touch-manipulation ${showEpisodeDropdown
-                                        ? "bg-red-600 border-red-500 ring-2 ring-red-600/20"
-                                        : "bg-white/5 border-white/10 hover:bg-white/10"
-                                        }`}
-                                >
-                                    <Monitor size={14} className={`sm:w-3 sm:h-3 ${showEpisodeDropdown ? "text-white" : "text-red-600"}`} />
-                                    <span className="opacity-70">E</span>{selectedEpisode}
-                                    <ChevronDown size={12} className={`transition-transform duration-300 ${showEpisodeDropdown ? "rotate-180" : ""}`} />
-                                </button>
-
-                                <>
-                                    {showEpisodeDropdown && (
-                                        <div
-                                            className="absolute top-full right-0 left-0 sm:left-auto sm:right-0 mt-2 z-[1100] max-h-56 sm:w-56 overflow-y-auto rounded-xl border border-white/10 bg-neutral-900 shadow-[0_20px_50px_rgba(0,0,0,0.8)] backdrop-blur-3xl p-2"
-                                        >
-                                            <div className="grid grid-cols-5 sm:grid-cols-4 gap-1.5">
-                                                {Array.from({ length: currentSeasonData?.episode_count || 1 }, (_, i) => i + 1).map((e) => (
-                                                    <button
-                                                        key={e}
-                                                        onClick={() => {
-                                                            setSelectedEpisode(e);
-                                                            setShowEpisodeDropdown(false);
-                                                        }}
-                                                        className={`rounded-lg h-9 sm:h-8 flex items-center justify-center text-[11px] sm:text-[10px] font-black transition-all touch-manipulation ${selectedEpisode === e
-                                                            ? "bg-red-600 text-white shadow-lg shadow-red-600/30 scale-105"
-                                                            : "text-neutral-500 hover:bg-white/10 hover:text-white"
-                                                            }`}
-                                                    >
-                                                        {e}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-                                </>
-                            </div>
-                        </div>
-                    )}
                 </div>
 
-                {/* ─── Iframe Container ─────────────────────────────── */}
-                <div className="relative flex-grow bg-black overflow-hidden min-h-[40vh] sm:min-h-0">
-                    {isLoading && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 sm:gap-8 bg-neutral-950 z-20">
-                            {/* Enhanced loading spinner with server info */}
-                            <div className="relative h-28 w-28 sm:h-32 sm:w-32">
-                                <div className="absolute inset-0 rounded-full border-4 border-white/5" />
-                                <div className="absolute inset-0 rounded-full border-t-4 border-red-600 animate-spin" style={{ animationDuration: "1.2s" }} />
-                                <div className="absolute inset-3 rounded-full border-b-2 border-red-500/30 animate-spin" style={{ animationDuration: "2s", animationDirection: "reverse" }} />
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <Shield className="h-8 w-8 text-red-500/60 animate-pulse" />
-                                </div>
-                            </div>
-                            <div className="text-center px-4" style={{ animation: "slideUp 0.5s ease" }}>
-                                <h3 className="text-base sm:text-lg font-black text-white tracking-[0.2em] sm:tracking-[0.3em] uppercase mb-2">Establishing Secure Stream</h3>
-                                <p className="text-[10px] sm:text-xs text-neutral-400 font-bold max-w-sm mx-auto leading-relaxed mb-3">
-                                    CONNECTING TO SERVER: <span className="text-red-400">{SERVERS[selectedServerIndex]?.name || "UNKNOWN"}</span> ({Math.min(selectedServerIndex + 1, SERVERS.length)} OF {SERVERS.length})
-                                </p>
-                                <div className="flex items-center justify-center gap-3">
-                                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                                        <Lock size={10} className="text-emerald-400" />
-                                        <span className="text-[9px] font-bold text-emerald-400">{currentServer.encryption}</span>
-                                    </div>
-                                    <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border ${qualityColor[currentServer.quality]}`}>
-                                        <span className="text-[9px] font-bold">{currentServer.quality}</span>
-                                    </div>
-                                </div>
-                                {/* Loading progress bar */}
-                                <div className="mt-4 w-48 sm:w-64 mx-auto h-1 rounded-full bg-white/5 overflow-hidden">
-                                    <div className="h-full rounded-full bg-gradient-to-r from-red-600 to-red-500 shimmer-line" style={{ width: "100%" }} />
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {streamFailed && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 sm:gap-6 bg-neutral-950 z-30 px-6">
-                            <div className="rounded-full bg-red-600/10 p-4 sm:p-6 border border-red-600/20" style={{ animation: "pulseGlow 2s ease infinite" }}>
-                                <AlertCircle size={36} className="text-red-500 sm:w-12 sm:h-12" />
-                            </div>
-                            <div className="text-center">
-                                <h3 className="text-lg sm:text-xl font-black text-white tracking-tight mb-2 sm:mb-3">Content Unavailable</h3>
-                                <p className="text-xs sm:text-sm text-neutral-400 font-medium max-w-sm mx-auto leading-relaxed mb-4 sm:mb-6">
-                                    This title is not available on any of our streaming servers right now. This usually happens with lesser-known or region-restricted content.
-                                </p>
-                                <button
-                                    onClick={handleRetryAll}
-                                    className="flex items-center gap-2 mx-auto rounded-full bg-red-600 px-5 py-2.5 sm:px-6 sm:py-3 text-xs sm:text-sm font-black text-white transition-all hover:bg-red-700 hover:scale-105 touch-manipulation"
-                                >
-                                    <RefreshCw size={16} />
-                                    RETRY ALL SERVERS
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    <iframe
-                        key={streamUrl}
-                        src={streamUrl}
-                        className="h-full w-full border-none shadow-[0_0_50px_rgba(0,0,0,0.5)]"
-                        allowFullScreen
-                        referrerPolicy="no-referrer"
-                        allow="autoplay; encrypted-media"
-                        onLoad={() => {
-                            setIsLoading(false);
-                            setStreamFailed(false);
-                        }}
-                    />
-
-                    {/* ─── Expandable Server Panel (overlaid on video) ──── */}
-                    {showServerPanel && (
-                        <div
-                            className="absolute bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-black via-black/98 to-black/90 backdrop-blur-2xl border-t border-white/5 overflow-y-auto"
-                            style={{
-                                animation: "serverPanelIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-                                maxHeight: "70%",
-                            }}
-                        >
-                            <div className="px-3 sm:px-6 pt-4 pb-2 flex items-center justify-between sticky top-0 bg-black/80 backdrop-blur-xl z-10">
-                                <div className="flex items-center gap-3">
-                                    <Server size={14} className="text-red-500" />
-                                    <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.25em] text-white">Select Server</span>
-                                    <span className="text-[9px] font-bold text-neutral-500">{SERVERS.length} AVAILABLE</span>
-                                </div>
-                                <button
-                                    onClick={() => setShowServerPanel(false)}
-                                    className="rounded-lg p-1.5 bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white transition-all touch-manipulation"
-                                >
-                                    <X size={14} />
-                                </button>
-                            </div>
-
-                            <div className="px-3 sm:px-6 pb-4 pt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3">
-                                {SERVERS.map((server, idx) => (
-                                    <button
-                                        key={idx}
-                                        onClick={() => handleServerChange(idx)}
-                                        onMouseEnter={() => setHoveredServer(idx)}
-                                        onMouseLeave={() => setHoveredServer(null)}
-                                        className={`server-card-hover relative rounded-xl p-2.5 sm:p-3 text-left transition-all duration-300 border touch-manipulation ${
-                                            selectedServerIndex === idx
-                                                ? "bg-red-600/15 border-red-500/40 ring-1 ring-red-500/20"
-                                                : "bg-white/[0.03] border-white/[0.06] hover:bg-white/[0.06] hover:border-white/10"
-                                        }`}
-                                    >
-                                        {/* Active indicator */}
-                                        {selectedServerIndex === idx && (
-                                            <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                                        )}
-
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <ShieldCheck size={13} className={selectedServerIndex === idx ? "text-red-400" : encryptionColor[server.encryption]} />
-                                            <span className="text-[11px] sm:text-xs font-black text-white tracking-wider">{server.name}</span>
-                                        </div>
-
-                                        <div className="flex items-center gap-1.5 flex-wrap">
-                                            <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border ${encryptionBg[server.encryption]} ${encryptionColor[server.encryption]}`}>
-                                                {server.encryption}
-                                            </span>
-                                            <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border ${qualityColor[server.quality]}`}>
-                                                {server.quality}
-                                            </span>
-                                        </div>
-
-                                        <div className="mt-2 flex items-center justify-between">
-                                            <SignalBars level={server.speed} />
-                                            {selectedServerIndex === idx && (
-                                                <span className="text-[7px] font-black uppercase tracking-wider text-red-400">ACTIVE</span>
-                                            )}
-                                        </div>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Server Help Hint */}
-                    {!isLoading && !streamFailed && !showServerPanel && (
-                        <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 sm:gap-3 rounded-full bg-black/60 px-4 py-2 sm:px-6 sm:py-2.5 backdrop-blur-md border border-white/10 opacity-0 hover:opacity-100 transition-opacity duration-500 pointer-events-none w-[90%] sm:w-auto justify-center">
-                            <AlertCircle size={14} className="text-red-500 flex-shrink-0" />
-                            <span className="text-[9px] sm:text-[10px] font-black text-white uppercase tracking-wider sm:tracking-widest">Tip: Switch servers if the stream doesn&apos;t start</span>
-                        </div>
-                    )}
-                </div>
-
-                {/* ─── Bottom Server Bar (Quick Switch + Toggle) ─────── */}
-                <div className="bg-gradient-to-r from-black/95 via-neutral-950/95 to-black/95 border-t border-white/5 px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 md:rounded-b-[2.5rem] select-none">
-                    <div className="flex items-center gap-2 sm:gap-3">
-                        {/* Server label + expand on mobile */}
+                {/* Right: TV Controls (Season/Episode & Prev/Next) */}
+                {isTv && activeSeasons.length > 0 && (
+                    <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap">
+                        {/* Prev Episode Button */}
                         <button
-                            onClick={() => setShowServerPanel(!showServerPanel)}
-                            className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 group cursor-pointer px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg hover:bg-white/5 transition-all touch-manipulation"
+                            onClick={handlePrevEpisode}
+                            disabled={!hasPrevEpisode}
+                            className={`flex items-center gap-1 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs sm:text-sm font-black transition-all border touch-manipulation active:scale-95 ${hasPrevEpisode
+                                ? "bg-white/5 hover:bg-red-600 hover:border-red-500 text-white cursor-pointer"
+                                : "bg-white/[0.02] border-white/5 text-neutral-600 cursor-not-allowed"
+                                }`}
                         >
-                            <Shield size={14} className="text-red-500 sm:w-4 sm:h-4" />
-                            <span className="text-[9px] sm:text-[10px] font-black text-red-400 uppercase tracking-wider whitespace-nowrap hidden sm:inline">
-                                SERVERS
-                            </span>
-                            <ChevronDown size={10} className={`text-neutral-500 transition-transform duration-300 ${showServerPanel ? "rotate-180" : ""}`} />
+                            <ChevronLeft size={15} />
+                            <span>PREV</span>
                         </button>
 
-                        {/* Separator */}
-                        <div className="w-px h-5 bg-white/10 flex-shrink-0 hidden sm:block" />
+                        {/* Season Dropdown */}
+                        <div className="relative z-50">
+                            <button
+                                onClick={() => {
+                                    setShowSeasonDropdown(!showSeasonDropdown);
+                                    setShowEpisodeDropdown(false);
+                                }}
+                                className={`flex items-center gap-1.5 sm:gap-2 rounded-xl px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-black text-white border transition-all touch-manipulation active:scale-95 ${showSeasonDropdown ? "bg-red-600 border-red-500 shadow-lg shadow-red-900/40" : "bg-white/5 border-white/10 hover:bg-white/10"
+                                    }`}
+                            >
+                                <Layers size={14} className="text-red-500" />
+                                <span>S{selectedSeason}</span>
+                                <ChevronDown size={13} className={`transition-transform duration-200 ${showSeasonDropdown ? "rotate-180" : ""}`} />
+                            </button>
 
-                        {/* Scrollable server pills */}
-                        <div className="flex gap-1.5 sm:gap-2 flex-grow overflow-x-auto scrollbar-hide pb-0.5 -mb-0.5 snap-x snap-mandatory">
+                            {showSeasonDropdown && (
+                                <div className="absolute top-full left-0 sm:left-auto sm:right-0 mt-2 z-[9999] max-h-64 w-44 overflow-y-auto rounded-xl border border-white/15 bg-neutral-900/98 shadow-[0_20px_50px_rgba(0,0,0,0.9)] p-2 backdrop-blur-2xl touch-manipulation">
+                                    {activeSeasons.map((s) => (
+                                        <button
+                                            key={s.id}
+                                            onClick={() => {
+                                                setSelectedSeason(s.season_number);
+                                                setSelectedEpisode(1);
+                                                setShowSeasonDropdown(false);
+                                            }}
+                                            className={`w-full rounded-lg px-3 py-2.5 text-left text-xs font-bold transition-all mb-1 ${selectedSeason === s.season_number
+                                                ? "bg-red-600 text-white"
+                                                : "text-neutral-300 hover:bg-white/10 hover:text-white"
+                                                }`}
+                                        >
+                                            Season {s.season_number}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Episode Dropdown */}
+                        <div className="relative z-50">
+                            <button
+                                onClick={() => {
+                                    setShowEpisodeDropdown(!showEpisodeDropdown);
+                                    setShowSeasonDropdown(false);
+                                }}
+                                className={`flex items-center gap-1.5 sm:gap-2 rounded-xl px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-black text-white border transition-all touch-manipulation active:scale-95 ${showEpisodeDropdown ? "bg-red-600 border-red-500 shadow-lg shadow-red-900/40" : "bg-white/5 border-white/10 hover:bg-white/10"
+                                    }`}
+                            >
+                                <Monitor size={14} className="text-red-500" />
+                                <span>E{selectedEpisode}</span>
+                                <ChevronDown size={13} className={`transition-transform duration-200 ${showEpisodeDropdown ? "rotate-180" : ""}`} />
+                            </button>
+
+                            {showEpisodeDropdown && (
+                                <div className="absolute top-full right-0 mt-2 z-[9999] max-h-64 w-60 sm:w-64 overflow-y-auto rounded-xl border border-white/15 bg-neutral-900/98 shadow-[0_20px_50px_rgba(0,0,0,0.9)] p-2.5 backdrop-blur-2xl touch-manipulation">
+                                    <div className="text-[10px] font-black uppercase text-neutral-400 px-1 mb-2 tracking-wider">
+                                        Select Episode
+                                    </div>
+                                    <div className="grid grid-cols-5 gap-1.5">
+                                        {Array.from({ length: maxEpisodes }, (_, i) => i + 1).map((e) => (
+                                            <button
+                                                key={e}
+                                                onClick={() => {
+                                                    setSelectedEpisode(e);
+                                                    setShowEpisodeDropdown(false);
+                                                }}
+                                                className={`rounded-lg h-9 flex items-center justify-center text-xs font-black transition-all touch-manipulation active:scale-95 ${selectedEpisode === e
+                                                    ? "bg-red-600 text-white shadow-md shadow-red-900/40"
+                                                    : "text-neutral-300 hover:bg-white/10 hover:text-white bg-white/[0.03]"
+                                                    }`}
+                                            >
+                                                {e}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Next Episode Button */}
+                        <button
+                            onClick={handleNextEpisode}
+                            disabled={!hasNextEpisode}
+                            className={`flex items-center gap-1 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs sm:text-sm font-black transition-all border touch-manipulation active:scale-95 ${hasNextEpisode
+                                ? "bg-red-600/90 border-red-500 hover:bg-red-600 text-white cursor-pointer shadow-lg shadow-red-900/30"
+                                : "bg-white/[0.02] border-white/5 text-neutral-600 cursor-not-allowed"
+                                }`}
+                        >
+                            <span>NEXT</span>
+                            <ChevronRight size={15} />
+                        </button>
+                    </div>
+                )}
+            </div>
+
+            {/* ─── 16:9 Aspect Ratio Iframe Screen ───────────────────────── */}
+            <div className="relative w-full aspect-video bg-black overflow-hidden group">
+                {isLoading && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-neutral-950 z-20">
+                        <div className="relative h-20 w-20">
+                            <div className="absolute inset-0 rounded-full border-4 border-white/5" />
+                            <div className="absolute inset-0 rounded-full border-t-4 border-red-600 animate-spin" />
+                            <div className="absolute inset-2 rounded-full border-b-2 border-red-500/30 animate-pulse" />
+                        </div>
+                        <div className="text-center px-4">
+                            <h4 className="text-sm sm:text-base font-black text-white uppercase tracking-[0.2em]">Connecting Stream</h4>
+                            <p className="text-[10px] sm:text-xs text-neutral-400 font-bold mt-1">
+                                SERVER: <span className="text-red-400">{currentServer.name}</span> ({selectedServerIndex + 1}/{SERVERS.length})
+                            </p>
+                        </div>
+                    </div>
+                )}
+
+                {streamFailed && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-neutral-950 z-30 px-6">
+                        <div className="rounded-full bg-red-600/10 p-4 border border-red-600/20">
+                            <AlertCircle size={36} className="text-red-500" />
+                        </div>
+                        <div className="text-center max-w-md">
+                            <h4 className="text-base font-black text-white mb-1">Server Unavailable</h4>
+                            <p className="text-xs text-neutral-400 mb-4">
+                                Stream failed to respond. Please try switching servers below or retry all.
+                            </p>
+                            <button
+                                onClick={handleRetryAll}
+                                className="flex items-center gap-2 mx-auto rounded-full bg-red-600 px-5 py-2 text-xs font-black text-white hover:bg-red-700 transition-all"
+                            >
+                                <RefreshCw size={14} />
+                                RETRY ALL SERVERS
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                <iframe
+                    key={streamUrl}
+                    src={streamUrl}
+                    className="w-full h-full border-none"
+                    allowFullScreen
+                    referrerPolicy="no-referrer"
+                    allow="autoplay; encrypted-media"
+                    onLoad={() => {
+                        setIsLoading(false);
+                        setStreamFailed(false);
+                    }}
+                />
+
+                {/* Overlay Server Selection Grid */}
+                {showServerPanel && (
+                    <div className="absolute inset-0 z-40 bg-black/95 backdrop-blur-2xl p-4 sm:p-6 overflow-y-auto">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-2">
+                                <Server size={16} className="text-red-500" />
+                                <h4 className="text-xs font-black uppercase text-white tracking-widest">Select HD Server Provider</h4>
+                            </div>
+                            <button
+                                onClick={() => setShowServerPanel(false)}
+                                className="text-neutral-400 hover:text-white text-xs uppercase font-bold"
+                            >
+                                Close
+                            </button>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                             {SERVERS.map((server, idx) => (
                                 <button
                                     key={idx}
                                     onClick={() => handleServerChange(idx)}
-                                    className={`group/btn flex items-center gap-1 sm:gap-1.5 px-2 py-1.5 sm:px-3 sm:py-1.5 rounded-lg text-[8px] sm:text-[9px] font-black uppercase transition-all tracking-wider flex-shrink-0 snap-start touch-manipulation border ${
-                                        selectedServerIndex === idx
-                                            ? "bg-gradient-to-r from-red-600 to-red-700 text-white border-red-500/50 shadow-lg shadow-red-900/30"
-                                            : "bg-white/[0.04] hover:bg-white/[0.08] text-neutral-400 hover:text-white border-white/[0.06] hover:border-white/10"
-                                    }`}
+                                    className={`p-3 rounded-xl border text-left transition-all ${selectedServerIndex === idx
+                                        ? "bg-red-600/20 border-red-500 text-white"
+                                        : "bg-white/5 border-white/10 hover:bg-white/10 text-neutral-300"
+                                        }`}
                                 >
-                                    <ShieldCheck size={10} className={selectedServerIndex === idx ? "text-white" : encryptionColor[server.encryption]} />
-                                    <span>{server.name}</span>
-                                    {/* Show encryption tag only on wider screens */}
-                                    <span className={`hidden lg:inline text-[7px] font-bold px-1 py-0 rounded ${
-                                        selectedServerIndex === idx
-                                            ? "bg-white/20 text-white"
-                                            : `${encryptionBg[server.encryption]} ${encryptionColor[server.encryption]}`
-                                    }`}>
-                                        {server.encryption}
-                                    </span>
+                                    <div className="flex items-center justify-between mb-1">
+                                        <span className="text-xs font-black tracking-wider">{server.name}</span>
+                                        <SignalBars level={server.speed} />
+                                    </div>
+                                    <div className="flex items-center gap-1.5 mt-2">
+                                        <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border ${encryptionBg[server.encryption]} ${encryptionColor[server.encryption]}`}>
+                                            {server.encryption}
+                                        </span>
+                                        <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border ${qualityColor[server.quality]}`}>
+                                            {server.quality}
+                                        </span>
+                                    </div>
                                 </button>
                             ))}
                         </div>
-
-                        {/* Active server info pill — hidden on very small screens */}
-                        <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 flex-shrink-0">
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                            <span className="text-[8px] font-black text-neutral-300 uppercase tracking-wider">{currentServer.name}</span>
-                            <SignalBars level={currentServer.speed} />
-                        </div>
                     </div>
+                )}
+            </div>
+
+            {/* ─── Bottom Server Selector Bar ──────────────────────────── */}
+            <div className="bg-neutral-900/95 border-t border-white/10 px-4 py-3 sm:px-5 sm:py-3.5 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-2 py-1">
+                    <span className="text-xs font-black text-red-500 uppercase tracking-wider whitespace-nowrap mr-1 flex items-center gap-1.5">
+                        <Server size={14} className="text-red-500" />
+                        SERVERS:
+                    </span>
+                    {SERVERS.map((server, idx) => (
+                        <button
+                            key={idx}
+                            onClick={() => handleServerChange(idx)}
+                            className={`px-3.5 py-2 sm:px-4 sm:py-2 rounded-xl text-xs font-black uppercase transition-all whitespace-nowrap flex items-center gap-1.5 border cursor-pointer touch-manipulation active:scale-95 ${selectedServerIndex === idx
+                                ? "bg-red-600 text-white border-red-500 shadow-lg shadow-red-900/40"
+                                : "bg-white/5 text-neutral-300 border-white/10 hover:bg-white/15 hover:text-white"
+                                }`}
+                        >
+                            <ShieldCheck size={13} className={selectedServerIndex === idx ? "text-white" : encryptionColor[server.encryption]} />
+                            <span>{server.name}</span>
+                            <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded ${selectedServerIndex === idx ? "bg-white/20 text-white" : `${encryptionBg[server.encryption]} ${encryptionColor[server.encryption]}`}`}>
+                                {server.encryption}
+                            </span>
+                        </button>
+                    ))}
                 </div>
+
+                <button
+                    onClick={() => setShowServerPanel(!showServerPanel)}
+                    className="flex-shrink-0 text-xs font-black text-neutral-300 hover:text-white uppercase tracking-wider underline hidden md:block px-2.5 py-1.5 rounded-lg hover:bg-white/5"
+                >
+                    {showServerPanel ? "HIDE GRID" : "GRID VIEW"}
+                </button>
             </div>
         </div>
     );
-
-    return createPortal(playerUI, document.body);
 }

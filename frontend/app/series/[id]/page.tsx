@@ -9,10 +9,13 @@ import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 const StreamPlayer = dynamic(() => import("@/components/player/StreamPlayer"));
+const WatchmodeAvailabilityBanner = dynamic(() => import("@/components/ui/WatchmodeAvailabilityBanner"));
+const KinocheckTrailerSection = dynamic(() => import("@/components/player/KinocheckTrailerSection"));
 import ShareButton from "@/components/ui/ShareButton";
 import SeasonEpisodeBrowser from "@/components/series/SeasonEpisodeBrowser";
 import { Metadata } from "next";
 import ServerNoteBanner from "@/components/ui/ServerNoteBanner";
+import { Play } from "lucide-react";
 
 export const revalidate = 86400; // ISR: cache series detail pages for 24 hours
 
@@ -104,6 +107,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
     };
 }
 
+import { getKinocheckTrailers } from "@/services/kinocheckService";
 import { notFound } from "next/navigation";
 
 export default async function SeriesDetailsPage({
@@ -115,11 +119,15 @@ export default async function SeriesDetailsPage({
     const autoPlay = resolvedSearchParams?.play === "true";
     const seasonParam = resolvedSearchParams?.season ? parseInt(resolvedSearchParams.season) : 1;
     const episodeParam = resolvedSearchParams?.episode ? parseInt(resolvedSearchParams.episode) : 1;
-    const series = await getMovieDetails(id, "tv");
+    const seriesData = await getMovieDetails(id, "tv");
 
-    if (!series) {
+    if (!seriesData) {
         notFound();
     }
+
+    const series: any = seriesData;
+    const trailers = await getKinocheckTrailers(series.tmdbId, true);
+    const primaryTrailer = trailers[0];
 
     const safeDate = series.releaseDate && !isNaN(new Date(series.releaseDate).getTime())
         ? new Date(series.releaseDate)
@@ -142,6 +150,18 @@ export default async function SeriesDetailsPage({
         "genre": series.genres,
         "numberOfSeasons": series.number_of_seasons,
         "numberOfEpisodes": series.number_of_episodes,
+        ...(primaryTrailer ? {
+            "trailer": {
+                "@type": "VideoObject",
+                "name": `${series.title} - ${primaryTrailer.title}`,
+                "description": `Watch the official HD trailer for ${series.title} (${releaseYear || ""}) on Neocinema.`,
+                "thumbnailUrl": [
+                    primaryTrailer.youtube_thumbnail || `https://img.youtube.com/vi/${primaryTrailer.youtube_video_id}/hqdefault.jpg`
+                ],
+                "uploadDate": series.releaseDate ? `${series.releaseDate}T00:00:00Z` : new Date().toISOString(),
+                "embedUrl": `https://www.youtube-nocookie.com/embed/${primaryTrailer.youtube_video_id}`
+            }
+        } : {}),
         ...(series.rating && series.voteCount ? {
             "aggregateRating": {
                 "@type": "AggregateRating",
@@ -282,28 +302,15 @@ export default async function SeriesDetailsPage({
                             </p>
 
                             <div className="flex flex-wrap gap-4 sm:gap-6">
-                                <StreamPlayer
-                                    tmdbId={series.tmdbId}
-                                    imdbId={series.imdbId}
-                                    title={series.title}
-                                    isTv={true}
-                                    seasons={series.seasons}
-                                    autoPlay={autoPlay}
-                                    initialSeason={seasonParam}
-                                    initialEpisode={episodeParam}
-                                />
-
-                                {/* 
                                 <a
-                                    href="https://discussionanymore.com/khge4vq0f?key=0bc9ee47ad5de40ae42fce1eae3506e2"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-2 rounded-full bg-blue-600/10 hover:bg-blue-600/20 px-6 py-3 text-sm font-bold text-blue-100 backdrop-blur-md transition-all border border-blue-500/20 hover:border-blue-500/40 hover:shadow-[0_0_20px_rgba(37,99,235,0.2)]"
+                                    href="#inline-stream-player"
+                                    className="flex items-center gap-2 sm:gap-3 rounded-full bg-red-600 px-6 py-3.5 sm:px-8 sm:py-4 font-black text-white transition-all hover:scale-105 hover:bg-red-700 shadow-[0_0_30px_rgba(220,38,38,0.4)]"
                                 >
-                                    <Download size={18} />
-                                    Download HD
+                                    <div className="rounded-full bg-white/20 p-1">
+                                        <Play fill="currentColor" className="h-4 w-4 sm:h-5 sm:w-5" />
+                                    </div>
+                                    <span className="text-sm sm:text-base tracking-tight text-white uppercase">WATCH NOW</span>
                                 </a>
-                                */}
 
                                 <ShareButton title={series.title} />
                             </div>
@@ -313,7 +320,29 @@ export default async function SeriesDetailsPage({
             </section>
 
             {/* CONTENT GRID */}
-            <div className="relative z-20 mt-6 sm:mt-12 space-y-16 sm:space-y-24 md:space-y-32 px-6 pb-20 sm:pb-32 md:px-16">
+            <div className="relative z-20 mt-4 max-w-7xl mx-auto space-y-12 sm:space-y-16 px-4 sm:px-6 lg:px-8 pb-20 sm:pb-32">
+                {/* INLINE STREAM PLAYER SECTION */}
+                <div className="w-full">
+                    <StreamPlayer
+                        tmdbId={series.tmdbId}
+                        imdbId={series.imdbId}
+                        title={series.title}
+                        posterPath={series.posterPath}
+                        backdropPath={series.backdropPath}
+                        isTv={true}
+                        seasons={series.seasons}
+                        autoPlay={autoPlay}
+                        initialSeason={seasonParam}
+                        initialEpisode={episodeParam}
+                    />
+                </div>
+
+                {/* OFFICIAL TRAILERS & WATCHMODE STREAMING AVAILABILITY */}
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                    <KinocheckTrailerSection tmdbId={series.tmdbId} title={series.title} isTv={true} />
+                    <WatchmodeAvailabilityBanner tmdbId={series.tmdbId} isTv={true} />
+                </div>
+
                 <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
                     <div className="col-span-1 space-y-8">
                         <div className="rounded-3xl border border-white/5 bg-neutral-950/50 p-6 md:p-8 backdrop-blur-xl shadow-2xl relative overflow-hidden group">

@@ -3,6 +3,7 @@ import Script from "next/script";
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
 import Security from "@/components/ui/Security";
+import InstallAppBanner from "@/components/ui/InstallAppBanner";
 import AdsterraSocialBar from "@/components/ads/AdsterraSocialBar";
 import MonetagAds from "@/components/ads/MonetagAds";
 import { Geist, Geist_Mono, Noto_Sans, Playfair_Display } from "next/font/google";
@@ -87,6 +88,7 @@ export const metadata: Metadata = {
       monetag: "7bdf3366d833c7c08b7f5695cf6ae3d9",
     },
   },
+  manifest: "/manifest.json",
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "48x48", type: "image/x-icon" },
@@ -222,6 +224,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <InstallAppBanner />
         </div>
       </body>
     </html>

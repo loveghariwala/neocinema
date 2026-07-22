@@ -1,5 +1,6 @@
 import HeroBanner from "@/components/hero/HeroBanner";
 import MovieRow from "@/components/sliders/MovieRow";
+import ContinueWatchingRow from "@/components/sliders/ContinueWatchingRow";
 import AdsterraNativeBanner from "@/components/ads/AdsterraNativeBanner";
 import HomeFAQ from "@/components/seo/HomeFAQ";
 import { getTrendingFromServer, discoverContentFromServer, getTopRatedMovies, getMovieDetails } from "@/services/movieService";
@@ -108,7 +109,11 @@ export default async function HomePage() {
             <h1 className="sr-only">Best Trending Movies to Stream at Home for Free</h1>
             {heroMovies.length > 0 && <HeroBanner movies={heroMovies} />}
 
-            <div className="relative z-20 -mt-32 space-y-24 px-6 pb-20 pt-32 md:px-16 pointer-events-none">
+            <div className="relative z-20 -mt-32 max-w-[1500px] mx-auto space-y-24 px-4 sm:px-6 lg:px-8 pb-20 pt-32 pointer-events-none">
+                <div className="pointer-events-auto">
+                    <ContinueWatchingRow />
+                </div>
+
                 {trendingMovies.length > 0 && (
                     <div className="pointer-events-auto">
                         <MovieRow

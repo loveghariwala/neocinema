@@ -9,9 +9,12 @@ import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 const StreamPlayer = dynamic(() => import("@/components/player/StreamPlayer"));
+const WatchmodeAvailabilityBanner = dynamic(() => import("@/components/ui/WatchmodeAvailabilityBanner"));
+const KinocheckTrailerSection = dynamic(() => import("@/components/player/KinocheckTrailerSection"));
 import ShareButton from "@/components/ui/ShareButton";
 import { Metadata } from "next";
 import ServerNoteBanner from "@/components/ui/ServerNoteBanner";
+import { Play } from "lucide-react";
 
 export const revalidate = 86400; // ISR: cache movie detail pages for 24 hours
 
@@ -102,6 +105,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
     };
 }
 
+import { getKinocheckTrailers } from "@/services/kinocheckService";
 import { notFound } from "next/navigation";
 
 export default async function MovieDetailsPage({
@@ -111,11 +115,15 @@ export default async function MovieDetailsPage({
     const { id } = await params;
     const resolvedSearchParams = await searchParams;
     const autoPlay = resolvedSearchParams?.play === "true";
-    const movie = await getMovieDetails(id, "movie");
+    const movieData = await getMovieDetails(id, "movie");
 
-    if (!movie) {
+    if (!movieData) {
         notFound();
     }
+
+    const movie: any = movieData;
+    const trailers = await getKinocheckTrailers(movie.tmdbId, false);
+    const primaryTrailer = trailers[0];
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
     const safeDate = movie.releaseDate && !isNaN(new Date(movie.releaseDate).getTime()) 
@@ -136,6 +144,18 @@ export default async function MovieDetailsPage({
         "url": `${baseUrl}/movies/${id}`,
         "genre": movie.genres,
         "duration": movie.runtime ? `PT${movie.runtime}M` : undefined,
+        ...(primaryTrailer ? {
+            "trailer": {
+                "@type": "VideoObject",
+                "name": `${movie.title} - ${primaryTrailer.title}`,
+                "description": `Watch the official HD trailer for ${movie.title} (${releaseYear || ""}) on Neocinema.`,
+                "thumbnailUrl": [
+                    primaryTrailer.youtube_thumbnail || `https://img.youtube.com/vi/${primaryTrailer.youtube_video_id}/hqdefault.jpg`
+                ],
+                "uploadDate": movie.releaseDate ? `${movie.releaseDate}T00:00:00Z` : new Date().toISOString(),
+                "embedUrl": `https://www.youtube-nocookie.com/embed/${primaryTrailer.youtube_video_id}`
+            }
+        } : {}),
         ...(movie.director ? {
             "director": {
                 "@type": "Person",
@@ -281,24 +301,15 @@ export default async function MovieDetailsPage({
                                 </p>
 
                                 <div className="flex flex-wrap gap-4 sm:gap-6">
-                                    <StreamPlayer
-                                        tmdbId={movie.tmdbId}
-                                        imdbId={movie.imdbId}
-                                        title={movie.title}
-                                        autoPlay={autoPlay}
-                                    />
-
-                                    {/* 
                                     <a
-                                        href="https://discussionanymore.com/khge4vq0f?key=0bc9ee47ad5de40ae42fce1eae3506e2"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex items-center gap-2 rounded-full bg-white/10 hover:bg-white/20 px-6 py-3 text-sm font-bold text-white backdrop-blur-md transition-all border border-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+                                        href="#inline-stream-player"
+                                        className="flex items-center gap-2 sm:gap-3 rounded-full bg-red-600 px-6 py-3.5 sm:px-8 sm:py-4 font-black text-white transition-all hover:scale-105 hover:bg-red-700 shadow-[0_0_30px_rgba(220,38,38,0.4)]"
                                     >
-                                        <Download size={18} />
-                                        Download 4K
+                                        <div className="rounded-full bg-white/20 p-1">
+                                            <Play fill="currentColor" className="h-4 w-4 sm:h-5 sm:w-5" />
+                                        </div>
+                                        <span className="text-sm sm:text-base tracking-tight text-white uppercase">WATCH NOW</span>
                                     </a>
-                                    */}
 
                                     <ShareButton title={movie.title} />
                                 </div>
@@ -308,7 +319,25 @@ export default async function MovieDetailsPage({
                 </section>
 
                 {/* CONTENT GRID */}
-                <div className="relative z-20 mt-6 sm:mt-12 space-y-16 sm:space-y-24 md:space-y-32 px-6 pb-20 sm:pb-32 md:px-16">
+                <div className="relative z-20 mt-4 max-w-7xl mx-auto space-y-12 sm:space-y-16 px-4 sm:px-6 lg:px-8 pb-20 sm:pb-32">
+                    {/* INLINE STREAM PLAYER SECTION */}
+                    <div className="w-full">
+                        <StreamPlayer
+                            tmdbId={movie.tmdbId}
+                            imdbId={movie.imdbId}
+                            title={movie.title}
+                            posterPath={movie.posterPath}
+                            backdropPath={movie.backdropPath}
+                            autoPlay={autoPlay}
+                        />
+                    </div>
+
+                    {/* OFFICIAL TRAILERS & WATCHMODE STREAMING AVAILABILITY */}
+                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                        <KinocheckTrailerSection tmdbId={movie.tmdbId} title={movie.title} />
+                        <WatchmodeAvailabilityBanner tmdbId={movie.tmdbId} />
+                    </div>
+
                     <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
                         {/* LEFT: DETAILS & GENRES */}
                         <div className="col-span-1 space-y-8">
