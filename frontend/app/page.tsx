@@ -109,64 +109,50 @@ export default async function HomePage() {
             <h1 className="sr-only">Best Trending Movies to Stream at Home for Free</h1>
             {heroMovies.length > 0 && <HeroBanner movies={heroMovies} />}
 
-            <div className="relative z-20 -mt-32 max-w-[1500px] mx-auto space-y-24 px-4 sm:px-6 lg:px-8 pb-20 pt-32 pointer-events-none">
-                <div className="pointer-events-auto">
+            <div className="relative z-20 -mt-12 sm:-mt-16 max-w-7xl mx-auto space-y-10 sm:space-y-14 px-4 sm:px-6 lg:px-8 pb-20">
+                <div>
                     <ContinueWatchingRow />
                 </div>
 
                 {trendingMovies.length > 0 && (
-                    <div className="pointer-events-auto">
-                        <MovieRow
-                            title="Trending Movies"
-                            movies={trendingMovies}
-                            className="pt-10"
-                            moreLink="/movies?sort=popularity.desc"
-                            priority={true}
-                        />
-                    </div>
+                    <MovieRow
+                        title="Trending Movies"
+                        movies={trendingMovies}
+                        moreLink="/movies?sort=popularity.desc"
+                        priority={true}
+                    />
                 )}
 
-                {/* Adsterra Native Banner (Matches the horizontal layout) */}
-                {/* <AdsterraNativeBanner /> */}
-
                 {trendingSeries.length > 0 && (
-                    <div className="pointer-events-auto">
-                        <MovieRow
-                            title="Trending Series"
-                            movies={trendingSeries}
-                            moreLink="/series?sort=popularity.desc"
-                        />
-                    </div>
+                    <MovieRow
+                        title="Trending Series"
+                        movies={trendingSeries}
+                        moreLink="/series?sort=popularity.desc"
+                    />
                 )}
 
                 {trendingHindi.length > 0 && (
-                    <div className="pointer-events-auto">
-                        <MovieRow
-                            title="Trending Hindi Movies"
-                            movies={trendingHindi}
-                            moreLink="/movies?language=hi"
-                        />
-                    </div>
+                    <MovieRow
+                        title="Trending Hindi Movies"
+                        movies={trendingHindi}
+                        moreLink="/movies?language=hi"
+                    />
                 )}
 
                 {topRatedMovies.length > 0 && (
-                    <div className="pointer-events-auto">
-                        <MovieRow
-                            title="Top Rated Movies"
-                            movies={topRatedMovies}
-                            moreLink="/movies?sort=vote_average.desc"
-                        />
-                    </div>
+                    <MovieRow
+                        title="Top Rated Movies"
+                        movies={topRatedMovies}
+                        moreLink="/movies?sort=vote_average.desc"
+                    />
                 )}
 
                 {topRatedSeries.length > 0 && (
-                    <div className="pointer-events-auto">
-                        <MovieRow
-                            title="Top Rated Series"
-                            movies={topRatedSeries}
-                            moreLink="/series?sort=vote_average.desc"
-                        />
-                    </div>
+                    <MovieRow
+                        title="Top Rated Series"
+                        movies={topRatedSeries}
+                        moreLink="/series?sort=vote_average.desc"
+                    />
                 )}
             </div>
             

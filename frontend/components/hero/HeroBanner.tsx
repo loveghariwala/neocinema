@@ -178,24 +178,6 @@ export default function HeroBanner({
                     </button>
                 </>
             )}
-
-            {/* Bullet Pagination Indicators */}
-            {list.length > 1 && (
-                <div className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2">
-                    {list.map((_: any, index: number) => (
-                        <button
-                            key={index}
-                            onClick={() => handleDotClick(index)}
-                            className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                                index === currentIndex
-                                    ? "bg-red-600 w-6 sm:w-8"
-                                    : "bg-white/30 hover:bg-white/60 w-1.5 sm:w-2"
-                            }`}
-                            aria-label={`Go to slide ${index + 1}`}
-                        />
-                    ))}
-                </div>
-            )}
         </section>
     );
 }

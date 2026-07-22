@@ -21,54 +21,120 @@ export const metadata: Metadata = {
 };
 
 export default function BlogIndexPage() {
+    const posts = [...BLOG_POSTS].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+    const featuredPost = posts[0];
+    const remainingPosts = posts.slice(1);
+
     return (
-        <main className="min-h-screen pt-24 pb-20 px-6 md:px-16">
-            <div className="max-w-5xl mx-auto space-y-12">
-                <div className="text-center space-y-4">
-                    <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white">
-                        The <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-400">Neocinema</span> Blog
+        <main className="min-h-screen pt-28 pb-24 text-white relative">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+                {/* Header */}
+                <div className="text-center space-y-4 max-w-3xl mx-auto">
+                    <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white uppercase">
+                        The <span className="text-red-500">Neocinema</span> Journal
                     </h1>
-                    <p className="text-neutral-400 max-w-2xl mx-auto">
-                        Movie lists, streaming guides, anime recommendations, and K-Drama picks — updated weekly.
+                    <p className="text-sm sm:text-base text-neutral-400 font-medium">
+                        Streaming guides, release order chronologies, anime recommendations, and cinema analysis.
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {[...BLOG_POSTS].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()).map((post) => (
+                {/* Featured Top Post */}
+                {featuredPost && (
+                    <Link
+                        href={`/blog/${featuredPost.slug}`}
+                        className="group relative rounded-3xl border border-white/10 bg-neutral-950/80 p-6 sm:p-10 backdrop-blur-2xl transition-all duration-500 hover:border-red-500/50 hover:shadow-[0_20px_50px_rgba(220,38,38,0.2)] grid grid-cols-1 md:grid-cols-12 gap-8 items-center overflow-hidden"
+                    >
+                        <div className="md:col-span-6 relative aspect-video w-full rounded-2xl overflow-hidden bg-neutral-900 border border-white/10">
+                            {featuredPost.imageUrl ? (
+                                <Image
+                                    src={featuredPost.imageUrl}
+                                    alt={featuredPost.title}
+                                    fill
+                                    unoptimized
+                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                />
+                            ) : (
+                                <div className="flex h-full items-center justify-center bg-neutral-900 text-neutral-700 font-black">
+                                    NEOCINEMA
+                                </div>
+                            )}
+                            <div className="absolute top-3 left-3 bg-red-600 text-white font-black text-[10px] px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">
+                                FEATURED GUIDE
+                            </div>
+                        </div>
+
+                        <div className="md:col-span-6 space-y-4">
+                            <div className="flex items-center gap-3">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-red-400 bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20">
+                                    {featuredPost.category}
+                                </span>
+                                <span className="text-[10px] font-bold text-neutral-400 flex items-center gap-1">
+                                    <Clock size={11} /> {featuredPost.readTime}
+                                </span>
+                            </div>
+
+                            <h2 className="text-2xl sm:text-3xl font-black text-white group-hover:text-red-500 transition-colors leading-tight">
+                                {featuredPost.title}
+                            </h2>
+
+                            <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed line-clamp-3 font-medium">
+                                {featuredPost.description}
+                            </p>
+
+                            <div className="flex items-center justify-between pt-2">
+                                <span className="text-[11px] font-bold text-neutral-500 flex items-center gap-1.5">
+                                    <Calendar size={12} />
+                                    {new Date(featuredPost.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                </span>
+                                <span className="text-xs font-black uppercase tracking-wider text-red-500 group-hover:text-white transition-colors flex items-center gap-1">
+                                    Read Article <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                                </span>
+                            </div>
+                        </div>
+                    </Link>
+                )}
+
+                {/* Remaining Post Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {remainingPosts.map((post) => (
                         <Link
                             key={post.slug}
                             href={`/blog/${post.slug}`}
-                            className="group rounded-2xl border border-white/5 bg-neutral-950/50 p-6 md:p-8 backdrop-blur-xl hover:border-red-500/20 hover:bg-white/[0.03] transition-all hover:shadow-[0_0_40px_rgba(220,38,38,0.05)]"
+                            className="group flex flex-col justify-between rounded-2xl border border-white/10 bg-neutral-950/60 p-6 backdrop-blur-xl hover:border-red-500/30 hover:bg-white/[0.02] transition-all duration-300 hover:shadow-xl"
                         >
-                            <div className="flex items-center gap-3 mb-4">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-red-500 bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20">
-                                    {post.category}
-                                </span>
-                                <span className="text-[10px] font-bold text-neutral-600 flex items-center gap-1">
-                                    <Clock size={10} /> {post.readTime}
-                                </span>
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/20">
+                                        {post.category}
+                                    </span>
+                                    <span className="text-[10px] font-bold text-neutral-500 flex items-center gap-1">
+                                        <Clock size={10} /> {post.readTime}
+                                    </span>
+                                </div>
+
+                                <div className="flex gap-4 items-start pt-1">
+                                    {post.imageUrl && (
+                                        <div className="relative h-16 w-16 flex-shrink-0 rounded-xl overflow-hidden bg-neutral-900 border border-white/10">
+                                            <Image src={post.imageUrl} alt={post.title} fill unoptimized className="object-cover" />
+                                        </div>
+                                    )}
+                                    <h3 className="text-base font-bold text-white group-hover:text-red-400 transition-colors line-clamp-2 leading-snug">
+                                        {post.title}
+                                    </h3>
+                                </div>
+
+                                <p className="text-xs text-neutral-400 leading-relaxed line-clamp-2 font-medium">
+                                    {post.description}
+                                </p>
                             </div>
 
-                            <div className="flex flex-row items-center gap-4 mb-3">
-                                {post.imageUrl && (
-                                    <Image src={post.imageUrl} alt={post.title} width={80} height={80} unoptimized className="w-20 h-20 rounded-xl object-cover" />
-                                )}
-                                <h2 className="text-lg md:text-xl font-black text-white group-hover:text-red-500 transition-colors line-clamp-2">
-                                    {post.title}
-                                </h2>
-                            </div>
-
-                            <p className="text-xs text-neutral-500 leading-relaxed mb-4 line-clamp-3">
-                                {post.description}
-                            </p>
-
-                            <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-bold text-neutral-600 flex items-center gap-1">
+                            <div className="flex items-center justify-between pt-4 mt-4 border-t border-white/5">
+                                <span className="text-[10px] font-bold text-neutral-500 flex items-center gap-1">
                                     <Calendar size={10} />
                                     {new Date(post.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                 </span>
                                 <span className="text-xs font-bold text-red-500 group-hover:text-white transition-colors flex items-center gap-1">
-                                    Read More <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                                    Read <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
                                 </span>
                             </div>
                         </Link>

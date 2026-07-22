@@ -37,12 +37,12 @@ export default function CollectionsPage() {
     };
 
     return (
-        <main className="min-h-screen pt-24 pb-16 px-6 md:px-16 lg:px-24">
+        <main className="min-h-screen pt-28 pb-24 text-white relative">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
                 <div className="mb-12">
                     <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-neutral-500 mb-4 pb-2">
                         Curated Collections

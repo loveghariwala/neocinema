@@ -134,15 +134,14 @@ export default function BrowsePageClient({ type, title, subtitle, initialData, i
     };
 
     return (
-        <main className="min-h-screen px-6 pb-20 pt-28 md:px-16 relative">
+        <main className="min-h-screen pb-24 pt-28 relative">
             {/* Subtle Top Gradient Mesh */}
             <div className="pointer-events-none absolute left-0 top-0 h-[40vh] w-full bg-gradient-to-b from-red-900/10 via-background to-background" />
             <div className="pointer-events-none absolute left-1/4 top-0 h-[30vh] w-[50vw] rounded-full bg-red-600/5 blur-[120px]" />
 
-            {/* ─── Page Header ─────────────────────────────────────────── */}
-            <div
-                className="relative mb-12"
-            >
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-8">
+                {/* ─── Page Header ─────────────────────────────────────────── */}
+                <div>
                 <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6">
                     <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-red-600/20 to-black border border-red-500/20 text-red-500 shadow-[0_0_30px_rgba(220,38,38,0.15)]">
                         {type === "movie" ? <Film size={32} /> : <Tv size={32} />}
@@ -216,6 +215,7 @@ export default function BrowsePageClient({ type, title, subtitle, initialData, i
                     </button>
                 </div>
             )}
+            </div>
         </main>
     );
 }

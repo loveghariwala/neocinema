@@ -3,15 +3,17 @@
 import { useState, useEffect, useCallback, useTransition, useRef } from "react";
 import MovieCard from "@/components/cards/MovieCard";
 import { searchContentFromServer } from "@/services/movieService";
-
-import { Film, Loader2, Search, Sparkles, TrendingUp, Tv, X } from 'lucide-react';
-
+import { Film, Flame, Loader2, Search, Sparkles, TrendingUp, Tv, X } from 'lucide-react';
 import { useRouter, usePathname } from "next/navigation";
 
 const TYPE_FILTERS = [
     { label: "All", value: "", icon: null },
     { label: "Movies", value: "movie", icon: Film },
     { label: "Series", value: "tv", icon: Tv },
+];
+
+const QUICK_DISCOVERY_TAGS = [
+    "Action", "Sci-Fi", "Hindi Dubbed", "Kdrama", "Horror", "Comedy", "Anime", "Thriller", "Marvel", "Romance"
 ];
 
 interface SearchPageClientProps {
@@ -111,100 +113,126 @@ export default function SearchPageClient({
         updateUrl("", type, 1);
     };
 
+    const handleTagClick = (tag: string) => {
+        setQuery(tag);
+        setPage(1);
+        updateUrl(tag, type, 1);
+    };
+
     const hasResults = data.results && data.results.length > 0;
     const isSearching = query.trim().length >= 2;
 
     return (
-        <main className="min-h-screen px-6 pb-20 pt-28 md:px-16">
-            {/* ─── Header ────────────────────────────────────────────── */}
-            <div
-                className="mb-10"
-            >
-                <div className="flex items-center gap-4 mb-6">
-                    <div className="rounded-2xl bg-red-600/20 p-3 text-red-500">
-                        <Search size={28} />
+        <main className="min-h-screen pb-24 pt-28 text-white relative">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+                
+                {/* ─── Search Hero Header ───────────────────────────────────── */}
+                <div className="space-y-6">
+                    <div className="flex items-center gap-3">
+                        <div className="p-3 rounded-2xl bg-red-600/10 border border-red-500/20 text-red-500 shadow-lg shadow-red-950/50">
+                            <Search size={24} />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white uppercase">
+                                Global <span className="text-red-500">Discovery</span>
+                            </h1>
+                            <p className="text-xs sm:text-sm text-neutral-400 font-medium mt-1 flex items-center gap-2">
+                                <Sparkles size={14} className="text-red-500" />
+                                Search across thousands of movies, TV series, actors and genres
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white">
-                            Discover <span className="text-red-600">Everything</span>
-                        </h1>
-                        <p className="text-neutral-500 font-medium mt-1 flex items-center gap-2">
-                            <Sparkles size={14} className="text-red-600" />
-                            Search across 1M+ movies and 200K+ series from every country
-                        </p>
-                    </div>
-                </div>
 
-                {/* ─── Big Search Bar ────────────────────────────────── */}
-                <div className="relative max-w-3xl">
-                    <div className="flex items-center gap-4 rounded-3xl border border-white/10 bg-white/[0.03] px-6 py-5 backdrop-blur-xl transition-all focus-within:border-red-600/50 focus-within:shadow-[0_0_40px_rgba(220,38,38,0.15)]">
-                        <Search
-                            size={24}
-                            className={`transition-colors ${isSearching ? "text-red-600" : "text-neutral-500"}`}
-                        />
-                        <input
-                            type="text"
-                            placeholder="Search movies, series, actors..."
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            className="w-full bg-transparent text-lg font-medium text-white outline-none placeholder:text-neutral-600"
-                            autoFocus
-                        />
-                        {query && (
-                            <button
-                                onClick={handleClear}
-                                className="text-neutral-500 transition-colors hover:text-white"
-                            >
-                                <X size={20} />
-                            </button>
+                    {/* ─── Search Bar ─────────────────────────────────── */}
+                    <div className="relative max-w-3xl">
+                        <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-neutral-900/90 px-5 py-4 backdrop-blur-2xl transition-all focus-within:border-red-500/60 focus-within:shadow-[0_0_30px_rgba(220,38,38,0.2)]">
+                            <Search
+                                size={22}
+                                className={`transition-colors ${isSearching ? "text-red-500" : "text-neutral-500"}`}
+                            />
+                            <input
+                                type="text"
+                                placeholder="Search movies, series, actors (e.g., Avatar, Spider-Man)..."
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                className="w-full bg-transparent text-sm sm:text-base font-medium text-white outline-none placeholder:text-neutral-500"
+                                autoFocus
+                            />
+                            {query && (
+                                <button
+                                    onClick={handleClear}
+                                    className="text-neutral-400 hover:text-white p-1 rounded-lg hover:bg-white/10"
+                                    aria-label="Clear search"
+                                >
+                                    <X size={18} />
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Hint */}
+                        {query.length > 0 && query.length < 2 && (
+                            <div className="mt-2 px-2">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-neutral-500">
+                                    Type at least 2 characters...
+                                </span>
+                            </div>
                         )}
                     </div>
 
-                    {/* Hint */}
-                    {query.length > 0 && query.length < 2 && (
-                        <div
-                            className="mt-3 px-2"
-                        >
-                            <span className="text-xs font-bold uppercase tracking-widest text-neutral-600">
-                                Type at least 2 characters...
+                    {/* ─── Quick Discovery Genre Chips ─────────────────────── */}
+                    <div className="space-y-2">
+                        <p className="text-[11px] font-black uppercase tracking-widest text-neutral-400 flex items-center gap-1.5">
+                            <Flame size={13} className="text-red-500" />
+                            Popular Search Tags:
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                            {QUICK_DISCOVERY_TAGS.map((tag) => (
+                                <button
+                                    key={tag}
+                                    onClick={() => handleTagClick(tag)}
+                                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border cursor-pointer active:scale-95 touch-manipulation ${
+                                        query.toLowerCase() === tag.toLowerCase()
+                                            ? "bg-red-600 border-red-500 text-white shadow-md shadow-red-900/40"
+                                            : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-white/20"
+                                    }`}
+                                >
+                                    {tag}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* ─── Type Filter Bar ──────────────────────────────── */}
+                    {isSearching && (
+                        <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-white/5">
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs font-black uppercase tracking-widest text-neutral-400 mr-1">
+                                    Filter:
+                                </span>
+                                <div className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 p-1">
+                                    {TYPE_FILTERS.map((tf) => (
+                                        <button
+                                            key={tf.value}
+                                            onClick={() => handleTypeChange(tf.value)}
+                                            className={`flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-black uppercase transition-all cursor-pointer ${
+                                                type === tf.value
+                                                    ? "bg-red-600 text-white shadow-md shadow-red-900/40"
+                                                    : "text-neutral-400 hover:text-white"
+                                            }`}
+                                        >
+                                            {tf.icon && <tf.icon size={13} />}
+                                            {tf.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <span className="text-xs text-neutral-400 font-medium">
+                                Found <strong className="text-white font-black">{data.totalResults?.toLocaleString()}</strong> titles
                             </span>
                         </div>
                     )}
                 </div>
-
-                {/* ─── Type Filter ───────────────────────────────────── */}
-                {isSearching && (
-                    <div
-                        className="mt-6 flex items-center gap-3"
-                    >
-                        <span className="text-xs font-black uppercase tracking-widest text-neutral-600 mr-2">
-                            Filter:
-                        </span>
-                        <div className="flex items-center gap-1.5 rounded-2xl border border-white/10 bg-white/[0.03] p-1.5">
-                            {TYPE_FILTERS.map((tf) => (
-                                <button
-                                    key={tf.value}
-                                    onClick={() => handleTypeChange(tf.value)}
-                                    className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold transition-all ${
-                                        type === tf.value
-                                            ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
-                                            : "text-neutral-500 hover:text-white"
-                                    }`}
-                                >
-                                    {tf.icon && <tf.icon size={14} />}
-                                    {tf.label}
-                                </button>
-                            ))}
-                        </div>
-
-                        {isSearching && (
-                            <span className="text-sm text-neutral-500 ml-4">
-                                <span className="font-black text-white">{data.totalResults?.toLocaleString()}</span> results
-                            </span>
-                        )}
-                    </div>
-                )}
-            </div>
 
             {/* ─── Results ───────────────────────────────────────────── */}
             {isSearching ? (
@@ -287,6 +315,7 @@ export default function SearchPageClient({
                     )}
                 </div>
             )}
+            </div>
         </main>
     );
 }
