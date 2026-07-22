@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getWatchHistory, WatchProgress } from "@/services/historyService";
 import Link from "next/link";
-import { Clock, Play, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Clock, Play, Trash2 } from "lucide-react";
 
 export default function ContinueWatchingRow() {
     const [history, setHistory] = useState<WatchProgress[]>([]);
+    const scrollRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setHistory(getWatchHistory());
@@ -17,6 +18,13 @@ export default function ContinueWatchingRow() {
         setHistory([]);
     };
 
+    const handleScroll = (direction: "left" | "right") => {
+        if (scrollRef.current) {
+            const amount = direction === "left" ? -350 : 350;
+            scrollRef.current.scrollBy({ left: amount, behavior: "smooth" });
+        }
+    };
+
     if (history.length === 0) return null;
 
     const getImage = (path: string) => {
@@ -25,7 +33,7 @@ export default function ContinueWatchingRow() {
     };
 
     return (
-        <div className="w-full my-8 px-4 sm:px-8">
+        <div className="w-full my-8 px-4 sm:px-8 relative group/row">
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                     <div className="p-2 rounded-xl bg-red-600/10 border border-red-500/20 text-red-500">
@@ -36,16 +44,39 @@ export default function ContinueWatchingRow() {
                     </h2>
                 </div>
 
-                <button
-                    onClick={clearHistory}
-                    className="text-xs font-bold text-neutral-400 hover:text-red-400 transition-colors flex items-center gap-1.5"
-                >
-                    <Trash2 size={13} />
-                    <span>Clear History</span>
-                </button>
+                <div className="flex items-center gap-3">
+                    {/* Navigation Arrow Buttons */}
+                    <div className="flex items-center gap-1.5">
+                        <button
+                            onClick={() => handleScroll("left")}
+                            className="p-2 rounded-full bg-white/5 border border-white/10 hover:bg-red-600 hover:border-red-500 text-white transition-all cursor-pointer active:scale-95 touch-manipulation"
+                            aria-label="Scroll left"
+                        >
+                            <ChevronLeft size={16} />
+                        </button>
+                        <button
+                            onClick={() => handleScroll("right")}
+                            className="p-2 rounded-full bg-white/5 border border-white/10 hover:bg-red-600 hover:border-red-500 text-white transition-all cursor-pointer active:scale-95 touch-manipulation"
+                            aria-label="Scroll right"
+                        >
+                            <ChevronRight size={16} />
+                        </button>
+                    </div>
+
+                    <button
+                        onClick={clearHistory}
+                        className="text-xs font-bold text-neutral-400 hover:text-red-400 transition-colors flex items-center gap-1.5 ml-2"
+                    >
+                        <Trash2 size={13} />
+                        <span className="hidden sm:inline">Clear History</span>
+                    </button>
+                </div>
             </div>
 
-            <div className="flex items-center gap-4 overflow-x-auto scrollbar-hide py-2">
+            <div
+                ref={scrollRef}
+                className="flex items-center gap-4 overflow-x-auto scrollbar-hide py-2 scroll-smooth"
+            >
                 {history.map((item) => (
                     <Link
                         key={`${item.type}-${item.id}`}
