@@ -41,8 +41,6 @@ const SERVERS: ServerConfig[] = [
     { name: "EPSILON", providerId: 5, baseUrl: "https://vidfast.vc", encryption: "AES-256", quality: "4K", speed: 3 },
     { name: "ZETA", providerId: 6, baseUrl: "https://peachify.pro/embed", encryption: "AES-256", quality: "4K", speed: 2 },
     { name: "ETA", providerId: 7, baseUrl: "https://www.vidking.net/embed", encryption: "E2E", quality: "1080p", speed: 3 },
-    { name: "THETA", providerId: 8, baseUrl: "https://nontongo.win/embed", encryption: "AES-128", quality: "720p", speed: 2 },
-    { name: "IOTA", providerId: 9, baseUrl: "https://vidrock.ru/embed", encryption: "SSL/TLS", quality: "1080p", speed: 2 },
 ];
 
 const encryptionColor: Record<string, string> = {
