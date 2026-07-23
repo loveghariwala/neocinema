@@ -3,6 +3,7 @@ import { COLLECTIONS } from '@/lib/collections';
 import { BLOG_POSTS } from '@/lib/blog-posts';
 import { WATCH_LANDINGS } from '@/lib/watch-landings';
 import { tmdbService } from '@/lib/tmdb';
+import { isMovieBlocked } from '@/lib/blockedIds';
 
 export const revalidate = 86400; // Cache for 24 hours
 
@@ -27,12 +28,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // PRIORITY 2: High-value individual movie pages
   // ────────────────────────────────────────────────────────────────────────────
   const spiderManMovieIds = [969681, 828168, 634649, 569094, 557, 558, 559];
-  const spiderManRoutes: MetadataRoute.Sitemap = spiderManMovieIds.map(id => ({
-    url: `${baseUrl}/movies/${id}`,
-    lastModified: currentDate,
-    changeFrequency: 'weekly',
-    priority: 0.9,
-  }));
+  const spiderManRoutes: MetadataRoute.Sitemap = spiderManMovieIds
+    .filter(id => !isMovieBlocked(id))
+    .map(id => ({
+      url: `${baseUrl}/movies/${id}`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    }));
 
   // ────────────────────────────────────────────────────────────────────────────
   // PRIORITY 3: Core static pages
@@ -49,6 +52,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/terms`, lastModified: currentDate, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${baseUrl}/cookies`, lastModified: currentDate, changeFrequency: 'monthly', priority: 0.3 },
     { url: `${baseUrl}/disclaimer`, lastModified: currentDate, changeFrequency: 'monthly', priority: 0.3 },
+    { url: `${baseUrl}/dmca`, lastModified: currentDate, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${baseUrl}/best-fmovies-alternative-2026`, lastModified: currentDate, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${baseUrl}/fmovies-vs-neocinema`, lastModified: currentDate, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${baseUrl}/duta-movie-21-alternative`, lastModified: currentDate, changeFrequency: 'monthly', priority: 0.8 },
@@ -99,12 +103,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       fetchPages(page => tmdbService.discoverTv({ page }), 25),
     ]);
 
-    // Deduplicate movies by tmdbId
+    // Deduplicate movies by tmdbId & filter out blocked IDs
     const allMovies = [...trendingMovies, ...discoverMovies];
     const seenMovieIds = new Set<number>();
     dynamicMovieRoutes = allMovies
       .filter((m: any) => {
-        if (!m.tmdbId || seenMovieIds.has(m.tmdbId)) return false;
+        if (!m.tmdbId || seenMovieIds.has(m.tmdbId) || isMovieBlocked(m.tmdbId)) return false;
         seenMovieIds.add(m.tmdbId);
         return true;
       })
@@ -115,12 +119,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       }));
 
-    // Deduplicate series by tmdbId
+    // Deduplicate series by tmdbId & filter out blocked IDs
     const allSeries = [...trendingSeries, ...discoverSeries];
     const seenSeriesIds = new Set<number>();
     dynamicSeriesRoutes = allSeries
       .filter((s: any) => {
-        if (!s.tmdbId || seenSeriesIds.has(s.tmdbId)) return false;
+        if (!s.tmdbId || seenSeriesIds.has(s.tmdbId) || isMovieBlocked(s.tmdbId)) return false;
         seenSeriesIds.add(s.tmdbId);
         return true;
       })
@@ -131,12 +135,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       }));
   } catch (error) {
-    console.warn('[Sitemap] TMDB dynamic fetch failed, using static routes only:', error);
+    console.warn('[Sitemap] Dynamic fetch failed, using static routes:', error);
   }
 
-  // ────────────────────────────────────────────────────────────────────────────
-  // Assemble final sitemap
-  // ────────────────────────────────────────────────────────────────────────────
   const allRoutes = [
     ...blogRoutes,
     ...spiderManRoutes,
@@ -147,7 +148,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...dynamicSeriesRoutes,
   ];
 
-  // Deduplicate by URL
   const seen = new Set<string>();
   return allRoutes.filter(route => {
     if (seen.has(route.url)) return false;

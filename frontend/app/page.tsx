@@ -30,12 +30,13 @@ const getHomeDataCached = cache(async () => {
     return { trendingMovies, trendingSeries, topRatedMovies, topRatedSeries, trendingHindi, spiderManMovie };
 });
 
+import { isMovieBlocked } from "@/lib/blockedIds";
+
 // ─── Dynamic Metadata (SEO keywords auto-generated from live movie data) ─────
 export async function generateMetadata(): Promise<Metadata> {
     const { trendingMovies, trendingSeries } = await getHomeDataCached();
 
-    const blockedIds: string[] = [];
-    const isAllowed = (item: any) => !blockedIds.includes(String(item.id || item.tmdbId || item._id));
+    const isAllowed = (item: any) => !isMovieBlocked(item.id || item.tmdbId || item._id);
 
     // Auto-inject real trending movie & series titles as SEO keywords
     const movieKeywords = trendingMovies

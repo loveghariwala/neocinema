@@ -1,33 +1,28 @@
-# --------------------------------------------------
-# Neocinema - robots.txt
-# Allow all major search engine bots full access
-# --------------------------------------------------
+# ──────────────────────────────────────────────────
+# NeoCinema — robots.txt
+# Allow only GSC (Google), Bing, Yandex, and AI Citation Bots
+# ──────────────────────────────────────────────────
 
-# Google
+# 1. Google (GSC)
 User-Agent: Googlebot
-Allow: /
-Disallow: /api/
-
-# Google Images (allow poster/backdrop indexing)
 User-Agent: Googlebot-Image
-Allow: /
-
-# Yandex
-User-Agent: YandexBot
+User-Agent: Googlebot-Video
 Allow: /
 Disallow: /api/
-Crawl-delay: 2
 
-# Yandex Images
-User-Agent: YandexImages
-Allow: /
-
-# Bing
+# 2. Bing
 User-Agent: Bingbot
 Allow: /
 Disallow: /api/
 
-# --- AI Search & Citation Crawlers (Allow to drive references) ---
+# 3. Yandex
+User-Agent: YandexBot
+User-Agent: YandexImages
+Allow: /
+Disallow: /api/
+Crawl-delay: 2
+
+# 4. AI Search & Citation Crawlers (Allowed for references)
 User-Agent: PerplexityBot
 Allow: /
 
@@ -43,14 +38,9 @@ Allow: /
 User-Agent: Applebot-Extended
 Allow: /
 
-# --- Aggressive Scrapers (Block) ---
-User-Agent: Bytespider
+# Block all other crawlers, scrapers, and copyright bots
+User-Agent: *
 Disallow: /
 
-# All other bots
-User-Agent: *
-Allow: /
-Disallow: /api/
-
-# Sitemap location
+# Sitemap
 Sitemap: https://www.neocinematv.com/sitemap.xml

@@ -30,9 +30,20 @@ interface PageProps {
     }>;
 }
 
+import { isMovieBlocked } from "@/lib/blockedIds";
+
 export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
     const { id } = await params;
     const resolvedSearchParams = await searchParams;
+
+    if (isMovieBlocked(id)) {
+        return {
+            title: "Content Removed — NeoCinema",
+            description: "This content is unavailable.",
+            robots: { index: false, follow: false }
+        };
+    }
+
     const series = await getMovieDetails(id, "tv");
 
     if (!series) {
@@ -62,8 +73,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
     const castKeywords = (series.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
     const genreKeywords = (series.genres || []).map((g: string) => `${g.toLowerCase()} series free`);
 
-    const blockedIds: string[] = [];
-    const isBlocked = blockedIds.includes(String(id));
+    const isBlocked = isMovieBlocked(id);
 
     return {
         title: titleText,
@@ -115,6 +125,11 @@ export default async function SeriesDetailsPage({
     searchParams,
 }: PageProps) {
     const { id } = await params;
+
+    if (isMovieBlocked(id)) {
+        notFound();
+    }
+
     const resolvedSearchParams = await searchParams;
     const autoPlay = resolvedSearchParams?.play === "true";
     const seasonParam = resolvedSearchParams?.season ? parseInt(resolvedSearchParams.season) : 1;
@@ -136,7 +151,6 @@ export default async function SeriesDetailsPage({
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
 
-    // ─── TVSeries JSON-LD ────────────────────────────────────────────────────
     const seriesJsonLd = {
         "@context": "https://schema.org",
         "@type": "TVSeries",

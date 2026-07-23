@@ -72,6 +72,7 @@ export default function Footer() {
                         <h3 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">Legal</h3>
                         <ul className="space-y-4">
                             {[
+                                { name: "DMCA Policy", href: "/dmca" },
                                 { name: "Privacy Policy", href: "/privacy" },
                                 { name: "Terms of Service", href: "/terms" },
                                 { name: "Cookie Policy", href: "/cookies" },
