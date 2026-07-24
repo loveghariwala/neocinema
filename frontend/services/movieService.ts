@@ -1,11 +1,13 @@
 "use server";
 
 import { tmdbService } from "@/lib/tmdb";
+import { isMovieBlocked } from "@/lib/blockedIds";
 
 export async function getTrendingMovies() {
     try {
         const data = await tmdbService.getTrending("movie", "week", 1);
-        return data?.results?.slice(0, 20) || [];
+        const results = data?.results?.filter((m: any) => !isMovieBlocked(m.tmdbId || m.id)) || [];
+        return results.slice(0, 20);
     } catch (error) {
         console.error("Failed to fetch trending movies:", error);
         return [];
@@ -15,7 +17,8 @@ export async function getTrendingMovies() {
 export async function getTrendingSeries() {
     try {
         const data = await tmdbService.getTrending("tv", "week", 1);
-        return data?.results?.slice(0, 20) || [];
+        const results = data?.results?.filter((s: any) => !isMovieBlocked(s.tmdbId || s.id)) || [];
+        return results.slice(0, 20);
     } catch (error) {
         console.error("Failed to fetch trending series:", error);
         return [];
@@ -78,6 +81,8 @@ async function getTMDBRecommendations(id: number, type: "movie" | "tv" = "movie"
 
 export async function getMovieDetails(id: string, type: "movie" | "tv" = "movie") {
     try {
+        if (isMovieBlocked(id)) return null;
+
         const data = type === "movie"
             ? await tmdbService.getMovieDetail(Number(id))
             : await tmdbService.getTvDetail(Number(id));
@@ -212,6 +217,9 @@ export async function discoverContentFromServer(type: "movie" | "tv", queryParam
                 with_keywords: queryParams.with_keywords,
                 with_companies: queryParams.with_companies,
             });
+        if (data?.results) {
+            data.results = data.results.filter((item: any) => !isMovieBlocked(item.tmdbId || item.id));
+        }
         return data;
     } catch (e) {
         console.error(`discoverContentFromServer error for ${type}:`, e);
@@ -241,6 +249,9 @@ export async function searchContentFromServer(query: string, type?: string, page
             data = await tmdbService.searchTv(query, pageNum);
         } else {
             data = await tmdbService.searchMulti(query, pageNum);
+        }
+        if (data?.results) {
+            data.results = data.results.filter((item: any) => !isMovieBlocked(item.tmdbId || item.id));
         }
         return data;
     } catch (e) {

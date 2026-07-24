@@ -12,8 +12,11 @@ interface PageProps {
     params: Promise<{ id: string }>;
 }
 
+import { isMovieBlocked } from "@/lib/blockedIds";
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { id } = await params;
+    if (isMovieBlocked(id)) return { title: "Not Found", robots: { index: false } };
     const movie = await getMovieDetails(id, "movie");
 
     if (!movie) return { title: "Not Found", robots: { index: false } };
@@ -35,6 +38,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function SimilarMoviesPage({ params }: PageProps) {
     const { id } = await params;
+    if (isMovieBlocked(id)) notFound();
     const movie = await getMovieDetails(id, "movie");
 
     if (!movie) notFound();
