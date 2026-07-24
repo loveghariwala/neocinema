@@ -69,6 +69,8 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
     const castKeywords = (movie.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
     const genreKeywords = (movie.genres || []).map((g: string) => `${g.toLowerCase()} movies free`);
 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+    const canonicalUrl = `${baseUrl}/movies/${id}`;
     const isBlocked = isMovieBlocked(id);
 
     return {
@@ -89,7 +91,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
             ...castKeywords,
         ].filter(Boolean),
         alternates: { 
-            canonical: `/movies/${id}`,
+            canonical: canonicalUrl,
         },
         robots: isBlocked || resolvedSearchParams?.play === 'true'
             ? { index: false, follow: false }
@@ -97,19 +99,15 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
         openGraph: {
             title: `${titleText} | Neocinema`,
             description: descriptionText,
-            url: `/movies/${id}`,
-            type: "video.movie",
-            images: movie.backdropPath
-                ? [{ url: `https://image.tmdb.org/t/p/w780${movie.backdropPath}` }]
-                : movie.posterPath
-                    ? [{ url: `https://image.tmdb.org/t/p/w500${movie.posterPath}` }]
-                    : [{ url: "/logo.png" }],
+            url: canonicalUrl,
+            siteName: "Neocinema",
+            locale: "en_US",
+            type: "website",
         },
         twitter: {
             card: "summary_large_image",
             title: `${titleText} | Neocinema`,
             description: descriptionText,
-            images: movie.backdropPath ? [`https://image.tmdb.org/t/p/w780${movie.backdropPath}`] : ["/logo.png"],
         }
     };
 }

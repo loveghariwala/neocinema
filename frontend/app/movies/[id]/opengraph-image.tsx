@@ -13,7 +13,12 @@ export const contentType = 'image/png';
 
 export default async function Image({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const movie = await getMovieDetails(id, 'movie');
+  let movie: any = null;
+  try {
+    movie = await getMovieDetails(id, 'movie');
+  } catch (e) {
+    console.error('OG image fetch error:', e);
+  }
 
   if (!movie) {
     return new ImageResponse(
