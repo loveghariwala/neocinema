@@ -78,14 +78,6 @@ const generateSeriesJsonLd = (seriesList: any[]) => {
                         : `${baseUrl}/logo.png`,
                     "url": `${baseUrl}/series/${series.id || series.tmdbId}`,
                     "startDate": series.first_air_date,
-                    ...(series.rating && series.voteCount ? {
-                        "aggregateRating": {
-                            "@type": "AggregateRating",
-                            "ratingValue": series.rating,
-                            "bestRating": "10",
-                            "ratingCount": series.voteCount,
-                        },
-                    } : {}),
                 },
             })),
         },

@@ -160,12 +160,6 @@ export default function RootLayout({
           "priceCurrency": "USD",
           "category": "free"
         },
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.9",
-          "ratingCount": "1280",
-          "bestRating": "5"
-        },
         "featureList": [
           "AI-powered movie recommendations",
           "Semantic search with vector embeddings",

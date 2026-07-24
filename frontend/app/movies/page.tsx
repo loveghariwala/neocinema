@@ -78,14 +78,6 @@ const generateMoviesJsonLd = (movies: any[]) => {
                         : `${baseUrl}/logo.png`,
                     "url": `${baseUrl}/movies/${movie.id || movie.tmdbId}`,
                     "dateCreated": movie.release_date,
-                    ...(movie.rating && movie.voteCount ? {
-                        "aggregateRating": {
-                            "@type": "AggregateRating",
-                            "ratingValue": movie.rating,
-                            "bestRating": "10",
-                            "ratingCount": movie.voteCount,
-                        },
-                    } : {}),
                 },
             })),
         },
