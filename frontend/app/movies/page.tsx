@@ -143,8 +143,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // ─── Page Content ────────────────────────────────────────────────────────────
-async function MoviesPageContent() {
-    const { data, genres } = await getMoviesPageData({});
+async function MoviesPageContent({ searchParams }: PageProps) {
+    const resolvedSearchParams = (await searchParams) || {};
+    const { data, genres } = await getMoviesPageData(resolvedSearchParams);
     const movies = data?.results || [];
 
     return (
@@ -169,6 +170,6 @@ async function MoviesPageContent() {
     );
 }
 
-export default function MoviesPage() {
-    return <MoviesPageContent />;
+export default function MoviesPage({ searchParams }: PageProps) {
+    return <MoviesPageContent searchParams={searchParams} />;
 }

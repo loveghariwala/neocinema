@@ -143,8 +143,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // ─── Page Content ────────────────────────────────────────────────────────────
-async function SeriesPageContent() {
-    const { data, genres } = await getSeriesPageData({});
+async function SeriesPageContent({ searchParams }: PageProps) {
+    const resolvedSearchParams = (await searchParams) || {};
+    const { data, genres } = await getSeriesPageData(resolvedSearchParams);
     const seriesList = data?.results || [];
 
     return (
@@ -169,6 +170,6 @@ async function SeriesPageContent() {
     );
 }
 
-export default function SeriesPage() {
-    return <SeriesPageContent />;
+export default function SeriesPage({ searchParams }: PageProps) {
+    return <SeriesPageContent searchParams={searchParams} />;
 }

@@ -37,9 +37,14 @@ export default function BrowsePageClient({ type, title, subtitle, initialData, i
 
     const [data, setData] = useState<BrowseData>(initialData);
     const [isPending, startTransition] = useTransition();
+    const [isFetching, setIsFetching] = useState(false);
     const isInitialMount = useRef(true);
 
-    const isLoading = isPending;
+    const isLoading = isPending || isFetching;
+
+    useEffect(() => {
+        setData(initialData);
+    }, [initialData]);
 
     // Compute currentFilters directly from URL searchParams
     const currentFilters = useMemo<FilterState>(() => {
@@ -83,27 +88,32 @@ export default function BrowsePageClient({ type, title, subtitle, initialData, i
 
         isInitialMount.current = false;
 
+        setIsFetching(true);
         startTransition(() => {
             const fetchNewData = async () => {
-                let newData;
-                if (currentFilters.search && currentFilters.search.trim().length >= 2) {
-                    newData = await searchContentFromServer(currentFilters.search, type, String(currentFilters.page));
-                } else {
-                    const params: Record<string, string> = {
-                        page: String(currentFilters.page),
-                        sort_by: currentFilters.sortBy,
-                    };
-                    if (currentFilters.genreIds.length > 0) params.with_genres = currentFilters.genreIds.join(",");
-                    if (currentFilters.yearFrom) params.year_from = String(currentFilters.yearFrom);
-                    if (currentFilters.yearTo) params.year_to = String(currentFilters.yearTo);
-                    if (currentFilters.ratingMin !== null) params.rating_min = String(currentFilters.ratingMin);
-                    if (currentFilters.ratingMax !== null) params.rating_max = String(currentFilters.ratingMax);
-                    if (currentFilters.language) params.language = currentFilters.language;
+                try {
+                    let newData;
+                    if (currentFilters.search && currentFilters.search.trim().length >= 2) {
+                        newData = await searchContentFromServer(currentFilters.search, type, String(currentFilters.page));
+                    } else {
+                        const params: Record<string, string> = {
+                            page: String(currentFilters.page),
+                            sort_by: currentFilters.sortBy,
+                        };
+                        if (currentFilters.genreIds.length > 0) params.with_genres = currentFilters.genreIds.join(",");
+                        if (currentFilters.yearFrom) params.year_from = String(currentFilters.yearFrom);
+                        if (currentFilters.yearTo) params.year_to = String(currentFilters.yearTo);
+                        if (currentFilters.ratingMin !== null) params.rating_min = String(currentFilters.ratingMin);
+                        if (currentFilters.ratingMax !== null) params.rating_max = String(currentFilters.ratingMax);
+                        if (currentFilters.language) params.language = currentFilters.language;
 
-                    newData = await discoverContentFromServer(type, params);
+                        newData = await discoverContentFromServer(type, params);
+                    }
+                    
+                    if (newData) setData(newData);
+                } finally {
+                    setIsFetching(false);
                 }
-                
-                if (newData) setData(newData);
             };
             fetchNewData();
         });
@@ -183,13 +193,13 @@ export default function BrowsePageClient({ type, title, subtitle, initialData, i
             {data.totalPages > 1 && (
                 <div className="mt-16 flex items-center justify-center gap-2">
                     <button
-                        onClick={() => changePage(data.currentPage - 1)}
-                        disabled={data.currentPage <= 1}
+                        onClick={() => changePage(currentFilters.page - 1)}
+                        disabled={currentFilters.page <= 1}
                         className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-bold text-neutral-400 transition-all hover:border-white/20 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
                     >
                         Prev
                     </button>
-                    {generatePageNumbers(data.currentPage, data.totalPages).map((p, i) =>
+                    {generatePageNumbers(currentFilters.page, data.totalPages).map((p, i) =>
                         p === "..." ? (
                             <span key={`e-${i}`} className="px-1 text-neutral-600">⋯</span>
                         ) : (
@@ -197,7 +207,7 @@ export default function BrowsePageClient({ type, title, subtitle, initialData, i
                                 key={p}
                                 onClick={() => changePage(p as number)}
                                 className={`flex h-9 w-9 items-center justify-center rounded-xl text-xs font-bold transition-all ${
-                                    data.currentPage === p
+                                    currentFilters.page === p
                                         ? "bg-red-600 text-white shadow-lg shadow-red-600/30 font-black"
                                         : "border border-white/10 bg-white/[0.03] text-neutral-400 hover:text-white"
                                 }`}
@@ -207,8 +217,8 @@ export default function BrowsePageClient({ type, title, subtitle, initialData, i
                         )
                     )}
                     <button
-                        onClick={() => changePage(data.currentPage + 1)}
-                        disabled={data.currentPage >= data.totalPages}
+                        onClick={() => changePage(currentFilters.page + 1)}
+                        disabled={currentFilters.page >= data.totalPages}
                         className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-bold text-neutral-400 transition-all hover:border-white/20 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
                     >
                         Next
