@@ -70,17 +70,17 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Neocinema — Movies, Series & Anime Discovery",
     description: "Discover trending movies, TV series, and anime on Neocinema. AI-powered recommendations and a cinematic browsing experience.",
-    url: '/',
+    url: 'https://www.neocinematv.com',
     siteName: "Neocinema",
     locale: "en_US",
     type: "website",
-    images: [{ url: "/og_banner.png", width: 1200, height: 630, alt: "Neocinema — Discover Movies & Series" }],
+    images: [{ url: "https://www.neocinematv.com/og_banner.png", width: 1200, height: 630, alt: "Neocinema — Discover Movies & Series", type: "image/png" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Neocinema — Movies, Series & Anime Discovery",
     description: "Discover trending movies, TV series, and anime with AI-powered recommendations on Neocinema.",
-    images: ["/og_banner.png"],
+    images: ["https://www.neocinematv.com/og_banner.png"],
     creator: "@neocinematv",
   },
   verification: {

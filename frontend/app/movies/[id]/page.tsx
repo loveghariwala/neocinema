@@ -50,11 +50,11 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
         };
     }
 
-    const safeDate = movie.releaseDate && !isNaN(new Date(movie.releaseDate).getTime()) 
-        ? new Date(movie.releaseDate) 
+    const safeDate = movie.releaseDate && !isNaN(new Date(movie.releaseDate).getTime())
+        ? new Date(movie.releaseDate)
         : null;
     const releaseYear = safeDate ? safeDate.getFullYear() : "";
-    
+
     // Check if the movie is upcoming (release date is in the future)
     const isUpcoming = safeDate ? safeDate.getTime() > Date.now() : false;
 
@@ -73,6 +73,12 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
     const canonicalUrl = `${baseUrl}/movies/${id}`;
     const isBlocked = isMovieBlocked(id);
 
+    const movieImage = movie.backdropPath
+        ? `https://image.tmdb.org/t/p/w780${movie.backdropPath}`
+        : movie.posterPath
+            ? `https://image.tmdb.org/t/p/w500${movie.posterPath}`
+            : `${baseUrl}/og_banner.png`;
+
     return {
         title: titleText,
         description: descriptionText,
@@ -90,7 +96,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
             ...genreKeywords,
             ...castKeywords,
         ].filter(Boolean),
-        alternates: { 
+        alternates: {
             canonical: canonicalUrl,
         },
         robots: isBlocked || resolvedSearchParams?.play === 'true'
@@ -105,11 +111,10 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
             type: "website",
             images: [
                 {
-                    url: `${baseUrl}/og_banner.jpg`,
-                    width: 1200,
-                    height: 630,
-                    alt: `${movie.title} — Neocinema`,
-                    type: "image/jpeg",
+                    url: movieImage,
+                    width: movie.backdropPath ? 780 : 500,
+                    height: movie.backdropPath ? 439 : 750,
+                    alt: movie.title || titleText,
                 },
             ],
         },
@@ -117,7 +122,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
             card: "summary_large_image",
             title: `${titleText} | Neocinema`,
             description: descriptionText,
-            images: [`${baseUrl}/og_banner.jpg`],
+            images: [movieImage],
         }
     };
 }
@@ -148,8 +153,8 @@ export default async function MovieDetailsPage({
     const primaryTrailer = trailers[0];
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
-    const safeDate = movie.releaseDate && !isNaN(new Date(movie.releaseDate).getTime()) 
-        ? new Date(movie.releaseDate) 
+    const safeDate = movie.releaseDate && !isNaN(new Date(movie.releaseDate).getTime())
+        ? new Date(movie.releaseDate)
         : null;
     const releaseYear = safeDate ? safeDate.getFullYear() : "";
 

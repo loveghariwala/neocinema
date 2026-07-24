@@ -61,11 +61,11 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
     const isUpcoming = safeDate ? safeDate.getTime() > Date.now() : false;
 
     const genreLabel = (series.genres || []).slice(0, 2).join(' & ') || 'TV Series';
-    
+
     const titleText = isUpcoming
         ? `Cast of ${series.title}, Release Date & Everything We Know`
         : `Watch ${series.title} ${releaseYear ? `(${releaseYear}) ` : ""}Online Free`;
-        
+
     const descriptionText = isUpcoming
         ? `Discover the cast of ${series.title}${releaseYear ? ` (${releaseYear})` : ""}, release date, characters, and seasons. View full details on Neocinema.`
         : `${series.overview ? series.overview.substring(0, 140).trim() + '.' : `Discover ${series.title}, a ${genreLabel.toLowerCase()} series.`}${series.number_of_seasons ? ` ${series.number_of_seasons} season${series.number_of_seasons > 1 ? 's' : ''}.` : ''}${series.rating ? ` ★ ${series.rating.toFixed(1)}/10.` : ''} Watch now on Neocinema.`;
@@ -76,6 +76,11 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
     const canonicalUrl = `${baseUrl}/series/${id}`;
     const isBlocked = isMovieBlocked(id);
+    const seriesImage = series.backdropPath
+        ? `https://image.tmdb.org/t/p/w780${series.backdropPath}`
+        : series.posterPath
+            ? `https://image.tmdb.org/t/p/w500${series.posterPath}`
+            : `${baseUrl}/og_banner.png`;
 
     return {
         title: titleText,
@@ -89,11 +94,15 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
             `${series.title} review`,
             `${series.title} where to watch`,
             `shows like ${series.title}`,
+            `watch ${series.title} online free`,
+            `watch ${series.title} hd`,
+            `${series.title} full episodes free`,
+            "free tv series online",
             ...(series.genres || []),
             ...genreKeywords,
             ...castKeywords,
         ].filter(Boolean),
-        alternates: { 
+        alternates: {
             canonical: canonicalUrl,
         },
         robots: isBlocked || resolvedSearchParams?.play === 'true'
@@ -108,11 +117,10 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
             type: "website",
             images: [
                 {
-                    url: `${baseUrl}/og_banner.jpg`,
-                    width: 1200,
-                    height: 630,
-                    alt: `${series.title} — Neocinema`,
-                    type: "image/jpeg",
+                    url: seriesImage,
+                    width: series.backdropPath ? 780 : 500,
+                    height: series.backdropPath ? 439 : 750,
+                    alt: series.title || titleText,
                 },
             ],
         },
@@ -120,7 +128,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
             card: "summary_large_image",
             title: `${titleText} | Neocinema`,
             description: descriptionText,
-            images: [`${baseUrl}/og_banner.jpg`],
+            images: [seriesImage],
         }
     };
 }
@@ -262,13 +270,13 @@ export default async function SeriesDetailsPage({
                     className="absolute inset-0"
                 >
                     {series.backdropPath ? (
-                        <Image 
-                            src={`https://image.tmdb.org/t/p/w1280${series.backdropPath}`} 
-                            alt={series.title} 
-                            fill 
-                            priority 
-                            sizes="100vw" 
-                            className="object-cover opacity-80" 
+                        <Image
+                            src={`https://image.tmdb.org/t/p/w1280${series.backdropPath}`}
+                            alt={series.title}
+                            fill
+                            priority
+                            sizes="100vw"
+                            className="object-cover opacity-80"
                         />
                     ) : (
                         <div className="h-full w-full bg-neutral-900" />
@@ -309,10 +317,10 @@ export default async function SeriesDetailsPage({
                                     <Clock size={16} className="text-red-500" />
                                     <span className="text-white">{series.runtime} MIN / EP</span>
                                 </div>
-                                    <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
-                                        <Calendar size={16} className="text-red-500" />
-                                        <span className="text-white">{releaseYear || "TBA"}</span>
-                                    </div>
+                                <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
+                                    <Calendar size={16} className="text-red-500" />
+                                    <span className="text-white">{releaseYear || "TBA"}</span>
+                                </div>
                                 <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
                                     <Globe size={16} className="text-red-500" />
                                     <span className="text-white">{series.language?.toUpperCase()}</span>
