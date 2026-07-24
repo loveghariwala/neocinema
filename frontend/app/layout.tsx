@@ -7,6 +7,7 @@ import InstallAppBanner from "@/components/ui/InstallAppBanner";
 import AdsterraSocialBar from "@/components/ads/AdsterraSocialBar";
 import MonetagAds from "@/components/ads/MonetagAds";
 import { Geist, Geist_Mono, Noto_Sans, Playfair_Display } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -226,6 +227,7 @@ export default function RootLayout({
           <Footer />
           <InstallAppBanner />
         </div>
+        <Analytics />
       </body>
     </html>
   );
