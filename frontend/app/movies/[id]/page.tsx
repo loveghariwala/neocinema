@@ -105,11 +105,11 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
             type: "website",
             images: [
                 {
-                    url: `${baseUrl}/movies/${id}/opengraph-image`,
+                    url: `${baseUrl}/og_banner.jpg`,
                     width: 1200,
                     height: 630,
-                    alt: movie.title,
-                    type: "image/png",
+                    alt: `${movie.title} — Neocinema`,
+                    type: "image/jpeg",
                 },
             ],
         },
@@ -117,7 +117,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
             card: "summary_large_image",
             title: `${titleText} | Neocinema`,
             description: descriptionText,
-            images: [`${baseUrl}/movies/${id}/opengraph-image`],
+            images: [`${baseUrl}/og_banner.jpg`],
         }
     };
 }
