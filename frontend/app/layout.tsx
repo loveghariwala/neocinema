@@ -208,7 +208,7 @@ export default function RootLayout({
         </Script>
 
         {/* Ahrefs Webmaster Tools Analytics */}
-        <Script src="https://analytics.ahrefs.com/analytics.js" data-key="+kc1zXGQ8NqACPuHJIlgsw" strategy="afterInteractive" />
+        <Script src="https://analytics.ahrefs.com/analytics.js" data-key="+kc1zXGQ8NqACPuHJIlgsw" strategy="lazyOnload" />
         {/* Global Ad Network Scripts */}
         {/* <AdsterraSocialBar /> */}
         {/* <MonetagAds /> */}
