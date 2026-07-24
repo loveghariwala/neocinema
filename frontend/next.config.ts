@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
   },
   allowedDevOrigins: ["aggregately-legendary-nettie.ngrok-free.dev"],
   images: {
-    unoptimized: true,
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
         protocol: "https",
@@ -20,6 +20,10 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "ui-avatars.com",
+      },
+      {
+        protocol: "https",
+        hostname: "img.youtube.com",
       },
     ],
   },
