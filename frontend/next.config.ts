@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
   },
   allowedDevOrigins: ["aggregately-legendary-nettie.ngrok-free.dev"],
   images: {
+    unoptimized: true,
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
