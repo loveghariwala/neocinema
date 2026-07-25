@@ -390,6 +390,6 @@ export function getTmdbImageUrl(path: string | null | undefined, size: string = 
         return path;
     }
     const cleanPath = path.startsWith("/") ? path : `/${path}`;
-    return `/tmdb-img/t/p/${size}${cleanPath}`;
+    return `https://image.tmdb.org/t/p/${size}${cleanPath}`;
 }
 

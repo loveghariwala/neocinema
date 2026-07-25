@@ -27,14 +27,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  async rewrites() {
-    return [
-      {
-        source: '/tmdb-img/:path*',
-        destination: 'https://image.tmdb.org/:path*',
-      },
-    ];
-  },
   async redirects() {
     return [
       {
