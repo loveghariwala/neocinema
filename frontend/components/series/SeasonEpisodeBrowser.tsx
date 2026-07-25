@@ -6,6 +6,7 @@ import { Calendar, Loader2, Monitor, Play } from 'lucide-react';
 
 
 import Image from "next/image";
+import { getTmdbImageUrl } from "@/lib/tmdb";
 
 interface Episode {
     id: number;
@@ -122,7 +123,7 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons, initialEpisode
                 ) : (
                     episodes.map((episode) => {
                             const stillUrl = episode.still_path && !imgErrors[episode.id]
-                                ? `https://image.tmdb.org/t/p/w300${episode.still_path}`
+                                ? getTmdbImageUrl(episode.still_path, "w300", episode.name)
                                 : null;
 
                             return (

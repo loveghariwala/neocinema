@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { getWatchHistory, WatchProgress } from "@/services/historyService";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Clock, Play, Trash2 } from "lucide-react";
+import { getTmdbImageUrl } from "@/lib/tmdb";
 
 export default function ContinueWatchingRow() {
     const [history, setHistory] = useState<WatchProgress[]>([]);
@@ -28,8 +29,7 @@ export default function ContinueWatchingRow() {
     if (history.length === 0) return null;
 
     const getImage = (path: string) => {
-        if (!path) return "/placeholder.jpg";
-        return path.startsWith("http") ? path : `https://image.tmdb.org/t/p/w500${path}`;
+        return getTmdbImageUrl(path, "w500");
     };
 
     return (

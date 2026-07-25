@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { ChevronLeft, ChevronRight, Info, Play, Star } from 'lucide-react';
 import Link from "next/link";
+import { getTmdbImageUrl } from "@/lib/tmdb";
 
 export default function HeroBanner({
     movies = [],
@@ -18,13 +19,13 @@ export default function HeroBanner({
 
     useEffect(() => {
         if (list.length <= 1) return;
-        const timer = setInterval(() => {
-            handleNext();
-        }, 10000); // Auto-rotation every 10 seconds
-        return () => clearInterval(timer);
-    }, [currentIndex, list.length]);
+        const interval = setInterval(() => {
+            setCurrentIndex((prev) => (prev + 1) % list.length);
+        }, 8000);
+        return () => clearInterval(interval);
+    }, [list.length]);
 
-    if (list.length === 0) return null;
+    if (!list || list.length === 0) return null;
 
     const handleNext = () => {
         setCurrentIndex((prev) => (prev + 1) % list.length);
@@ -34,18 +35,15 @@ export default function HeroBanner({
         setCurrentIndex((prev) => (prev - 1 + list.length) % list.length);
     };
 
-    const handleDotClick = (index: number) => {
-        if (index === currentIndex) return;
-        setCurrentIndex(index);
-    };
+    const currentItem = list[currentIndex] || {};
 
     return (
-        <section className="relative flex flex-col min-h-[85vh] sm:min-h-[90vh] md:min-h-[100vh] w-full overflow-hidden bg-black">
-            {/* Background Images Crossfade */}
-            <div className="absolute inset-0 select-none pointer-events-none z-0">
+        <section className="relative w-full h-[65vh] sm:h-[75vh] md:h-[85vh] min-h-[500px] overflow-hidden bg-neutral-950">
+            {/* Background Slides */}
+            <div className="absolute inset-0 z-0">
                 {list.map((item: any, index: number) => {
-                    const itemBackdrop = item.backdropPath || item.backdrop_path;
                     const isActive = index === currentIndex;
+                    const itemBackdrop = item.backdropPath || item.backdrop_path || item.posterPath || item.poster_path;
                     return (
                         <div
                             key={item._id || item.tmdbId || item.id}
@@ -55,10 +53,10 @@ export default function HeroBanner({
                         >
                             {itemBackdrop ? (
                                 <picture className="absolute inset-0 h-full w-full">
-                                    <source media="(max-width: 768px)" srcSet={`https://image.tmdb.org/t/p/w780${itemBackdrop}`} />
-                                    <source media="(min-width: 769px)" srcSet={`https://image.tmdb.org/t/p/w1280${itemBackdrop}`} />
+                                    <source media="(max-width: 768px)" srcSet={getTmdbImageUrl(itemBackdrop, "w780")} />
+                                    <source media="(min-width: 769px)" srcSet={getTmdbImageUrl(itemBackdrop, "w1280")} />
                                     <img
-                                        src={`https://image.tmdb.org/t/p/w1280${itemBackdrop}`}
+                                        src={getTmdbImageUrl(itemBackdrop, "w1280")}
                                         alt={item.title || item.name}
                                         className="h-full w-full object-cover opacity-80"
                                         style={{

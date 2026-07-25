@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, User } from 'lucide-react';
 import Image from "next/image";
+import { getTmdbImageUrl } from "@/lib/tmdb";
 
 interface Props {
     cast: any[];
@@ -86,7 +87,7 @@ export default function CastRow({ cast }: Props) {
                             <div className="relative aspect-[2/3] w-full overflow-hidden rounded-xl bg-neutral-950 mb-3 border border-white/5">
                                 {actor.profilePath ? (
                                     <Image
-                                        src={`https://image.tmdb.org/t/p/w342${actor.profilePath}`}
+                                        src={getTmdbImageUrl(actor.profilePath, "w342", actor.name)}
                                         alt={actor.name}
                                         fill
                                         sizes="200px"

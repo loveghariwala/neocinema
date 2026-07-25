@@ -6,6 +6,7 @@ import MovieCard from "@/components/cards/MovieCard";
 import CastRow from "@/components/sliders/CastRow";
 import { MotionDiv } from "@/components/layout/Motion";
 import Image from "next/image";
+import { getTmdbImageUrl } from "@/lib/tmdb";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 const StreamPlayer = dynamic(() => import("@/components/player/StreamPlayer"));
@@ -271,7 +272,7 @@ export default async function SeriesDetailsPage({
                 >
                     {series.backdropPath ? (
                         <Image
-                            src={`https://image.tmdb.org/t/p/w1280${series.backdropPath}`}
+                            src={getTmdbImageUrl(series.backdropPath, "w1280", series.title)}
                             alt={series.title}
                             fill
                             priority

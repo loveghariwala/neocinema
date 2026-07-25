@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ArrowLeft, Award, Calendar, ChevronDown, ChevronUp, Film, MapPin, Sparkles, Star, Tv, User } from 'lucide-react';
 import MovieCard from "@/components/cards/MovieCard";
+import { getTmdbImageUrl } from "@/lib/tmdb";
 
 interface PersonPageClientProps {
     data: any;
@@ -33,9 +34,7 @@ export default function PersonPageClient({ data }: PersonPageClientProps) {
     }
 
     const { person, results = [] } = data;
-    const profileUrl = person.profilePath
-        ? `https://image.tmdb.org/t/p/h632${person.profilePath}`
-        : "/placeholder.jpg";
+    const profileUrl = getTmdbImageUrl(person.profilePath, "h632", person.name);
 
     const isActor = (person.knownForDepartment || "Acting").toLowerCase().includes("act");
     const departmentLabel = person.knownForDepartment || "Acting & Directing";

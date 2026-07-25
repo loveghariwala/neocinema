@@ -6,6 +6,7 @@ import { Play, Star } from 'lucide-react';
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { getTmdbImageUrl } from "@/lib/tmdb";
 
 interface MovieCardProps {
     movie: any;
@@ -18,11 +19,7 @@ export default function MovieCard({ movie, priority = false }: MovieCardProps) {
     const linkBase = movie.isMovie === false ? "/series" : "/movies";
     const title = movie.title || movie.name || "Unknown";
     const posterPathClean = movie.posterPath || movie.poster_path;
-    const posterUrl = posterPathClean
-        ? posterPathClean.startsWith("http")
-            ? posterPathClean
-            : `https://image.tmdb.org/t/p/w342${posterPathClean.startsWith("/") ? "" : "/"}${posterPathClean}`
-        : `https://ui-avatars.com/api/?name=${encodeURIComponent(title)}&background=1a1a1a&color=dc2626&size=300&bold=true`;
+    const posterUrl = getTmdbImageUrl(posterPathClean, "w342", title);
     
     const fallbackUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(title)}&background=1a1a1a&color=dc2626&size=300&bold=true`;
 
