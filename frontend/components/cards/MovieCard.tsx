@@ -1,9 +1,7 @@
 "use client";
 
 import Link from "next/link";
-
-import { Play, Star } from 'lucide-react';
-
+import { Film, Play, Star } from 'lucide-react';
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { getTmdbImageUrl } from "@/lib/tmdb";
@@ -20,8 +18,6 @@ export default function MovieCard({ movie, priority = false }: MovieCardProps) {
     const title = movie.title || movie.name || "Unknown";
     const posterPathClean = movie.posterPath || movie.poster_path;
     const posterUrl = getTmdbImageUrl(posterPathClean, "w342", title);
-    
-    const fallbackUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(title)}&background=1a1a1a&color=dc2626&size=300&bold=true`;
 
     const rating = movie.rating ?? movie.vote_average ?? 0;
     const genre = movie.genres?.[0] || "Unknown";
@@ -31,28 +27,39 @@ export default function MovieCard({ movie, priority = false }: MovieCardProps) {
             ? new Date(movie.release_date).getFullYear()
             : "";
 
-    // Track error state only, preventing 80 hydration re-renders on page load
+    // Reset error state whenever movie ID or poster path changes
     const [hasError, setHasError] = useState(false);
     useEffect(() => {
         setHasError(false);
-    }, [movie.posterPath]);
+    }, [posterPathClean, id]);
 
     return (
         <Link href={`${linkBase}/${id}`} prefetch={false} className="block group w-full h-full" aria-label={`View details for ${title}`}>
             <div
                 className="relative aspect-[2/3] w-full overflow-hidden rounded-2xl bg-neutral-950 shadow-xl border border-white/[0.05] transition-all duration-500 ease-out group-hover:border-white/20 group-hover:shadow-[0_20px_50px_rgba(220,38,38,0.3)] group-hover:-translate-y-2 group-hover:scale-[1.03]"
             >
-                {/* Poster Image */}
+                {/* Poster Image or Sleek Fallback */}
                 <div className="absolute inset-0 bg-neutral-900">
-                    <Image
-                        src={hasError ? fallbackUrl : posterUrl}
-                        alt={title}
-                        fill
-                        priority={priority}
-                        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 20vw, 15vw"
-                        className="object-cover opacity-90 transition-all duration-700 group-hover:scale-110 group-hover:opacity-100 group-hover:blur-[2px]"
-                        onError={() => setHasError(true)}
-                    />
+                    {posterPathClean && !hasError ? (
+                        <Image
+                            src={posterUrl}
+                            alt={title}
+                            fill
+                            priority={priority}
+                            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 20vw, 15vw"
+                            className="object-cover opacity-90 transition-all duration-700 group-hover:scale-110 group-hover:opacity-100 group-hover:blur-[2px]"
+                            onError={() => setHasError(true)}
+                        />
+                    ) : (
+                        <div className="flex flex-col items-center justify-center h-full w-full bg-gradient-to-b from-neutral-900 via-neutral-950 to-black p-4 text-center border border-white/5">
+                            <div className="p-3 rounded-full bg-red-600/10 border border-red-500/20 text-red-500 mb-3">
+                                <Film size={28} />
+                            </div>
+                            <span className="text-xs font-black text-white line-clamp-3 uppercase tracking-wider leading-snug">
+                                {title}
+                            </span>
+                        </div>
+                    )}
                 </div>
 
                 {/* Rating Badge */}
