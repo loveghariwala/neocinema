@@ -17,10 +17,11 @@ export default function MovieCard({ movie, priority = false }: MovieCardProps) {
     const id = movie._id || movie.tmdbId;
     const linkBase = movie.isMovie === false ? "/series" : "/movies";
     const title = movie.title || movie.name || "Unknown";
-    const posterUrl = movie.posterPath
-        ? movie.posterPath.startsWith("http")
-            ? movie.posterPath
-            : `https://image.tmdb.org/t/p/w342${movie.posterPath}`
+    const posterPathClean = movie.posterPath || movie.poster_path;
+    const posterUrl = posterPathClean
+        ? posterPathClean.startsWith("http")
+            ? posterPathClean
+            : `https://image.tmdb.org/t/p/w342${posterPathClean.startsWith("/") ? "" : "/"}${posterPathClean}`
         : `https://ui-avatars.com/api/?name=${encodeURIComponent(title)}&background=1a1a1a&color=dc2626&size=300&bold=true`;
     
     const fallbackUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(title)}&background=1a1a1a&color=dc2626&size=300&bold=true`;

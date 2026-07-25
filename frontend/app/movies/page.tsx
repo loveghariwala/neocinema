@@ -73,8 +73,8 @@ const generateMoviesJsonLd = (movies: any[]) => {
                     "@type": "Movie",
                     "name": movie.title || movie.name,
                     "description": movie.overview,
-                    "image": movie.poster_path
-                        ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                    "image": movie.posterPath
+                        ? `https://image.tmdb.org/t/p/w500${movie.posterPath.startsWith('/') ? '' : '/'}${movie.posterPath}`
                         : `${baseUrl}/logo.png`,
                     "url": `${baseUrl}/movies/${movie.id || movie.tmdbId}`,
                     "dateCreated": movie.release_date,

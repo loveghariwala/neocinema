@@ -73,8 +73,8 @@ const generateSeriesJsonLd = (seriesList: any[]) => {
                     "@type": "TVSeries",
                     "name": series.title || series.name,
                     "description": series.overview,
-                    "image": series.poster_path
-                        ? `https://image.tmdb.org/t/p/w500${series.poster_path}`
+                    "image": series.posterPath
+                        ? `https://image.tmdb.org/t/p/w500${series.posterPath.startsWith('/') ? '' : '/'}${series.posterPath}`
                         : `${baseUrl}/logo.png`,
                     "url": `${baseUrl}/series/${series.id || series.tmdbId}`,
                     "startDate": series.first_air_date,
