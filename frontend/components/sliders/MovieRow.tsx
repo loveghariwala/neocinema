@@ -43,10 +43,14 @@ export default function MovieRow({
         }
     };
 
-    // Auto-scroll every 10 seconds to infinity
+    // Auto-scroll every 12 seconds only on desktop viewports to preserve mobile main-thread responsiveness (INP)
     useEffect(() => {
+        if (typeof window === "undefined" || window.matchMedia("(max-width: 768px)").matches) {
+            return;
+        }
+
         const interval = setInterval(() => {
-            if (scrollRef.current) {
+            if (scrollRef.current && document.visibilityState === "visible") {
                 const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
                 // Check if we are at the end
                 if (scrollLeft >= scrollWidth - clientWidth - 10) {
@@ -58,7 +62,7 @@ export default function MovieRow({
                     scrollRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
                 }
             }
-        }, 10000);
+        }, 12000);
 
         return () => clearInterval(interval);
     }, []);

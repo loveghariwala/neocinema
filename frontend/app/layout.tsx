@@ -12,18 +12,20 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const playfairDisplayHeading = Playfair_Display({ subsets: ['latin'], variable: '--font-heading' });
+const playfairDisplayHeading = Playfair_Display({ subsets: ['latin'], variable: '--font-heading', display: 'swap' });
 
-const notoSans = Noto_Sans({ subsets: ['latin'], variable: '--font-sans' });
+const notoSans = Noto_Sans({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: 'swap',
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {

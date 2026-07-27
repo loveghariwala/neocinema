@@ -8,10 +8,12 @@ import { getTmdbImageUrl } from "@/lib/tmdb";
 
 export default function ContinueWatchingRow() {
     const [history, setHistory] = useState<WatchProgress[]>([]);
+    const [isLoaded, setIsLoaded] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setHistory(getWatchHistory());
+        setIsLoaded(true);
     }, []);
 
     const clearHistory = () => {
@@ -26,7 +28,7 @@ export default function ContinueWatchingRow() {
         }
     };
 
-    if (history.length === 0) return null;
+    if (!isLoaded || history.length === 0) return null;
 
     const getImage = (path: string) => {
         return getTmdbImageUrl(path, "w500");

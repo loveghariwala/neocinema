@@ -19,10 +19,14 @@ export default function HeroBanner({
 
     useEffect(() => {
         if (list.length <= 1) return;
-        const interval = setInterval(() => {
-            setCurrentIndex((prev) => (prev + 1) % list.length);
-        }, 8000);
-        return () => clearInterval(interval);
+        if (typeof window !== "undefined" && window.matchMedia("(max-width: 768px)").matches) return;
+
+        const timer = setInterval(() => {
+            if (document.visibilityState === "visible") {
+                setCurrentIndex((prev) => (prev + 1) % list.length);
+            }
+        }, 10000); // Auto-rotation every 10 seconds on desktop only
+        return () => clearInterval(timer);
     }, [list.length]);
 
     if (!list || list.length === 0) return null;
