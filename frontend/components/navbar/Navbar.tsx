@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Film, Gift, Home, Library, Menu, Sparkles, Tv, X } from 'lucide-react';
+import { BookOpen, Download, Film, Gift, Home, Library, Menu, Sparkles, Tv, X } from 'lucide-react';
 
 
 
@@ -103,12 +103,23 @@ export default function Navbar() {
                         </div>
                     </nav>
 
-                    {/* ─── MOBILE HAMBURGER ────────────────────── */}
-                    <button
-                        onClick={() => setIsOpen(!isOpen)}
-                        className="relative z-10 flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white backdrop-blur-xl transition-all hover:bg-white/10 hover:border-white/20 lg:hidden"
-                        aria-label="Toggle Menu"
-                    >
+                    {/* ─── ADD SHORTCUT BUTTON ─────────────────── */}
+                    <div className="flex items-center gap-3 z-10">
+                        <button
+                            onClick={() => window.dispatchEvent(new CustomEvent("open-install-banner"))}
+                            className="flex items-center gap-1.5 rounded-full border border-red-500/40 bg-red-600/20 px-3 py-1.5 text-xs font-bold text-red-400 hover:bg-red-600 hover:text-white transition-all cursor-pointer active:scale-95 shadow-md shadow-red-950/40"
+                            title="Add Shortcut to Home Screen / PC"
+                        >
+                            <Download size={14} />
+                            <span className="hidden sm:inline">Add Shortcut</span>
+                        </button>
+
+                        {/* ─── MOBILE HAMBURGER ────────────────────── */}
+                        <button
+                            onClick={() => setIsOpen(!isOpen)}
+                            className="relative z-10 flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white backdrop-blur-xl transition-all hover:bg-white/10 hover:border-white/20 lg:hidden"
+                            aria-label="Toggle Menu"
+                        >
                         <>
                             {isOpen ? (
                                 <div
@@ -125,6 +136,7 @@ export default function Navbar() {
                             )}
                         </>
                     </button>
+                    </div>
                 </div>
             </header>
 
