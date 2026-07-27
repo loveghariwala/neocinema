@@ -11,10 +11,9 @@ export default function InstallAppBanner() {
     const [showGuide, setShowGuide] = useState(false);
 
     useEffect(() => {
-        // Detect Android user agent
         const ua = navigator.userAgent || "";
-        const android = /android/i.test(ua);
-        setIsAndroid(android);
+        const mobile = /android|iphone|ipad|ipod/i.test(ua);
+        setIsAndroid(/android/i.test(ua));
 
         // Check if already running in standalone mode (installed PWA)
         const isStandalone = window.matchMedia("(display-mode: standalone)").matches || (window.navigator as any).standalone;
@@ -23,27 +22,26 @@ export default function InstallAppBanner() {
             return;
         }
 
-        // Listen for Chrome/Android PWA install prompt
+        // Listen for Chrome/Android/Desktop PWA install prompt
         const handleBeforeInstallPrompt = (e: Event) => {
             e.preventDefault();
             setDeferredPrompt(e);
 
-            // Show banner if user hasn't dismissed it in last 3 days
             const dismissedAt = localStorage.getItem("neocinema_pwa_dismissed");
-            if (!dismissedAt || Date.now() - parseInt(dismissedAt) > 3 * 24 * 60 * 60 * 1000) {
+            if (!dismissedAt || Date.now() - parseInt(dismissedAt) > 24 * 60 * 60 * 1000) {
                 setShowBanner(true);
             }
         };
 
         window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
-        // Fallback: If on mobile Android, show banner after 4 seconds
+        // Fallback timer for mobile/desktop browsers
         const timer = setTimeout(() => {
             const dismissedAt = localStorage.getItem("neocinema_pwa_dismissed");
-            if (android && !isStandalone && (!dismissedAt || Date.now() - parseInt(dismissedAt) > 3 * 24 * 60 * 60 * 1000)) {
+            if (!isStandalone && (!dismissedAt || Date.now() - parseInt(dismissedAt) > 24 * 60 * 60 * 1000)) {
                 setShowBanner(true);
             }
-        }, 4000);
+        }, 3000);
 
         return () => {
             window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -86,7 +84,7 @@ export default function InstallAppBanner() {
                             <div>
                                 <h3 className="text-sm font-black text-white flex items-center gap-1.5">
                                     <span>Neocinema App</span>
-                                    <span className="text-[9px] font-black bg-red-600/30 text-red-400 border border-red-500/30 px-1.5 py-0.5 rounded-full uppercase">Android</span>
+                                    <span className="text-[9px] font-black bg-red-600/30 text-red-400 border border-red-500/30 px-1.5 py-0.5 rounded-full uppercase">Quick Shortcut</span>
                                 </h3>
                                 <p className="text-xs text-neutral-400 font-medium">Add shortcut to home screen for 1-click watch</p>
                             </div>

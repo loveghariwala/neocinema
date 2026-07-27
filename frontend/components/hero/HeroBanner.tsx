@@ -42,7 +42,7 @@ export default function HeroBanner({
     const currentItem = list[currentIndex] || {};
 
     return (
-        <section className="relative w-full h-[65vh] sm:h-[75vh] md:h-[85vh] min-h-[500px] overflow-hidden bg-neutral-950">
+        <section className="relative w-full min-h-[80vh] sm:min-h-[85vh] md:min-h-[90vh] overflow-hidden bg-neutral-950 flex flex-col justify-end">
             {/* Background Slides */}
             <div className="absolute inset-0 z-0">
                 {list.map((item: any, index: number) => {
@@ -83,7 +83,7 @@ export default function HeroBanner({
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,black_100%)] opacity-40 z-1" />
 
             {/* Content */}
-            <div className="relative z-10 flex flex-1 flex-col justify-end pb-32 pt-32 md:justify-center md:pb-32 px-5 sm:px-8 md:px-16 lg:px-24">
+            <div className="relative z-10 flex flex-1 flex-col justify-end pb-24 pt-28 sm:pb-28 md:pb-32 px-5 sm:px-8 md:px-16 lg:px-24">
                 <div className="grid grid-cols-1 grid-rows-1 max-w-4xl w-full">
                     {list.map((item: any, index: number) => {
                         const isActive = index === currentIndex;

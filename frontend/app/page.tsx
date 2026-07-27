@@ -110,7 +110,7 @@ export default async function HomePage() {
             <h1 className="sr-only">Best Trending Movies to Stream at Home for Free</h1>
             {heroMovies.length > 0 && <HeroBanner movies={heroMovies} />}
 
-            <div className="relative z-20 -mt-12 sm:-mt-16 max-w-7xl mx-auto space-y-10 sm:space-y-14 px-4 sm:px-6 lg:px-8 pb-20">
+            <div className="relative z-20 -mt-4 sm:-mt-6 max-w-7xl mx-auto space-y-10 sm:space-y-14 px-4 sm:px-6 lg:px-8 pb-20">
                 <div>
                     <ContinueWatchingRow />
                 </div>
