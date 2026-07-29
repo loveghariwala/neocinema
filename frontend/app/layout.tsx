@@ -66,9 +66,6 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  alternates: {
-    canonical: '/',
-  },
   openGraph: {
     title: "Neocinema — Movies, Series & Anime Discovery",
     description: "Discover trending movies, TV series, and anime on Neocinema. AI-powered recommendations and a cinematic browsing experience.",

@@ -230,16 +230,31 @@ export default async function SeriesDetailsPage({
     const videoObjectJsonLd = {
         "@context": "https://schema.org",
         "@type": "VideoObject",
-        "name": `${series.title} Full Series HD`,
-        "description": series.overview || `Watch ${series.title} Full TV Series Online Free in HD`,
-        "thumbnailUrl": series.backdropPath ? `https://image.tmdb.org/t/p/w780${series.backdropPath}` : `${baseUrl}/logo.png`,
+        "@id": `${baseUrl}/series/${id}#video`,
+        "name": `${series.title} (${releaseYear || ""}) - Official Stream & Trailer`,
+        "description": series.overview
+            ? series.overview.substring(0, 200).trim()
+            : `Stream ${series.title} online on Neocinema.`,
+        "thumbnailUrl": [
+            series.backdropPath
+                ? `https://image.tmdb.org/t/p/w780${series.backdropPath}`
+                : series.posterPath
+                    ? `https://image.tmdb.org/t/p/w500${series.posterPath}`
+                    : `${baseUrl}/og_banner.png`
+        ],
         "uploadDate": safeDate ? safeDate.toISOString() : new Date().toISOString(),
-        "contentUrl": `${baseUrl}/series/${id}?play=true`,
-        "embedUrl": `${baseUrl}/series/${id}?play=true`,
-        "interactionStatistic": {
-            "@type": "InteractionCounter",
-            "interactionType": { "@type": "WatchAction" },
-            "userInteractionCount": (series.voteCount || 10) * 142
+        "contentUrl": `${baseUrl}/series/${id}`,
+        "embedUrl": primaryTrailer
+            ? `https://www.youtube-nocookie.com/embed/${primaryTrailer.youtube_video_id}`
+            : `${baseUrl}/series/${id}`,
+        "publisher": {
+            "@type": "Organization",
+            "@id": `${baseUrl}#org`,
+            "name": "Neocinema",
+            "logo": {
+                "@type": "ImageObject",
+                "url": `${baseUrl}/logo.png`
+            }
         }
     };
 

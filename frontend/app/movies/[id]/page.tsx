@@ -223,24 +223,36 @@ export default async function MovieDetailsPage({
 
     // Removed templated FAQ JSON-LD to avoid thin content penalties
 
-    // VideoObject disabled to prevent structured data spam warnings
-    /*
     const videoObjectJsonLd = {
         "@context": "https://schema.org",
         "@type": "VideoObject",
-        "name": `${movie.title} Full Movie HD`,
-        "description": `Where to watch ${movie.title} online free HD. Stream ${movie.title} full movie no registration. ${movie.overview || ''}`,
-        "thumbnailUrl": movie.backdropPath ? `https://image.tmdb.org/t/p/w780${movie.backdropPath}` : `${baseUrl}/logo.png`,
+        "@id": `${baseUrl}/movies/${id}#video`,
+        "name": `${movie.title} (${releaseYear || ""}) - Official Stream & Trailer`,
+        "description": movie.overview
+            ? movie.overview.substring(0, 200).trim()
+            : `Stream ${movie.title} online on Neocinema.`,
+        "thumbnailUrl": [
+            movie.backdropPath
+                ? `https://image.tmdb.org/t/p/w780${movie.backdropPath}`
+                : movie.posterPath
+                    ? `https://image.tmdb.org/t/p/w500${movie.posterPath}`
+                    : `${baseUrl}/og_banner.png`
+        ],
         "uploadDate": safeDate ? safeDate.toISOString() : new Date().toISOString(),
-        "contentUrl": `${baseUrl}/movies/${id}?play=true`,
-        "embedUrl": `${baseUrl}/movies/${id}?play=true`,
-        "interactionStatistic": {
-            "@type": "InteractionCounter",
-            "interactionType": { "@type": "WatchAction" },
-            "userInteractionCount": (movie.voteCount || 10) * 142
+        "contentUrl": `${baseUrl}/movies/${id}`,
+        "embedUrl": primaryTrailer
+            ? `https://www.youtube-nocookie.com/embed/${primaryTrailer.youtube_video_id}`
+            : `${baseUrl}/movies/${id}`,
+        "publisher": {
+            "@type": "Organization",
+            "@id": `${baseUrl}#org`,
+            "name": "Neocinema",
+            "logo": {
+                "@type": "ImageObject",
+                "url": `${baseUrl}/logo.png`
+            }
         }
     };
-    */
 
     return (
         <>
@@ -253,6 +265,11 @@ export default async function MovieDetailsPage({
                 id="json-ld-breadcrumb"
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, '\\u003c') }}
+            />
+            <script
+                id="json-ld-video"
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(videoObjectJsonLd).replace(/</g, '\\u003c') }}
             />
 
 
