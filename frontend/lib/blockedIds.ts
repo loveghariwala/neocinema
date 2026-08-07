@@ -16,8 +16,10 @@ export const BLOCKED_IDS: string[] = [
   "490005",
   "1628522",
   "852042",
-];
 
+  // Custom request exclusion
+  "304311",
+];
 /**
  * Checks if a given movie or series ID is blocked due to DMCA or content moderation.
  */
