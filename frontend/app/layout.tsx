@@ -12,6 +12,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
+
 const playfairDisplayHeading = Playfair_Display({ subsets: ['latin'], variable: '--font-heading', display: 'swap' });
 
 const notoSans = Noto_Sans({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
