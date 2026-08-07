@@ -65,6 +65,8 @@ export default function PrivacyPolicyPage() {
                             <li><strong className="text-white">Google Analytics:</strong> For website traffic analysis. Google&apos;s privacy policy can be found at google.com/policies/privacy.</li>
                             <li><strong className="text-white">Vercel Analytics:</strong> For performance monitoring and usage insights.</li>
                             <li><strong className="text-white">The Movie Database (TMDB):</strong> For movie and TV series metadata. TMDB&apos;s terms can be found at themoviedb.org/terms-of-use.</li>
+                            <li><strong className="text-white">Watchmode API:</strong> For legitimate streaming availability data.</li>
+                            <li><strong className="text-white">Kinocheck / YouTube APIs:</strong> For official movie and TV series trailers.</li>
                             <li><strong className="text-white">Cloudflare:</strong> For DNS and security services.</li>
                         </ul>
                     </section>

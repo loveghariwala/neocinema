@@ -27,7 +27,7 @@ export default function TermsOfServicePage() {
                     <section>
                         <h2 className="text-2xl font-bold text-white mb-4">2. Description of Service</h2>
                         <p className="text-neutral-400 leading-relaxed">
-                            Neocinema is a movie and television series discovery platform that provides information about films, TV shows, cast members, and related content. Our platform uses AI-powered recommendations and semantic search to help users discover entertainment content. We aggregate publicly available metadata from sources including The Movie Database (TMDB) API.
+                            Neocinema is a movie and television series discovery platform that provides information about films, TV shows, cast members, and legal streaming availability. Our platform uses AI-powered recommendations and semantic search to help users discover entertainment content. We aggregate publicly available metadata from official third-party sources including The Movie Database (TMDB) API, Watchmode API, and YouTube API. We do not host, upload, or stream any copyrighted video files on our servers.
                         </p>
                     </section>
 
@@ -37,7 +37,7 @@ export default function TermsOfServicePage() {
                             The Site and its original content (excluding content provided by third-party APIs), features, and functionality are owned by Neocinema and are protected by international copyright, trademark, and other intellectual property laws.
                         </p>
                         <p className="text-neutral-400 leading-relaxed">
-                            Movie and TV show metadata, images, and descriptions are provided by The Movie Database (TMDB). This product uses the TMDB API but is not endorsed or certified by TMDB. All movie posters, backdrop images, and related media are the property of their respective copyright holders.
+                            Movie and TV show metadata, images, and descriptions are provided by The Movie Database (TMDB). Legal streaming availability data is provided by Watchmode. Official trailers are sourced via Kinocheck and YouTube. This product uses these APIs but is not endorsed or certified by them. All movie posters, backdrop images, video trailers, and related media are the property of their respective copyright holders.
                         </p>
                     </section>
 

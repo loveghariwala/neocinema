@@ -19,8 +19,11 @@ export default function DmcaPage() {
                 <div className="prose prose-invert prose-neutral max-w-none space-y-8">
                     <section>
                         <h2 className="text-2xl font-bold text-white mb-4">1. Digital Millennium Copyright Act (DMCA) Notice</h2>
-                        <p className="text-neutral-400 leading-relaxed">
+                        <p className="text-neutral-400 leading-relaxed mb-4">
                             NeoCinema (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) respects the intellectual property rights of content creators, copyright owners, and trademark holders. In accordance with the Digital Millennium Copyright Act (DMCA), 17 U.S.C. § 512, we will respond expeditiously to clear notices of alleged copyright infringement submitted to our Designated DMCA Agent.
+                        </p>
+                        <p className="text-neutral-400 leading-relaxed font-bold bg-white/5 p-4 rounded-xl border border-white/10">
+                            Please Note: NeoCinema is strictly an informational discovery platform, similar to IMDb or TMDB. We do not host, store, upload, or transmit any video files, movies, or TV shows on our servers. All metadata, cast information, and official trailers are aggregated using legitimate, official third-party APIs (such as TMDB, Watchmode, and YouTube). We only link to legal, authorized streaming providers.
                         </p>
                     </section>
 
