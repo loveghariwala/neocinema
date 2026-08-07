@@ -52,9 +52,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/cookies`, lastModified: currentDate, changeFrequency: 'monthly', priority: 0.3 },
     { url: `${baseUrl}/disclaimer`, lastModified: currentDate, changeFrequency: 'monthly', priority: 0.3 },
     { url: `${baseUrl}/dmca`, lastModified: currentDate, changeFrequency: 'monthly', priority: 0.5 },
-    { url: `${baseUrl}/best-fmovies-alternative-2026`, lastModified: currentDate, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${baseUrl}/fmovies-vs-neocinema`, lastModified: currentDate, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${baseUrl}/duta-movie-21-alternative`, lastModified: currentDate, changeFrequency: 'monthly', priority: 0.8 },
   ];
 
   // ────────────────────────────────────────────────────────────────────────────

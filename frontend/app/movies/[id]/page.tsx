@@ -9,12 +9,12 @@ import Image from "next/image";
 import { getTmdbImageUrl } from "@/lib/tmdb";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-const StreamPlayer = dynamic(() => import("@/components/player/StreamPlayer"));
+// const StreamPlayer = dynamic(() => import("@/components/player/StreamPlayer")); // COMMENTED OUT: Removed pirate stream embeds for legal compliance
 const WatchmodeAvailabilityBanner = dynamic(() => import("@/components/ui/WatchmodeAvailabilityBanner"));
 const KinocheckTrailerSection = dynamic(() => import("@/components/player/KinocheckTrailerSection"));
 import ShareButton from "@/components/ui/ShareButton";
 import { Metadata } from "next";
-import ServerNoteBanner from "@/components/ui/ServerNoteBanner";
+// import ServerNoteBanner from "@/components/ui/ServerNoteBanner"; // COMMENTED OUT: Not needed without stream player
 import { Play } from "lucide-react";
 
 export const revalidate = 86400; // ISR: cache movie detail pages for 24 hours
@@ -62,13 +62,12 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
     const genreLabel = (movie.genres || []).slice(0, 2).join(' & ') || 'Movie';
     const titleText = isUpcoming
         ? `Cast of ${movie.title}, Release Date & Everything We Know`
-        : `Watch ${movie.title} ${releaseYear ? `(${releaseYear}) ` : ""}Online Free`;
+        : `${movie.title} ${releaseYear ? `(${releaseYear}) ` : ""}— Cast, Trailers & Where to Watch`;
     const descriptionText = isUpcoming
         ? `Discover the cast of ${movie.title}${releaseYear ? ` (${releaseYear})` : ""}, release date, characters, and plot summary. Read latest updates about ${movie.title} on Neocinema.`
-        : `Stream ${movie.title} full movie no registration. ${movie.overview ? movie.overview.substring(0, 100).trim() + '...' : `Play ${movie.title} free streaming english.`} Watch online via our free web app.`;
+        : `${movie.overview ? movie.overview.substring(0, 140).trim() + '.' : `Discover ${movie.title}, a ${genreLabel.toLowerCase()} film.`} Find where to watch, cast, trailers & reviews on Neocinema.`;
 
     const castKeywords = (movie.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
-    const genreKeywords = (movie.genres || []).map((g: string) => `${g.toLowerCase()} movies free`);
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
     const canonicalUrl = `${baseUrl}/movies/${id}`;
@@ -85,16 +84,14 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
         description: descriptionText,
         keywords: [
             `cast of ${movie.title}`,
-            `where to watch ${movie.title} online free hd`,
-            `stream ${movie.title} full movie no registration`,
-            `play ${movie.title} free streaming english`,
-            `${movie.title} free watch online neocinema`,
+            `where to watch ${movie.title}`,
             movie.title,
             `${movie.title} ${releaseYear}`,
             `${movie.title} cast`,
+            `${movie.title} review`,
+            `${movie.title} trailer`,
             `movies like ${movie.title}`,
             ...(movie.genres || []),
-            ...genreKeywords,
             ...castKeywords,
         ].filter(Boolean),
         alternates: {
@@ -274,7 +271,7 @@ export default async function MovieDetailsPage({
 
 
             <main className="min-h-screen">
-                <ServerNoteBanner />
+                {/* <ServerNoteBanner /> */}
                 {/* IMMERSIVE HERO */}
                 <section className="relative min-h-[90vh] w-full flex items-center py-20 md:py-28 lg:py-32 overflow-hidden bg-black">
                     <MotionDiv
@@ -347,13 +344,13 @@ export default async function MovieDetailsPage({
 
                                 <div className="flex flex-wrap gap-4 sm:gap-6">
                                     <a
-                                        href="#inline-stream-player"
+                                        href="#trailers-section"
                                         className="flex items-center gap-2 sm:gap-3 rounded-full bg-red-600 px-6 py-3.5 sm:px-8 sm:py-4 font-black text-white transition-all hover:scale-105 hover:bg-red-700 shadow-[0_0_30px_rgba(220,38,38,0.4)]"
                                     >
                                         <div className="rounded-full bg-white/20 p-1">
                                             <Play fill="currentColor" className="h-4 w-4 sm:h-5 sm:w-5" />
                                         </div>
-                                        <span className="text-sm sm:text-base tracking-tight text-white uppercase">WATCH NOW</span>
+                                        <span className="text-sm sm:text-base tracking-tight text-white uppercase">WATCH TRAILER</span>
                                     </a>
 
                                     <ShareButton title={movie.title} />
@@ -365,7 +362,7 @@ export default async function MovieDetailsPage({
 
                 {/* CONTENT GRID */}
                 <div className="relative z-20 mt-4 max-w-7xl mx-auto space-y-12 sm:space-y-16 px-4 sm:px-6 lg:px-8 pb-20 sm:pb-32">
-                    {/* INLINE STREAM PLAYER SECTION */}
+                    {/* STREAM PLAYER REMOVED FOR LEGAL COMPLIANCE
                     <div className="w-full">
                         <StreamPlayer
                             tmdbId={movie.tmdbId}
@@ -376,9 +373,10 @@ export default async function MovieDetailsPage({
                             autoPlay={autoPlay}
                         />
                     </div>
+                    */}
 
                     {/* OFFICIAL TRAILERS & WATCHMODE STREAMING AVAILABILITY */}
-                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                    <div id="trailers-section" className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                         <KinocheckTrailerSection tmdbId={movie.tmdbId} title={movie.title} />
                         <WatchmodeAvailabilityBanner tmdbId={movie.tmdbId} />
                     </div>

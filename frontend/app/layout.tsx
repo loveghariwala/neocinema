@@ -31,25 +31,21 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com"),
   title: {
-    default: "Neocinema — Stream Free Movies & TV Series Online | No Sign Up",
+    default: "Neocinema — Discover Movies, TV Series & Anime | Trailers, Cast & Where to Watch",
     template: "%s | Neocinema"
   },
-  description: "Explore Neocinema: search and stream free movies & TV series online. Use our advanced filter to select multiple genres, combine with ratings or release years, and sort precisely to find exactly what to watch with no sign up.",
+  description: "Explore Neocinema: discover movies, TV series & anime. Use our advanced filter to select multiple genres, combine with ratings or release years, and sort precisely to find exactly what to watch. View trailers, cast info & where to watch.",
   keywords: [
-    "best free movie streaming sites no sign up required",
-    "safe free movie streaming web apps no download",
-    "free movies online high quality streaming",
+    "movie discovery platform",
+    "find movies by genre",
     "filter movies by multiple genres",
     "select multiple genres movie search",
     "advanced movie search filter",
-    "precise movie discovery sort",
-    "best free alternatives to fmovies safely",
-    "best neocinema streaming alternative",
-    "free full movie streaming online",
-    "watch series online free hd",
-    "discover movies online free",
-    "AI movie recommender free",
-    "movies", "series", "streaming", "AI recommendations", "Neocinema", "NeocinemaTV", "movie discovery", "anime"
+    "where to watch movies",
+    "movie trailers",
+    "AI movie recommender",
+    "movies", "series", "anime", "movie discovery", "Neocinema", "NeocinemaTV",
+    "cast information", "movie ratings", "TV series recommendations"
   ],
   authors: [{ name: "Love Ghariwala", url: "https://github.com/loveghariwala" }],
   creator: "Love Ghariwala",
@@ -136,7 +132,7 @@ export default function RootLayout({
         "@id": `${baseUrl}#website`,
         "url": baseUrl,
         "name": "Neocinema",
-        "description": "One of the best free movie streaming sites no sign up required. Safe free movie streaming web apps no download with high quality.",
+        "description": "AI-powered cinematic movie and series discovery platform with advanced search and personalized recommendations.",
         "publisher": { "@id": `${baseUrl}#org` },
         "potentialAction": {
           "@type": "SearchAction",

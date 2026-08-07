@@ -7,14 +7,14 @@ import Image from "next/image";
 
 
 export const metadata: Metadata = {
-    title: "Blog — Free Streaming Guides, Movie Lists & Recommendations",
-    description: "Explore Neocinema's blog for the best movie lists, streaming guides, anime recommendations, and K-Drama picks. Updated weekly with fresh content.",
-    keywords: ["free movie streaming guides", "best movies to watch", "anime recommendations", "kdrama guide", "streaming tips"],
+    title: "Blog — Movie Guides, Recommendations & Entertainment News",
+    description: "Explore Neocinema's blog for the best movie lists, anime recommendations, K-Drama picks, and entertainment news. Updated weekly with fresh content.",
+    keywords: ["movie guides", "best movies to watch", "anime recommendations", "kdrama guide", "entertainment news"],
     alternates: { canonical: "/blog" },
     robots: { index: true, follow: true },
     openGraph: {
-        title: "Neocinema Blog — Movie Guides & Streaming Tips",
-        description: "Your ultimate guide to free movie streaming, curated movie lists, and entertainment recommendations.",
+        title: "Neocinema Blog — Movie Guides & Recommendations",
+        description: "Your ultimate guide to movie discovery, curated lists, and entertainment recommendations.",
         url: "/blog",
         type: "website",
     },

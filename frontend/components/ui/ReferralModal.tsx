@@ -31,7 +31,7 @@ export default function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
 
     if (!isOpen) return null;
 
-    const referralUrl = typeof window !== "undefined" 
+    const referralUrl = typeof window !== "undefined"
         ? `${window.location.origin}/referral?ref=${referralCode}`
         : `https://www.neocinematv.com/referral?ref=${referralCode}`;
 
@@ -82,7 +82,7 @@ export default function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
                             Neocinema Referral Program
                         </h2>
                     </div>
-                    <button 
+                    <button
                         onClick={onClose}
                         className="rounded-full p-1.5 border border-white/10 bg-white/5 text-neutral-400 hover:text-white transition-colors"
                         aria-label="Close modal"
@@ -110,11 +110,10 @@ export default function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
                         />
                         <button
                             onClick={handleCopy}
-                            className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold transition-all ${
-                                copied 
-                                ? "bg-green-600/20 text-green-400 border border-green-500/30" 
-                                : "bg-red-600 hover:bg-red-700 text-white"
-                            }`}
+                            className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold transition-all ${copied
+                                    ? "bg-green-600/20 text-green-400 border border-green-500/30"
+                                    : "bg-red-600 hover:bg-red-700 text-white"
+                                }`}
                         >
                             {copied ? (
                                 <>
@@ -138,7 +137,7 @@ export default function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
                     </label>
                     <div className="grid grid-cols-4 gap-3">
                         <a
-                            href={`https://wa.me/?text=${encodeURIComponent(`Check out Neocinema! The best free movie streaming alternative with AI recommendations: ${referralUrl}`)}`}
+                            href={`https://wa.me/?text=${encodeURIComponent(`Check out Neocinema! Discover movies, trailers & where to watch with AI recommendations: ${referralUrl}`)}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex flex-col items-center justify-center gap-1.5 py-2.5 rounded-xl border border-white/5 bg-white/[0.02] text-xs text-neutral-400 hover:text-white hover:bg-white/5 transition-all"
@@ -146,7 +145,7 @@ export default function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
                             <span className="font-bold text-green-500 text-center">WhatsApp</span>
                         </a>
                         <a
-                            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Stream free movies online in HD with AI recommendation matching! Check it out:`)}&url=${encodeURIComponent(referralUrl)}`}
+                            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Discover movies & series with AI-powered recommendations! Check it out:`)}&url=${encodeURIComponent(referralUrl)}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex flex-col items-center justify-center gap-1.5 py-2.5 rounded-xl border border-white/5 bg-white/[0.02] text-xs text-neutral-400 hover:text-white hover:bg-white/5 transition-all"
@@ -154,7 +153,7 @@ export default function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
                             <span className="font-bold text-sky-400 text-center">Twitter</span>
                         </a>
                         <a
-                            href={`https://t.me/share/url?url=${encodeURIComponent(referralUrl)}&text=${encodeURIComponent("Nontstop free movies in HD. Check out Neocinema!")}`}
+                            href={`https://t.me/share/url?url=${encodeURIComponent(referralUrl)}&text=${encodeURIComponent("Discover movies, trailers & cast info on Neocinema!")}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex flex-col items-center justify-center gap-1.5 py-2.5 rounded-xl border border-white/5 bg-white/[0.02] text-xs text-neutral-400 hover:text-white hover:bg-white/5 transition-all"
@@ -162,7 +161,7 @@ export default function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
                             <span className="font-bold text-sky-500 text-center">Telegram</span>
                         </a>
                         <a
-                            href={`mailto:?subject=Free Movie Streaming Site!&body=Hey, check out Neocinema: ${referralUrl}`}
+                            href={`mailto:?subject=Discover Movies on Neocinema&body=Hey, check out Neocinema for movie discovery, trailers & recommendations: ${referralUrl}`}
                             className="flex flex-col items-center justify-center gap-1.5 py-2.5 rounded-xl border border-white/5 bg-white/[0.02] text-xs text-neutral-400 hover:text-white hover:bg-white/5 transition-all"
                         >
                             <span className="font-bold text-red-500 text-center">Email</span>
@@ -184,7 +183,7 @@ export default function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
 
                     {/* Progress Bar Track */}
                     <div className="relative h-2 w-full rounded-full bg-white/5 overflow-hidden">
-                        <div 
+                        <div
                             className="h-full bg-gradient-to-r from-red-600 to-rose-500 transition-all duration-500"
                             style={{ width: `${Math.min((referralCount / 10) * 100, 100)}%` }}
                         />
@@ -195,18 +194,16 @@ export default function ReferralModal({ isOpen, onClose }: ReferralModalProps) {
                         {milestones.map((m) => {
                             const isReached = referralCount >= m.count;
                             return (
-                                <div 
+                                <div
                                     key={m.count}
-                                    className={`flex items-center justify-between p-2.5 rounded-xl border transition-all ${
-                                        isReached 
-                                        ? "bg-red-600/10 border-red-500/30 text-white" 
-                                        : "bg-white/[0.01] border-white/5 text-neutral-500"
-                                    }`}
+                                    className={`flex items-center justify-between p-2.5 rounded-xl border transition-all ${isReached
+                                            ? "bg-red-600/10 border-red-500/30 text-white"
+                                            : "bg-white/[0.01] border-white/5 text-neutral-500"
+                                        }`}
                                 >
                                     <div className="flex items-center gap-3">
-                                        <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${
-                                            isReached ? "bg-red-600/20 text-red-500" : "bg-white/5 text-neutral-600"
-                                        }`}>
+                                        <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${isReached ? "bg-red-600/20 text-red-500" : "bg-white/5 text-neutral-600"
+                                            }`}>
                                             <m.icon className="h-4 w-4" />
                                         </div>
                                         <div>

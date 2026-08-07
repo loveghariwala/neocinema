@@ -9,13 +9,13 @@ import Image from "next/image";
 import { getTmdbImageUrl } from "@/lib/tmdb";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-const StreamPlayer = dynamic(() => import("@/components/player/StreamPlayer"));
+// const StreamPlayer = dynamic(() => import("@/components/player/StreamPlayer")); // COMMENTED OUT: Removed pirate stream embeds for legal compliance
 const WatchmodeAvailabilityBanner = dynamic(() => import("@/components/ui/WatchmodeAvailabilityBanner"));
 const KinocheckTrailerSection = dynamic(() => import("@/components/player/KinocheckTrailerSection"));
 import ShareButton from "@/components/ui/ShareButton";
 import SeasonEpisodeBrowser from "@/components/series/SeasonEpisodeBrowser";
 import { Metadata } from "next";
-import ServerNoteBanner from "@/components/ui/ServerNoteBanner";
+// import ServerNoteBanner from "@/components/ui/ServerNoteBanner"; // COMMENTED OUT: Not needed without stream player
 import { Play } from "lucide-react";
 
 export const revalidate = 86400; // ISR: cache series detail pages for 24 hours
@@ -65,14 +65,13 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
 
     const titleText = isUpcoming
         ? `Cast of ${series.title}, Release Date & Everything We Know`
-        : `Watch ${series.title} ${releaseYear ? `(${releaseYear}) ` : ""}Online Free`;
+        : `${series.title} ${releaseYear ? `(${releaseYear}) ` : ""}— Cast, Trailers & Where to Watch`;
 
     const descriptionText = isUpcoming
         ? `Discover the cast of ${series.title}${releaseYear ? ` (${releaseYear})` : ""}, release date, characters, and seasons. View full details on Neocinema.`
-        : `${series.overview ? series.overview.substring(0, 140).trim() + '.' : `Discover ${series.title}, a ${genreLabel.toLowerCase()} series.`}${series.number_of_seasons ? ` ${series.number_of_seasons} season${series.number_of_seasons > 1 ? 's' : ''}.` : ''}${series.rating ? ` ★ ${series.rating.toFixed(1)}/10.` : ''} Watch now on Neocinema.`;
+        : `${series.overview ? series.overview.substring(0, 140).trim() + '.' : `Discover ${series.title}, a ${genreLabel.toLowerCase()} series.`}${series.number_of_seasons ? ` ${series.number_of_seasons} season${series.number_of_seasons > 1 ? 's' : ''}.` : ''}${series.rating ? ` ★ ${series.rating.toFixed(1)}/10.` : ''} Find where to watch, cast & reviews on Neocinema.`;
 
     const castKeywords = (series.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
-    const genreKeywords = (series.genres || []).map((g: string) => `${g.toLowerCase()} series free`);
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
     const canonicalUrl = `${baseUrl}/series/${id}`;
@@ -93,14 +92,9 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
             `${series.title} ${releaseYear}`,
             `${series.title} cast`,
             `${series.title} review`,
-            `${series.title} where to watch`,
+            `${series.title} trailer`,
             `shows like ${series.title}`,
-            `watch ${series.title} online free`,
-            `watch ${series.title} hd`,
-            `${series.title} full episodes free`,
-            "free tv series online",
             ...(series.genres || []),
-            ...genreKeywords,
             ...castKeywords,
         ].filter(Boolean),
         alternates: {
@@ -260,7 +254,7 @@ export default async function SeriesDetailsPage({
 
     return (
         <main className="min-h-screen">
-            <ServerNoteBanner />
+            {/* <ServerNoteBanner /> */}
             <script
                 id="json-ld-series"
                 type="application/ld+json"
@@ -349,13 +343,13 @@ export default async function SeriesDetailsPage({
 
                             <div className="flex flex-wrap gap-4 sm:gap-6">
                                 <a
-                                    href="#inline-stream-player"
+                                    href="#trailers-section"
                                     className="flex items-center gap-2 sm:gap-3 rounded-full bg-red-600 px-6 py-3.5 sm:px-8 sm:py-4 font-black text-white transition-all hover:scale-105 hover:bg-red-700 shadow-[0_0_30px_rgba(220,38,38,0.4)]"
                                 >
                                     <div className="rounded-full bg-white/20 p-1">
                                         <Play fill="currentColor" className="h-4 w-4 sm:h-5 sm:w-5" />
                                     </div>
-                                    <span className="text-sm sm:text-base tracking-tight text-white uppercase">WATCH NOW</span>
+                                    <span className="text-sm sm:text-base tracking-tight text-white uppercase">WATCH TRAILER</span>
                                 </a>
 
                                 <ShareButton title={series.title} />
@@ -368,23 +362,25 @@ export default async function SeriesDetailsPage({
             {/* CONTENT GRID */}
             <div className="relative z-20 mt-4 max-w-7xl mx-auto space-y-12 sm:space-y-16 px-4 sm:px-6 lg:px-8 pb-20 sm:pb-32">
                 {/* INLINE STREAM PLAYER SECTION */}
-                <div className="w-full">
-                    <StreamPlayer
-                        tmdbId={series.tmdbId}
-                        imdbId={series.imdbId}
-                        title={series.title}
-                        posterPath={series.posterPath}
-                        backdropPath={series.backdropPath}
-                        isTv={true}
-                        seasons={series.seasons}
-                        autoPlay={autoPlay}
-                        initialSeason={seasonParam}
-                        initialEpisode={episodeParam}
-                    />
-                </div>
+                {/* STREAM PLAYER REMOVED FOR LEGAL COMPLIANCE
+                    <div className="w-full">
+                        <StreamPlayer
+                            tmdbId={series.tmdbId}
+                            imdbId={series.imdbId}
+                            title={series.title}
+                            posterPath={series.posterPath}
+                            backdropPath={series.backdropPath}
+                            isTv={true}
+                            seasons={series.seasons}
+                            autoPlay={autoPlay}
+                            initialSeason={seasonParam}
+                            initialEpisode={episodeParam}
+                        />
+                    </div>
+                    */}
 
                 {/* OFFICIAL TRAILERS & WATCHMODE STREAMING AVAILABILITY */}
-                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <div id="trailers-section" className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                     <KinocheckTrailerSection tmdbId={series.tmdbId} title={series.title} isTv={true} />
                     <WatchmodeAvailabilityBanner tmdbId={series.tmdbId} isTv={true} />
                 </div>
