@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Calendar, Loader2, Monitor, Play } from 'lucide-react';
+import { Calendar, Loader2, Monitor } from 'lucide-react';
 
 
 import Image from "next/image";
@@ -62,14 +62,6 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons, initialEpisode
         fetchEpisodes();
     }, [seriesId, activeSeason]);
 
-    const playEpisode = (episodeNumber: number) => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set("play", "true");
-        params.set("season", String(activeSeason));
-        params.set("episode", String(episodeNumber));
-        router.push(`?${params.toString()}`, { scroll: false });
-    };
-
     const changeSeason = (seasonNumber: number) => {
         setActiveSeason(seasonNumber);
         setImgErrors({});
@@ -122,68 +114,61 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons, initialEpisode
                     </div>
                 ) : (
                     episodes.map((episode) => {
-                            const stillUrl = episode.still_path && !imgErrors[episode.id]
-                                ? getTmdbImageUrl(episode.still_path, "w300", episode.name)
-                                : null;
+                        const stillUrl = episode.still_path && !imgErrors[episode.id]
+                            ? getTmdbImageUrl(episode.still_path, "w300", episode.name)
+                            : null;
 
-                            return (
-                                <div
-                                    key={episode.id}
-                                    onClick={() => playEpisode(episode.episode_number)}
-                                    className="group relative flex flex-row rounded-2xl border border-white/5 bg-white/[0.02] overflow-hidden cursor-pointer hover:border-white/15 hover:bg-white/[0.04] transition-all hover:shadow-[0_0_30px_rgba(220,38,38,0.05)] h-28 sm:h-36 md:h-40"
-                                >
-                                    {/* Thumbnail Image (Left Side) */}
-                                    <div className="relative h-full w-32 sm:w-48 md:w-64 flex-shrink-0 bg-neutral-900/60 flex items-center justify-center overflow-hidden border-r border-white/5">
-                                        {stillUrl ? (
-                                            <Image
-                                                src={stillUrl}
-                                                alt={episode.name}
-                                                fill
-                                                sizes="(max-width: 768px) 150px, 300px"
-                                                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                                                onError={() => {
-                                                    setImgErrors(prev => ({ ...prev, [episode.id]: true }));
-                                                }}
-                                            />
-                                        ) : (
-                                            <div className="flex flex-col items-center justify-center gap-2 text-neutral-600">
-                                                <Monitor size={24} className="opacity-40" />
-                                                <span className="text-[10px] font-black uppercase tracking-wider opacity-60">No Preview</span>
-                                            </div>
-                                        )}
-                                        {/* Play Hover Overlay */}
-                                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                            <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-red-600 text-white shadow-lg shadow-red-600/30 transform scale-90 group-hover:scale-100 transition-transform duration-300">
-                                                <Play fill="currentColor" size={20} className="ml-0.5" />
-                                            </div>
+                        return (
+                            <div
+                                key={episode.id}
+                                className="group relative flex flex-row rounded-2xl border border-white/5 bg-white/[0.02] overflow-hidden transition-all h-28 sm:h-36 md:h-40"
+                            >
+                                {/* Thumbnail Image (Left Side) */}
+                                <div className="relative h-full w-32 sm:w-48 md:w-64 flex-shrink-0 bg-neutral-900/60 flex items-center justify-center overflow-hidden border-r border-white/5">
+                                    {stillUrl ? (
+                                        <Image
+                                            src={stillUrl}
+                                            alt={episode.name}
+                                            fill
+                                            sizes="(max-width: 768px) 150px, 300px"
+                                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                            onError={() => {
+                                                setImgErrors(prev => ({ ...prev, [episode.id]: true }));
+                                            }}
+                                        />
+                                    ) : (
+                                        <div className="flex flex-col items-center justify-center gap-2 text-neutral-600">
+                                            <Monitor size={24} className="opacity-40" />
+                                            <span className="text-[10px] font-black uppercase tracking-wider opacity-60">No Preview</span>
                                         </div>
-                                    </div>
+                                    )}
+                                </div>
 
-                                    {/* Text Info (Right Side) */}
-                                    <div className="p-3 sm:p-5 flex-grow flex flex-col justify-between overflow-hidden">
-                                        <div>
-                                            <div className="flex items-start justify-between gap-2 mb-1 sm:mb-2">
-                                                <h4 className="font-black text-white text-sm sm:text-base group-hover:text-red-500 transition-colors line-clamp-1">
-                                                    {episode.episode_number}. {episode.name}
-                                                </h4>
-                                                {episode.air_date && !isNaN(new Date(episode.air_date).getTime()) && (
-                                                    <span className="text-[9px] sm:text-[10px] font-bold text-neutral-500 shrink-0 whitespace-nowrap mt-1">
-                                                        {new Date(episode.air_date).toLocaleDateString(undefined, {
-                                                            year: 'numeric',
-                                                            month: 'short',
-                                                            day: 'numeric'
-                                                        })}
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <p className="text-[10px] sm:text-xs md:text-sm text-neutral-400 font-medium line-clamp-2 sm:line-clamp-3 leading-relaxed">
-                                                {episode.overview || "No description available for this episode."}
-                                            </p>
+                                {/* Text Info (Right Side) */}
+                                <div className="p-3 sm:p-5 flex-grow flex flex-col justify-between overflow-hidden">
+                                    <div>
+                                        <div className="flex items-start justify-between gap-2 mb-1 sm:mb-2">
+                                            <h4 className="font-black text-white text-sm sm:text-base line-clamp-1">
+                                                {episode.episode_number}. {episode.name}
+                                            </h4>
+                                            {episode.air_date && !isNaN(new Date(episode.air_date).getTime()) && (
+                                                <span className="text-[9px] sm:text-[10px] font-bold text-neutral-500 shrink-0 whitespace-nowrap mt-1">
+                                                    {new Date(episode.air_date).toLocaleDateString(undefined, {
+                                                        year: 'numeric',
+                                                        month: 'short',
+                                                        day: 'numeric'
+                                                    })}
+                                                </span>
+                                            )}
                                         </div>
+                                        <p className="text-[10px] sm:text-xs md:text-sm text-neutral-400 font-medium line-clamp-2 sm:line-clamp-3 leading-relaxed">
+                                            {episode.overview || "No description available for this episode."}
+                                        </p>
                                     </div>
                                 </div>
-                            );
-                        })
+                            </div>
+                        );
+                    })
                 )}
             </div>
         </div>
