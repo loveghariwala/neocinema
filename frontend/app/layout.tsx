@@ -84,6 +84,7 @@ export const metadata: Metadata = {
     yandex: "50ea89eefcbf151d",
     other: {
       monetag: "7bdf3366d833c7c08b7f5695cf6ae3d9",
+      "msvalidate.01": "A2BEC912DC153707D04CE47C0FF04C36",
     },
   },
   manifest: "/manifest.json",
