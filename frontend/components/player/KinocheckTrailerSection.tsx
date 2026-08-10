@@ -30,7 +30,7 @@ export default function KinocheckTrailerSection({ tmdbId, title, isTv = false }:
             <div className="flex items-center gap-3 mb-4">
                 <Film size={18} className="text-red-500" />
                 <h3 className="text-xs sm:text-sm font-black uppercase tracking-[0.25em] text-white">
-                    OFFICIAL TRAILERS (KINOCHECK & HD)
+                    OFFICIAL TRAILERS (4K & HD)
                 </h3>
             </div>
 

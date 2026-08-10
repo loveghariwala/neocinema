@@ -1,15 +1,21 @@
 "use client";
 
 import { useEffect } from "react";
+import DisableDevtool from 'disable-devtool';
 
 export default function Security() {
     useEffect(() => {
+        if (typeof window !== "undefined") {
+            // Actively block devtools, network tab, and console inspection
+            DisableDevtool();
+        }
+
         // Prevent Right Click
         const handleContextMenu = (e: MouseEvent) => {
             e.preventDefault();
         };
 
-        // Prevent Keyboard Shortcuts (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U)
+        // Prevent Keyboard Shortcuts
         const handleKeyDown = (e: KeyboardEvent) => {
             if (
                 e.key === "F12" ||
@@ -25,14 +31,16 @@ export default function Security() {
             }
         };
 
-        // Clear console and print warning
+        // Aggressively clear and lockout console
         setTimeout(() => {
             console.clear();
-            console.log("%cHold Up!", "color: red; font-size: 50px; font-weight: bold; -webkit-text-stroke: 1px black;");
-            console.log("%cThis is a browser feature intended for developers. If someone told you to copy-paste something here to enable a feature or 'hack' someone's account, it is a scam and will give them access to your account.", "font-size: 16px;");
-        }, 1000);
-
-        // Anti-Debugging Trap removed to prevent React DOM mutation errors during Lighthouse audits
+            const noop = () => { };
+            Object.keys(console).forEach((method) => {
+                if (typeof (console as any)[method] === "function") {
+                    (console as any)[method] = noop;
+                }
+            });
+        }, 100);
 
         document.addEventListener("contextmenu", handleContextMenu);
         document.addEventListener("keydown", handleKeyDown);
