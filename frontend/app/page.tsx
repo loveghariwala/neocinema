@@ -7,7 +7,7 @@ import { getTrendingFromServer, discoverContentFromServer, getTopRatedMovies, ge
 import { Metadata } from "next";
 import { cache } from "react";
 
-export const revalidate = 300; // ISR: regenerate home page every 5 minutes
+export const revalidate = 3600; // ISR: regenerate home page every 60 minutes
 
 // ─── Cached data fetch (shared between generateMetadata + page render) ───────
 const getHomeDataCached = cache(async () => {
@@ -156,7 +156,7 @@ export default async function HomePage() {
                     />
                 )}
             </div>
-            
+
             <HomeFAQ />
         </main>
     );

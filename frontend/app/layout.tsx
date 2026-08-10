@@ -8,7 +8,6 @@ import AdsterraSocialBar from "@/components/ads/AdsterraSocialBar";
 import MonetagAds from "@/components/ads/MonetagAds";
 import { Geist, Geist_Mono, Noto_Sans, Playfair_Display } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next"
-import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -229,7 +228,7 @@ export default function RootLayout({
           <InstallAppBanner />
         </div>
         <Analytics />
-        <SpeedInsights />
+
       </body>
     </html>
   );
