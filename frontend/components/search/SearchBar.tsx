@@ -25,11 +25,11 @@ export default function SearchBar() {
         if (query.trim().length < 3) return;
 
         // Only redirect if the query is different from the current URL param
-        const currentQuery = searchParams.get("query");
+        const currentQuery = searchParams.get("q");
         if (query === currentQuery) return;
 
         const timer = setTimeout(() => {
-            router.push(`/search?query=${encodeURIComponent(query)}`);
+            router.push(`/search?q=${encodeURIComponent(query)}`);
         }, 500);
 
         return () => clearTimeout(timer);
@@ -38,13 +38,12 @@ export default function SearchBar() {
 
     return (
         <div className={`relative w-full max-w-md transition-all duration-300 ${isFocused ? "max-w-xl" : "max-w-md"}`}>
-            <div className={`flex items-center gap-3 px-5 py-3 rounded-full border transition-all duration-300 ${
-                isFocused 
-                    ? "border-red-600/50 bg-neutral-900 shadow-[0_0_20px_rgba(220,38,38,0.2)]" 
+            <div className={`flex items-center gap-3 px-5 py-3 rounded-full border transition-all duration-300 ${isFocused
+                    ? "border-red-600/50 bg-neutral-900 shadow-[0_0_20px_rgba(220,38,38,0.2)]"
                     : "border-white/10 bg-white/5 backdrop-blur-xl"
-            }`}>
+                }`}>
                 <Search size={20} className={isFocused ? "text-red-600" : "text-neutral-500"} />
-                
+
                 <input
                     type="text"
                     placeholder="Search movies, series..."
@@ -56,7 +55,7 @@ export default function SearchBar() {
                 />
 
                 {query && (
-                    <button 
+                    <button
                         onClick={() => setQuery("")}
                         className="text-neutral-500 hover:text-white transition-colors"
                     >
