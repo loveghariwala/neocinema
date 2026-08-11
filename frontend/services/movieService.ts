@@ -218,7 +218,20 @@ export async function discoverContentFromServer(type: "movie" | "tv", queryParam
                 with_companies: queryParams.with_companies,
             });
         if (data?.results) {
-            data.results = data.results.filter((item: any) => !isMovieBlocked(item.tmdbId || item.id));
+            data.results = data.results
+                .filter((item: any) => !isMovieBlocked(item.tmdbId || item.id))
+                .map((item: any) => ({
+                    id: item.id || item.tmdbId,
+                    tmdbId: item.tmdbId || item.id,
+                    title: item.title || item.name,
+                    name: item.name,
+                    poster_path: item.poster_path,
+                    vote_average: item.vote_average,
+                    release_date: item.release_date || item.first_air_date,
+                    genre_ids: item.genre_ids,
+                    media_type: item.media_type || type,
+                    isMovie: item.isMovie ?? (type === "movie" || item.media_type === "movie"),
+                }));
         }
         return data;
     } catch (e) {
@@ -251,7 +264,20 @@ export async function searchContentFromServer(query: string, type?: string, page
             data = await tmdbService.searchMulti(query, pageNum);
         }
         if (data?.results) {
-            data.results = data.results.filter((item: any) => !isMovieBlocked(item.tmdbId || item.id));
+            data.results = data.results
+                .filter((item: any) => !isMovieBlocked(item.tmdbId || item.id))
+                .map((item: any) => ({
+                    id: item.id || item.tmdbId,
+                    tmdbId: item.tmdbId || item.id,
+                    title: item.title || item.name,
+                    name: item.name,
+                    poster_path: item.poster_path,
+                    vote_average: item.vote_average,
+                    release_date: item.release_date || item.first_air_date,
+                    genre_ids: item.genre_ids,
+                    media_type: item.media_type || type,
+                    isMovie: item.isMovie ?? (type === "movie" || item.media_type === "movie"),
+                }));
         }
         return data;
     } catch (e) {
