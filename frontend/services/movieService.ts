@@ -226,12 +226,13 @@ export async function discoverContentFromServer(type: "movie" | "tv", queryParam
                     tmdbId: item.tmdbId || item.id,
                     title: item.title || item.name,
                     name: item.name,
-                    poster_path: item.poster_path,
-                    vote_average: item.vote_average,
-                    release_date: item.release_date || item.first_air_date,
-                    genre_ids: item.genre_ids,
-                    media_type: item.media_type || type,
-                    isMovie: item.isMovie ?? (type === "movie" || item.media_type === "movie"),
+                    posterPath: item.posterPath,
+                    rating: item.rating,
+                    releaseDate: item.releaseDate,
+                    genres: item.genres,
+                    genreIds: item.genreIds,
+                    mediaType: item.mediaType || type,
+                    isMovie: item.isMovie ?? (type === "movie" || item.mediaType === "movie"),
                 }));
         }
         return data;
@@ -272,12 +273,13 @@ export async function searchContentFromServer(query: string, type?: string, page
                     tmdbId: item.tmdbId || item.id,
                     title: item.title || item.name,
                     name: item.name,
-                    poster_path: item.poster_path,
-                    vote_average: item.vote_average,
-                    release_date: item.release_date || item.first_air_date,
-                    genre_ids: item.genre_ids,
-                    media_type: item.media_type || type,
-                    isMovie: item.isMovie ?? (type === "movie" || item.media_type === "movie"),
+                    posterPath: item.posterPath,
+                    rating: item.rating,
+                    releaseDate: item.releaseDate,
+                    genres: item.genres,
+                    genreIds: item.genreIds,
+                    mediaType: item.mediaType || type,
+                    isMovie: item.isMovie ?? (type === "movie" || item.mediaType === "movie"),
                 }));
         }
         return data;

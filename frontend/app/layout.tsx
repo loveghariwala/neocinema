@@ -36,6 +36,8 @@ export const metadata: Metadata = {
   },
   description: "Explore Neocinema: discover movies, TV series & anime. Use our advanced filter to select multiple genres, combine with ratings or release years, and sort precisely to find exactly what to watch. View trailers, cast info & where to watch.",
   keywords: [
+    "Watch HD Movie Trailers for Free",
+    "Neocinema Advanced Multi-Genre Discovery",
     "movie discovery platform",
     "find movies by genre",
     "filter movies by multiple genres",
