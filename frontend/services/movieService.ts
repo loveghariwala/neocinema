@@ -217,6 +217,7 @@ export async function discoverContentFromServer(type: "movie" | "tv", queryParam
                 with_keywords: queryParams.with_keywords,
                 with_companies: queryParams.with_companies,
             });
+
         if (data?.results) {
             data.results = data.results
                 .filter((item: any) => !isMovieBlocked(item.tmdbId || item.id))
