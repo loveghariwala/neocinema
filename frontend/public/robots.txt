@@ -1,47 +1,39 @@
 # ──────────────────────────────────────────────────
 # NeoCinema — robots.txt
-# Allow only GSC (Google), Bing, Yandex, and AI Citation Bots
 # ──────────────────────────────────────────────────
 
-# 1. Google (GSC)
+# 1. Google (Allowed)
 User-Agent: Googlebot
 User-Agent: Googlebot-Image
 User-Agent: Googlebot-Video
 Allow: /
 Disallow: /api/
 
-# 2. Bing
-User-Agent: Bingbot
-User-Agent: msnbot
-User-Agent: BingPreview
-Disallow: /
-
-# 3. Yandex
+# 2. Yandex (Allowed with Crawl Delay to save CPU/Function Invocations)
 User-Agent: YandexBot
 User-Agent: YandexImages
 Allow: /
 Disallow: /api/
-Crawl-delay: 2
+Crawl-delay: 5
 
-# 4. AI Search & Citation Crawlers (Allowed for references)
-User-Agent: PerplexityBot
-Allow: /
-
+# 3. Block Aggressive Bots & Scrapers
+User-Agent: Bingbot
+User-Agent: msnbot
+User-Agent: BingPreview
+User-Agent: AhrefsBot
+User-Agent: SemrushBot
+User-Agent: Bytespider
+User-Agent: PetalBot
+User-Agent: MJ12bot
+User-Agent: DotBot
+User-Agent: SerpstatBot
 User-Agent: GPTBot
-Allow: /
-
-User-Agent: ClaudeBot
-Allow: /
-
-User-Agent: Google-Extended
-Allow: /
-
-User-Agent: Applebot-Extended
-Allow: /
-
-# Block all other crawlers, scrapers, and copyright bots
-User-Agent: *
+User-Agent: CCBot
 Disallow: /
+
+# Block all uncaught scrapers from API
+User-Agent: *
+Disallow: /api/
 
 # Sitemap
 Sitemap: https://www.neocinematv.com/sitemap.xml
