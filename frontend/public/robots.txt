@@ -12,8 +12,9 @@ Disallow: /api/
 
 # 2. Bing
 User-Agent: Bingbot
-Allow: /
-Disallow: /api/
+User-Agent: msnbot
+User-Agent: BingPreview
+Disallow: /
 
 # 3. Yandex
 User-Agent: YandexBot
