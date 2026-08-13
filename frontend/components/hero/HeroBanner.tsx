@@ -62,7 +62,7 @@ export default function HeroBanner({
                                     <img
                                         src={getTmdbImageUrl(itemBackdrop, "w1280")}
                                         alt={item.title || item.name}
-                                        className="h-full w-full object-cover opacity-80"
+                                        className="h-full w-full object-cover opacity-75"
                                         style={{
                                             animation: isActive ? "ken-burns 40s linear infinite alternate" : "none",
                                         }}
@@ -77,10 +77,9 @@ export default function HeroBanner({
                 })}
             </div>
 
-            {/* Next-Gen Vignette Gradients */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent z-1" />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent z-1" />
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,black_100%)] opacity-40 z-1" />
+            {/* 4-Corner Dark Vignette: Center is 100% clear & bright, all 4 corners are dark black */}
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(0,0,0,0.95)_85%)] z-1" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-black/70 z-1" />
 
             {/* Content */}
             <div className="relative z-10 flex flex-1 flex-col justify-end pb-24 pt-28 sm:pb-28 md:pb-32 px-5 sm:px-8 md:px-16 lg:px-24">

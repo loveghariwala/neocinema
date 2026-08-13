@@ -193,7 +193,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body suppressHydrationWarning className="min-h-full flex flex-row bg-background">
+      <body suppressHydrationWarning className="min-h-full flex flex-col bg-black text-white">
         {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-4RGXPG1KWQ"

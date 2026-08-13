@@ -3,8 +3,12 @@
 import { useEffect, useState } from "react";
 import HeroBanner from "@/components/hero/HeroBanner";
 import MovieRow from "@/components/sliders/MovieRow";
+import Top10Row from "@/components/sliders/Top10Row";
 import ContinueWatchingRow from "@/components/sliders/ContinueWatchingRow";
 import HomeFAQ from "@/components/seo/HomeFAQ";
+import HomeVibeFilter from "@/components/home/HomeVibeFilter";
+import MovieRouletteModal from "@/components/ui/MovieRouletteModal";
+import QuickTrailerModal from "@/components/player/QuickTrailerModal";
 import { getTrendingFromServer, discoverContentFromServer, getMovieDetails } from "@/services/movieService";
 
 export default function HomePage() {
@@ -24,6 +28,13 @@ export default function HomePage() {
         spiderManMovie: null,
     });
     const [loading, setLoading] = useState(true);
+
+    // Interactive Modals State
+    const [isRouletteOpen, setIsRouletteOpen] = useState(false);
+    const [selectedTrailerMovie, setSelectedTrailerMovie] = useState<any>(null);
+    const [activeVibeCategory, setActiveVibeCategory] = useState("all");
+    const [vibeMovies, setVibeMovies] = useState<any[]>([]);
+    const [vibeLoading, setVibeLoading] = useState(false);
 
     useEffect(() => {
         let mounted = true;
@@ -59,6 +70,37 @@ export default function HomePage() {
         return () => { mounted = false; };
     }, []);
 
+    const handleSelectCategory = async (cat: string) => {
+        setActiveVibeCategory(cat);
+        if (cat === "all") {
+            setVibeMovies([]);
+            return;
+        }
+
+        setVibeLoading(true);
+        try {
+            let res;
+            if (cat === "action") {
+                res = await discoverContentFromServer("movie", { sort_by: "popularity.desc", with_genres: "28", page: "1" });
+            } else if (cat === "scifi") {
+                res = await discoverContentFromServer("movie", { sort_by: "popularity.desc", with_genres: "878", page: "1" });
+            } else if (cat === "kdrama") {
+                res = await discoverContentFromServer("tv", { sort_by: "popularity.desc", language: "ko", with_genres: "18", page: "1" });
+            } else if (cat === "anime") {
+                res = await discoverContentFromServer("tv", { sort_by: "popularity.desc", language: "ja", with_genres: "16", page: "1" });
+            } else if (cat === "horror") {
+                res = await discoverContentFromServer("movie", { sort_by: "popularity.desc", with_genres: "27", page: "1" });
+            } else if (cat === "comedy") {
+                res = await discoverContentFromServer("movie", { sort_by: "popularity.desc", with_genres: "35", page: "1" });
+            }
+            setVibeMovies(res?.results || []);
+        } catch (e) {
+            console.error("Vibe filter error:", e);
+        } finally {
+            setVibeLoading(false);
+        }
+    };
+
     const { trendingMovies, trendingSeries, topRatedMovies, topRatedSeries, trendingHindi, spiderManMovie } = data;
 
     const heroMovies = trendingMovies.slice(0, 8);
@@ -71,7 +113,7 @@ export default function HomePage() {
 
     return (
         <main className="min-h-screen bg-black text-white">
-            <h1 className="sr-only">Best Trending Movies to Stream at Home for Free</h1>
+            <h1 className="sr-only">Best Trending Movies & Series to Stream at Home</h1>
 
             {loading ? (
                 <div className="relative h-[70vh] sm:h-[80vh] w-full animate-pulse bg-neutral-900/80 flex items-center justify-center">
@@ -84,10 +126,41 @@ export default function HomePage() {
                 heroMovies.length > 0 && <HeroBanner movies={heroMovies} />
             )}
 
-            <div className="relative z-20 -mt-4 sm:-mt-6 max-w-7xl mx-auto space-y-10 sm:space-y-14 px-4 sm:px-6 lg:px-8 pb-20">
+            {/* Interactive Vibe & AI Roulette Filter Ribbon */}
+            <HomeVibeFilter
+                activeCategory={activeVibeCategory}
+                onSelectCategory={handleSelectCategory}
+                onOpenRoulette={() => setIsRouletteOpen(true)}
+            />
+
+            <div className="relative z-20 max-w-7xl mx-auto space-y-10 sm:space-y-14 px-4 sm:px-6 lg:px-8 pb-20">
                 <div>
                     <ContinueWatchingRow />
                 </div>
+
+                {/* Vibe Category Dynamic Row */}
+                {activeVibeCategory !== "all" && (
+                    <div>
+                        {vibeLoading ? (
+                            <div className="space-y-4 animate-pulse">
+                                <div className="h-6 w-40 bg-neutral-800 rounded" />
+                                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
+                                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                                        <div key={i} className="aspect-[2/3] bg-neutral-900 rounded-xl" />
+                                    ))}
+                                </div>
+                            </div>
+                        ) : (
+                            vibeMovies.length > 0 && (
+                                <MovieRow
+                                    title={`Explore: ${activeVibeCategory.toUpperCase()}`}
+                                    movies={vibeMovies}
+                                    moreLink={`/search?q=${activeVibeCategory}`}
+                                />
+                            )
+                        )}
+                    </div>
+                )}
 
                 {loading ? (
                     <div className="space-y-10 py-6">
@@ -104,6 +177,15 @@ export default function HomePage() {
                     </div>
                 ) : (
                     <>
+                        {/* Netflix-Style Top 10 Showcase */}
+                        {trendingMovies.length >= 5 && (
+                            <Top10Row
+                                title="TOP 10 MOVIES THIS WEEK"
+                                movies={trendingMovies}
+                                onOpenTrailer={(movie) => setSelectedTrailerMovie(movie)}
+                            />
+                        )}
+
                         {trendingMovies.length > 0 && (
                             <MovieRow
                                 title="Trending Movies"
@@ -149,6 +231,22 @@ export default function HomePage() {
             </div>
 
             <HomeFAQ />
+
+            {/* Interactive Roulettes & Trailer Modals */}
+            <MovieRouletteModal
+                isOpen={isRouletteOpen}
+                onClose={() => setIsRouletteOpen(false)}
+                onOpenTrailer={(movie) => {
+                    setIsRouletteOpen(false);
+                    setSelectedTrailerMovie(movie);
+                }}
+            />
+
+            <QuickTrailerModal
+                movie={selectedTrailerMovie}
+                isOpen={Boolean(selectedTrailerMovie)}
+                onClose={() => setSelectedTrailerMovie(null)}
+            />
         </main>
     );
 }

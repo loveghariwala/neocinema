@@ -121,7 +121,7 @@ export default function MovieRow({
                 <div
                     ref={scrollRef}
                     onScroll={handleScroll}
-                    className="flex gap-[20px] overflow-x-auto scroll-smooth pb-12 pt-4 next-gen-scrollbar snap-x snap-mandatory"
+                    className="flex gap-[20px] overflow-x-auto overflow-y-hidden touch-pan-x overscroll-x-contain scroll-smooth pb-12 pt-4 next-gen-scrollbar snap-x snap-mandatory"
                 >
                     {movies?.map((movie, index) => (
                         <div
@@ -144,10 +144,6 @@ export default function MovieRow({
                         <ChevronRight size={24} />
                     </div>
                 </button>
-
-                {/* Edge Fades */}
-                <div className="pointer-events-none absolute left-0 top-0 bottom-12 w-16 bg-gradient-to-r from-background to-transparent z-30" />
-                <div className="pointer-events-none absolute right-0 top-0 bottom-12 w-16 bg-gradient-to-l from-background to-transparent z-30" />
             </div>
         </section>
     );

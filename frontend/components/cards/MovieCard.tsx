@@ -92,9 +92,9 @@ export default function MovieCard({ movie, priority = false }: MovieCardProps) {
                 {/* Glass Shine Sweep Animation */}
                 <div className="absolute inset-0 -translate-x-[150%] bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 transition-all duration-1000 ease-in-out group-hover:translate-x-[150%] group-hover:opacity-100 z-30 skew-x-[-20deg] pointer-events-none" />
 
-                {/* Content Overlay */}
-                <div className="absolute bottom-0 left-0 w-full p-3 sm:p-4 flex flex-col justify-end translate-y-4 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 z-20">
-                    <h3 className="mb-2 text-sm md:text-base font-black leading-tight text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] break-words w-full">
+                {/* Content Overlay - Always visible on mobile, smooth slide-up on desktop */}
+                <div className="absolute bottom-0 left-0 w-full p-3 sm:p-4 flex flex-col justify-end opacity-100 sm:opacity-0 sm:translate-y-4 transition-all duration-500 sm:group-hover:translate-y-0 sm:group-hover:opacity-100 z-20">
+                    <h3 className="mb-1.5 text-xs sm:text-base font-black leading-tight text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] break-words w-full group-hover:text-red-400 transition-colors">
                         {title}
                     </h3>
 
@@ -105,7 +105,7 @@ export default function MovieCard({ movie, priority = false }: MovieCardProps) {
                             </span>
                         )}
                         {year && (
-                            <span className="text-[9px] sm:text-[10px] font-bold text-neutral-200 drop-shadow-md whitespace-nowrap">
+                            <span className="text-[9px] sm:text-[10px] font-bold text-neutral-300 drop-shadow-md whitespace-nowrap">
                                 {year}
                             </span>
                         )}
