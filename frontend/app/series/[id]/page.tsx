@@ -18,6 +18,8 @@ import { Metadata } from "next";
 // import ServerNoteBanner from "@/components/ui/ServerNoteBanner"; // COMMENTED OUT: Not needed without stream player
 import { Play } from "lucide-react";
 
+export const revalidate = 86400; // Cache TV series pages for 24 hours to minimize CPU & function invocations
+
 export async function generateStaticParams() {
     return [
         { id: "1396" },
