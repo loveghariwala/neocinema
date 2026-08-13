@@ -182,6 +182,104 @@ export const BLOG_POSTS: BlogPost[] = [
         readTime: "7 min read",
         category: "Gaming",
         imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZcZVgD2dWe4N-XSKKVHfqzYSg_HrgDb7uVOp8fZO3YyxK0HsaByqM3b8&s=10",
+    },
+    {
+        slug: "spider-man-brand-new-day-box-office-doomsday-impact",
+        title: "Spider-Man: Brand New Day Box Office Predictions, Hype & How It Impacts Avengers: Doomsday",
+        metaTitle: "Spider-Man: Brand New Day Box Office & Impact on Avengers: Doomsday",
+        description: "Spider-Man: Brand New Day is breaking pre-sale records! Discover full box office projections, fan hype, and how Peter Parker's standalone arc directly triggers Robert Downey Jr.'s Doctor Doom in Avengers: Doomsday.",
+        keywords: [
+            "spider-man brand new day box office",
+            "spider-man brand new day avengers doomsday impact",
+            "spider-man 4 box office prediction",
+            "tom holland spider-man brand new day hype",
+            "doctor doom spider-man connection",
+            "spider-man 4 opening weekend prediction",
+            "spider-man brand new day release date 2026",
+            "spider-man 4 battleworld setup",
+            "marvel phase 6 box office records"
+        ],
+        publishedAt: "2026-08-13",
+        updatedAt: "2026-08-13",
+        readTime: "6 min read",
+        category: "MCU News & Analysis",
+        imageUrl: "/blog/symbiote-spiderman-vs-doctor-doom.jpg",
+        faqs: [
+            {
+                question: "What is the projected box office opening for Spider-Man: Brand New Day?",
+                answer: "Spider-Man: Brand New Day is tracking for a massive $185M - $210M domestic opening weekend and a global total exceeding $1.4 Billion, making it one of Marvel's highest-grossing solo films."
+            },
+            {
+                question: "How does Spider-Man: Brand New Day connect to Avengers: Doomsday?",
+                answer: "Spider-Man: Brand New Day establishes Peter Parker's isolated status in New York while introducing subtle multiversal incursions caused by Victor Von Doom's early experiments."
+            }
+        ]
+    },
+    {
+        slug: "spider-man-brand-new-day-post-credits-scene-doomsday-teaser",
+        title: "Spider-Man: Brand New Day Post-Credits Scene Breakdown: Where Is Peter Parker & How It Teases Doomsday",
+        metaTitle: "Spider-Man: Brand New Day Post-Credits Scene & Doomsday Connection",
+        description: "Where does Peter Parker end up after Spider-Man: Brand New Day? Full post-credits scene analysis, Battleworld teleports, Doctor Doom's ominous warning, and where Tom Holland appears next in Avengers: Doomsday.",
+        keywords: [
+            "spider-man brand new day post credits scene",
+            "spider-man 4 post credit scene explained",
+            "where is peter parker in avengers doomsday",
+            "spider-man brand new day end credit scene",
+            "doctor doom post credit scene spider-man",
+            "peter parker battleworld doomsday",
+            "spider-man brand new day ending explained",
+            "tom holland doctor doom meeting",
+            "mcu post credits scene breakdown 2026"
+        ],
+        publishedAt: "2026-08-13",
+        updatedAt: "2026-08-13",
+        readTime: "7 min read",
+        category: "Marvel Theories",
+        imageUrl: "/blog/tobey-maguire-doomsday-secret-wars.jpg",
+        faqs: [
+            {
+                question: "What happens in the Spider-Man: Brand New Day post-credits scene?",
+                answer: "The post-credits scene shows Peter Parker witnessing a crimson sky incursion above Manhattan, followed by a mysterious device activating that pulses with Latverian technology belonging to Doctor Doom."
+            },
+            {
+                question: "Where will Spider-Man appear next after Brand New Day?",
+                answer: "Tom Holland's Spider-Man will return as a central protagonist in Avengers: Doomsday, leading a fractured team of street-level heroes against Robert Downey Jr.'s Doctor Doom."
+            }
+        ]
+    },
+    {
+        slug: "avengers-doomsday-cast-plot-ending-predictions",
+        title: "Avengers: Doomsday — Full Cast, Multiverse Story & Shocking Ending Predictions",
+        metaTitle: "Avengers: Doomsday Full Cast, Plot & Ending Story Predictions",
+        description: "Full confirmed cast list for Avengers: Doomsday! Discover Robert Downey Jr. as Victor Von Doom, Pedro Pascal, Tom Holland, and our detailed story prediction of how Doctor Doom conquers the multiverse.",
+        keywords: [
+            "avengers doomsday full cast",
+            "avengers doomsday plot predictions",
+            "robert downey jr doctor doom ending",
+            "how avengers doomsday will end",
+            "avengers doomsday storyline explained",
+            "avengers doomsday secret wars setup",
+            "mcu phase 6 ending prediction",
+            "who is in avengers doomsday cast",
+            "pedro pascal reed richards doomsday",
+            "avengers doomsday release date",
+            "doctor doom defeats avengers theory"
+        ],
+        publishedAt: "2026-08-13",
+        updatedAt: "2026-08-13",
+        readTime: "9 min read",
+        category: "MCU News & Predictions",
+        imageUrl: "/blog/avengers-doomsday-full-cast-poster.jpg",
+        faqs: [
+            {
+                question: "Who is in the full cast of Avengers: Doomsday?",
+                answer: "Avengers: Doomsday stars Robert Downey Jr. as Victor Von Doom / Doctor Doom, Pedro Pascal (Reed Richards), Vanessa Kirby (Sue Storm), Tom Holland (Spider-Man), Florence Pugh (Yelena Belova), Benedict Cumberbatch (Doctor Strange), Hugh Jackman (Wolverine), and Anthony Mackie (Captain America)."
+            },
+            {
+                question: "How will Avengers: Doomsday end?",
+                answer: "In our story prediction, Avengers: Doomsday ends with Doctor Doom successfully initiating a multiversal collapse, destroying all existing timelines and creating Battleworld — setting the stage for Avengers: Secret Wars."
+            }
+        ]
     }
 ];
 

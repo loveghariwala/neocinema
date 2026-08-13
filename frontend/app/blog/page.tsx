@@ -112,16 +112,22 @@ export default function BlogIndexPage() {
                                     </span>
                                 </div>
 
-                                <div className="flex gap-4 items-start pt-1">
-                                    {post.imageUrl && (
-                                        <div className="relative h-16 w-16 flex-shrink-0 rounded-xl overflow-hidden bg-neutral-900 border border-white/10">
-                                            <Image src={post.imageUrl} alt={post.title} fill unoptimized className="object-cover" />
-                                        </div>
-                                    )}
-                                    <h3 className="text-base font-bold text-white group-hover:text-red-400 transition-colors line-clamp-2 leading-snug">
-                                        {post.title}
-                                    </h3>
-                                </div>
+                                {post.imageUrl && (
+                                    <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-neutral-900 border border-white/10 shadow-md group-hover:border-red-500/40 transition-colors">
+                                        <Image 
+                                            src={post.imageUrl} 
+                                            alt={post.title} 
+                                            fill 
+                                            unoptimized 
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                            className="object-cover transition-transform duration-500 group-hover:scale-105" 
+                                        />
+                                    </div>
+                                )}
+
+                                <h3 className="text-base font-bold text-white group-hover:text-red-400 transition-colors line-clamp-2 leading-snug">
+                                    {post.title}
+                                </h3>
 
                                 <p className="text-xs text-neutral-400 leading-relaxed line-clamp-2 font-medium">
                                     {post.description}

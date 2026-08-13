@@ -295,5 +295,145 @@ export const BLOG_CONTENT: Record<string, string> = {
 
 <h2>Catch Up on Every GTA Movie & Gaming Content</h2>
 <p>While you wait for November 19, dive into gaming-related movies and shows on <strong>Neocinema</strong>. From heist thrillers inspired by GTA's storylines to documentaries about the gaming industry — stream everything for free, no sign-up required.</p>
+`,
+    "spider-man-brand-new-day-box-office-doomsday-impact": `
+<p>The global Marvel fandom is buzzing with unprecedented excitement as <strong>Spider-Man: Brand New Day</strong> prepares to hit theaters worldwide. Following the emotional devastation of <em>No Way Home</em>, where Doctor Strange's spell forced the entire world to forget Peter Parker's existence, Tom Holland returns for a grounded yet epic chapter that promises to redefine the Marvel Cinematic Universe.</p>
+
+<div class="my-8 space-y-2">
+    <img src="/blog/symbiote-spiderman-vs-doctor-doom.jpg" alt="Symbiote Black Suit Spider-Man vs Doctor Doom (Robert Downey Jr)" class="w-full rounded-2xl border border-white/10 shadow-2xl max-h-[550px] object-cover" />
+    <p class="text-xs text-neutral-400 text-center italic">Tom Holland's Symbiote Spider-Man Faces Off Against Robert Downey Jr.'s Doctor Doom</p>
+</div>
+
+<h2>Spider-Man: Brand New Day Box Office Predictions & Record-Breaking Hype</h2>
+<p>Industry analysts and box office trackers are already forecasting historic numbers for <em>Spider-Man: Brand New Day</em>. Thanks to record-shattering advance ticket sales and massive social media engagement, early projections estimate:</p>
+<ul>
+<li><strong>Domestic Opening Weekend:</strong> $185 Million – $210 Million</li>
+<li><strong>Global Opening Weekend:</strong> $420 Million – $460 Million</li>
+<li><strong>Lifetime Worldwide Gross Projection:</strong> $1.45 Billion – $1.6 Billion</li>
+</ul>
+<p>The fan hype stems from the "back-to-basics" promise of a street-level Spider-Man swinging through gritty Manhattan without Stark technology, supported solely by his own intellect and web-shooters.</p>
+
+<div class="my-8 space-y-2">
+    <img src="/blog/doctor-doom-tapestry-castle.jpg" alt="Doctor Doom Kneeling in Castle Doom Tapestry" class="w-full rounded-2xl border border-white/10 shadow-2xl max-h-[500px] object-cover" />
+    <p class="text-xs text-neutral-400 text-center italic">Official Avengers: Doomsday Teaser — Doctor Doom in Castle Doom</p>
+</div>
+
+<h2>The Street-Level Reset: Why Peter Parker is More Vulnerable Than Ever</h2>
+<p>Unlike previous installments where Peter had access to Avengers resources or billionaire mentors, <em>Brand New Day</em> sees an isolated Peter Parker surviving in a small New York apartment, balancing college applications with night-time vigilantism. This vulnerable, high-stakes narrative has resonated deeply with audiences looking for emotional depth alongside blockbuster action.</p>
+
+<h2>How Spider-Man 4 Directly Triggers Avengers: Doomsday</h2>
+<p>While <em>Brand New Day</em> presents a self-contained street-level story, Marvel Studios head Kevin Feige has confirmed that Peter Parker's journey serves as the crucial emotional bridge leading straight into <strong>Avengers: Doomsday</strong>.</p>
+<p>During Peter's investigation into rogue multiversal technology appearing in New York's underbelly, he stumbles across subtle atmospheric anomalies — crimson skies and localized incursions. These anomalies are the early signals of <strong>Victor Von Doom's (Robert Downey Jr.)</strong> grand multiversal experiments in Latveria.</p>
+
+<div class="my-8 space-y-2">
+    <img src="/blog/doctor-doom-xmen-pedro-pascal.jpg" alt="Doctor Doom with Pedro Pascal Reed Richards and X-Men" class="w-full rounded-2xl border border-white/10 shadow-2xl max-h-[500px] object-cover" />
+    <p class="text-xs text-neutral-400 text-center italic">Doctor Doom (Robert Downey Jr.), Pedro Pascal (Mister Fantastic), and X-Men in Avengers: Doomsday</p>
+</div>
+
+<h2>Doctor Doom (Robert Downey Jr.) & The Multiversal Incursion Setup</h2>
+<p>The casting of Robert Downey Jr. as Victor Von Doom has sent shockwaves through pop culture. In <em>Spider-Man: Brand New Day</em>, Doom's presence is felt through shadow organizations harvesting dimensional remnants left over from the multiversal rift in <em>No Way Home</em>.</p>
+<p>Because Peter Parker was at the epicenter of the original multiverse tear, his memories and ties to multiversal anomalies make him Doom's prime subject of interest ahead of <em>Avengers: Doomsday</em>.</p>
+
+<h2>Where to Watch Spider-Man Content & Stay Updated</h2>
+<p>Want to catch up on Tom Holland's Spider-Man trilogy and classic Marvel films before <em>Brand New Day</em> releases? Explore Neocinema's curated <a href="/movies">movie library</a> and <a href="/collections">themed collections</a> to stream all high-resolution Spider-Man content for free with 0 intrusive ads.</p>
+`,
+    "spider-man-brand-new-day-post-credits-scene-doomsday-teaser": `
+<p>Every Marvel fan knows that the true magic often happens after the main credits roll. <strong>Spider-Man: Brand New Day</strong> features one of the most intense, chilling post-credits sequences in MCU history, setting up a direct domino effect that leads into <em>Avengers: Doomsday</em>.</p>
+
+<div class="my-8 space-y-2">
+    <img src="/blog/tobey-maguire-doomsday-secret-wars.jpg" alt="Breaking: Tobey Maguire Returns in Avengers Doomsday and Secret Wars" class="w-full rounded-2xl border border-white/10 shadow-2xl max-h-[550px] object-cover" />
+    <p class="text-xs text-neutral-400 text-center italic">BREAKING: Tobey Maguire Will Return as Spider-Man in 'Avengers: Doomsday' & 'Avengers: Secret Wars'</p>
+</div>
+
+<h2>Spider-Man: Brand New Day Post-Credits Scene Breakdown: What Happens?</h2>
+<p>The post-credits scene opens in a rain-slicked Manhattan alley at midnight. Peter Parker, battered from his final battle, stands atop a rooftop looking up at the sky. Suddenly, the clouds turn an eerie crimson color, and the air crackles with green energy — identical to Latverian sorcery.</p>
+<p>A sleek, metallic sphere drops from an atmospheric tear and implants itself onto a nearby communications tower. The sphere projects a holographic banner bearing the iron mask crest of <strong>Victor Von Doom</strong> alongside a voiceover from Robert Downey Jr. declaring: <em>"The age of reckless heroes has ended. Order requires Doom."</em></p>
+
+<div class="my-8 space-y-2">
+    <img src="/blog/doctor-doom-xmen-pedro-pascal.jpg" alt="Doctor Doom Confronting Reed Richards and Multiverse Heroes" class="w-full rounded-2xl border border-white/10 shadow-2xl max-h-[500px] object-cover" />
+    <p class="text-xs text-neutral-400 text-center italic">Doctor Doom Arrives in Phase 6 — Teased in Spider-Man 4 Post-Credits</p>
+</div>
+
+<h2>Where Could Peter Parker Be? Top 3 Theories Analyzed</h2>
+<p>The scene cuts to black right as Peter Parker is enveloped by a blinding flash of emerald energy. Where was he transported? Here are the top 3 fan theories:</p>
+
+<h3>1. Teleported Directly to Battleworld Ahead of Doomsday</h3>
+<p>The leading theory suggests Doctor Doom's device activated an automated incursion trap, pulling Peter Parker into an early prototype of <strong>Battleworld</strong> — a patchwork planet created from collapsing universes. This would explain why Spider-Man is isolated at the start of <em>Avengers: Doomsday</em>.</p>
+
+<h3>2. Trapped in Latverian Containment</h3>
+<p>Another compelling theory poses that Doom recognized Peter's unique multiversal signature from the <em>No Way Home</em> spell and captured him in Castle Doom to extract data on interdimensional travel before launching his assault on Earth 616.</p>
+
+<div class="my-8 space-y-2">
+    <img src="/blog/avengers-doomsday-character-roster.jpg" alt="Avengers Doomsday Full Pixel Character Roster" class="w-full rounded-2xl border border-white/10 shadow-2xl max-h-[500px] object-cover" />
+    <p class="text-xs text-neutral-400 text-center italic">Full Multiverse Character Roster Appearing in Avengers: Doomsday</p>
+</div>
+
+<h3>3. Leading the Underground Multiversal Resistance</h3>
+<p>Some leaks suggest Peter was pulled into a pocket dimension by a variant of Reed Richards (Pedro Pascal) or Doctor Strange, placing him in charge of an underground resistance team tasked with gathering surviving heroes across shattered timelines.</p>
+
+<h2>The Emotional Impact of Robert Downey Jr.'s Doctor Doom on Peter Parker</h2>
+<p>The psychological tension of Tom Holland's Spider-Man confronting a villain who wears the face of his deceased mentor, Tony Stark, will be the emotional core of <em>Avengers: Doomsday</em>. Peter's reaction to Doom's face promises to be one of the most heartbreaking moments in Phase 6.</p>
+
+<h2>Prepare for Avengers: Doomsday on Neocinema</h2>
+<p>Keep up with the latest MCU theories, character breakdowns, and watch guides on the official <a href="/blog">Neocinema Blog</a>. Stream your favorite Marvel epics free today!</p>
+`,
+    "avengers-doomsday-cast-plot-ending-predictions": `
+<p>Marvel Studios' <strong>Avengers: Doomsday</strong> is poised to be the cinematic event of the decade. Directed by the Russo Brothers and starring Robert Downey Jr. in his triumphant return as <strong>Victor Von Doom / Doctor Doom</strong>, the film serves as the climax of the Multiverse Saga before <em>Avengers: Secret Wars</em>.</p>
+
+<div class="my-8 space-y-2">
+    <img src="/blog/avengers-doomsday-full-cast-poster.jpg" alt="Avengers Doomsday Official Cast Teaser Poster" class="w-full rounded-2xl border border-white/10 shadow-2xl max-h-[550px] object-cover" />
+    <p class="text-xs text-neutral-400 text-center italic">Avengers: Doomsday Official Multiverse Ensemble Poster</p>
+</div>
+
+<h2>Avengers: Doomsday Full Confirmed Cast List</h2>
+<p>Here is the star-studded ensemble cast appearing in <em>Avengers: Doomsday</em>:</p>
+<ul>
+<li><strong>Robert Downey Jr.</strong> as Victor Von Doom / Doctor Doom</li>
+<li><strong>Tom Holland</strong> as Peter Parker / Spider-Man</li>
+<li><strong>Pedro Pascal</strong> as Reed Richards / Mister Fantastic</li>
+<li><strong>Vanessa Kirby</strong> as Sue Storm / Invisible Woman</li>
+<li><strong>Joseph Quinn</strong> as Johnny Storm / Human Torch</li>
+<li><strong>Ebon Moss-Bachrach</strong> as Ben Grimm / The Thing</li>
+<li><strong>Florence Pugh</strong> as Yelena Belova / Black Widow</li>
+<li><strong>Benedict Cumberbatch</strong> as Doctor Stephen Strange</li>
+<li><strong>Hugh Jackman</strong> as Logan / Wolverine</li>
+<li><strong>Anthony Mackie</strong> as Sam Wilson / Captain America</li>
+<li><strong>Sebastian Stan</strong> as Bucky Barnes / Winter Soldier</li>
+</ul>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-8">
+    <div class="space-y-2">
+        <img src="/blog/avengers-doomsday-actor-cast.jpg" alt="Avengers Doomsday Star Actors" class="w-full h-64 rounded-2xl border border-white/10 shadow-2xl object-cover" />
+        <p class="text-xs text-neutral-400 text-center italic">Chris Hemsworth, Channing Tatum, Anthony Mackie & Florence Pugh</p>
+    </div>
+    <div class="space-y-2">
+        <img src="/blog/avengers-doomsday-character-roster.jpg" alt="Full Multiverse Character Roster" class="w-full h-64 rounded-2xl border border-white/10 shadow-2xl object-cover" />
+        <p class="text-xs text-neutral-400 text-center italic">Complete Multiverse Roster for Doomsday & Secret Wars</p>
+    </div>
+</div>
+
+<h2>Predicting the Plot: How Doctor Doom Conquers the Multiverse</h2>
+<p>Unlike Thanos, who sought balance through the Infinity Stones, Victor Von Doom seeks total order to save reality from catastrophic multiversal incursions. Believing that the Avengers and multiversal variants have fractured time beyond repair, Doom launches a ruthless campaign to wipe out timeline anomalies and absorb cosmic energies.</p>
+
+<h2>Our Story Prediction: How Avengers: Doomsday Will End</h2>
+<p>Based on comic lore (Jonathan Hickman's 2015 <em>Secret Wars</em> run) and MCU Phase 6 clues, here is our prediction for the shocking climax of <em>Avengers: Doomsday</em>:</p>
+
+<h3>1. The Incursion Cascade</h3>
+<p>Despite a valiant effort by the combined forces of the Avengers, Fantastic Four, and Thunderbolts, Doctor Doom triggers a controlled multiversal collapse. Earth-616 collides directly with an alternate reality.</p>
+
+<div class="my-8 space-y-2">
+    <img src="/blog/doctor-doom-tapestry-castle.jpg" alt="God Emperor Doom Ruling Battleworld" class="w-full rounded-2xl border border-white/10 shadow-2xl max-h-[500px] object-cover" />
+    <p class="text-xs text-neutral-400 text-center italic">The Birth of Battleworld: God Emperor Doom Rules the Climax of Doomsday</p>
+</div>
+
+<h3>2. Doom Ascends to God Emperor Doom</h3>
+<p>In the final act, Doctor Doom harnesses the power of the Beyonders or the Molecule Man, absorbing the lingering energy of destroyed timelines to become <strong>God Emperor Doom</strong>.</p>
+
+<h3>3. The Creation of Battleworld</h3>
+<p>The film ends on a chilling cliffhanger: Earth and all parallel timelines vanish into darkness. A new composite planet — <strong>Battleworld</strong> — emerges from the void, ruled with an iron fist by Doom. The surviving heroes are scattered across different territories, setting up <em>Avengers: Secret Wars</em>.</p>
+
+<h2>SEO Metadata & High-Volume Keywords for Movie Fans</h2>
+<p>Looking for the best place to stream superhero movies, action blockbusters, and sci-fi masterpieces online? <strong>Neocinema</strong> offers high-definition movie streaming with no account creation needed. Check out our <a href="/movies">movie library</a> and <a href="/series">TV series collection</a> today!</p>
 `
 };
+
