@@ -22,10 +22,11 @@ export default function KinocheckTrailerSection({ tmdbId, title, isTv = false }:
             getKinocheckTrailers(tmdbId, isTv).then((data) => {
                 setTrailers(data);
                 
-                // Auto-preview first trailer 2 seconds after page load
+                // Auto-preview main trailer (last position in array: length - 1) 2 seconds after page load
                 if (data && data.length > 0) {
+                    const lastIndex = data.length - 1;
                     const timer = setTimeout(() => {
-                        setSelectedTrailer(data[0]);
+                        setSelectedTrailer(data[lastIndex]);
                         setIsAutoPreviewed(true);
                         setIsMuted(true); // Autoplay muted for browser compliance
                         setIsVideoLoading(true);
@@ -38,8 +39,8 @@ export default function KinocheckTrailerSection({ tmdbId, title, isTv = false }:
 
     if (!trailers || trailers.length === 0) return null;
 
-    const mainTrailer = trailers[0];
-    const otherTrailers = trailers.slice(1, 4);
+    const mainTrailer = trailers[trailers.length - 1];
+    const otherTrailers = trailers.slice(0, trailers.length - 1).slice(0, 3);
 
     return (
         <div className="w-full my-8 space-y-4">
