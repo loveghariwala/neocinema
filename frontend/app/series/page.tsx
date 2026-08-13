@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react';
 
 import { discoverContentFromServer, getGenresFromServer, searchContentFromServer } from "@/services/movieService";
 
-export const revalidate = 3600; // ISR: regenerate every 60 minutes instead of every request
+export const revalidate = 86400; // ISR: regenerate every 24 hours to optimize Vercel ISR usage
 
 // ─── Cached data fetch (shared between generateMetadata + page render) ───────
 const getSeriesPageData = cache(async (searchParams: Record<string, string>) => {
