@@ -83,7 +83,7 @@ async function tmdbGet(endpoint: string, params: Record<string, any> = {}, ttl: 
     if (cached !== null) return cached;
 
     const url = new URL(`${BASE_URL}${endpoint}`);
-    const apiKey = process.env.TMDB_API_KEY || process.env.NEXT_PUBLIC_TMDB_API_KEY || "";
+    const apiKey = process.env.NEXT_PUBLIC_TMDB_API_KEY || process.env.TMDB_API_KEY || "0b702f897d43fed03749ab68da8ef51c";
     url.searchParams.set("api_key", apiKey);
     Object.entries(params).forEach(([k, v]) => {
         if (v !== undefined && v !== null) {

@@ -3,7 +3,12 @@ import PersonPageClient from "./PersonPageClient";
 
 import { Metadata } from "next";
 
-export const revalidate = 86400; // ISR: cache person detail pages for 24 hours
+export async function generateStaticParams() {
+    return [
+        { id: "1136406" },
+        { id: "1892" },
+    ];
+}
 
 interface PersonPageProps {
     params: Promise<{

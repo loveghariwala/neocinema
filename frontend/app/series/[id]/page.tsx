@@ -18,7 +18,13 @@ import { Metadata } from "next";
 // import ServerNoteBanner from "@/components/ui/ServerNoteBanner"; // COMMENTED OUT: Not needed without stream player
 import { Play } from "lucide-react";
 
-export const revalidate = 86400; // ISR: cache series detail pages for 24 hours
+export async function generateStaticParams() {
+    return [
+        { id: "1396" },
+        { id: "1399" },
+        { id: "66732" },
+    ];
+}
 
 interface PageProps {
     params: Promise<{
@@ -33,9 +39,8 @@ interface PageProps {
 
 import { isMovieBlocked } from "@/lib/blockedIds";
 
-export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
     const { id } = await params;
-    const resolvedSearchParams = await searchParams;
 
     if (isMovieBlocked(id)) {
         return {
@@ -100,7 +105,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
         alternates: {
             canonical: canonicalUrl,
         },
-        robots: isBlocked || resolvedSearchParams?.play === 'true'
+        robots: isBlocked
             ? { index: false, follow: false }
             : { index: true, follow: true },
         openGraph: {
@@ -133,18 +138,14 @@ import { notFound } from "next/navigation";
 
 export default async function SeriesDetailsPage({
     params,
-    searchParams,
-}: PageProps) {
+}: { params: Promise<{ id: string }> }) {
     const { id } = await params;
 
     if (isMovieBlocked(id)) {
         notFound();
     }
 
-    const resolvedSearchParams = await searchParams;
-    const autoPlay = resolvedSearchParams?.play === "true";
-    const seasonParam = resolvedSearchParams?.season ? parseInt(resolvedSearchParams.season) : 1;
-    const episodeParam = resolvedSearchParams?.episode ? parseInt(resolvedSearchParams.episode) : 1;
+    const seasonParam = 1;
     const seriesData = await getMovieDetails(id, "tv");
 
     if (!seriesData) {

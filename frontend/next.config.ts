@@ -2,7 +2,6 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   turbopack: {
     root: path.resolve(__dirname),
   },
@@ -27,53 +26,6 @@ const nextConfig: NextConfig = {
         hostname: "img.youtube.com",
       },
     ],
-  },
-  async redirects() {
-    return [
-      {
-        source: '/blog/best-free-movie-streaming-sites-2025',
-        destination: '/blog/best-free-movie-streaming-sites-2026',
-        permanent: true,
-      },
-      {
-        source: '/blog/best-korean-dramas-2025',
-        destination: '/blog/best-korean-dramas-2026',
-        permanent: true,
-      },
-      {
-        source: '/blog/best-anime-for-beginners-2025',
-        destination: '/blog/best-anime-for-beginners-2026',
-        permanent: true,
-      },
-      {
-        source: '/best-fmovies-alternative-2024',
-        destination: '/best-fmovies-alternative-2026',
-        permanent: true,
-      },
-      {
-        source: '/fmovies-vs-netmirrors',
-        destination: '/fmovies-vs-neocinema',
-        permanent: true,
-      },
-    ];
-  },
-  async headers() {
-    return [
-      {
-        source: "/:path*",
-        headers: [
-          {
-            key: "Referrer-Policy",
-            value: "strict-origin-when-cross-origin",
-          },
-          {
-            key: "Content-Security-Policy",
-            value: "frame-src *; img-src * data: blob:;",
-          },
-
-        ],
-      },
-    ];
   },
 };
 

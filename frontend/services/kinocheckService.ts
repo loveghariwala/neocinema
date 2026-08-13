@@ -9,7 +9,7 @@ export interface KinocheckTrailer {
 
 export async function getKinocheckTrailers(tmdbId: number, isTv: boolean = false): Promise<KinocheckTrailer[]> {
     const apiKey = process.env.NEXT_PUBLIC_KINOCHECK_API_KEY || "chq4sEKOYwf9TAzHJcViWZ8ajU0BpPMvmNdsLOTQw976n63CKGza75rkDt1FoDoZ";
-    const tmdbApiKey = process.env.TMDB_API_KEY || "0b702f897d43fed03749ab68da8ef51c";
+    const tmdbApiKey = process.env.NEXT_PUBLIC_TMDB_API_KEY || process.env.TMDB_API_KEY || "0b702f897d43fed03749ab68da8ef51c";
     const typePath = isTv ? "tv" : "movie";
 
     // 1. Primary: TMDB Official English Trailers (100% globally unblocked, zero geo-restriction)

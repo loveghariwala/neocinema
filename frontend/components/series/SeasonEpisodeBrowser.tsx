@@ -6,7 +6,7 @@ import { Calendar, Loader2, Monitor } from 'lucide-react';
 
 
 import Image from "next/image";
-import { getTmdbImageUrl } from "@/lib/tmdb";
+import { getTmdbImageUrl, tmdbService } from "@/lib/tmdb";
 
 interface Episode {
     id: number;
@@ -47,13 +47,8 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons, initialEpisode
         const fetchEpisodes = async () => {
             setLoading(true);
             try {
-                const res = await fetch(`/api/season?seriesId=${seriesId}&season=${activeSeason}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setEpisodes(data.episodes || []);
-                } else {
-                    setEpisodes([]);
-                }
+                const data = await tmdbService.getTvSeasonDetail(Number(seriesId), activeSeason);
+                setEpisodes(data?.episodes || []);
             } catch {
                 setEpisodes([]);
             }
@@ -153,7 +148,7 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons, initialEpisode
                                             </h4>
                                             {episode.air_date && !isNaN(new Date(episode.air_date).getTime()) && (
                                                 <span className="text-[9px] sm:text-[10px] font-bold text-neutral-500 shrink-0 whitespace-nowrap mt-1">
-                                                    {new Date(episode.air_date).toLocaleDateString(undefined, {
+                                                    {new Date(episode.air_date).toLocaleDateString('en-US', {
                                                         year: 'numeric',
                                                         month: 'short',
                                                         day: 'numeric'

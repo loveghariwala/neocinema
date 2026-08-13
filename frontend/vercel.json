@@ -1,0 +1,32 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/blog/best-free-movie-streaming-sites-2025",
+      "destination": "/blog/best-free-movie-streaming-sites-2026",
+      "permanent": true
+    },
+    {
+      "source": "/blog/best-korean-dramas-2025",
+      "destination": "/blog/best-korean-dramas-2026",
+      "permanent": true
+    },
+    {
+      "source": "/blog/best-anime-for-beginners-2025",
+      "destination": "/blog/best-anime-for-beginners-2026",
+      "permanent": true
+    },
+    {
+      "source": "/best-fmovies-alternative-2024",
+      "destination": "/best-fmovies-alternative-2026",
+      "permanent": true
+    },
+    {
+      "source": "/fmovies-vs-netmirrors",
+      "destination": "/fmovies-vs-neocinema",
+      "permanent": true
+    }
+  ]
+}

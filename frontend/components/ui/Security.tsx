@@ -5,6 +5,10 @@ import DisableDevtool from 'disable-devtool';
 
 export default function Security() {
     useEffect(() => {
+        if (process.env.NODE_ENV === "development") {
+            return;
+        }
+
         if (typeof window !== "undefined") {
             // Actively block devtools, network tab, and console inspection
             DisableDevtool();

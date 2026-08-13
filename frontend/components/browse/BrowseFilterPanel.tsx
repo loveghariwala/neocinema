@@ -560,7 +560,7 @@ export default function BrowseFilterPanel({
             {/* ─── RESULTS INFO ──────────────────────────────── */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <p className="text-sm font-medium text-neutral-500">
-                    <span className="font-black text-white">{totalResults.toLocaleString()}</span>{" "}
+                    <span className="font-black text-white">{totalResults.toLocaleString("en-US")}</span>{" "}
                     {type === "movie" ? "movies" : "series"} found
                     {filters.search && (
                         <span className="text-neutral-600">

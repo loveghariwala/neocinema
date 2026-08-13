@@ -17,7 +17,15 @@ import { Metadata } from "next";
 // import ServerNoteBanner from "@/components/ui/ServerNoteBanner"; // COMMENTED OUT: Not needed without stream player
 import { Play } from "lucide-react";
 
-export const revalidate = 86400; // ISR: cache movie detail pages for 24 hours
+export async function generateStaticParams() {
+    return [
+        { id: "969681" },
+        { id: "557" },
+        { id: "558" },
+        { id: "559" },
+        { id: "634649" },
+    ];
+}
 
 interface PageProps {
     params: Promise<{
@@ -30,9 +38,8 @@ interface PageProps {
 
 import { isMovieBlocked } from "@/lib/blockedIds";
 
-export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
     const { id } = await params;
-    const resolvedSearchParams = await searchParams;
 
     if (isMovieBlocked(id)) {
         return {
@@ -97,7 +104,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
         alternates: {
             canonical: canonicalUrl,
         },
-        robots: isBlocked || resolvedSearchParams?.play === 'true'
+        robots: isBlocked
             ? { index: false, follow: false }
             : { index: true, follow: true },
         openGraph: {
@@ -130,16 +137,13 @@ import { notFound } from "next/navigation";
 
 export default async function MovieDetailsPage({
     params,
-    searchParams,
-}: PageProps) {
+}: { params: Promise<{ id: string }> }) {
     const { id } = await params;
 
     if (isMovieBlocked(id)) {
         notFound();
     }
 
-    const resolvedSearchParams = await searchParams;
-    const autoPlay = resolvedSearchParams?.play === "true";
     const movieData = await getMovieDetails(id, "movie");
 
     if (!movieData) {

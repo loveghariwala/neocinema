@@ -128,7 +128,7 @@ export default function PersonPageClient({ data }: PersonPageClientProps) {
                                 {person.birthday && (
                                     <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10">
                                         <Calendar size={14} className="text-red-500" />
-                                        <span>Born: {new Date(person.birthday).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                                        <span>Born: {new Date(person.birthday).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                                     </div>
                                 )}
                                 {person.placeOfBirth && (

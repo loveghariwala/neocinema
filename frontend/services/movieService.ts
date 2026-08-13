@@ -1,5 +1,3 @@
-"use server";
-
 import { tmdbService } from "@/lib/tmdb";
 import { isMovieBlocked } from "@/lib/blockedIds";
 
@@ -47,10 +45,8 @@ export async function getTopRatedSeries() {
 
 async function getCollectionParts(collectionId: number) {
     try {
-        const API_KEY = process.env.TMDB_API_KEY;
-        const res = await fetch(`https://api.themoviedb.org/3/collection/${collectionId}?api_key=${API_KEY}`, {
-            next: { revalidate: 3600 } // Cache collections for 1 hour at the Edge
-        });
+        const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY || process.env.TMDB_API_KEY || "0b702f897d43fed03749ab68da8ef51c";
+        const res = await fetch(`https://api.themoviedb.org/3/collection/${collectionId}?api_key=${API_KEY}`);
         if (!res.ok) return [];
         const data = await res.json();
         const parts = data.parts || [];
@@ -67,10 +63,8 @@ async function getCollectionParts(collectionId: number) {
 
 async function getTMDBRecommendations(id: number, type: "movie" | "tv" = "movie") {
     try {
-        const API_KEY = process.env.TMDB_API_KEY;
-        const res = await fetch(`https://api.themoviedb.org/3/${type}/${id}/recommendations?api_key=${API_KEY}`, {
-            next: { revalidate: 3600 }
-        });
+        const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY || process.env.TMDB_API_KEY || "0b702f897d43fed03749ab68da8ef51c";
+        const res = await fetch(`https://api.themoviedb.org/3/${type}/${id}/recommendations?api_key=${API_KEY}`);
         if (!res.ok) return [];
         const data = await res.json();
         return data.results || [];

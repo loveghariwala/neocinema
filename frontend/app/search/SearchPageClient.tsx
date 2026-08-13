@@ -35,13 +35,11 @@ export default function SearchPageClient({
     const [type, setType] = useState(initialType);
     const [page, setPage] = useState(initialPage);
     const [data, setData] = useState<any>(initialData);
-    const [isPending, startTransition] = useTransition();
+    const [isLoading, setIsLoading] = useState(false);
     const isInitialMount = useRef(true);
 
     const router = useRouter();
     const pathname = usePathname();
-
-    const isLoading = isPending;
     const trending = initialTrending;
 
     // Fetch data when search params change
@@ -53,21 +51,30 @@ export default function SearchPageClient({
 
         isInitialMount.current = false;
 
+        if (query && query.trim().length >= 2) {
+            setIsLoading(true);
+        }
+
         const timer = setTimeout(() => {
-            startTransition(() => {
-                const fetchNewData = async () => {
-                    if (query && query.trim().length >= 2) {
+            const fetchNewData = async () => {
+                if (query && query.trim().length >= 2) {
+                    try {
                         const newData = await searchContentFromServer(query, type, String(page));
                         if (newData) setData(newData);
-                    } else {
-                        setData({ results: [], totalResults: 0, totalPages: 1, currentPage: 1 });
+                    } catch (e) {
+                        console.error("Failed to fetch search data:", e);
+                    } finally {
+                        setIsLoading(false);
                     }
-                };
-                fetchNewData();
-            });
-        }, 600); // Add 600ms debounce
+                } else {
+                    setData({ results: [], totalResults: 0, totalPages: 1, currentPage: 1 });
+                    setIsLoading(false);
+                }
+            };
+            fetchNewData();
+        }, 350);
         return () => clearTimeout(timer);
-    }, [query, type, page]);
+    }, [query, type, page, initialQuery, initialType, initialPage]);
 
     useEffect(() => {
         setPage(initialPage);
@@ -81,12 +88,10 @@ export default function SearchPageClient({
             if (newPage > 1) params.set("page", String(newPage));
         }
         const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname;
-        startTransition(() => {
-            router.push(newUrl, { scroll: false });
-        });
+        router.push(newUrl, { scroll: false });
     }, [pathname, router]);
 
-    // Debounced search typing
+    // Debounced search typing URL sync
     useEffect(() => {
         const timer = setTimeout(() => {
             const searchParams = new URLSearchParams(window.location.search);
@@ -99,24 +104,28 @@ export default function SearchPageClient({
     }, [query, type, updateUrl]);
 
     const changePage = (p: number) => {
+        setIsLoading(true);
         setPage(p);
         updateUrl(query, type, p);
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     const handleTypeChange = (newType: string) => {
+        setIsLoading(true);
         setType(newType);
         setPage(1);
         updateUrl(query, newType, 1);
     };
 
     const handleClear = () => {
+        setIsLoading(false);
         setQuery("");
         setPage(1);
         updateUrl("", type, 1);
     };
 
     const handleTagClick = (tag: string) => {
+        setIsLoading(true);
         setQuery(tag);
         setPage(1);
         updateUrl(tag, type, 1);
@@ -229,7 +238,7 @@ export default function SearchPageClient({
                             </div>
 
                             <span className="text-xs text-neutral-400 font-medium">
-                                Found <strong className="text-white font-black">{data.totalResults?.toLocaleString()}</strong> titles
+                                Found <strong className="text-white font-black">{data.totalResults?.toLocaleString("en-US")}</strong> titles
                             </span>
                         </div>
                     )}
@@ -237,7 +246,23 @@ export default function SearchPageClient({
 
                 {/* ─── Results ───────────────────────────────────────────── */}
                 {isSearching ? (
-                    isLoading && !hasResults ? null : hasResults ? (
+                    isLoading ? (
+                        <div className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                            {Array.from({ length: 10 }).map((_, index) => (
+                                <div
+                                    key={`skeleton-${index}`}
+                                    className="flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/[0.02] p-3 backdrop-blur-sm animate-pulse"
+                                >
+                                    <div className="relative aspect-[2/3] w-full overflow-hidden rounded-xl bg-neutral-800/60" />
+                                    <div className="h-4 w-3/4 rounded-md bg-neutral-800/80" />
+                                    <div className="flex items-center gap-2 mt-1">
+                                        <div className="h-3 w-10 rounded bg-neutral-800/50" />
+                                        <div className="h-3 w-12 rounded bg-neutral-800/50" />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : hasResults ? (
                         <>
                             <div className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                                 {data.results.map((item: any, i: number) => (
@@ -255,7 +280,7 @@ export default function SearchPageClient({
                                     <button
                                         onClick={() => changePage(page - 1)}
                                         disabled={page <= 1}
-                                        className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-bold text-neutral-400 transition-all hover:text-white disabled:opacity-30"
+                                        className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-bold text-neutral-400 transition-all hover:text-white disabled:opacity-30 cursor-pointer"
                                     >
                                         Prev
                                     </button>
@@ -266,7 +291,7 @@ export default function SearchPageClient({
                                             <button
                                                 key={p}
                                                 onClick={() => changePage(p as number)}
-                                                className={`flex h-9 w-9 items-center justify-center rounded-xl text-xs font-bold transition-all ${page === p
+                                                className={`flex h-9 w-9 items-center justify-center rounded-xl text-xs font-bold transition-all cursor-pointer ${page === p
                                                         ? "bg-red-600 text-white shadow-lg shadow-red-600/30"
                                                         : "border border-white/10 bg-white/[0.03] text-neutral-400 hover:text-white"
                                                     }`}
@@ -278,7 +303,7 @@ export default function SearchPageClient({
                                     <button
                                         onClick={() => changePage(page + 1)}
                                         disabled={page >= data.totalPages}
-                                        className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-bold text-neutral-400 transition-all hover:text-white disabled:opacity-30"
+                                        className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-bold text-neutral-400 transition-all hover:text-white disabled:opacity-30 cursor-pointer"
                                     >
                                         Next
                                     </button>

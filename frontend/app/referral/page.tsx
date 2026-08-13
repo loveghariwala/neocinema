@@ -7,30 +7,24 @@ interface PageProps {
     }>;
 }
 
-export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
-    const { ref } = await searchParams;
-    const refCode = ref || "VIP";
-    
-    // Dynamic URL pointing to our edge ImageResponse generator
-    const ogImageUrl = `/referral/og?ref=${encodeURIComponent(refCode)}`;
-
+export async function generateMetadata(): Promise<Metadata> {
     return {
-        title: `Invite Pass from ${refCode} | Neocinema`,
-        description: `Join Neocinema using referral code ${refCode} and unlock premium movie & series streaming features.`,
+        title: "Claim Your Neocinema Invite Pass | Neocinema Referral",
+        description: "Join Neocinema using a referral code and unlock premium movie & series streaming features.",
         alternates: {
             canonical: "/referral",
         },
         openGraph: {
-            title: `Claim Your Neocinema Invite Pass (${refCode})`,
-            description: `Unlock premium movie & series streaming features on Neocinema.`,
+            title: "Claim Your Neocinema Invite Pass",
+            description: "Unlock premium movie & series streaming features on Neocinema.",
             type: "website",
-            images: [{ url: ogImageUrl, width: 1200, height: 630, alt: `Neocinema Referral Invite Code: ${refCode}` }],
+            images: [{ url: "/og_banner.png", width: 1200, height: 630, alt: "Neocinema Referral Invite" }],
         },
         twitter: {
             card: "summary_large_image",
-            title: `Claim Your Neocinema Invite Pass (${refCode})`,
-            description: `Unlock premium movie & series streaming features on Neocinema.`,
-            images: [ogImageUrl],
+            title: "Claim Your Neocinema Invite Pass",
+            description: "Unlock premium movie & series streaming features on Neocinema.",
+            images: ["/og_banner.png"],
         }
     };
 }

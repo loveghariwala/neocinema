@@ -186,14 +186,14 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", notoSans.variable, playfairDisplayHeading.variable)}
     >
       <head>
-        {/* Google AdSense */}
-        <Script
+        {/* Google AdSense - Standard script tag to avoid data-nscript attribute warning from Google AdSense */}
+        <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9352593649328091"
           crossOrigin="anonymous"
-          strategy="afterInteractive"
         />
-
+      </head>
+      <body suppressHydrationWarning className="min-h-full flex flex-row bg-background">
         {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-4RGXPG1KWQ"
@@ -210,11 +210,6 @@ export default function RootLayout({
 
         {/* Ahrefs Webmaster Tools Analytics */}
         <Script src="https://analytics.ahrefs.com/analytics.js" data-key="+kc1zXGQ8NqACPuHJIlgsw" strategy="lazyOnload" />
-        {/* Global Ad Network Scripts */}
-        {/* <AdsterraSocialBar /> */}
-        {/* <MonetagAds /> */}
-      </head>
-      <body suppressHydrationWarning className="min-h-full flex flex-row bg-background">
         <script
           id="json-ld-schema"
           type="application/ld+json"
