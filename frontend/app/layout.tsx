@@ -36,6 +36,7 @@ export const metadata: Metadata = {
   },
   description: "Explore Neocinema: discover movies, TV series & anime. Use our advanced filter to select multiple genres, combine with ratings or release years, and sort precisely to find exactly what to watch. View trailers, cast info & where to watch.",
   keywords: [
+    // Original Keywords
     "Watch HD Movie Trailers for Free",
     "Neocinema Advanced Multi-Genre Discovery",
     "movie discovery platform",
@@ -47,7 +48,24 @@ export const metadata: Metadata = {
     "movie trailers",
     "AI movie recommender",
     "movies", "series", "anime", "movie discovery", "Neocinema", "NeocinemaTV",
-    "cast information", "movie ratings", "TV series recommendations"
+    "cast information", "movie ratings", "TV series recommendations",
+    // New High-Traffic Long-Tail Keywords
+    "what movie should I watch tonight",
+    "movie finder by plot",
+    "random movie roulette generator",
+    "find movies by vibe and mood",
+    "where to watch movies and series",
+    "multi genre movie search filter",
+    "advanced movie discovery platform",
+    "watch free HD movie trailers",
+    "best hidden gem movie recommendations",
+    "top rated TV series to binge watch",
+    "where to stream trending anime",
+    "select multiple genres movie filter",
+    "cast crew and streaming guide",
+    "psychological thriller movie finder",
+    "kdrama streaming guide",
+    "latest movie release trailers 2026"
   ],
   authors: [{ name: "Love Ghariwala", url: "https://github.com/loveghariwala" }],
   creator: "Love Ghariwala",
