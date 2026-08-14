@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { X, Film, Star, ExternalLink, Play } from 'lucide-react';
 import Link from "next/link";
 import { getKinocheckTrailers, KinocheckTrailer } from "@/services/kinocheckService";
+import { track } from "@vercel/analytics";
 
 interface QuickTrailerModalProps {
     movie: any;
@@ -27,6 +28,15 @@ export default function QuickTrailerModal({ movie, isOpen, onClose }: QuickTrail
         setLoading(true);
         setTrailers([]);
         setActiveTrailer(null);
+
+        // Track user interaction with analytics to count as engaged session
+        try {
+            track("watch_quick_trailer", {
+                title,
+                tmdbId,
+                mediaType: isTv ? "tv" : "movie",
+            });
+        } catch (e) {}
 
         async function fetchTrailers() {
             try {

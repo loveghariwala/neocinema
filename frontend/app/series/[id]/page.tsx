@@ -8,17 +8,17 @@ import { MotionDiv } from "@/components/layout/Motion";
 import Image from "next/image";
 import { getTmdbImageUrl } from "@/lib/tmdb";
 import Link from "next/link";
-import dynamic from "next/dynamic";
-// const StreamPlayer = dynamic(() => import("@/components/player/StreamPlayer")); // COMMENTED OUT: Removed pirate stream embeds for legal compliance
-const WatchmodeAvailabilityBanner = dynamic(() => import("@/components/ui/WatchmodeAvailabilityBanner"));
-const KinocheckTrailerSection = dynamic(() => import("@/components/player/KinocheckTrailerSection"));
+import nextDynamic from "next/dynamic";
+// const StreamPlayer = nextDynamic(() => import("@/components/player/StreamPlayer")); // COMMENTED OUT: Removed pirate stream embeds for legal compliance
+const WatchmodeAvailabilityBanner = nextDynamic(() => import("@/components/ui/WatchmodeAvailabilityBanner"));
+const KinocheckTrailerSection = nextDynamic(() => import("@/components/player/KinocheckTrailerSection"));
 import ShareButton from "@/components/ui/ShareButton";
 import SeasonEpisodeBrowser from "@/components/series/SeasonEpisodeBrowser";
 import { Metadata } from "next";
 // import ServerNoteBanner from "@/components/ui/ServerNoteBanner"; // COMMENTED OUT: Not needed without stream player
 import { Play } from "lucide-react";
 
-export const revalidate = 86400; // Cache TV series pages for 24 hours to minimize CPU & function invocations
+export const dynamic = "force-dynamic"; // Use SSR for dynamic series pages to prevent ISR Writes exceeding Vercel limits
 
 export async function generateStaticParams() {
     return [
@@ -401,7 +401,7 @@ export default async function SeriesDetailsPage({
             {/* CONTENT GRID */}
             <div className="relative z-20 max-w-7xl mx-auto space-y-12 sm:space-y-16 px-4 sm:px-6 lg:px-8 pb-20 sm:pb-32 min-w-0">
                 {/* OFFICIAL TRAILERS & WATCHMODE STREAMING AVAILABILITY */}
-                <div id="trailers-section" className="grid grid-cols-1 gap-6 lg:grid-cols-2 min-w-0">
+                <div id="trailers-section" className="space-y-6 min-w-0">
                     <KinocheckTrailerSection tmdbId={series.tmdbId} title={series.title} isTv={true} />
                     <WatchmodeAvailabilityBanner tmdbId={series.tmdbId} isTv={true} />
                 </div>

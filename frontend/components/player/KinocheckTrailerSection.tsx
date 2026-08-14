@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getKinocheckTrailers, KinocheckTrailer } from "@/services/kinocheckService";
 import { Film, Play, Volume2, VolumeX, X, Sparkles } from "lucide-react";
+import { track } from "@vercel/analytics";
 
 interface Props {
     tmdbId: number;
@@ -14,33 +15,48 @@ export default function KinocheckTrailerSection({ tmdbId, title, isTv = false }:
     const [trailers, setTrailers] = useState<KinocheckTrailer[]>([]);
     const [selectedTrailer, setSelectedTrailer] = useState<KinocheckTrailer | null>(null);
     const [isVideoLoading, setIsVideoLoading] = useState(true);
-    const [isAutoPreviewed, setIsAutoPreviewed] = useState(false);
-    const [isMuted, setIsMuted] = useState(true);
+    const [isMuted, setIsMuted] = useState(false);
 
     useEffect(() => {
         if (tmdbId) {
             getKinocheckTrailers(tmdbId, isTv).then((data) => {
-                setTrailers(data);
-                
-                // Auto-preview main trailer (last position in array: length - 1) 2 seconds after page load
-                if (data && data.length > 0) {
-                    const lastIndex = data.length - 1;
-                    const timer = setTimeout(() => {
-                        setSelectedTrailer(data[lastIndex]);
-                        setIsAutoPreviewed(true);
-                        setIsMuted(true); // Autoplay muted for browser compliance
-                        setIsVideoLoading(true);
-                    }, 2000);
-                    return () => clearTimeout(timer);
-                }
+                setTrailers(data || []);
             });
         }
     }, [tmdbId, isTv]);
+
+    const handleSelectTrailer = (trailer: KinocheckTrailer) => {
+        setSelectedTrailer(trailer);
+        setIsMuted(false);
+        setIsVideoLoading(true);
+
+        // Track user interaction with analytics to count as engaged session
+        try {
+            track("watch_trailer", {
+                title: title,
+                tmdbId: tmdbId,
+                trailerTitle: trailer.title || title,
+                youtubeId: trailer.youtube_video_id,
+                mediaType: isTv ? "tv" : "movie",
+            });
+
+            if (typeof window !== "undefined" && typeof (window as any).gtag === "function") {
+                (window as any).gtag("event", "watch_trailer", {
+                    event_category: "engagement",
+                    event_label: title,
+                    value: tmdbId,
+                });
+            }
+        } catch (e) {
+            // Non-blocking catch for analytics tracking
+        }
+    };
 
     if (!trailers || trailers.length === 0) return null;
 
     const mainTrailer = trailers[trailers.length - 1];
     const otherTrailers = trailers.slice(0, trailers.length - 1).slice(0, 3);
+    const activeTrailerToDisplay = selectedTrailer || mainTrailer;
 
     return (
         <div className="w-full my-8 space-y-4">
@@ -63,56 +79,108 @@ export default function KinocheckTrailerSection({ tmdbId, title, isTv = false }:
                 </div>
             </div>
 
-            {/* Featured Main Trailer (Big Card) */}
-            {mainTrailer && (
-                <div className="relative group w-full rounded-3xl overflow-hidden border border-white/15 bg-neutral-900/90 shadow-2xl transition-all duration-300 hover:border-red-500/60">
-                    <button
-                        onClick={() => {
-                            setSelectedTrailer(mainTrailer);
-                            setIsMuted(false);
-                            setIsVideoLoading(true);
-                        }}
-                        className="w-full aspect-video sm:aspect-[21/9] relative block text-left overflow-hidden cursor-pointer touch-manipulation group"
-                    >
-                        <img
-                            src={mainTrailer.youtube_thumbnail}
-                            alt={mainTrailer.title}
-                            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100"
-                            onError={(e) => {
-                                (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${mainTrailer.youtube_video_id}/maxresdefault.jpg`;
-                            }}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-transparent" />
-
-                        {/* Animated Play Button */}
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="relative flex items-center justify-center">
-                                <div className="absolute h-20 w-20 rounded-full bg-red-600/30 animate-ping" />
-                                <div className="relative h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-red-600 text-white flex items-center justify-center shadow-2xl shadow-red-600/60 group-hover:scale-110 transition-transform">
-                                    <Play fill="currentColor" size={28} className="ml-1" />
+            {/* Featured Main Container (Inline Player or Poster Card) */}
+            {activeTrailerToDisplay && (
+                <div className="relative group w-full rounded-3xl overflow-hidden border border-white/15 bg-neutral-950 shadow-2xl transition-all duration-300">
+                    {selectedTrailer ? (
+                        /* Inline Video Player Container */
+                        <div className="relative w-full aspect-video bg-black overflow-hidden flex flex-col">
+                            {/* Inline Control Header Bar */}
+                            <div className="flex items-center justify-between px-5 py-3 bg-neutral-900/90 border-b border-white/10 backdrop-blur-md z-10">
+                                <div className="flex items-center gap-2.5 min-w-0">
+                                    <span className="h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse flex-shrink-0" />
+                                    <h4 className="text-xs sm:text-sm font-black text-white truncate">
+                                        NOW PLAYING: <span className="text-neutral-300 font-bold">{selectedTrailer.title || title}</span>
+                                    </h4>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={() => setIsMuted(!isMuted)}
+                                        className="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-xs font-extrabold text-white transition-colors flex items-center gap-1.5 cursor-pointer"
+                                    >
+                                        {isMuted ? <VolumeX size={16} className="text-red-400" /> : <Volume2 size={16} className="text-green-400" />}
+                                        <span>{isMuted ? "Unmute" : "Sound On"}</span>
+                                    </button>
+                                    <button
+                                        onClick={() => setSelectedTrailer(null)}
+                                        className="p-1.5 rounded-full bg-white/10 hover:bg-red-600 text-white transition-colors cursor-pointer"
+                                        title="Close Trailer"
+                                    >
+                                        <X size={18} />
+                                    </button>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Banner Labels */}
-                        <div className="absolute top-4 left-4 flex items-center gap-2">
-                            <span className="text-[10px] font-black uppercase tracking-wider text-white bg-red-600 px-3 py-1 rounded-full shadow-lg">
-                                FEATURED TRAILER
-                            </span>
-                            <span className="text-[10px] font-bold text-neutral-200 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
-                                {mainTrailer.type || "Official Trailer"}
-                            </span>
-                        </div>
+                            {/* Video Iframe Viewport */}
+                            <div className="relative flex-1 w-full h-full bg-black">
+                                {isVideoLoading && (
+                                    <div className="absolute inset-0 z-20 bg-neutral-950 flex flex-col items-center justify-center p-6 text-center">
+                                        <div className="relative flex items-center justify-center mb-3">
+                                            <div className="absolute h-14 w-14 rounded-full border-4 border-red-600/30 border-t-red-600 animate-spin" />
+                                            <Play fill="currentColor" size={18} className="text-red-500 animate-pulse ml-0.5" />
+                                        </div>
+                                        <h4 className="text-xs font-black uppercase tracking-widest text-white">
+                                            LOADING TRAILER...
+                                        </h4>
+                                    </div>
+                                )}
 
-                        <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6">
-                            <h4 className="text-base sm:text-xl font-black text-white drop-shadow-md line-clamp-1">
-                                {mainTrailer.title || `${title} Official Trailer`}
-                            </h4>
-                            <p className="text-xs text-neutral-300 font-medium line-clamp-1 mt-1">
-                                Click to watch in full 4K with audio
-                            </p>
+                                <iframe
+                                    key={`${selectedTrailer.youtube_video_id}-${isMuted}`}
+                                    src={`https://www.youtube-nocookie.com/embed/${selectedTrailer.youtube_video_id}?autoplay=1&mute=${isMuted ? 1 : 0}&modestbranding=1&rel=0`}
+                                    className="w-full h-full border-none"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    onLoad={() => setIsVideoLoading(false)}
+                                />
+                            </div>
                         </div>
-                    </button>
+                    ) : (
+                        /* Default Thumbnail Play Card */
+                        <button
+                            onClick={() => handleSelectTrailer(activeTrailerToDisplay)}
+                            className="w-full aspect-video relative block text-left overflow-hidden cursor-pointer touch-manipulation group"
+                        >
+                            <img
+                                src={activeTrailerToDisplay.youtube_thumbnail}
+                                alt={activeTrailerToDisplay.title}
+                                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100"
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${activeTrailerToDisplay.youtube_video_id}/maxresdefault.jpg`;
+                                }}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-transparent" />
+
+                            {/* Animated Play Button */}
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="relative flex items-center justify-center">
+                                    <div className="absolute h-20 w-20 rounded-full bg-red-600/30 animate-ping" />
+                                    <div className="relative h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-red-600 text-white flex items-center justify-center shadow-2xl shadow-red-600/60 group-hover:scale-110 transition-transform">
+                                        <Play fill="currentColor" size={28} className="ml-1" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Banner Labels */}
+                            <div className="absolute top-4 left-4 flex items-center gap-2">
+                                <span className="text-[10px] font-black uppercase tracking-wider text-white bg-red-600 px-3 py-1 rounded-full shadow-lg">
+                                    FEATURED TRAILER
+                                </span>
+                                <span className="text-[10px] font-bold text-neutral-200 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
+                                    {activeTrailerToDisplay.type || "Official Trailer"}
+                                </span>
+                            </div>
+
+                            <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6">
+                                <h4 className="text-base sm:text-xl font-black text-white drop-shadow-md line-clamp-1">
+                                    {activeTrailerToDisplay.title || `${title} Official Trailer`}
+                                </h4>
+                                <p className="text-xs text-neutral-300 font-medium line-clamp-1 mt-1">
+                                    Click to watch inline in HD
+                                </p>
+                            </div>
+                        </button>
+                    )}
                 </div>
             )}
 
@@ -122,12 +190,12 @@ export default function KinocheckTrailerSection({ tmdbId, title, isTv = false }:
                     {otherTrailers.map((trailer) => (
                         <button
                             key={trailer.id || trailer.youtube_video_id}
-                            onClick={() => {
-                                setSelectedTrailer(trailer);
-                                setIsMuted(false);
-                                setIsVideoLoading(true);
-                            }}
-                            className="group relative rounded-2xl overflow-hidden border border-white/10 bg-neutral-900 aspect-video text-left transition-all hover:scale-[1.03] hover:border-red-500/50 shadow-lg cursor-pointer touch-manipulation"
+                            onClick={() => handleSelectTrailer(trailer)}
+                            className={`group relative rounded-2xl overflow-hidden border bg-neutral-900 aspect-video text-left transition-all hover:scale-[1.03] shadow-lg cursor-pointer touch-manipulation ${
+                                selectedTrailer?.youtube_video_id === trailer.youtube_video_id
+                                    ? "border-red-500 ring-2 ring-red-500/50"
+                                    : "border-white/10 hover:border-red-500/50"
+                            }`}
                         >
                             <img
                                 src={trailer.youtube_thumbnail}
@@ -151,64 +219,6 @@ export default function KinocheckTrailerSection({ tmdbId, title, isTv = false }:
                             </div>
                         </button>
                     ))}
-                </div>
-            )}
-
-            {/* Trailer Modal Overlay with Autoplay & Mute Control */}
-            {selectedTrailer && (
-                <div
-                    onClick={() => setSelectedTrailer(null)}
-                    className="fixed inset-0 z-[200000] bg-black/95 backdrop-blur-3xl flex items-center justify-center p-4"
-                >
-                    <div
-                        onClick={(e) => e.stopPropagation()}
-                        className="relative w-full max-w-4xl bg-neutral-950 border border-white/15 rounded-3xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200"
-                    >
-                        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-neutral-900">
-                            <div className="flex items-center gap-3">
-                                <span className="h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse" />
-                                <h3 className="text-sm font-black text-white truncate max-w-md">{selectedTrailer.title}</h3>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <button
-                                    onClick={() => setIsMuted(!isMuted)}
-                                    className="px-3 py-1.5 rounded-full bg-white/10 text-xs font-bold text-white hover:bg-white/20 transition-colors flex items-center gap-1.5"
-                                >
-                                    {isMuted ? <VolumeX size={16} className="text-red-400" /> : <Volume2 size={16} className="text-green-400" />}
-                                    {isMuted ? "Unmute Sound" : "Muted"}
-                                </button>
-                                <button
-                                    onClick={() => setSelectedTrailer(null)}
-                                    className="p-2 rounded-full bg-white/10 text-white hover:bg-red-600 transition-colors"
-                                >
-                                    <X size={18} />
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="relative w-full aspect-video bg-black overflow-hidden">
-                            {isVideoLoading && (
-                                <div className="absolute inset-0 z-20 bg-neutral-950 flex flex-col items-center justify-center p-6 text-center">
-                                    <div className="relative flex items-center justify-center mb-4">
-                                        <div className="absolute h-16 w-16 rounded-full border-4 border-red-600/30 border-t-red-600 animate-spin" />
-                                        <Play fill="currentColor" size={20} className="text-red-500 animate-pulse ml-0.5" />
-                                    </div>
-                                    <h4 className="text-xs sm:text-sm font-black uppercase tracking-widest text-white">
-                                        LOADING OFFICIAL TRAILER...
-                                    </h4>
-                                </div>
-                            )}
-
-                            <iframe
-                                key={`${selectedTrailer.youtube_video_id}-${isMuted}`}
-                                src={`https://www.youtube-nocookie.com/embed/${selectedTrailer.youtube_video_id}?autoplay=1&mute=${isMuted ? 1 : 0}&modestbranding=1&rel=0`}
-                                className="w-full h-full border-none"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                                onLoad={() => setIsVideoLoading(false)}
-                            />
-                        </div>
-                    </div>
                 </div>
             )}
         </div>
