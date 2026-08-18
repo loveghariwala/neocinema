@@ -42,6 +42,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // ────────────────────────────────────────────────────────────────────────────
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: baseUrl, lastModified: currentDate, changeFrequency: 'daily', priority: 1 },
+    { url: `${baseUrl}/vibe-finder`, lastModified: currentDate, changeFrequency: 'daily', priority: 1 },
     { url: `${baseUrl}/movies`, lastModified: currentDate, changeFrequency: 'daily', priority: 0.9 },
     { url: `${baseUrl}/series`, lastModified: currentDate, changeFrequency: 'daily', priority: 0.9 },
     { url: `${baseUrl}/collections`, lastModified: currentDate, changeFrequency: 'weekly', priority: 0.9 },

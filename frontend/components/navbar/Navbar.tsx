@@ -34,6 +34,7 @@ export default function Navbar() {
 
     const navLinks = [
         { name: "Home", href: "/", icon: Home },
+        { name: "AI Vibe Finder 🍿", href: "/vibe-finder", icon: Sparkles },
         { name: "Collections", href: "/collections", icon: Library },
         { name: "Discover", href: "/search", icon: Sparkles },
         { name: "Movies", href: "/movies", icon: Film },
