@@ -22,16 +22,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const landing = getWatchLandingBySlug(slug);
     if (!landing) return { title: "Not Found", robots: { index: false } };
 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
     return {
         title: landing.title,
         description: landing.description,
         keywords: landing.keywords,
-        alternates: { canonical: `/watch/${slug}` },
+        alternates: { canonical: `${baseUrl}/watch/${slug}` },
         robots: { index: true, follow: true },
         openGraph: {
             title: landing.title,
             description: landing.description,
-            url: `/watch/${slug}`,
+            url: `${baseUrl}/watch/${slug}`,
             type: "website",
         },
     };

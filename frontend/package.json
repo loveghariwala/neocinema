@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "opennext:build": "npx opennextjs-cloudflare build",
+    "preview": "npm run opennext:build && wrangler dev",
+    "deploy": "npm run opennext:build && wrangler deploy",
     "start": "next start",
     "lint": "eslint",
     "seo:check": "node scripts/seo-check.mjs"

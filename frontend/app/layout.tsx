@@ -212,12 +212,12 @@ export default function RootLayout({
         />
       </head>
       <body suppressHydrationWarning className="min-h-full flex flex-col bg-black text-white">
-        {/* Google Analytics */}
+        {/* Google Analytics - Deferred for Core Web Vitals optimization */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-4RGXPG1KWQ"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="lazyOnload">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}

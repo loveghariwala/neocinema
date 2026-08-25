@@ -22,15 +22,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         return { title: "Collection Not Found" };
     }
 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
     return {
         title: `${collection.title} | Curated List`,
         description: collection.description,
         keywords: collection.seoKeywords,
-        alternates: { canonical: `/collections/${slug}` },
+        alternates: { canonical: `${baseUrl}/collections/${slug}` },
         openGraph: {
             title: collection.title,
             description: collection.description,
-            url: `/collections/${slug}`,
+            url: `${baseUrl}/collections/${slug}`,
             type: "website",
         }
     };

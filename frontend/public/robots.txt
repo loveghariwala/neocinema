@@ -9,17 +9,21 @@ User-Agent: Googlebot-Video
 Allow: /
 Disallow: /api/
 
-# 2. Yandex (Allowed with Crawl Delay to save CPU/Function Invocations)
+# 2. Bing & Yahoo & Copilot (Allowed)
+User-Agent: Bingbot
+User-Agent: msnbot
+User-Agent: BingPreview
+Allow: /
+Disallow: /api/
+
+# 3. Yandex (Allowed with Crawl Delay to save CPU/Function Invocations)
 User-Agent: YandexBot
 User-Agent: YandexImages
 Allow: /
 Disallow: /api/
 Crawl-delay: 5
 
-# 3. Block Aggressive Bots & Scrapers
-User-Agent: Bingbot
-User-Agent: msnbot
-User-Agent: BingPreview
+# 4. Block Aggressive Bots & Scrapers
 User-Agent: AhrefsBot
 User-Agent: SemrushBot
 User-Agent: Bytespider

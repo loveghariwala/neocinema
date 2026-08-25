@@ -92,12 +92,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       return results.flatMap(r => r.results);
     };
 
-    // Fetch 25 pages from each source (trending + discover for movies and series)
+    // Fetch 8 pages from each source (trending + discover for movies and series) -> 32 subrequests total, safe for Cloudflare Free (max 50)
     const [trendingMovies, discoverMovies, trendingSeries, discoverSeries] = await Promise.all([
-      fetchPages(page => tmdbService.getTrending('movie', 'week', page), 25),
-      fetchPages(page => tmdbService.discoverMovies({ page }), 25),
-      fetchPages(page => tmdbService.getTrending('tv', 'week', page), 25),
-      fetchPages(page => tmdbService.discoverTv({ page }), 25),
+      fetchPages(page => tmdbService.getTrending('movie', 'week', page), 8),
+      fetchPages(page => tmdbService.discoverMovies({ page }), 8),
+      fetchPages(page => tmdbService.getTrending('tv', 'week', page), 8),
+      fetchPages(page => tmdbService.discoverTv({ page }), 8),
     ]);
 
     // Deduplicate movies by tmdbId & filter out blocked IDs
