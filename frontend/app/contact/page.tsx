@@ -38,7 +38,7 @@ export default function ContactPage() {
                                 <p className="text-neutral-400 text-sm mb-4">{card.subtitle}</p>
                                 {card.href ? (
                                     <Link href={card.href} className="text-red-500 font-bold hover:text-red-400 transition-colors">{card.value}</Link>
-                               ) : (
+                                ) : (
                                     <p className="text-white font-bold">{card.value}</p>
                                 )}
                             </div>
@@ -52,7 +52,8 @@ export default function ContactPage() {
                         Neocinema respects intellectual property rights. If you believe content on our platform infringes your copyright, please send a DMCA takedown notice to our email with a description of the copyrighted work, the infringing URL, and your contact information.
                     </p>
                     <p className="text-neutral-400">
-                        Send notices to: <a href="mailto:contact@neocinematv.com" className="text-red-500 font-bold hover:text-red-400">contact@neocinematv.com</a>
+                        Send notices to: <a href="mailto:contact@neocinematv.com"
+                            className="text-red-500 font-bold hover:text-red-400">contact@neocinematv.com</a>
                     </p>
                 </div>
             </div>
