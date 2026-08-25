@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { tmdbService } from "@/lib/tmdb";
 import { isMovieBlocked } from "@/lib/blockedIds";
 
@@ -43,37 +44,7 @@ export async function getTopRatedSeries() {
     }
 }
 
-async function getCollectionParts(collectionId: number) {
-    try {
-        const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY || process.env.TMDB_API_KEY || "0b702f897d43fed03749ab68da8ef51c";
-        const res = await fetch(`https://api.themoviedb.org/3/collection/${collectionId}?api_key=${API_KEY}`);
-        if (!res.ok) return [];
-        const data = await res.json();
-        const parts = data.parts || [];
-        // Sort parts chronologically by release_date
-        return parts.sort((a: any, b: any) => {
-            const dateA = a.release_date ? new Date(a.release_date).getTime() : 0;
-            const dateB = b.release_date ? new Date(b.release_date).getTime() : 0;
-            return dateA - dateB;
-        });
-    } catch (error) {
-        return [];
-    }
-}
-
-async function getTMDBRecommendations(id: number, type: "movie" | "tv" = "movie") {
-    try {
-        const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY || process.env.TMDB_API_KEY || "0b702f897d43fed03749ab68da8ef51c";
-        const res = await fetch(`https://api.themoviedb.org/3/${type}/${id}/recommendations?api_key=${API_KEY}`);
-        if (!res.ok) return [];
-        const data = await res.json();
-        return data.results || [];
-    } catch (error) {
-        return [];
-    }
-}
-
-export async function getMovieDetails(id: string, type: "movie" | "tv" = "movie") {
+export const getMovieDetails = cache(async function getMovieDetails(id: string, type: "movie" | "tv" = "movie") {
     try {
         if (isMovieBlocked(id)) return null;
 
@@ -86,42 +57,8 @@ export async function getMovieDetails(id: string, type: "movie" | "tv" = "movie"
         let similarMovies: any[] = [];
         const seenIds = new Set<number>();
 
-        // Priority 1: Chronological Collection / Sequel / Prequel Sequence
-        if (type === "movie" && data.belongs_to_collection) {
-            const parts = await getCollectionParts(data.belongs_to_collection.id);
-            parts.filter((p: any) => p.id !== Number(id)).forEach((s: any) => {
-                if (!seenIds.has(s.id)) {
-                    seenIds.add(s.id);
-                    similarMovies.push({
-                        tmdbId: s.id,
-                        title: s.title || s.name,
-                        posterPath: s.poster_path,
-                        rating: s.vote_average,
-                        releaseDate: s.release_date,
-                        isMovie: true
-                    });
-                }
-            });
-        }
-
-        // Priority 2: TMDB ML Recommendation System Engine
-        const recs = await getTMDBRecommendations(data.id, type);
-        recs.forEach((s: any) => {
-            if (!seenIds.has(s.id) && similarMovies.length < 16) {
-                seenIds.add(s.id);
-                similarMovies.push({
-                    tmdbId: s.id,
-                    title: s.title || s.name,
-                    posterPath: s.poster_path,
-                    rating: s.vote_average,
-                    releaseDate: s.release_date || s.first_air_date,
-                    isMovie: type === "movie" || s.media_type === "movie"
-                });
-            }
-        });
-
-        // Priority 3: Fallback to TMDB Similar endpoint
-        if (data.similar?.results && similarMovies.length < 16) {
+        // TMDB getMovieDetail already returns data.similar.results and data.videos.results
+        if (data.similar?.results && data.similar.results.length > 0) {
             data.similar.results.forEach((s: any) => {
                 if (!seenIds.has(s.id) && similarMovies.length < 16) {
                     seenIds.add(s.id);
@@ -172,7 +109,7 @@ export async function getMovieDetails(id: string, type: "movie" | "tv" = "movie"
         console.error("Movie detail fetch failed:", error);
         return null;
     }
-}
+});
 
 export async function searchMovies(query: string, sort: string = "popularity") {
     try {

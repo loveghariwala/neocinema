@@ -157,7 +157,7 @@ export default async function MovieDetailsPage({
     }
 
     const movie: any = movieData;
-    const trailers = await getKinocheckTrailers(movie.tmdbId, false);
+    const trailers = await getKinocheckTrailers(movie.tmdbId, false, movie.videos);
     const primaryTrailer = trailers[0];
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";

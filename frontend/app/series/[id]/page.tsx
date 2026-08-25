@@ -159,7 +159,7 @@ export default async function SeriesDetailsPage({
     }
 
     const series: any = seriesData;
-    const trailers = await getKinocheckTrailers(series.tmdbId, true);
+    const trailers = await getKinocheckTrailers(series.tmdbId, true, series.videos);
     const primaryTrailer = trailers[0];
 
     const safeDate = series.releaseDate && !isNaN(new Date(series.releaseDate).getTime())

@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 export interface KinocheckTrailer {
     id: string;
     youtube_video_id: string;
@@ -7,7 +9,29 @@ export interface KinocheckTrailer {
     language: string;
 }
 
-export async function getKinocheckTrailers(tmdbId: number, isTv: boolean = false): Promise<KinocheckTrailer[]> {
+export const getKinocheckTrailers = cache(async function getKinocheckTrailers(
+    tmdbId: number,
+    isTv: boolean = false,
+    existingVideos?: any[]
+): Promise<KinocheckTrailer[]> {
+    // 0. Instant extraction from already-fetched TMDB videos (0ms CPU & 0 network calls)
+    if (existingVideos && Array.isArray(existingVideos) && existingVideos.length > 0) {
+        const youtubeTrailers = existingVideos.filter(
+            (v: any) => v.site === "YouTube" && (v.type === "Trailer" || v.type === "Teaser" || v.key)
+        );
+        if (youtubeTrailers.length > 0) {
+            youtubeTrailers.sort((a: any, b: any) => (b.official ? 1 : 0) - (a.official ? 1 : 0));
+            return youtubeTrailers.map((v: any) => ({
+                id: String(v.id || v.key),
+                youtube_video_id: String(v.key),
+                youtube_thumbnail: `https://img.youtube.com/vi/${v.key}/hqdefault.jpg`,
+                title: v.name || `${v.type} (${v.official ? "Official" : ""})`,
+                type: v.type || "Trailer",
+                language: v.iso_639_1 || "en"
+            }));
+        }
+    }
+
     const apiKey = process.env.NEXT_PUBLIC_KINOCHECK_API_KEY || "chq4sEKOYwf9TAzHJcViWZ8ajU0BpPMvmNdsLOTQw976n63CKGza75rkDt1FoDoZ";
     const tmdbApiKey = process.env.NEXT_PUBLIC_TMDB_API_KEY || process.env.TMDB_API_KEY || "0b702f897d43fed03749ab68da8ef51c";
     const typePath = isTv ? "tv" : "movie";
@@ -83,4 +107,4 @@ export async function getKinocheckTrailers(tmdbId: number, isTv: boolean = false
     }
 
     return [];
-}
+});
