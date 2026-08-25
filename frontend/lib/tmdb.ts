@@ -339,8 +339,13 @@ export const tmdbService = {
             tmdbGet(`/person/${personId}`, {}, TTL_MEDIUM),
         ]);
 
-        // Normalize and filter (matching FastAPI behavior)
-        const castList = data.cast || [];
+        if (!personDetails || !personDetails.id) return null;
+
+        // Sort by popularity first before normalizing to save CPU
+        const rawCast = Array.isArray(data?.cast) ? data.cast : [];
+        rawCast.sort((a: any, b: any) => (b.popularity || 0) - (a.popularity || 0));
+        const castList = rawCast.slice(0, 40);
+
         const results: any[] = [];
         const seenIds = new Set<number>();
 
@@ -360,9 +365,6 @@ export const tmdbService = {
                 }
             }
         }
-
-        // Sort by popularity desc
-        results.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
 
         return {
             person: {

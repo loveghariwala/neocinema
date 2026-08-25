@@ -3,6 +3,8 @@ import PersonPageClient from "./PersonPageClient";
 
 import { Metadata } from "next";
 
+export const revalidate = 86400;
+
 export async function generateStaticParams() {
     return [
         { id: "1136406" },

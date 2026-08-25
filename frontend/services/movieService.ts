@@ -230,7 +230,7 @@ export async function getTrendingFromServer(mediaType: string, timeWindow: strin
     return { results: [] };
 }
 
-export async function getPersonDetails(id: string) {
+export const getPersonDetails = cache(async function getPersonDetails(id: string) {
     try {
         const data = await tmdbService.getPersonCredits(Number(id));
         return data;
@@ -238,7 +238,7 @@ export async function getPersonDetails(id: string) {
         console.error("getPersonDetails error:", e);
     }
     return null;
-}
+});
 
 export async function getTvSeasonDetail(seriesId: string | number, seasonNumber: number) {
     try {

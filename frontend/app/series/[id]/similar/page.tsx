@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from 'lucide-react';
 
+export const revalidate = 86400;
+
 
 export async function generateStaticParams() {
     return [
