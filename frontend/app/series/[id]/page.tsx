@@ -18,7 +18,7 @@ import { Metadata } from "next";
 // import ServerNoteBanner from "@/components/ui/ServerNoteBanner"; // COMMENTED OUT: Not needed without stream player
 import { Play } from "lucide-react";
 
-export const revalidate = 86400; // Cache on Edge CDN for 24h to eliminate Worker CPU usage
+export const revalidate = 5184000; // 2 months (60 days) - maximum Edge CDN caching
 
 export async function generateStaticParams() {
     return [

@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from 'lucide-react';
 
-export const revalidate = 86400;
+export const revalidate = 5184000; // 2 months (60 days) - maximum Edge CDN caching
 
 
 export async function generateStaticParams() {

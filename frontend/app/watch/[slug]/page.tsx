@@ -11,7 +11,7 @@ export function generateStaticParams() {
         slug: landing.slug,
     }));
 }
-export const revalidate = 86400;
+export const revalidate = 5184000; // 2 months (60 days) - maximum Edge CDN caching
 
 interface PageProps {
     params: Promise<{ slug: string }>;

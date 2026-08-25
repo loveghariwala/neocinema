@@ -3,7 +3,7 @@ import PersonPageClient from "./PersonPageClient";
 
 import { Metadata } from "next";
 
-export const revalidate = 86400;
+export const revalidate = 5184000; // 2 months (60 days) - maximum Edge CDN caching
 
 export async function generateStaticParams() {
     return [

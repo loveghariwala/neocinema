@@ -8,6 +8,8 @@ interface Props {
     params: Promise<{ slug: string }>;
 }
 
+export const revalidate = 5184000; // 2 months (60 days) - maximum Edge CDN caching
+
 export async function generateStaticParams() {
     return COLLECTIONS.map((c) => ({
         slug: c.slug,
