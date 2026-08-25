@@ -3,7 +3,7 @@ import { COLLECTIONS } from '@/lib/collections';
 import { BLOG_POSTS } from '@/lib/blog-posts';
 import { WATCH_LANDINGS } from '@/lib/watch-landings';
 import { tmdbService } from '@/lib/tmdb';
-import { isMovieBlocked } from '@/lib/blockedIds';
+import { isMovieBlocked, isMovieNoIndex } from '@/lib/blockedIds';
 
 export const revalidate = 86400; // Cache for 24 hours
 
@@ -100,12 +100,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       fetchPages(page => tmdbService.discoverTv({ page }), 8),
     ]);
 
-    // Deduplicate movies by tmdbId & filter out blocked IDs
+    // Deduplicate movies by tmdbId & filter out blocked / no-index IDs
     const allMovies = [...trendingMovies, ...discoverMovies];
     const seenMovieIds = new Set<number>();
     dynamicMovieRoutes = allMovies
       .filter((m: any) => {
-        if (!m.tmdbId || seenMovieIds.has(m.tmdbId) || isMovieBlocked(m.tmdbId)) return false;
+        if (!m.tmdbId || seenMovieIds.has(m.tmdbId) || isMovieBlocked(m.tmdbId) || isMovieNoIndex(m.tmdbId)) return false;
         seenMovieIds.add(m.tmdbId);
         return true;
       })
@@ -116,12 +116,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       }));
 
-    // Deduplicate series by tmdbId & filter out blocked IDs
+    // Deduplicate series by tmdbId & filter out blocked / no-index IDs
     const allSeries = [...trendingSeries, ...discoverSeries];
     const seenSeriesIds = new Set<number>();
     dynamicSeriesRoutes = allSeries
       .filter((s: any) => {
-        if (!s.tmdbId || seenSeriesIds.has(s.tmdbId) || isMovieBlocked(s.tmdbId)) return false;
+        if (!s.tmdbId || seenSeriesIds.has(s.tmdbId) || isMovieBlocked(s.tmdbId) || isMovieNoIndex(s.tmdbId)) return false;
         seenSeriesIds.add(s.tmdbId);
         return true;
       })

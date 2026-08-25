@@ -39,7 +39,7 @@ interface PageProps {
     }>;
 }
 
-import { isMovieBlocked } from "@/lib/blockedIds";
+import { isMovieBlocked, isMovieNoIndex } from "@/lib/blockedIds";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
     const { id } = await params;
@@ -111,7 +111,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         alternates: {
             canonical: canonicalUrl,
         },
-        robots: isBlocked
+        robots: isBlocked || isMovieNoIndex(id)
             ? { index: false, follow: false }
             : { index: true, follow: true },
         openGraph: {
