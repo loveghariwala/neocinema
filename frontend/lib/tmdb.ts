@@ -77,7 +77,7 @@ const TV_GENRES: Record<number, string> = {
 
 // ─── HTTP Helper ───────────────────────────────────────────────────────────
 
-async function tmdbGet(endpoint: string, params: Record<string, any> = {}, ttl: number = TTL_SHORT, retries = 3): Promise<any> {
+async function tmdbGet(endpoint: string, params: Record<string, any> = {}, ttl: number = TTL_SHORT, retries = 2): Promise<any> {
     const key = cacheKey(endpoint, params);
     const cached = cacheGet(key);
     if (cached !== null) return cached;
@@ -92,12 +92,13 @@ async function tmdbGet(endpoint: string, params: Record<string, any> = {}, ttl: 
     });
 
     const isServer = typeof window === "undefined";
+    const isDetailEndpoint = /^\/(movie|tv|person)\/\d+/.test(endpoint) && !endpoint.includes("/combined_credits");
 
     for (let i = 0; i < retries; i++) {
         try {
             const fetchOptions: RequestInit & { next?: { revalidate: number } } = {
                 headers: { "Content-Type": "application/json" },
-                signal: AbortSignal.timeout(8000), // 8s timeout for reliability on slower networks
+                signal: AbortSignal.timeout(5000), // 5s timeout for fast failover on edge workers
             };
 
             if (isServer) {
@@ -110,10 +111,15 @@ async function tmdbGet(endpoint: string, params: Record<string, any> = {}, ttl: 
                 if (response.status === 429 && i < retries - 1) {
                     const retryAfter = response.headers.get("retry-after")
                         ? parseInt(response.headers.get("retry-after") as string) * 1000
-                        : (i + 1) * 500;
+                        : (i + 1) * 400;
                     console.warn(`[TMDB] 429 Rate Limited on ${endpoint}. Retrying in ${retryAfter}ms...`);
                     await new Promise(resolve => setTimeout(resolve, retryAfter));
                     continue;
+                }
+                if (response.status === 404) {
+                    const notFoundFallback = isDetailEndpoint ? null : { results: [], total_results: 0, total_pages: 1, page: 1, genres: [] };
+                    cacheSet(key, notFoundFallback, 3600 * 1000); // Cache 404 for 1 hour
+                    return notFoundFallback;
                 }
                 throw new Error(`TMDB API error: ${response.status} ${response.statusText}`);
             }
@@ -124,14 +130,18 @@ async function tmdbGet(endpoint: string, params: Record<string, any> = {}, ttl: 
         } catch (error: any) {
             if (i < retries - 1 && (error.name === "TimeoutError" || error.name === "AbortError" || error.message?.includes("fetch failed"))) {
                 console.warn(`[TMDB] Fetch failed for ${endpoint}. Retrying... (${i + 1}/${retries})`);
-                await new Promise(resolve => setTimeout(resolve, (i + 1) * 300));
+                await new Promise(resolve => setTimeout(resolve, (i + 1) * 250));
                 continue;
             }
             console.warn(`[TMDB] Graceful fallback triggered for ${endpoint}: ${error.message}`);
-            return { results: [], total_results: 0, total_pages: 1, page: 1, genres: [] };
+            const fallback = isDetailEndpoint ? null : { results: [], total_results: 0, total_pages: 1, page: 1, genres: [] };
+            cacheSet(key, fallback, 60 * 1000); // Cache transient failure for 60s
+            return fallback;
         }
     }
-    return { results: [], total_results: 0, total_pages: 1, page: 1, genres: [] };
+    const finalFallback = isDetailEndpoint ? null : { results: [], total_results: 0, total_pages: 1, page: 1, genres: [] };
+    cacheSet(key, finalFallback, 60 * 1000);
+    return finalFallback;
 }
 
 // ─── Normalizers (matching FastAPI exactly) ─────────────────────────────────

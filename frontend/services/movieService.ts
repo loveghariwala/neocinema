@@ -46,64 +46,71 @@ export async function getTopRatedSeries() {
 
 export const getMovieDetails = cache(async function getMovieDetails(id: string, type: "movie" | "tv" = "movie") {
     try {
-        if (isMovieBlocked(id)) return null;
+        if (!id || isMovieBlocked(id)) return null;
+
+        const numId = Number(id);
+        if (isNaN(numId) || numId <= 0) return null;
 
         const data = type === "movie"
-            ? await tmdbService.getMovieDetail(Number(id))
-            : await tmdbService.getTvDetail(Number(id));
+            ? await tmdbService.getMovieDetail(numId)
+            : await tmdbService.getTvDetail(numId);
 
-        if (!data) return null;
+        if (!data || !data.id) return null;
 
         let similarMovies: any[] = [];
         const seenIds = new Set<number>();
 
         // TMDB getMovieDetail already returns data.similar.results and data.videos.results
-        if (data.similar?.results && data.similar.results.length > 0) {
+        if (data.similar?.results && Array.isArray(data.similar.results)) {
             data.similar.results.forEach((s: any) => {
-                if (!seenIds.has(s.id) && similarMovies.length < 16) {
+                if (s && s.id && !seenIds.has(s.id) && similarMovies.length < 16) {
                     seenIds.add(s.id);
                     similarMovies.push({
                         tmdbId: s.id,
-                        title: s.title || s.name,
-                        posterPath: s.poster_path,
-                        rating: s.vote_average,
-                        releaseDate: s.release_date || s.first_air_date,
+                        title: s.title || s.name || "Untitled",
+                        posterPath: s.poster_path || "",
+                        rating: typeof s.vote_average === "number" ? Math.round(s.vote_average * 10) / 10 : 0,
+                        releaseDate: s.release_date || s.first_air_date || "",
                         isMovie: type === "movie" || s.media_type === "movie"
                     });
                 }
             });
         }
 
+        const rating = typeof data.vote_average === "number" ? Math.round(data.vote_average * 10) / 10 : 0;
+        const voteCount = typeof data.vote_count === "number" ? data.vote_count : 0;
+        const runtime = typeof data.runtime === "number" ? data.runtime : (Array.isArray(data.episode_run_time) && data.episode_run_time[0]) || 0;
+
         // Normalize TMDB detail format to our internal format for the UI
         return {
             _id: String(data.id),
             tmdbId: data.id,
-            imdbId: data.imdb_id || data.external_ids?.imdb_id,
-            title: data.title || data.name,
-            overview: data.overview,
-            posterPath: data.poster_path,
-            backdropPath: data.backdrop_path,
-            releaseDate: data.release_date || data.first_air_date,
-            rating: data.vote_average,
-            voteCount: data.vote_count,
+            imdbId: data.imdb_id || data.external_ids?.imdb_id || null,
+            title: data.title || data.name || "Untitled",
+            overview: data.overview || "",
+            posterPath: data.poster_path || "",
+            backdropPath: data.backdrop_path || "",
+            releaseDate: data.release_date || data.first_air_date || "",
+            rating,
+            voteCount,
             language: data.original_language?.toUpperCase() || "EN",
-            genres: data.genres?.map((g: any) => g.name) || [],
-            productionCompanies: data.production_companies?.map((c: any) => c.name) || [],
-            networks: data.networks?.map((n: any) => n.name) || [],
-            runtime: data.runtime || (data.episode_run_time && data.episode_run_time[0]) || 0,
-            cast: data.credits?.cast?.slice(0, 10).map((c: any) => ({
+            genres: Array.isArray(data.genres) ? data.genres.map((g: any) => g.name).filter(Boolean) : [],
+            productionCompanies: Array.isArray(data.production_companies) ? data.production_companies.map((c: any) => c.name).filter(Boolean) : [],
+            networks: Array.isArray(data.networks) ? data.networks.map((n: any) => n.name).filter(Boolean) : [],
+            runtime,
+            cast: Array.isArray(data.credits?.cast) ? data.credits.cast.slice(0, 10).map((c: any) => ({
                 _id: String(c.id),
-                name: c.name,
-                character: c.character,
-                profilePath: c.profile_path
-            })) || [],
+                name: c.name || "Unknown",
+                character: c.character || "",
+                profilePath: c.profile_path || null
+            })) : [],
             director: data.credits?.crew?.find((c: any) => c.job === "Director")?.name || null,
             similar: similarMovies,
             isMovie: type === "movie",
-            videos: data.videos?.results || [],
-            seasons: data.seasons || [],
-            number_of_seasons: data.number_of_seasons,
-            number_of_episodes: data.number_of_episodes
+            videos: Array.isArray(data.videos?.results) ? data.videos.results : [],
+            seasons: Array.isArray(data.seasons) ? data.seasons : [],
+            number_of_seasons: data.number_of_seasons || 0,
+            number_of_episodes: data.number_of_episodes || 0
         };
     } catch (error) {
         console.error("Movie detail fetch failed:", error);
@@ -232,7 +239,10 @@ export async function getTrendingFromServer(mediaType: string, timeWindow: strin
 
 export const getPersonDetails = cache(async function getPersonDetails(id: string) {
     try {
-        const data = await tmdbService.getPersonCredits(Number(id));
+        if (!id) return null;
+        const numId = Number(id);
+        if (isNaN(numId) || numId <= 0) return null;
+        const data = await tmdbService.getPersonCredits(numId);
         return data;
     } catch (e) {
         console.error("getPersonDetails error:", e);
