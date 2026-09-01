@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getTmdbImageUrl } from "@/lib/tmdb";
 import { Star } from 'lucide-react';
+import { prepareCardPopunder, handleCardClickPopunder } from "@/lib/adUtils";
 
 interface Top10RowProps {
     title: string;
@@ -96,7 +97,14 @@ export default function Top10Row({ title, movies, onOpenTrailer }: Top10RowProps
 
                             {/* Card Body */}
                             <div className="relative z-10 ml-12 sm:ml-16 w-full aspect-[2/3] overflow-hidden rounded-2xl bg-neutral-900 border border-white/10 shadow-2xl transition-all duration-500 group-hover:-translate-y-2 group-hover:scale-105 group-hover:border-red-500/40 group-hover:shadow-[0_20px_50px_rgba(220,38,38,0.4)]">
-                                <Link href={`${linkBase}/${id}`} prefetch={false} className="block w-full h-full">
+                                <Link
+                                    href={`${linkBase}/${id}`}
+                                    prefetch={false}
+                                    className="block w-full h-full"
+                                    onMouseEnter={prepareCardPopunder}
+                                    onTouchStart={prepareCardPopunder}
+                                    onClick={handleCardClickPopunder}
+                                >
                                     <Image
                                         src={posterUrl}
                                         alt={movieTitle}

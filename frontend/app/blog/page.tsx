@@ -6,17 +6,53 @@ import Image from "next/image";
 
 
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+
 export const metadata: Metadata = {
-    title: "Blog — Movie Guides, Recommendations & Entertainment News",
-    description: "Explore Neocinema's blog for the best movie lists, anime recommendations, K-Drama picks, and entertainment news. Updated weekly with fresh content.",
-    keywords: ["movie guides", "best movies to watch", "anime recommendations", "kdrama guide", "entertainment news"],
-    alternates: { canonical: "/blog" },
-    robots: { index: true, follow: true },
+    title: "Movie Guides, Anime Lists & Streaming News | NeoCinema Blog",
+    description: "Explore NeoCinema's curated blog for the best movie watchlists, anime recommendations, K-Drama streaming guides, and cinema analysis updated weekly.",
+    keywords: [
+        "movie guides",
+        "best movies to watch",
+        "anime recommendations",
+        "kdrama streaming guide",
+        "entertainment news",
+        "marvel movies in order",
+        "best free movie streaming sites"
+    ],
+    alternates: { canonical: `${baseUrl}/blog` },
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            "max-video-preview": -1,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+        },
+    },
     openGraph: {
-        title: "Neocinema Blog — Movie Guides & Recommendations",
-        description: "Your ultimate guide to movie discovery, curated lists, and entertainment recommendations.",
-        url: "/blog",
+        title: "Movie Guides, Anime Lists & Streaming News | NeoCinema Blog",
+        description: "Your ultimate guide to movie discovery, curated watchlists, and entertainment recommendations.",
+        url: `${baseUrl}/blog`,
+        siteName: "NeoCinema",
         type: "website",
+        images: [
+            {
+                url: `${baseUrl}/og_banner.png`,
+                width: 1200,
+                height: 630,
+                alt: "NeoCinema Blog Journal",
+            },
+        ],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "Movie Guides, Anime Lists & Streaming News | NeoCinema Blog",
+        description: "Your ultimate guide to movie discovery, curated watchlists, and entertainment recommendations.",
+        images: [`${baseUrl}/og_banner.png`],
+        creator: "@neocinematv",
     },
 };
 
@@ -25,8 +61,58 @@ export default function BlogIndexPage() {
     const featuredPost = posts[0];
     const remainingPosts = posts.slice(1);
 
+    const blogIndexJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        "name": "NeoCinema Journal",
+        "description": "Streaming guides, release order chronologies, anime recommendations, and cinema analysis.",
+        "url": `${baseUrl}/blog`,
+        "publisher": {
+            "@type": "Organization",
+            "name": "NeoCinema",
+            "url": baseUrl,
+            "logo": `${baseUrl}/logo.png`,
+        },
+        "blogPost": posts.map((p) => ({
+            "@type": "BlogPosting",
+            "headline": p.title,
+            "description": p.description,
+            "url": `${baseUrl}/blog/${p.slug}`,
+            "datePublished": p.publishedAt,
+            "dateModified": p.updatedAt,
+            "image": p.imageUrl || `${baseUrl}/og_banner.png`,
+        })),
+    };
+
+    const breadcrumbJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": baseUrl,
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Blog",
+                "item": `${baseUrl}/blog`,
+            },
+        ],
+    };
+
     return (
         <main className="min-h-screen pt-28 pb-24 text-white relative">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(blogIndexJsonLd).replace(/</g, '\\u003c') }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, '\\u003c') }}
+            />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
                 {/* Header */}
                 <div className="text-center space-y-4 max-w-3xl mx-auto">

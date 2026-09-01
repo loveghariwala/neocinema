@@ -9,6 +9,7 @@ import HomeFAQ from "@/components/seo/HomeFAQ";
 import HomeVibeFilter from "@/components/home/HomeVibeFilter";
 import MovieRouletteModal from "@/components/ui/MovieRouletteModal";
 import QuickTrailerModal from "@/components/player/QuickTrailerModal";
+import AdsterraNativeBanner from "@/components/ads/AdsterraNativeBanner";
 import { getTrendingFromServer, discoverContentFromServer, getMovieDetails } from "@/services/movieService";
 
 export default function HomePage() {
@@ -185,6 +186,8 @@ export default function HomePage() {
                                 onOpenTrailer={(movie) => setSelectedTrailerMovie(movie)}
                             />
                         )}
+
+                        <AdsterraNativeBanner />
 
                         {trendingMovies.length > 0 && (
                             <MovieRow

@@ -12,6 +12,7 @@ import nextDynamic from "next/dynamic";
 // const StreamPlayer = nextDynamic(() => import("@/components/player/StreamPlayer")); // COMMENTED OUT: Removed pirate stream embeds for legal compliance
 const WatchmodeAvailabilityBanner = nextDynamic(() => import("@/components/ui/WatchmodeAvailabilityBanner"));
 const KinocheckTrailerSection = nextDynamic(() => import("@/components/player/KinocheckTrailerSection"));
+const AdsterraNativeBanner = nextDynamic(() => import("@/components/ads/AdsterraNativeBanner"));
 import ShareButton from "@/components/ui/ShareButton";
 import SeasonEpisodeBrowser from "@/components/series/SeasonEpisodeBrowser";
 import { Metadata } from "next";
@@ -438,6 +439,8 @@ export default async function SeriesDetailsPage({
                         initialSeason={seasonParam}
                     />
                 )}
+
+                <AdsterraNativeBanner />
 
                 {series.similar?.length > 0 && (
                     <div className="space-y-6 min-w-0">

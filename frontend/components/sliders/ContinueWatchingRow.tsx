@@ -5,6 +5,7 @@ import { getWatchHistory, WatchProgress } from "@/services/historyService";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Clock, Play, Trash2 } from "lucide-react";
 import { getTmdbImageUrl } from "@/lib/tmdb";
+import { prepareCardPopunder, handleCardClickPopunder } from "@/lib/adUtils";
 
 export default function ContinueWatchingRow() {
     const [history, setHistory] = useState<WatchProgress[]>([]);
@@ -50,6 +51,7 @@ export default function ContinueWatchingRow() {
                     {/* Navigation Arrow Buttons */}
                     <div className="flex items-center gap-1.5">
                         <button
+                            type="button"
                             onClick={() => handleScroll("left")}
                             className="p-2 rounded-full bg-white/5 border border-white/10 hover:bg-red-600 hover:border-red-500 text-white transition-all cursor-pointer active:scale-95 touch-manipulation"
                             aria-label="Scroll left"
@@ -57,6 +59,7 @@ export default function ContinueWatchingRow() {
                             <ChevronLeft size={16} />
                         </button>
                         <button
+                            type="button"
                             onClick={() => handleScroll("right")}
                             className="p-2 rounded-full bg-white/5 border border-white/10 hover:bg-red-600 hover:border-red-500 text-white transition-all cursor-pointer active:scale-95 touch-manipulation"
                             aria-label="Scroll right"
@@ -66,6 +69,7 @@ export default function ContinueWatchingRow() {
                     </div>
 
                     <button
+                        type="button"
                         onClick={clearHistory}
                         className="text-xs font-bold text-neutral-400 hover:text-red-400 transition-colors flex items-center gap-1.5 ml-2"
                     >
@@ -84,6 +88,9 @@ export default function ContinueWatchingRow() {
                         key={`${item.type}-${item.id}`}
                         href={`/${item.type === "tv" ? "series" : "movies"}/${item.id}${item.type === "tv" ? `?season=${item.season || 1}&episode=${item.episode || 1}` : ""}`}
                         className="group flex-shrink-0 w-64 sm:w-72 rounded-2xl overflow-hidden bg-neutral-900 border border-white/10 transition-all hover:scale-[1.03] hover:border-red-500/50 shadow-xl"
+                        onMouseEnter={prepareCardPopunder}
+                        onTouchStart={prepareCardPopunder}
+                        onClick={handleCardClickPopunder}
                     >
                         <div className="relative aspect-video w-full overflow-hidden bg-neutral-950">
                             <img

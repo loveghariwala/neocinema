@@ -12,6 +12,7 @@ import nextDynamic from "next/dynamic";
 // const StreamPlayer = nextDynamic(() => import("@/components/player/StreamPlayer")); // COMMENTED OUT: Removed pirate stream embeds for legal compliance
 const WatchmodeAvailabilityBanner = nextDynamic(() => import("@/components/ui/WatchmodeAvailabilityBanner"));
 const KinocheckTrailerSection = nextDynamic(() => import("@/components/player/KinocheckTrailerSection"));
+const AdsterraNativeBanner = nextDynamic(() => import("@/components/ads/AdsterraNativeBanner"));
 import ShareButton from "@/components/ui/ShareButton";
 import { Metadata } from "next";
 // import ServerNoteBanner from "@/components/ui/ServerNoteBanner"; // COMMENTED OUT: Not needed without stream player
@@ -451,6 +452,8 @@ export default async function MovieDetailsPage({
                             <CastRow cast={movie.cast} />
                         </div>
                     </div>
+
+                    <AdsterraNativeBanner />
 
                     {/* AI SIMILAR MOVIES */}
                     {movie.similar?.length > 0 && (

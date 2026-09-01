@@ -242,6 +242,7 @@ export default function RootLayout({
           <Footer />
           <InstallAppBanner />
         </div>
+        <AdsterraSocialBar />
         <Analytics />
 
       </body>

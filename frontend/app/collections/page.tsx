@@ -3,18 +3,55 @@ import Link from "next/link";
 import { COLLECTIONS } from "@/lib/collections";
 import { Film } from 'lucide-react';
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.neocinematv.com';
 
 export const metadata: Metadata = {
-    title: "Curated Movie Collections",
-    description: "Discover hand-picked lists of the best movies and TV series tailored by genre, mood, and style. From cyberpunk classics to feel-good comedies.",
-    keywords: ["curated movie lists", "best movies by genre", "movie collections", "what to watch tonight", "top rated film lists"],
-    alternates: { canonical: "/collections" },
+    title: "Curated Movie Collections & Watchlists | NeoCinema",
+    description: "Discover hand-picked lists of the best movies and TV series tailored by genre, mood, and style. From cyberpunk classics to feel-good comedies and psychological thrillers.",
+    keywords: [
+        "curated movie lists",
+        "best movies by genre",
+        "movie collections",
+        "what to watch tonight",
+        "top rated film lists",
+        "curated tv series lists",
+        "cyberpunk movie list",
+        "hidden gem movies"
+    ],
+    alternates: { canonical: `${baseUrl}/collections` },
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            "max-video-preview": -1,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+        },
+    },
     openGraph: {
-        title: "Curated Movie Collections | Neocinema",
-        description: "Discover hand-picked lists of the best movies and TV series.",
-        url: "/collections",
+        title: "Curated Movie Collections & Watchlists | NeoCinema",
+        description: "Discover hand-picked lists of the best movies and TV series tailored by genre, mood, and style.",
+        url: `${baseUrl}/collections`,
+        siteName: "NeoCinema",
         type: "website",
-    }
+        images: [
+            {
+                url: `${baseUrl}/og_banner.png`,
+                width: 1200,
+                height: 630,
+                alt: "NeoCinema Curated Collections",
+            },
+        ],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "Curated Movie Collections & Watchlists | NeoCinema",
+        description: "Discover hand-picked lists of the best movies and TV series tailored by genre, mood, and style.",
+        images: [`${baseUrl}/og_banner.png`],
+        creator: "@neocinematv",
+    },
 };
 
 export default function CollectionsPage() {
@@ -23,24 +60,47 @@ export default function CollectionsPage() {
         "@type": "CollectionPage",
         "name": "Curated Movie Collections",
         "description": "Discover hand-picked lists of the best movies and TV series tailored by genre, mood, and style. From cyberpunk classics to feel-good comedies.",
-        "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.neocinematv.com'}/collections`,
+        "url": `${baseUrl}/collections`,
         "mainEntity": {
             "@type": "ItemList",
             "itemListElement": COLLECTIONS.map((c, index) => ({
                 "@type": "ListItem",
                 "position": index + 1,
-                "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.neocinematv.com'}/collections/${c.slug}`,
+                "url": `${baseUrl}/collections/${c.slug}`,
                 "name": c.title,
                 "description": c.description
             }))
         }
     };
 
+    const breadcrumbJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": baseUrl,
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Collections",
+                "item": `${baseUrl}/collections`,
+            },
+        ],
+    };
+
     return (
         <main className="min-h-screen pt-28 pb-24 text-white relative">
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, '\\u003c') }}
             />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
                 <div className="mb-12">
