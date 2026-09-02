@@ -1,9 +1,11 @@
 import { Metadata } from "next";
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+
 export const metadata: Metadata = {
     title: "Disclaimer",
     description: "Neocinema Disclaimer. Read our disclaimers regarding content accuracy, third-party links, advertising, and limitations of liability.",
-    alternates: { canonical: "/disclaimer" },
+    alternates: { canonical: `${baseUrl}/disclaimer` },
     robots: { index: true, follow: true },
 };
 

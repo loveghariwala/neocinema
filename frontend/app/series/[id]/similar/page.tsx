@@ -30,11 +30,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const titleText = `Top 12 TV Series Like ${series.title} to Watch Free`;
     const descriptionText = `Loved ${series.title}? Here are the best similar TV shows to binge-watch online for free in HD on Neocinema.`;
 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+
     return {
         title: titleText,
         description: descriptionText,
-        keywords: [`series like ${series.title}`, `shows similar to ${series.title}`, `what to watch after ${series.title}`, `watch free`],
-        alternates: { canonical: `/series/${id}/similar` },
+        keywords: [`series like ${series.title}`, `shows similar to ${series.title}`, `what to watch after ${series.title}`],
+        alternates: { canonical: `${baseUrl}/series/${id}/similar` },
         robots: { index: false, follow: true },
     };
 }

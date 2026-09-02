@@ -3,10 +3,12 @@ import { Code, Globe, Mail, MapPin } from 'lucide-react';
 
 import Link from "next/link";
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+
 export const metadata: Metadata = {
     title: "Contact Us",
     description: "Get in touch with the Neocinema team for support, feedback, or DMCA requests.",
-    alternates: { canonical: "/contact" },
+    alternates: { canonical: `${baseUrl}/contact` },
     robots: { index: true, follow: true },
 };
 

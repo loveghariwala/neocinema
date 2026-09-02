@@ -1,9 +1,11 @@
 import { Metadata } from "next";
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+
 export const metadata: Metadata = {
     title: "DMCA Copyright Policy & Takedown Notice",
     description: "NeoCinema DMCA Copyright Policy. Submit copyright infringement complaints and takedown notices directly to our designated agent.",
-    alternates: { canonical: "/dmca" },
+    alternates: { canonical: `${baseUrl}/dmca` },
     robots: { index: true, follow: true },
 };
 

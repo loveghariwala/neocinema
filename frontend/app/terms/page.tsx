@@ -1,9 +1,11 @@
 import { Metadata } from "next";
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+
 export const metadata: Metadata = {
     title: "Terms of Service",
     description: "Neocinema Terms of Service. Read our terms and conditions governing the use of our movie and TV series discovery platform.",
-    alternates: { canonical: "/terms" },
+    alternates: { canonical: `${baseUrl}/terms` },
     robots: { index: true, follow: true },
 };
 

@@ -109,27 +109,27 @@ export async function generateMetadata(): Promise<Metadata> {
         .map((s: any) => s.title || s.name)
         .filter(Boolean);
 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+
     return {
-        title: page === "1" ? "Watch TV Series Online Free | Advanced Multi-Genre Filter & Browse | Neocinema" : `Watch TV Series Online Free - Page ${page} | Neocinema`,
-        description: "Discover over 200,000 television series, documentaries, and anime from around the world. Select multiple genres at once, filter by rating/year/language, and sort precisely to find exactly what to watch free online.",
+        title: page === "1" ? "Browse TV Series by Genre, Rating & Year | Neocinema" : `Browse TV Series - Page ${page} | Neocinema`,
+        description: "Discover television series, documentaries, and anime from around the world. Select multiple genres at once, filter by rating, year, or language, and sort precisely to find what to watch.",
         keywords: [
-            "filter tv shows by multiple genres",
-            "select multiple genres series search",
-            "combine genres filter",
-            "precise series discovery sort",
-            "TV series", "television shows", "browse series", "binge-watch",
-            "documentaries", "anime series", "top rated tv shows",
-            "free series online", "streaming series", "trending series",
-            "stream tv shows free", "watch free series online", "tv series online free hd",
-            "binge tv shows online no registration", "latest tv series free stream",
+            "TV series",
+            "television shows",
+            "browse series",
+            "anime series",
+            "top rated tv shows",
+            "trending series",
+            "tv series recommendations",
             ...seriesKeywords,
         ],
-        alternates: { canonical: '/series' },
+        alternates: { canonical: `${baseUrl}/series` },
         robots: page === "1" ? { index: true, follow: true } : { index: false, follow: true },
         openGraph: {
             title: "Browse TV Series with Advanced Multi-Genre Filtering | Neocinema",
-            description: "Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to discover the perfect television show or anime to watch free on Neocinema.",
-            url: '/series',
+            description: "Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to discover the perfect television show or anime on Neocinema.",
+            url: `${baseUrl}/series`,
             type: "website",
             images: [{ url: "/logo.png", width: 800, height: 600, alt: "Browse TV Series on Neocinema" }],
         },

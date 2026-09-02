@@ -1,9 +1,11 @@
 import { Metadata } from "next";
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+
 export const metadata: Metadata = {
     title: "Cookie Policy",
     description: "Neocinema Cookie Policy. Learn how we use cookies, tracking technologies, and how to manage your cookie preferences.",
-    alternates: { canonical: "/cookies" },
+    alternates: { canonical: `${baseUrl}/cookies` },
     robots: { index: true, follow: true },
 };
 

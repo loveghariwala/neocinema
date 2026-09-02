@@ -40,6 +40,9 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
         .map((c: any) => c.title || c.name)
         .filter(Boolean);
 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+    const canonicalUrl = `${baseUrl}/person/${id}`;
+
     return {
         title: titleText,
         description: descriptionText,
@@ -55,13 +58,13 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
             "actor", "cast", "filmography",
         ],
         alternates: {
-            canonical: `/person/${id}`,
+            canonical: canonicalUrl,
         },
         robots: { index: true, follow: true },
         openGraph: {
             title: `${titleText} | Neocinema`,
             description: descriptionText,
-            url: `/person/${id}`,
+            url: canonicalUrl,
             type: "profile",
             images: data.person.profilePath 
                 ? [{ url: `https://image.tmdb.org/t/p/h632${data.person.profilePath}` }] 

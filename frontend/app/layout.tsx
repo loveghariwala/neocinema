@@ -36,15 +36,11 @@ export const metadata: Metadata = {
   },
   description: "Explore Neocinema: discover movies, TV series & anime. Use our advanced filter to select multiple genres, combine with ratings or release years, and sort precisely to find exactly what to watch. View trailers, cast info & where to watch.",
   keywords: [
-    // Original Keywords
-    "Watch HD Movie Trailers for Free",
-    "Neocinema Advanced Multi-Genre Discovery",
     "movie discovery platform",
-    "find movies by genre",
-    "filter movies by multiple genres",
-    "select multiple genres movie search",
-    "advanced movie search filter",
+    "TV series recommendations",
+    "anime guide",
     "where to watch movies",
+    "multi-genre movie filter",
     "movie trailers",
     "AI movie recommender",
     "movies", "series", "anime", "movie discovery", "Neocinema", "NeocinemaTV",
@@ -65,7 +61,10 @@ export const metadata: Metadata = {
     "cast crew and streaming guide",
     "psychological thriller movie finder",
     "kdrama streaming guide",
-    "latest movie release trailers 2026"
+    "latest movie release trailers 2026",
+    "cast and crew information",
+    "Neocinema",
+    "trending movies 2026"
   ],
   authors: [{ name: "Love Ghariwala", url: "https://github.com/loveghariwala" }],
   creator: "Love Ghariwala",
@@ -203,15 +202,13 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", notoSans.variable, playfairDisplayHeading.variable)}
     >
-      <head>
-        {/* Google AdSense - Standard script tag to avoid data-nscript attribute warning from Google AdSense */}
-        <script
-          async
+      <body suppressHydrationWarning className="min-h-full flex flex-col bg-black text-white">
+        {/* Google AdSense - Deferred to avoid render blocking */}
+        <Script
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9352593649328091"
           crossOrigin="anonymous"
+          strategy="lazyOnload"
         />
-      </head>
-      <body suppressHydrationWarning className="min-h-full flex flex-col bg-black text-white">
         {/* Google Analytics - Deferred for Core Web Vitals optimization */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-4RGXPG1KWQ"

@@ -1,9 +1,11 @@
 import { Metadata } from "next";
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+
 export const metadata: Metadata = {
     title: "Privacy Policy",
     description: "Neocinema' Privacy Policy. Learn how we collect, use, and protect your personal information when you use our movie and TV series discovery platform.",
-    alternates: { canonical: "/privacy" },
+    alternates: { canonical: `${baseUrl}/privacy` },
     robots: { index: true, follow: true },
 };
 

@@ -1,108 +1,53 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import HeroBanner from "@/components/hero/HeroBanner";
-import MovieRow from "@/components/sliders/MovieRow";
-import Top10Row from "@/components/sliders/Top10Row";
-import ContinueWatchingRow from "@/components/sliders/ContinueWatchingRow";
 import HomeFAQ from "@/components/seo/HomeFAQ";
-import HomeVibeFilter from "@/components/home/HomeVibeFilter";
-import MovieRouletteModal from "@/components/ui/MovieRouletteModal";
-import QuickTrailerModal from "@/components/player/QuickTrailerModal";
-import AdsterraNativeBanner from "@/components/ads/AdsterraNativeBanner";
+import HomePageInteractive from "@/components/home/HomePageInteractive";
 import { getTrendingFromServer, discoverContentFromServer, getMovieDetails } from "@/services/movieService";
+import { Metadata } from "next";
 
-export default function HomePage() {
-    const [data, setData] = useState<{
-        trendingMovies: any[];
-        trendingSeries: any[];
-        topRatedMovies: any[];
-        topRatedSeries: any[];
-        trendingHindi: any[];
-        spiderManMovie: any;
-    }>({
-        trendingMovies: [],
-        trendingSeries: [],
-        topRatedMovies: [],
-        topRatedSeries: [],
-        trendingHindi: [],
-        spiderManMovie: null,
-    });
-    const [loading, setLoading] = useState(true);
+export const revalidate = 3600; // ISR: refresh every 1 hour
 
-    // Interactive Modals State
-    const [isRouletteOpen, setIsRouletteOpen] = useState(false);
-    const [selectedTrailerMovie, setSelectedTrailerMovie] = useState<any>(null);
-    const [activeVibeCategory, setActiveVibeCategory] = useState("all");
-    const [vibeMovies, setVibeMovies] = useState<any[]>([]);
-    const [vibeLoading, setVibeLoading] = useState(false);
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
 
-    useEffect(() => {
-        let mounted = true;
-        async function fetchHomeData() {
-            try {
-                const [trendingMoviesRes, trendingSeriesRes, topRatedMoviesRes, topRatedSeriesRes, trendingHindiRes, spiderManMovie] =
-                    await Promise.all([
-                        getTrendingFromServer("movie", "week", "1"),
-                        getTrendingFromServer("tv", "week", "1"),
-                        discoverContentFromServer("movie", { sort_by: "popularity.desc", with_genres: "27,878", page: "1" }),
-                        discoverContentFromServer("tv", { sort_by: "vote_average.asc", rating_min: "8.3", rating_max: "9.0", page: "1", language: "ko", with_genres: "80" }),
-                        discoverContentFromServer("movie", { sort_by: "popularity.desc", language: "hi", page: "1" }),
-                        getMovieDetails("969681", "movie"),
-                    ]);
+export const metadata: Metadata = {
+    alternates: {
+        canonical: baseUrl,
+    },
+};
 
-                if (mounted) {
-                    setData({
-                        trendingMovies: trendingMoviesRes?.results || [],
-                        trendingSeries: trendingSeriesRes?.results || [],
-                        topRatedMovies: topRatedMoviesRes?.results || [],
-                        topRatedSeries: topRatedSeriesRes?.results || [],
-                        trendingHindi: trendingHindiRes?.results || [],
-                        spiderManMovie: spiderManMovie || null,
-                    });
-                }
-            } catch (err) {
-                console.error("Home page data fetch error:", err);
-            } finally {
-                if (mounted) setLoading(false);
-            }
-        }
-        fetchHomeData();
-        return () => { mounted = false; };
-    }, []);
+export default async function HomePage() {
+    let trendingMovies: any[] = [];
+    let trendingSeries: any[] = [];
+    let topRatedMovies: any[] = [];
+    let topRatedSeries: any[] = [];
+    let trendingHindi: any[] = [];
+    let spiderManMovie: any = null;
 
-    const handleSelectCategory = async (cat: string) => {
-        setActiveVibeCategory(cat);
-        if (cat === "all") {
-            setVibeMovies([]);
-            return;
-        }
+    try {
+        const [
+            trendingMoviesRes,
+            trendingSeriesRes,
+            topRatedMoviesRes,
+            topRatedSeriesRes,
+            trendingHindiRes,
+            spiderManData,
+        ] = await Promise.all([
+            getTrendingFromServer("movie", "week", "1"),
+            getTrendingFromServer("tv", "week", "1"),
+            discoverContentFromServer("movie", { sort_by: "popularity.desc", with_genres: "27,878", page: "1" }),
+            discoverContentFromServer("tv", { sort_by: "vote_average.asc", rating_min: "8.3", rating_max: "9.0", page: "1", language: "ko", with_genres: "80" }),
+            discoverContentFromServer("movie", { sort_by: "popularity.desc", language: "hi", page: "1" }),
+            getMovieDetails("969681", "movie"),
+        ]);
 
-        setVibeLoading(true);
-        try {
-            let res;
-            if (cat === "action") {
-                res = await discoverContentFromServer("movie", { sort_by: "popularity.desc", with_genres: "28", page: "1" });
-            } else if (cat === "scifi") {
-                res = await discoverContentFromServer("movie", { sort_by: "popularity.desc", with_genres: "878", page: "1" });
-            } else if (cat === "kdrama") {
-                res = await discoverContentFromServer("tv", { sort_by: "popularity.desc", language: "ko", with_genres: "18", page: "1" });
-            } else if (cat === "anime") {
-                res = await discoverContentFromServer("tv", { sort_by: "popularity.desc", language: "ja", with_genres: "16", page: "1" });
-            } else if (cat === "horror") {
-                res = await discoverContentFromServer("movie", { sort_by: "popularity.desc", with_genres: "27", page: "1" });
-            } else if (cat === "comedy") {
-                res = await discoverContentFromServer("movie", { sort_by: "popularity.desc", with_genres: "35", page: "1" });
-            }
-            setVibeMovies(res?.results || []);
-        } catch (e) {
-            console.error("Vibe filter error:", e);
-        } finally {
-            setVibeLoading(false);
-        }
-    };
-
-    const { trendingMovies, trendingSeries, topRatedMovies, topRatedSeries, trendingHindi, spiderManMovie } = data;
+        trendingMovies = trendingMoviesRes?.results || [];
+        trendingSeries = trendingSeriesRes?.results || [];
+        topRatedMovies = topRatedMoviesRes?.results || [];
+        topRatedSeries = topRatedSeriesRes?.results || [];
+        trendingHindi = trendingHindiRes?.results || [];
+        spiderManMovie = spiderManData || null;
+    } catch (err) {
+        console.error("Home page server data fetch error:", err);
+    }
 
     const heroMovies = trendingMovies.slice(0, 8);
     if (spiderManMovie) {
@@ -114,142 +59,24 @@ export default function HomePage() {
 
     return (
         <main className="min-h-screen bg-black text-white">
-            <h1 className="sr-only">Best Trending Movies & Series to Stream at Home</h1>
+            <h1 className="sr-only">Neocinema — Discover Movies, TV Series & Anime Online</h1>
 
-            {loading ? (
-                <div className="relative h-[70vh] sm:h-[80vh] w-full animate-pulse bg-neutral-900/80 flex items-center justify-center">
-                    <div className="space-y-4 text-center">
-                        <div className="h-8 w-48 bg-neutral-800 rounded mx-auto" />
-                        <div className="h-4 w-72 bg-neutral-800/60 rounded mx-auto" />
-                    </div>
-                </div>
-            ) : (
-                heroMovies.length > 0 && <HeroBanner movies={heroMovies} />
-            )}
+            {/* Server-rendered Hero Banner with real movie data for search engines & users */}
+            {heroMovies.length > 0 && <HeroBanner movies={heroMovies} />}
 
-            {/* Interactive Vibe & AI Roulette Filter Ribbon */}
-            <HomeVibeFilter
-                activeCategory={activeVibeCategory}
-                onSelectCategory={handleSelectCategory}
-                onOpenRoulette={() => setIsRouletteOpen(true)}
-            />
-
-            <div className="relative z-20 max-w-7xl mx-auto space-y-10 sm:space-y-14 px-4 sm:px-6 lg:px-8 pb-20">
-                <div>
-                    <ContinueWatchingRow />
-                </div>
-
-                {/* Vibe Category Dynamic Row */}
-                {activeVibeCategory !== "all" && (
-                    <div>
-                        {vibeLoading ? (
-                            <div className="space-y-4 animate-pulse">
-                                <div className="h-6 w-40 bg-neutral-800 rounded" />
-                                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
-                                    {[1, 2, 3, 4, 5, 6].map((i) => (
-                                        <div key={i} className="aspect-[2/3] bg-neutral-900 rounded-xl" />
-                                    ))}
-                                </div>
-                            </div>
-                        ) : (
-                            vibeMovies.length > 0 && (
-                                <MovieRow
-                                    title={`Explore: ${activeVibeCategory.toUpperCase()}`}
-                                    movies={vibeMovies}
-                                    moreLink={`/search?q=${activeVibeCategory}`}
-                                />
-                            )
-                        )}
-                    </div>
-                )}
-
-                {loading ? (
-                    <div className="space-y-10 py-6">
-                        {[1, 2, 3].map((n) => (
-                            <div key={n} className="space-y-4 animate-pulse">
-                                <div className="h-6 w-40 bg-neutral-800 rounded" />
-                                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
-                                    {[1, 2, 3, 4, 5, 6].map((i) => (
-                                        <div key={i} className="aspect-[2/3] bg-neutral-900 rounded-xl" />
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <>
-                        {/* Netflix-Style Top 10 Showcase */}
-                        {trendingMovies.length >= 5 && (
-                            <Top10Row
-                                title="TOP 10 MOVIES THIS WEEK"
-                                movies={trendingMovies}
-                                onOpenTrailer={(movie) => setSelectedTrailerMovie(movie)}
-                            />
-                        )}
-
-                        <AdsterraNativeBanner />
-
-                        {trendingMovies.length > 0 && (
-                            <MovieRow
-                                title="Trending Movies"
-                                movies={trendingMovies}
-                                moreLink="/movies?sort=popularity.desc"
-                                priority={true}
-                            />
-                        )}
-
-                        {trendingSeries.length > 0 && (
-                            <MovieRow
-                                title="Trending Series"
-                                movies={trendingSeries}
-                                moreLink="/series?sort=popularity.desc"
-                            />
-                        )}
-
-                        {trendingHindi.length > 0 && (
-                            <MovieRow
-                                title="Trending Hindi Movies"
-                                movies={trendingHindi}
-                                moreLink="/movies?language=hi"
-                            />
-                        )}
-
-                        {topRatedMovies.length > 0 && (
-                            <MovieRow
-                                title="Top Rated Movies"
-                                movies={topRatedMovies}
-                                moreLink="/movies?sort=vote_average.desc"
-                            />
-                        )}
-
-                        {topRatedSeries.length > 0 && (
-                            <MovieRow
-                                title="Top Rated Series"
-                                movies={topRatedSeries}
-                                moreLink="/series?sort=vote_average.desc"
-                            />
-                        )}
-                    </>
-                )}
-            </div>
-
-            <HomeFAQ />
-
-            {/* Interactive Roulettes & Trailer Modals */}
-            <MovieRouletteModal
-                isOpen={isRouletteOpen}
-                onClose={() => setIsRouletteOpen(false)}
-                onOpenTrailer={(movie) => {
-                    setIsRouletteOpen(false);
-                    setSelectedTrailerMovie(movie);
+            {/* Interactive Client Section (Vibe Filter, Top 10, Rows, Modals) */}
+            <HomePageInteractive
+                initialData={{
+                    trendingMovies,
+                    trendingSeries,
+                    topRatedMovies,
+                    topRatedSeries,
+                    trendingHindi,
                 }}
             />
 
-            <QuickTrailerModal
-                movie={selectedTrailerMovie}
-                isOpen={Boolean(selectedTrailerMovie)}
-                onClose={() => setSelectedTrailerMovie(null)}
-            />
+            {/* Server-rendered FAQ & Semantic Rich Results Schema */}
+            <HomeFAQ />
         </main>
     );
 }

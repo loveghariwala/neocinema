@@ -66,20 +66,21 @@ export async function generateMetadata(): Promise<Metadata> {
     const title = "Global Search & Discovery";
     const description = "Search across millions of movies, TV shows, and cast members. Neocinema' global search engine helps you find exactly what you want to watch.";
 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+
     return {
         title,
         description,
         keywords: [
             "movie search", "search TV shows", "find actors",
             "Neocinema search", "global movie database", "content discovery",
-            "search movies online", "find series",
         ],
-        alternates: { canonical: '/search' },
+        alternates: { canonical: `${baseUrl}/search` },
         robots: { index: false, follow: true },
         openGraph: {
             title: `${title} | Neocinema`,
             description,
-            url: '/search',
+            url: `${baseUrl}/search`,
             type: "website",
             images: [{ url: "/logo.png", width: 800, height: 600, alt: "Search Neocinema" }],
         },

@@ -2,10 +2,12 @@ import { Metadata } from "next";
 import { Globe, Search, Shield, SlidersHorizontal, Sparkles, Users } from 'lucide-react';
 
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+
 export const metadata: Metadata = {
     title: "About Us",
     description: "Learn about Neocinema — an AI-powered movie and TV series discovery platform. Discover our mission, technology, and the team behind the cinematic experience.",
-    alternates: { canonical: "/about" },
+    alternates: { canonical: `${baseUrl}/about` },
     robots: { index: true, follow: true },
 };
 

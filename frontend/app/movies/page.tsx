@@ -109,27 +109,26 @@ export async function generateMetadata(): Promise<Metadata> {
         .map((m: any) => m.title || m.name)
         .filter(Boolean);
 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+
     return {
-        title: page === "1" ? "Watch Free Movies Online | Advanced Multi-Genre Filter & Browse | Neocinema" : `Watch Free Movies Online - Page ${page} | Neocinema`,
-        description: "Explore our database of over 1 million movies. Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to find exactly what you want to watch online free.",
+        title: page === "1" ? "Browse Movies by Genre, Rating & Year | Neocinema" : `Browse Movies - Page ${page} | Neocinema`,
+        description: "Explore our database of movies from around the globe. Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to find exactly what you want to watch.",
         keywords: [
-            "filter movies by multiple genres",
-            "select multiple genres movie search",
-            "combine genres filter",
-            "precise movie discovery sort",
-            "movies list", "browse movies", "global cinema", "film database",
-            "movie search", "filter movies by genre", "free movies online",
-            "HD movies", "trending movies", "top rated movies",
-            "free movies online stream", "watch hd movies free", "watch free movies no sign up",
-            "popular movies streaming online", "new release movies free watch", "where to stream free movies",
+            "browse movies",
+            "filter movies by genre",
+            "movie discovery",
+            "trending movies",
+            "top rated movies",
+            "movies database",
             ...movieKeywords,
         ],
-        alternates: { canonical: '/movies' },
+        alternates: { canonical: `${baseUrl}/movies` },
         robots: page === "1" ? { index: true, follow: true } : { index: false, follow: true },
         openGraph: {
             title: "Browse Movies with Advanced Multi-Genre Filtering | Neocinema",
-            description: "Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to discover the perfect movie to watch free on Neocinema.",
-            url: '/movies',
+            description: "Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to discover the perfect movie on Neocinema.",
+            url: `${baseUrl}/movies`,
             type: "website",
             images: [{ url: "/logo.png", width: 800, height: 600, alt: "Browse Movies on Neocinema" }],
         },

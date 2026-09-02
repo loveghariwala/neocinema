@@ -34,11 +34,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const titleText = `Top 12 Movies Like ${movie.title}${releaseYear ? ` (${releaseYear})` : ""} to Watch Free`;
     const descriptionText = `Loved ${movie.title}? Here are the best similar movies to watch online for free in HD on Neocinema.`;
 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+
     return {
         title: titleText,
         description: descriptionText,
-        keywords: [`movies like ${movie.title}`, `similar to ${movie.title}`, `what to watch after ${movie.title}`, `watch free`],
-        alternates: { canonical: `/movies/${id}/similar` },
+        keywords: [`movies like ${movie.title}`, `similar to ${movie.title}`, `what to watch after ${movie.title}`],
+        alternates: { canonical: `${baseUrl}/movies/${id}/similar` },
         robots: { index: false, follow: true },
     };
 }
