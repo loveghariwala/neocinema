@@ -25,6 +25,7 @@ export const NOINDEX_IDS: string[] = [
   "1084244",
   "40411",
   "1450527",
+  "1376415",
 ];
 
 export function isMovieNoIndex(id: string | number): boolean {
