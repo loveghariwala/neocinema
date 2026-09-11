@@ -81,20 +81,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // 6. Latest Movies (3 pages from TMDB discover, ~60 movies)
+  // 6. Popular & Trending Movies (~250 top movies)
   let movieRoutes: MetadataRoute.Sitemap = [];
   try {
-    const moviePages = await Promise.all([
-      tmdbService.discoverMovies({ page: 1 }),
-      tmdbService.discoverMovies({ page: 2 }),
-      tmdbService.discoverMovies({ page: 3 }),
-    ]);
+    const moviePagePromises = [
+      ...Array.from({ length: 10 }, (_, i) =>
+        tmdbService.discoverMovies({ page: i + 1, sort_by: 'popularity.desc' })
+      ),
+      ...Array.from({ length: 3 }, (_, i) =>
+        tmdbService.getTrending('movie', 'week', i + 1)
+      ),
+    ];
+
+    const moviePages = await Promise.all(moviePagePromises);
 
     const seenMovieIds = new Set<number>();
     const allMovies = moviePages.flatMap((page) => page.results || []);
 
     movieRoutes = allMovies
       .filter((movie: any) => {
+        if (!movie || !movie.tmdbId) return false;
         const id = String(movie.tmdbId);
         if (excludedIds.has(id) || seenMovieIds.has(movie.tmdbId)) return false;
         seenMovieIds.add(movie.tmdbId);
@@ -104,26 +110,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: `${baseUrl}/movies/${movie.tmdbId}`,
         lastModified: currentDate,
         changeFrequency: 'weekly' as const,
-        priority: 0.9,
+        priority: 0.8,
       }));
   } catch (error) {
     console.warn('[Sitemap] Failed to fetch movies from TMDB:', error);
   }
 
-  // 7. Latest Series (3 pages from TMDB discover, ~60 series)
+  // 7. Popular & Trending Series (~250 top series)
   let seriesRoutes: MetadataRoute.Sitemap = [];
   try {
-    const seriesPages = await Promise.all([
-      tmdbService.discoverTv({ page: 1 }),
-      tmdbService.discoverTv({ page: 2 }),
-      tmdbService.discoverTv({ page: 3 }),
-    ]);
+    const seriesPagePromises = [
+      ...Array.from({ length: 10 }, (_, i) =>
+        tmdbService.discoverTv({ page: i + 1, sort_by: 'popularity.desc' })
+      ),
+      ...Array.from({ length: 3 }, (_, i) =>
+        tmdbService.getTrending('tv', 'week', i + 1)
+      ),
+    ];
+
+    const seriesPages = await Promise.all(seriesPagePromises);
 
     const seenSeriesIds = new Set<number>();
     const allSeries = seriesPages.flatMap((page) => page.results || []);
 
     seriesRoutes = allSeries
       .filter((series: any) => {
+        if (!series || !series.tmdbId) return false;
         const id = String(series.tmdbId);
         if (excludedIds.has(id) || seenSeriesIds.has(series.tmdbId)) return false;
         seenSeriesIds.add(series.tmdbId);
@@ -133,7 +145,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: `${baseUrl}/series/${series.tmdbId}`,
         lastModified: currentDate,
         changeFrequency: 'weekly' as const,
-        priority: 0.9,
+        priority: 0.8,
       }));
   } catch (error) {
     console.warn('[Sitemap] Failed to fetch series from TMDB:', error);
