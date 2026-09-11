@@ -280,6 +280,74 @@ export const BLOG_POSTS: BlogPost[] = [
                 answer: "In our story prediction, Avengers: Doomsday ends with Doctor Doom successfully initiating a multiversal collapse, destroying all existing timelines and creating Battleworld — setting the stage for Avengers: Secret Wars."
             }
         ]
+    },
+    {
+        slug: "wuthering-heights-movie-2026",
+        title: "Wuthering Heights Movie (2026): Margot Robbie Cast, Release Date & Where to Watch",
+        metaTitle: "Wuthering Heights Movie (2026) Release Date, Cast & Stream Guide",
+        description: "Everything you need to know about the upcoming Wuthering Heights movie starring Margot Robbie and Jacob Elordi. Release date predictions, cast news, trailers, and where to stream online.",
+        keywords: [
+            "wuthering heights movie",
+            "wuthering heights movie 2026",
+            "margot robbie wuthering heights",
+            "jacob elordi wuthering heights",
+            "where to watch wuthering heights movie",
+            "wuthering heights movie release date",
+            "emerald fennell wuthering heights",
+            "wuthering heights full movie online"
+        ],
+        publishedAt: "2026-09-11",
+        updatedAt: "2026-09-11",
+        readTime: "6 min read",
+        category: "Movie Previews",
+        faqs: [
+            {
+                question: "When does the new Wuthering Heights movie come out?",
+                answer: "The Emerald Fennell adaptation of Wuthering Heights starring Margot Robbie and Jacob Elordi is currently in production and targeting a theatrical release in late 2025 to early 2026, followed by a digital streaming launch."
+            },
+            {
+                question: "Who is in the cast of the 2026 Wuthering Heights movie?",
+                answer: "Margot Robbie stars as Catherine Earnshaw and Jacob Elordi stars as Heathcliff, with Emerald Fennell directing the gothic period drama."
+            },
+            {
+                question: "Where can I watch the Wuthering Heights movie online?",
+                answer: "Upon release, Wuthering Heights will debut in cinemas followed by streaming on major platforms. You will be able to check streaming availability, trailers, and reviews on NeoCinema."
+            }
+        ]
+    },
+    {
+        slug: "where-to-watch-the-backrooms-movie",
+        title: "Where to Watch The Backrooms Movie: Release Date & Streaming Guide (2026)",
+        metaTitle: "Where to Watch The Backrooms Movie Online — Release Date & Stream",
+        description: "Wondering where to watch The Backrooms movie and when it comes out? Complete streaming guide, A24 release date schedule, plot details, and how to watch online.",
+        keywords: [
+            "where to watch backrooms movie",
+            "when does the backrooms movie come out",
+            "the backrooms movie",
+            "where to watch the backrooms movie",
+            "backrooms movie release date",
+            "a24 backrooms movie streaming",
+            "backrooms movie watch online",
+            "kane parsons backrooms movie"
+        ],
+        publishedAt: "2026-09-11",
+        updatedAt: "2026-09-11",
+        readTime: "5 min read",
+        category: "Streaming Guides",
+        faqs: [
+            {
+                question: "When does The Backrooms movie come out?",
+                answer: "A24 and director Kane Parsons are scheduled to release The Backrooms feature film in theaters in 2026. Official trailers and theatrical date windows will be announced leading into release."
+            },
+            {
+                question: "Where can you watch The Backrooms movie?",
+                answer: "The Backrooms movie will have an exclusive theatrical run distributed by A24, after which it will be available on premium digital video-on-demand and streaming platforms like Max and NeoCinema."
+            },
+            {
+                question: "Who is directing The Backrooms movie?",
+                answer: "The film is directed by Kane Parsons (Kane Pixels), who created the viral YouTube horror phenomenon, with James Wan and Shawn Levy producing."
+            }
+        ]
     }
 ];
 

@@ -4,16 +4,18 @@ import VibeFinderClient from "@/components/vibe/VibeFinderClient";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
 
 export const metadata: Metadata = {
-    title: "AI Movie Vibe Finder — What to Watch Tonight Generator | NeoCinema",
-    description: "Can't decide what movie to watch tonight on Netflix, Prime, or Hulu? Use our free AI Movie Vibe Finder to filter by mood, streaming service, and runtime for instant recommendations.",
+    title: "What Movie Should I Watch? | NeoCinema",
+    description: "Can't decide what movie to watch tonight on Netflix, Prime, or Hulu? Use our free AI Movie Vibe Finder to get instant movie recommendations matching your exact mood and streaming service.",
     keywords: [
-        "what to watch on netflix tonight",
+        "what movie should i watch",
+        "what movie to watch tonight",
+        "what movie should i watch tonight",
         "movie vibe finder",
         "ai movie picker",
+        "what should i watch",
         "movie recommendation generator",
-        "what movie should i watch",
         "ai movie finder",
-        "what to watch tonight",
+        "what to watch on netflix tonight",
         "movie mood generator",
         "free streaming movie finder",
         "ai cinema recommendations"
@@ -101,6 +103,14 @@ export default function VibeFinderPage() {
         "@context": "https://schema.org",
         "@type": "FAQPage",
         "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "What movie should I watch tonight?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "If you don't know what movie to watch tonight, use NeoCinema's free AI Movie Vibe Finder. Choose your mood (Sci-Fi, Action, Horror, Comedy, K-Drama, or Romance) and streaming platform to get instant personalized movie recommendations with trailers."
+                }
+            },
             {
                 "@type": "Question",
                 "name": "How does the AI Movie Vibe Finder work?",

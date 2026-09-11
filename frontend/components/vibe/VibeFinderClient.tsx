@@ -90,11 +90,11 @@ export default function VibeFinderClient() {
                 </div>
 
                 <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-white uppercase leading-tight drop-shadow-xl max-w-4xl mx-auto">
-                    What Should You <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-purple-400 to-pink-500">Watch Tonight?</span>
+                    What Movie Should I <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-purple-400 to-pink-500">Watch Tonight?</span>
                 </h1>
 
                 <p className="text-sm sm:text-base text-neutral-300 font-medium max-w-2xl mx-auto leading-relaxed">
-                    Can’t decide what to watch on Netflix, Prime, or Hulu? Pick your mood below and let our AI Vibe Finder match your perfect movie or show in seconds.
+                    Can’t decide what movie to watch on Netflix, Prime, or Hulu? Pick your mood below and let our AI Movie Vibe Finder match your perfect film in seconds.
                 </p>
             </div>
 
