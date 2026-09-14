@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { getWatchHistory, WatchProgress } from "@/services/historyService";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Clock, Play, Trash2 } from "lucide-react";
-import { getTmdbImageUrl } from "@/lib/tmdb";
+import { getTmdbImageUrl } from "@/lib/tmdb-image";
 import { prepareCardPopunder, handleCardClickPopunder } from "@/lib/adUtils";
 
 export default function ContinueWatchingRow() {

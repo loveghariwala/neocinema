@@ -1,30 +1,49 @@
 # ──────────────────────────────────────────────────
 # NeoCinema — robots.txt
 # ──────────────────────────────────────────────────
+# A crawler obeys only the most specific group matching its name, so every group
+# repeats the /api/ rule.
 
-# 1. Google (Allowed)
+# 1. Search engines
 User-Agent: Googlebot
 User-Agent: Googlebot-Image
 User-Agent: Googlebot-Video
-Allow: /
-Disallow: /api/
-
-# 2. Bing & Yahoo & Copilot (Allowed)
 User-Agent: Bingbot
 User-Agent: msnbot
 User-Agent: BingPreview
+User-Agent: DuckDuckBot
+User-Agent: Applebot
 Allow: /
 Disallow: /api/
+Disallow: /referral/analytics
 
-# 3. Yandex (Allowed with Crawl Delay to save CPU/Function Invocations)
+# 2. Yandex (crawl delay saves Worker CPU)
 User-Agent: YandexBot
 User-Agent: YandexImages
 Allow: /
 Disallow: /api/
+Disallow: /referral/analytics
 Crawl-delay: 5
 
-# 4. Block Aggressive Bots & Scrapers
+# 3. AI search & answer engines — these fetch pages to cite them with a link back,
+# which is how the site shows up in ChatGPT search, Perplexity and Claude answers.
+User-Agent: OAI-SearchBot
+User-Agent: ChatGPT-User
+User-Agent: PerplexityBot
+User-Agent: Perplexity-User
+User-Agent: Claude-SearchBot
+User-Agent: Claude-User
+Allow: /
+Disallow: /api/
+Disallow: /referral/analytics
+
+# 4. SEO audit tools (AhrefsBot powers the Ahrefs Webmaster Tools site audit)
 User-Agent: AhrefsBot
+Allow: /
+Disallow: /api/
+Crawl-delay: 5
+
+# 5. Block AI training crawlers and aggressive scrapers
 User-Agent: SemrushBot
 User-Agent: Bytespider
 User-Agent: PetalBot
@@ -33,11 +52,13 @@ User-Agent: DotBot
 User-Agent: SerpstatBot
 User-Agent: GPTBot
 User-Agent: CCBot
+User-Agent: ClaudeBot
+User-Agent: Google-Extended
 Disallow: /
 
-# Block all uncaught scrapers from API
+# Everyone else
 User-Agent: *
 Disallow: /api/
+Disallow: /referral/analytics
 
-# Sitemap
 Sitemap: https://www.neocinematv.com/sitemap.xml

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ArrowLeft, Award, Calendar, ChevronDown, ChevronUp, Film, MapPin, Sparkles, Star, Tv, User } from 'lucide-react';
 import MovieCard from "@/components/cards/MovieCard";
-import { getTmdbImageUrl } from "@/lib/tmdb";
+import { getTmdbImageUrl } from "@/lib/tmdb-image";
 
 interface PersonPageClientProps {
     data: any;

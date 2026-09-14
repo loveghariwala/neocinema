@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getWatchmodeSources, WatchmodeSource } from "@/services/watchmodeService";
+import type { WatchmodeSource } from "@/services/watchmodeService";
+import { getWatchSources } from "@/lib/api-client";
 import { ExternalLink, Tv } from "lucide-react";
 
 interface Props {
@@ -14,7 +15,7 @@ export default function WatchmodeAvailabilityBanner({ tmdbId, isTv = false }: Pr
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getWatchmodeSources(tmdbId, isTv).then((data) => {
+        getWatchSources(tmdbId, isTv).then((data: WatchmodeSource[]) => {
             // Deduplicate sources by platform name
             const unique = data.reduce((acc: WatchmodeSource[], curr) => {
                 if (!acc.some(s => s.name.toLowerCase() === curr.name.toLowerCase())) {

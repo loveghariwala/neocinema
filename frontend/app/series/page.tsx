@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react';
 
 import { discoverContentFromServer, getGenresFromServer, searchContentFromServer } from "@/services/movieService";
 
-export const revalidate = 86400; // ISR: regenerate every 24 hours to optimize Vercel ISR usage
+export const revalidate = 3600; // 1 h, matches TTL.list in lib/tmdb.ts
 
 // ─── Cached data fetch (shared between generateMetadata + page render) ───────
 const getSeriesPageData = cache(async (searchParams: Record<string, string>) => {
@@ -112,7 +112,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
 
     return {
-        title: page === "1" ? "Browse TV Series by Genre, Rating & Year | Neocinema" : `Browse TV Series - Page ${page} | Neocinema`,
+        title: { absolute: page === "1" ? "Browse TV Series by Genre, Rating & Year | Neocinema" : `Browse TV Series - Page ${page} | Neocinema` },
         description: "Discover television series, documentaries, and anime from around the world. Select multiple genres at once, filter by rating, year, or language, and sort precisely to find what to watch.",
         keywords: [
             "TV series",
@@ -131,13 +131,13 @@ export async function generateMetadata(): Promise<Metadata> {
             description: "Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to discover the perfect television show or anime on Neocinema.",
             url: `${baseUrl}/series`,
             type: "website",
-            images: [{ url: "/logo.png", width: 800, height: 600, alt: "Browse TV Series on Neocinema" }],
+            images: [{ url: "/og_banner.png", width: 1200, height: 630, alt: "Browse TV Series on Neocinema" }],
         },
         twitter: {
             card: "summary_large_image",
             title: "Browse TV Series with Advanced Multi-Genre Filters | Neocinema",
             description: "Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to discover the perfect television show or anime.",
-            images: ["/logo.png"],
+            images: ["/og_banner.png"],
         },
     };
 }

@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react';
 
 import { discoverContentFromServer, getGenresFromServer, searchContentFromServer } from "@/services/movieService";
 
-export const revalidate = 86400; // ISR: regenerate every 24 hours to optimize Vercel ISR usage
+export const revalidate = 3600; // 1 h, matches TTL.list in lib/tmdb.ts
 
 // ─── Cached data fetch (shared between generateMetadata + page render) ───────
 const getMoviesPageData = cache(async (searchParams: Record<string, string>) => {
@@ -112,7 +112,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
 
     return {
-        title: page === "1" ? "Browse Movies by Genre, Rating & Year | Neocinema" : `Browse Movies - Page ${page} | Neocinema`,
+        title: { absolute: page === "1" ? "Browse Movies by Genre, Rating & Year | Neocinema" : `Browse Movies - Page ${page} | Neocinema` },
         description: "Explore our database of movies from around the globe. Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to find exactly what you want to watch.",
         keywords: [
             "browse movies",
@@ -130,13 +130,13 @@ export async function generateMetadata(): Promise<Metadata> {
             description: "Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to discover the perfect movie on Neocinema.",
             url: `${baseUrl}/movies`,
             type: "website",
-            images: [{ url: "/logo.png", width: 800, height: 600, alt: "Browse Movies on Neocinema" }],
+            images: [{ url: "/og_banner.png", width: 1200, height: 630, alt: "Browse Movies on Neocinema" }],
         },
         twitter: {
             card: "summary_large_image",
             title: "Browse Movies with Advanced Multi-Genre Filters | Neocinema",
             description: "Toggle multiple genres at once, filter by release year, rating, language, and sort precisely to discover the perfect movie.",
-            images: ["/logo.png"],
+            images: ["/og_banner.png"],
         },
     };
 }

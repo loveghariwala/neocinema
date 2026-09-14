@@ -1,163 +1,95 @@
 import { MetadataRoute } from 'next';
 import { COLLECTIONS } from '@/lib/collections';
 import { BLOG_POSTS } from '@/lib/blog-posts';
-import { tmdbService } from '@/lib/tmdb';
+import { WATCH_LANDINGS } from '@/lib/watch-landings';
+import { tmdbService, TTL } from '@/lib/tmdb';
 import { BLOCKED_IDS, NOINDEX_IDS } from '@/lib/blockedIds';
+import { SITE_URL } from '@/lib/seo';
 
-export const revalidate = 604800; // Cache for 1 week
+export const revalidate = 86400; // 24 h; its TMDB lists are fetched with TTL.detail
 
+// lastModified is set only where it's a real date. Google ignores lastmod on sites
+// where it's always "now", which is what stamping every URL with the build time does.
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.neocinematv.com';
-  const currentDate = new Date();
-
-  // Combined set of IDs to exclude from sitemap
+  const baseUrl = SITE_URL;
   const excludedIds = new Set([...BLOCKED_IDS, ...NOINDEX_IDS]);
 
-  // 1. Home Page
-  const homeRoute: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
-      lastModified: currentDate,
-      changeFrequency: 'daily',
-      priority: 1.0,
-    },
+  const staticRoutes: MetadataRoute.Sitemap = [
+    { url: baseUrl, changeFrequency: 'daily', priority: 1.0 },
+    { url: `${baseUrl}/movies`, changeFrequency: 'daily', priority: 0.9 },
+    { url: `${baseUrl}/series`, changeFrequency: 'daily', priority: 0.9 },
+    { url: `${baseUrl}/vibe-finder`, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${baseUrl}/collections`, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${baseUrl}/blog`, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${baseUrl}/about`, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${baseUrl}/contact`, changeFrequency: 'yearly', priority: 0.3 },
   ];
 
-  // 2. AI Vibe Finder
-  const vibeFinderRoute: MetadataRoute.Sitemap = [
-    {
-      url: `${baseUrl}/vibe-finder`,
-      lastModified: currentDate,
-      changeFrequency: 'daily',
-      priority: 0.8,
-    },
-  ];
+  const collectionRoutes: MetadataRoute.Sitemap = COLLECTIONS.map((c) => ({
+    url: `${baseUrl}/collections/${c.slug}`,
+    changeFrequency: 'weekly',
+    priority: 0.7,
+  }));
 
-  // 3. Collections (Main hub + all collection landing pages)
-  const collectionRoutes: MetadataRoute.Sitemap = [
-    {
-      url: `${baseUrl}/collections`,
-      lastModified: currentDate,
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
-    ...COLLECTIONS.map((c) => ({
-      url: `${baseUrl}/collections/${c.slug}`,
-      lastModified: currentDate,
-      changeFrequency: 'weekly' as const,
-      priority: 0.7,
-    })),
-  ];
+  const watchLandingRoutes: MetadataRoute.Sitemap = WATCH_LANDINGS.map((l) => ({
+    url: `${baseUrl}/watch/${l.slug}`,
+    changeFrequency: 'daily',
+    priority: 0.7,
+  }));
 
-  // 4. All Blog Pages (Main blog listing + all blog articles)
-  const blogRoutes: MetadataRoute.Sitemap = [
-    {
-      url: `${baseUrl}/blog`,
-      lastModified: currentDate,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    ...BLOG_POSTS.map((p) => ({
-      url: `${baseUrl}/blog/${p.slug}`,
-      lastModified: new Date(p.updatedAt),
-      changeFrequency: 'weekly' as const,
-      priority: 0.9,
-    })),
-  ];
+  const blogRoutes: MetadataRoute.Sitemap = BLOG_POSTS.map((p) => ({
+    url: `${baseUrl}/blog/${p.slug}`,
+    lastModified: new Date(p.updatedAt),
+    changeFrequency: 'monthly',
+    priority: 0.7,
+  }));
 
-  // 5. Static listing pages (only page 1 — page 2+ is noindex)
-  const listingRoutes: MetadataRoute.Sitemap = [
-    {
-      url: `${baseUrl}/movies`,
-      lastModified: currentDate,
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/series`,
-      lastModified: currentDate,
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-  ];
+  // Popular + trending cover what people search for this week; vote_count.desc adds
+  // the evergreen classics that keep getting searched for years.
+  // No catch: a TMDB failure returns 500 instead of a sitemap missing every title.
+  const pages = (n: number) => Array.from({ length: n }, (_, i) => i + 1);
+  const [moviePages, seriesPages, peoplePages] = await Promise.all([
+    Promise.all([
+      ...pages(10).map((page) => tmdbService.discoverMovies({ page, sort_by: 'popularity.desc' }, TTL.detail)),
+      ...pages(5).map((page) => tmdbService.discoverMovies({ page, sort_by: 'vote_count.desc' }, TTL.detail)),
+      ...pages(3).map((page) => tmdbService.getTrending('movie', 'week', page, TTL.detail)),
+    ]),
+    Promise.all([
+      ...pages(10).map((page) => tmdbService.discoverTv({ page, sort_by: 'popularity.desc' }, TTL.detail)),
+      ...pages(5).map((page) => tmdbService.discoverTv({ page, sort_by: 'vote_count.desc' }, TTL.detail)),
+      ...pages(3).map((page) => tmdbService.getTrending('tv', 'week', page, TTL.detail)),
+    ]),
+    Promise.all(pages(5).map((page) => tmdbService.getPopularPeople(page, TTL.detail))),
+  ]);
 
-  // 6. Popular & Trending Movies (~250 top movies)
-  let movieRoutes: MetadataRoute.Sitemap = [];
-  try {
-    const moviePagePromises = [
-      ...Array.from({ length: 10 }, (_, i) =>
-        tmdbService.discoverMovies({ page: i + 1, sort_by: 'popularity.desc' })
-      ),
-      ...Array.from({ length: 3 }, (_, i) =>
-        tmdbService.getTrending('movie', 'week', i + 1)
-      ),
-    ];
-
-    const moviePages = await Promise.all(moviePagePromises);
-
-    const seenMovieIds = new Set<number>();
-    const allMovies = moviePages.flatMap((page) => page.results || []);
-
-    movieRoutes = allMovies
-      .filter((movie: any) => {
-        if (!movie || !movie.tmdbId) return false;
-        const id = String(movie.tmdbId);
-        if (excludedIds.has(id) || seenMovieIds.has(movie.tmdbId)) return false;
-        seenMovieIds.add(movie.tmdbId);
+  const titleRoutes = (results: any[], path: 'movies' | 'series'): MetadataRoute.Sitemap => {
+    const seen = new Set<string>();
+    return results
+      .map((item) => item?.tmdbId && String(item.tmdbId))
+      .filter((id): id is string => {
+        if (!id || excludedIds.has(id) || seen.has(id)) return false;
+        seen.add(id);
         return true;
       })
-      .map((movie: any) => ({
-        url: `${baseUrl}/movies/${movie.tmdbId}`,
-        lastModified: currentDate,
-        changeFrequency: 'weekly' as const,
-        priority: 0.8,
-      }));
-  } catch (error) {
-    console.warn('[Sitemap] Failed to fetch movies from TMDB:', error);
-  }
+      .map((id) => ({ url: `${baseUrl}/${path}/${id}`, changeFrequency: 'weekly' as const, priority: 0.8 }));
+  };
 
-  // 7. Popular & Trending Series (~250 top series)
-  let seriesRoutes: MetadataRoute.Sitemap = [];
-  try {
-    const seriesPagePromises = [
-      ...Array.from({ length: 10 }, (_, i) =>
-        tmdbService.discoverTv({ page: i + 1, sort_by: 'popularity.desc' })
-      ),
-      ...Array.from({ length: 3 }, (_, i) =>
-        tmdbService.getTrending('tv', 'week', i + 1)
-      ),
-    ];
+  const movieRoutes = titleRoutes(moviePages.flatMap((p) => p.results || []), 'movies');
+  const seriesRoutes = titleRoutes(seriesPages.flatMap((p) => p.results || []), 'series');
 
-    const seriesPages = await Promise.all(seriesPagePromises);
-
-    const seenSeriesIds = new Set<number>();
-    const allSeries = seriesPages.flatMap((page) => page.results || []);
-
-    seriesRoutes = allSeries
-      .filter((series: any) => {
-        if (!series || !series.tmdbId) return false;
-        const id = String(series.tmdbId);
-        if (excludedIds.has(id) || seenSeriesIds.has(series.tmdbId)) return false;
-        seenSeriesIds.add(series.tmdbId);
-        return true;
-      })
-      .map((series: any) => ({
-        url: `${baseUrl}/series/${series.tmdbId}`,
-        lastModified: currentDate,
-        changeFrequency: 'weekly' as const,
-        priority: 0.8,
-      }));
-  } catch (error) {
-    console.warn('[Sitemap] Failed to fetch series from TMDB:', error);
-  }
+  const seenPeople = new Set<number>();
+  const personRoutes: MetadataRoute.Sitemap = peoplePages
+    .flat()
+    .filter((p) => p.id && !p.adult && !seenPeople.has(p.id) && seenPeople.add(p.id))
+    .map((p) => ({ url: `${baseUrl}/person/${p.id}`, changeFrequency: 'weekly', priority: 0.6 }));
 
   return [
-    ...homeRoute,
-    ...vibeFinderRoute,
+    ...staticRoutes,
     ...collectionRoutes,
+    ...watchLandingRoutes,
     ...blogRoutes,
-    ...listingRoutes,
     ...movieRoutes,
     ...seriesRoutes,
+    ...personRoutes,
   ];
 }

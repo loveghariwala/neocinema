@@ -9,7 +9,7 @@ import Image from "next/image";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
 
 export const metadata: Metadata = {
-    title: "Movie Guides, Anime Lists & Streaming News | NeoCinema Blog",
+    title: { absolute: "Movie Guides, Anime Lists & Streaming News | Neocinema Blog" },
     description: "Explore NeoCinema's curated blog for the best movie watchlists, anime recommendations, K-Drama streaming guides, and cinema analysis updated weekly.",
     keywords: [
         "movie guides",

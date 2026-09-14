@@ -4,8 +4,8 @@ import { useState } from "react";
 import { Dices, Sparkles, Star, Play, Film, Tv, Flame, Compass, Heart, Ghost, Smile, RefreshCw, Zap, ExternalLink } from 'lucide-react';
 import Image from "next/image";
 import Link from "next/link";
-import { getTmdbImageUrl } from "@/lib/tmdb";
-import { discoverContentFromServer, getTrendingFromServer } from "@/services/movieService";
+import { getTmdbImageUrl } from "@/lib/tmdb-image";
+import { discoverContent } from "@/lib/api-client";
 import QuickTrailerModal from "@/components/player/QuickTrailerModal";
 
 const VIBES = [
@@ -38,7 +38,7 @@ export default function VibeFinderClient() {
     const [selectedVibe, setSelectedVibe] = useState(VIBES[0]);
     const [selectedPlatform, setSelectedPlatform] = useState(PLATFORMS[0]);
     const [selectedFormat, setSelectedFormat] = useState(FORMATS[0]);
-    
+
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState<any[]>([]);
     const [hasSearched, setHasSearched] = useState(false);
@@ -47,12 +47,12 @@ export default function VibeFinderClient() {
     const handleFindVibe = async (overrideVibe = selectedVibe) => {
         setLoading(true);
         setHasSearched(true);
-        
+
         try {
             const randomPage = String(Math.floor(Math.random() * 4) + 1);
             const mediaType = selectedFormat.id === "any" ? overrideVibe.type : selectedFormat.id;
 
-            const res = await discoverContentFromServer(mediaType as any, {
+            const res = await discoverContent(mediaType as "movie" | "tv", {
                 sort_by: "popularity.desc",
                 with_genres: overrideVibe.genre,
                 language: overrideVibe.lang || "",
@@ -78,7 +78,7 @@ export default function VibeFinderClient() {
 
     return (
         <div className="w-full max-w-7xl mx-auto space-y-12 py-10 px-4 sm:px-6 lg:px-8">
-            
+
             {/* HERO BANNER */}
             <div className="relative rounded-3xl border border-white/10 bg-gradient-to-br from-neutral-900 via-neutral-950 to-red-950/40 p-6 sm:p-10 md:p-12 overflow-hidden shadow-2xl text-center space-y-4">
                 <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-red-600/15 blur-3xl pointer-events-none" />
@@ -100,7 +100,7 @@ export default function VibeFinderClient() {
 
             {/* SELECTION INTERFACE */}
             <div className="rounded-3xl border border-white/10 bg-neutral-900/90 backdrop-blur-2xl p-6 sm:p-8 space-y-8 shadow-2xl">
-                
+
                 {/* STEP 1: VIBE SELECTOR */}
                 <div className="space-y-3">
                     <div className="flex items-center gap-2">
@@ -117,11 +117,10 @@ export default function VibeFinderClient() {
                                 <button
                                     key={vibe.id}
                                     onClick={() => setSelectedVibe(vibe)}
-                                    className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer active:scale-95 flex flex-col justify-between space-y-2 ${
-                                        isSelected
+                                    className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer active:scale-95 flex flex-col justify-between space-y-2 ${isSelected
                                             ? "bg-red-600 border-red-500 text-white shadow-xl shadow-red-950 scale-[1.02]"
                                             : "bg-white/5 border-white/10 text-neutral-300 hover:bg-white/10 hover:border-white/20"
-                                    }`}
+                                        }`}
                                 >
                                     <span className="text-xs sm:text-sm font-black uppercase tracking-wider">
                                         {vibe.label}
@@ -137,7 +136,7 @@ export default function VibeFinderClient() {
 
                 {/* STEP 2: STREAMING PLATFORM & FORMAT */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 border-t border-white/10">
-                    
+
                     {/* Platform Selector */}
                     <div className="space-y-3">
                         <div className="flex items-center gap-2">
@@ -151,11 +150,10 @@ export default function VibeFinderClient() {
                                 <button
                                     key={plat.id}
                                     onClick={() => setSelectedPlatform(plat)}
-                                    className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${
-                                        selectedPlatform.id === plat.id
+                                    className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${selectedPlatform.id === plat.id
                                             ? "bg-white text-black border-white font-black shadow-lg"
                                             : "bg-white/5 border-white/10 text-neutral-400 hover:text-white"
-                                    }`}
+                                        }`}
                                 >
                                     {plat.icon} {plat.label}
                                 </button>
@@ -176,11 +174,10 @@ export default function VibeFinderClient() {
                                 <button
                                     key={fmt.id}
                                     onClick={() => setSelectedFormat(fmt)}
-                                    className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${
-                                        selectedFormat.id === fmt.id
+                                    className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all border cursor-pointer ${selectedFormat.id === fmt.id
                                             ? "bg-white text-black border-white font-black shadow-lg"
                                             : "bg-white/5 border-white/10 text-neutral-400 hover:text-white"
-                                    }`}
+                                        }`}
                                 >
                                     {fmt.label}
                                 </button>
@@ -248,7 +245,7 @@ export default function VibeFinderClient() {
                                                 className="object-cover transition-transform duration-500 group-hover:scale-105"
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/20 to-transparent" />
-                                            
+
                                             {item.vote_average > 0 && (
                                                 <div className="absolute top-3 right-3 flex items-center gap-1 rounded-full bg-black/80 px-2.5 py-1 text-xs font-black text-yellow-400 border border-white/10 backdrop-blur-md">
                                                     <Star size={12} fill="currentColor" />

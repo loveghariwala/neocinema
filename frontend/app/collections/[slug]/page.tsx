@@ -8,7 +8,7 @@ interface Props {
     params: Promise<{ slug: string }>;
 }
 
-export const revalidate = 5184000; // 2 months (60 days) - maximum Edge CDN caching
+export const revalidate = 3600; // 1 h, matches TTL.list in lib/tmdb.ts
 
 export async function generateStaticParams() {
     return COLLECTIONS.map((c) => ({
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const imageUrl = collection.image?.startsWith("http") ? collection.image : `${baseUrl}/og_banner.png`;
 
     return {
-        title: `${collection.title} — Curated Movie & Series List | NeoCinema`,
+        title: { absolute: `${collection.title} — Curated Movie & Series List | Neocinema` },
         description: collection.description,
         keywords: collection.seoKeywords,
         alternates: { canonical: `${baseUrl}/collections/${slug}` },

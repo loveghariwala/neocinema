@@ -1,23 +1,7 @@
 
 import { Metadata } from "next";
 import SearchPageClient from "./SearchPageClient";
-import { searchContentFromServer, getTrendingFromServer } from "@/services/movieService";
-import { cache } from "react";
-
-// ─── Cached data fetch (shared between generateMetadata + page render) ───────
-const getSearchPageData = cache(async (query: string, type: string, page: string) => {
-    let data: any = { results: [], totalResults: 0, totalPages: 1, currentPage: 1 };
-    let trending: any[] = [];
-
-    if (query && query.trim().length >= 2) {
-        data = await searchContentFromServer(query, type, page);
-    } else {
-        const trendingData = await getTrendingFromServer("movie", "week", "1");
-        trending = trendingData.results || [];
-    }
-
-    return { data, trending };
-});
+import { getTrendingFromServer } from "@/services/movieService";
 
 // ─── SearchAction JSON-LD ────────────────────────────────────────────────────
 const generateSearchJsonLd = () => {
@@ -53,15 +37,7 @@ const generateSearchJsonLd = () => {
     };
 };
 
-// ─── Dynamic Metadata ────────────────────────────────────────────────────────
-interface SearchPageProps {
-    searchParams?: Promise<{
-        q?: string;
-        type?: string;
-        page?: string;
-    }>;
-}
-
+// ─── Metadata ────────────────────────────────────────────────────────────────
 export async function generateMetadata(): Promise<Metadata> {
     const title = "Global Search & Discovery";
     const description = "Search across millions of movies, TV shows, and cast members. Neocinema' global search engine helps you find exactly what you want to watch.";
@@ -82,13 +58,13 @@ export async function generateMetadata(): Promise<Metadata> {
             description,
             url: `${baseUrl}/search`,
             type: "website",
-            images: [{ url: "/logo.png", width: 800, height: 600, alt: "Search Neocinema" }],
+            images: [{ url: "/og_banner.png", width: 1200, height: 630, alt: "Search Neocinema" }],
         },
         twitter: {
             card: "summary_large_image",
             title: `${title} | Neocinema`,
             description,
-            images: ["/logo.png"],
+            images: ["/og_banner.png"],
         },
     };
 }
@@ -97,8 +73,11 @@ import { Suspense } from "react";
 import { Loader2 } from 'lucide-react';
 
 // ─── Page Component ──────────────────────────────────────────────────────────
+// Static shell: SearchPageClient reads ?q=, ?type= and ?page= with useSearchParams
+// (hence the Suspense boundary) and loads results from /api/search.
 export default async function SearchPage() {
-    const { data, trending } = await getSearchPageData("", "", "1");
+    const trendingData = await getTrendingFromServer("movie", "week", "1");
+    const trending = trendingData.results || [];
 
     return (
         <>
@@ -110,13 +89,7 @@ export default async function SearchPage() {
                 }}
             />
             <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-red-500" /></div>}>
-                <SearchPageClient
-                    initialQuery={""}
-                    initialType={""}
-                    initialPage={1}
-                    initialData={data}
-                    initialTrending={trending}
-                />
+                <SearchPageClient initialTrending={trending} />
             </Suspense>
         </>
     );

@@ -4,7 +4,7 @@ import HomePageInteractive from "@/components/home/HomePageInteractive";
 import { getTrendingFromServer, discoverContentFromServer, getMovieDetails } from "@/services/movieService";
 import { Metadata } from "next";
 
-export const revalidate = 3600; // ISR: refresh every 1 hour
+export const revalidate = 3600; // 1 h, matches TTL.list in lib/tmdb.ts
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
 
@@ -14,47 +14,53 @@ export const metadata: Metadata = {
     },
 };
 
+// Client component props are serialized into the page payload next to the HTML, so
+// pass only the fields MovieCard, Top10Row and HeroBanner actually read.
+function toCard(item: any) {
+    return {
+        tmdbId: item.tmdbId,
+        title: item.title,
+        posterPath: item.posterPath,
+        rating: item.rating,
+        releaseDate: item.releaseDate,
+        genres: item.genres?.slice(0, 1), // MovieCard shows only the first
+        isMovie: item.isMovie,
+    };
+}
+
+function toHeroSlide(item: any) {
+    return { ...toCard(item), overview: item.overview, backdropPath: item.backdropPath };
+}
+
 export default async function HomePage() {
-    let trendingMovies: any[] = [];
-    let trendingSeries: any[] = [];
-    let topRatedMovies: any[] = [];
-    let topRatedSeries: any[] = [];
-    let trendingHindi: any[] = [];
-    let spiderManMovie: any = null;
+    // No catch: a TMDB failure renders error.tsx (500) instead of an empty home page
+    // that ISR would cache. On revalidation, the previous good page keeps serving.
+    const [
+        trendingMoviesRes,
+        trendingSeriesRes,
+        topRatedMoviesRes,
+        topRatedSeriesRes,
+        trendingHindiRes,
+        spiderManData,
+    ] = await Promise.all([
+        getTrendingFromServer("movie", "week", "1"),
+        getTrendingFromServer("tv", "week", "1"),
+        discoverContentFromServer("movie", { sort_by: "popularity.desc", with_genres: "27,878", page: "1" }),
+        discoverContentFromServer("tv", { sort_by: "vote_average.asc", rating_min: "8.3", rating_max: "9.0", page: "1", language: "ko", with_genres: "80" }),
+        discoverContentFromServer("movie", { sort_by: "popularity.desc", language: "hi", page: "1" }),
+        getMovieDetails("969681", "movie"),
+    ]);
 
-    try {
-        const [
-            trendingMoviesRes,
-            trendingSeriesRes,
-            topRatedMoviesRes,
-            topRatedSeriesRes,
-            trendingHindiRes,
-            spiderManData,
-        ] = await Promise.all([
-            getTrendingFromServer("movie", "week", "1"),
-            getTrendingFromServer("tv", "week", "1"),
-            discoverContentFromServer("movie", { sort_by: "popularity.desc", with_genres: "27,878", page: "1" }),
-            discoverContentFromServer("tv", { sort_by: "vote_average.asc", rating_min: "8.3", rating_max: "9.0", page: "1", language: "ko", with_genres: "80" }),
-            discoverContentFromServer("movie", { sort_by: "popularity.desc", language: "hi", page: "1" }),
-            getMovieDetails("969681", "movie"),
-        ]);
+    const rawTrendingMovies: any[] = trendingMoviesRes?.results || [];
+    const trendingMovies = rawTrendingMovies.map(toCard);
+    const trendingSeries = (trendingSeriesRes?.results || []).map(toCard);
+    const topRatedMovies = (topRatedMoviesRes?.results || []).map(toCard);
+    const topRatedSeries = (topRatedSeriesRes?.results || []).map(toCard);
+    const trendingHindi = (trendingHindiRes?.results || []).map(toCard);
 
-        trendingMovies = trendingMoviesRes?.results || [];
-        trendingSeries = trendingSeriesRes?.results || [];
-        topRatedMovies = topRatedMoviesRes?.results || [];
-        topRatedSeries = topRatedSeriesRes?.results || [];
-        trendingHindi = trendingHindiRes?.results || [];
-        spiderManMovie = spiderManData || null;
-    } catch (err) {
-        console.error("Home page server data fetch error:", err);
-    }
-
-    const heroMovies = trendingMovies.slice(0, 8);
-    if (spiderManMovie) {
-        const exists = heroMovies.some((m: any) => String(m.id || m.tmdbId || m._id) === "969681");
-        if (!exists) {
-            heroMovies.unshift(spiderManMovie);
-        }
+    const heroMovies = rawTrendingMovies.slice(0, 8).map(toHeroSlide);
+    if (spiderManData && !heroMovies.some((m) => m.tmdbId === 969681)) {
+        heroMovies.unshift(toHeroSlide(spiderManData));
     }
 
     return (

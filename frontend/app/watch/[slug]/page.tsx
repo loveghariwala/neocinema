@@ -11,7 +11,7 @@ export function generateStaticParams() {
         slug: landing.slug,
     }));
 }
-export const revalidate = 5184000; // 2 months (60 days) - maximum Edge CDN caching
+export const revalidate = 3600; // 1 h, matches TTL.list in lib/tmdb.ts
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -29,11 +29,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         keywords: landing.keywords,
         alternates: { canonical: `${baseUrl}/watch/${slug}` },
         robots: { index: true, follow: true },
+        // A page's openGraph replaces the layout's whole object, so images must be repeated
         openGraph: {
             title: landing.title,
             description: landing.description,
             url: `${baseUrl}/watch/${slug}`,
+            siteName: "Neocinema",
             type: "website",
+            images: [{ url: "/og_banner.png", width: 1200, height: 630, alt: landing.h1 }],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: landing.title,
+            description: landing.description,
+            images: ["/og_banner.png"],
         },
     };
 }

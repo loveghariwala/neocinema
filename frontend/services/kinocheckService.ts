@@ -1,3 +1,4 @@
+import "server-only";
 import { cache } from "react";
 
 export interface KinocheckTrailer {
@@ -32,8 +33,9 @@ export const getKinocheckTrailers = cache(async function getKinocheckTrailers(
         }
     }
 
-    const apiKey = process.env.NEXT_PUBLIC_KINOCHECK_API_KEY || "chq4sEKOYwf9TAzHJcViWZ8ajU0BpPMvmNdsLOTQw976n63CKGza75rkDt1FoDoZ";
-    const tmdbApiKey = process.env.NEXT_PUBLIC_TMDB_API_KEY || process.env.TMDB_API_KEY || "0b702f897d43fed03749ab68da8ef51c";
+    const apiKey = process.env.KINOCHECK_API_KEY;
+    const tmdbApiKey = process.env.TMDB_API_KEY;
+    if (!tmdbApiKey) throw new Error("TMDB_API_KEY is not set");
     const typePath = isTv ? "tv" : "movie";
 
     // 1. Primary: TMDB Official English Trailers (100% globally unblocked, zero geo-restriction)

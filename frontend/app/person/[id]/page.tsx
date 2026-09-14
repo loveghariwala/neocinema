@@ -1,9 +1,11 @@
 import { getPersonDetails } from "@/services/movieService";
 import PersonPageClient from "./PersonPageClient";
+import { notFound } from "next/navigation";
 
 import { Metadata } from "next";
+import { SITE_URL, TMDB_IMG, truncate, jsonLd } from "@/lib/seo";
 
-export const revalidate = 5184000; // 2 months (60 days) - maximum Edge CDN caching
+export const revalidate = 86400; // 24 h, matches TTL.detail in lib/tmdb.ts
 
 export async function generateStaticParams() {
     return [
@@ -24,23 +26,24 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
     
     if (!data || !data.person) {
         return {
-            title: "Cast Member Not Found — Neocinema",
+            title: "Cast Member Not Found",
             description: "The cast member details page you are trying to reach does not exist or has been removed.",
             robots: { index: false, follow: false }
         };
     }
-    
-    const titleText = `${data.person.name} Movies and TV Shows`;
-    const descriptionText = data.person.biography 
-        ? `Find all movies and TV shows starring ${data.person.name}. ${data.person.biography.substring(0, 120)}...` 
-        : `Discover the full list of movies and TV shows starring ${data.person.name} on Neocinema.`;
 
     const knownForKeywords = (data.results || [])
         .slice(0, 5)
         .map((c: any) => c.title || c.name)
         .filter(Boolean);
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+    const titleText = `${data.person.name} Movies and TV Shows`;
+    const knownFor = knownForKeywords.slice(0, 3).join(", ");
+    const descriptionText = truncate(
+        `${data.person.name} filmography: every movie and TV show${knownFor ? `, including ${knownFor}` : ""}. ${data.person.biography || `Browse the full list of titles starring ${data.person.name} on Neocinema.`}`
+    );
+
+    const baseUrl = SITE_URL;
     const canonicalUrl = `${baseUrl}/person/${id}`;
 
     return {
@@ -66,15 +69,16 @@ export async function generateMetadata({ params }: PersonPageProps): Promise<Met
             description: descriptionText,
             url: canonicalUrl,
             type: "profile",
-            images: data.person.profilePath 
-                ? [{ url: `https://image.tmdb.org/t/p/h632${data.person.profilePath}` }] 
-                : [{ url: "/logo.png" }],
+            images: data.person.profilePath
+                ? [{ url: `${TMDB_IMG}/h632${data.person.profilePath}`, width: 421, height: 632, alt: data.person.name }]
+                : [{ url: "/og_banner.png", width: 1200, height: 630 }],
         },
         twitter: {
-            card: "summary_large_image",
+            // Profile photos are portrait; the large card would crop the face
+            card: data.person.profilePath ? "summary" : "summary_large_image",
             title: `${titleText} | Neocinema`,
             description: descriptionText,
-            images: data.person.profilePath ? [`https://image.tmdb.org/t/p/h632${data.person.profilePath}`] : ["/logo.png"],
+            images: data.person.profilePath ? [`${TMDB_IMG}/h632${data.person.profilePath}`] : ["/og_banner.png"],
         }
     };
 }
@@ -83,35 +87,48 @@ export default async function PersonPage({ params }: PersonPageProps) {
     const resolvedParams = await params;
     const data = await getPersonDetails(resolvedParams.id);
     
-    if (!data || !data.person) return <PersonPageClient data={data} />;
+    if (!data || !data.person) notFound();
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+    const baseUrl = SITE_URL;
+    const pageUrl = `${baseUrl}/person/${resolvedParams.id}`;
+    const person = data.person;
 
-    // ─── Person JSON-LD ──────────────────────────────────────────────────────
-    const personJsonLd = {
+    // ProfilePage is the type Google documents for a page about one person.
+    const pageJsonLd = {
         "@context": "https://schema.org",
-        "@type": "Person",
-        "@id": `${baseUrl}/person/${resolvedParams.id}#person`,
-        "name": data.person.name,
-        "url": `${baseUrl}/person/${resolvedParams.id}`,
-        "image": data.person.profilePath ? `https://image.tmdb.org/t/p/h632${data.person.profilePath}` : `${baseUrl}/logo.png`,
-        "description": data.person.biography,
-        "jobTitle": (data.person as any).knownForDepartment || "Actor",
-        "birthDate": (data.person as any).birthday || undefined,
-        "birthPlace": (data.person as any).placeOfBirth ? {
-            "@type": "Place",
-            "name": (data.person as any).placeOfBirth,
-        } : undefined,
-    };
-
-    // ─── Breadcrumb JSON-LD ──────────────────────────────────────────────────
-    const breadcrumbJsonLd = {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Home", "item": baseUrl },
-            { "@type": "ListItem", "position": 2, "name": "Cast & Crew", "item": baseUrl },
-            { "@type": "ListItem", "position": 3, "name": data.person.name, "item": `${baseUrl}/person/${resolvedParams.id}` },
+        "@graph": [
+            {
+                "@type": "ProfilePage",
+                "@id": `${pageUrl}#webpage`,
+                "url": pageUrl,
+                "name": `${person.name} Movies and TV Shows`,
+                "isPartOf": { "@id": `${baseUrl}#website` },
+                "mainEntity": { "@id": `${pageUrl}#person` },
+                // ListItem without an `item` URL is only valid as the last crumb
+                "breadcrumb": {
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        { "@type": "ListItem", "position": 1, "name": "Home", "item": baseUrl },
+                        { "@type": "ListItem", "position": 2, "name": person.name, "item": pageUrl },
+                    ],
+                },
+            },
+            {
+                "@type": "Person",
+                "@id": `${pageUrl}#person`,
+                "name": person.name,
+                "url": pageUrl,
+                "image": person.profilePath ? `${TMDB_IMG}/h632${person.profilePath}` : undefined,
+                "description": person.biography ? truncate(person.biography, 500) : undefined,
+                "jobTitle": person.knownForDepartment === "Acting" ? "Actor" : person.knownForDepartment || undefined,
+                "birthDate": person.birthday,
+                "deathDate": person.deathday,
+                "birthPlace": person.placeOfBirth ? { "@type": "Place", "name": person.placeOfBirth } : undefined,
+                "sameAs": [
+                    person.imdbId && `https://www.imdb.com/name/${person.imdbId}/`,
+                    `https://www.themoviedb.org/person/${person.id}`,
+                ].filter(Boolean),
+            },
         ],
     };
 
@@ -120,12 +137,7 @@ export default async function PersonPage({ params }: PersonPageProps) {
             <script
                 id="json-ld-person"
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, '\\u003c') }}
-            />
-            <script
-                id="json-ld-breadcrumb"
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, '\\u003c') }}
+                dangerouslySetInnerHTML={{ __html: jsonLd(pageJsonLd) }}
             />
             <PersonPageClient data={data} />
         </>

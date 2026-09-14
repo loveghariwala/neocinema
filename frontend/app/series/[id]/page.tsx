@@ -6,7 +6,7 @@ import MovieCard from "@/components/cards/MovieCard";
 import CastRow from "@/components/sliders/CastRow";
 import { MotionDiv } from "@/components/layout/Motion";
 import Image from "next/image";
-import { getTmdbImageUrl } from "@/lib/tmdb";
+import { getTmdbImageUrl } from "@/lib/tmdb-image";
 import Link from "next/link";
 import nextDynamic from "next/dynamic";
 // const StreamPlayer = nextDynamic(() => import("@/components/player/StreamPlayer")); // COMMENTED OUT: Removed pirate stream embeds for legal compliance
@@ -15,11 +15,12 @@ const KinocheckTrailerSection = nextDynamic(() => import("@/components/player/Ki
 const AdsterraNativeBanner = nextDynamic(() => import("@/components/ads/AdsterraNativeBanner"));
 import ShareButton from "@/components/ui/ShareButton";
 import SeasonEpisodeBrowser from "@/components/series/SeasonEpisodeBrowser";
+import { Suspense } from "react";
 import { Metadata } from "next";
 // import ServerNoteBanner from "@/components/ui/ServerNoteBanner"; // COMMENTED OUT: Not needed without stream player
 import { Play } from "lucide-react";
 
-export const revalidate = 5184000; // 2 months (60 days) - maximum Edge CDN caching
+export const revalidate = 86400; // 24 h, matches TTL.detail in lib/tmdb.ts
 
 export async function generateStaticParams() {
     return [
@@ -41,13 +42,14 @@ interface PageProps {
 }
 
 import { isMovieBlocked, isMovieNoIndex } from "@/lib/blockedIds";
+import { SITE_URL, TMDB_IMG, truncate, jsonLd } from "@/lib/seo";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
     const { id } = await params;
 
     if (isMovieBlocked(id)) {
         return {
-            title: "Content Removed — NeoCinema",
+            title: "Content Removed",
             description: "This content is unavailable.",
             robots: { index: false, follow: false }
         };
@@ -57,7 +59,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
     if (!series) {
         return {
-            title: "Series Not Found — Neocinema",
+            title: "Series Not Found",
             description: "The TV series details page you are trying to reach does not exist or has been removed.",
             robots: { index: false, follow: false }
         };
@@ -75,20 +77,27 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         ? `Cast of ${series.title}, Release Date & Everything We Know`
         : `${series.title} ${releaseYear ? `(${releaseYear}) ` : ""}— Cast, Trailers & Where to Watch`;
 
+    const facts = [
+        releaseYear && `${releaseYear}`,
+        series.number_of_seasons && `${series.number_of_seasons} season${series.number_of_seasons > 1 ? "s" : ""}`,
+        genreLabel.toLowerCase() !== "tv series" && genreLabel,
+        series.rating > 0 && `★ ${series.rating.toFixed(1)}/10`,
+    ].filter(Boolean).join(" · ");
+    const starring = (series.cast || []).slice(0, 2).map((c: any) => c.name).join(" & ");
     const descriptionText = isUpcoming
-        ? `Discover the cast of ${series.title}${releaseYear ? ` (${releaseYear})` : ""}, release date, characters, and seasons. View full details on Neocinema.`
-        : `${series.overview ? series.overview.substring(0, 140).trim() + '.' : `Discover ${series.title}, a ${genreLabel.toLowerCase()} series.`}${series.number_of_seasons ? ` ${series.number_of_seasons} season${series.number_of_seasons > 1 ? 's' : ''}.` : ''}${series.rating ? ` ★ ${series.rating.toFixed(1)}/10.` : ''} Find where to watch, cast & reviews on Neocinema.`;
+        ? truncate(`${series.title}${releaseYear ? ` (${releaseYear})` : ""}: release date, cast${starring ? ` (${starring})` : ""}, trailer & everything we know. ${series.overview}`)
+        : truncate(`${facts ? `${facts}. ` : ""}${starring ? `Starring ${starring}. ` : ""}Where to watch ${series.title}, episodes, trailer & cast. ${series.overview}`);
 
     const castKeywords = (series.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+    const baseUrl = SITE_URL;
     const canonicalUrl = `${baseUrl}/series/${id}`;
     const isBlocked = isMovieBlocked(id);
     const seriesImage = series.backdropPath
-        ? `https://image.tmdb.org/t/p/w780${series.backdropPath}`
+        ? { url: `${TMDB_IMG}/w1280${series.backdropPath}`, width: 1280, height: 720 }
         : series.posterPath
-            ? `https://image.tmdb.org/t/p/w500${series.posterPath}`
-            : `${baseUrl}/og_banner.png`;
+            ? { url: `${TMDB_IMG}/w500${series.posterPath}`, width: 500, height: 750 }
+            : { url: `${baseUrl}/og_banner.png`, width: 1200, height: 630 };
 
     return {
         title: titleText,
@@ -121,21 +130,14 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
             url: canonicalUrl,
             siteName: "Neocinema",
             locale: "en_US",
-            type: "website",
-            images: [
-                {
-                    url: seriesImage,
-                    width: series.backdropPath ? 780 : 500,
-                    height: series.backdropPath ? 439 : 750,
-                    alt: series.title || titleText,
-                },
-            ],
+            type: "video.tv_show",
+            images: [{ ...seriesImage, alt: `${series.title}${releaseYear ? ` (${releaseYear})` : ""}` }],
         },
         twitter: {
             card: "summary_large_image",
             title: `${titleText} | Neocinema`,
             description: descriptionText,
-            images: [seriesImage],
+            images: [seriesImage.url],
         }
     };
 }
@@ -168,115 +170,95 @@ export default async function SeriesDetailsPage({
         : null;
     const releaseYear = safeDate ? safeDate.getFullYear() : "";
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+    const baseUrl = SITE_URL;
+    const pageUrl = `${baseUrl}/series/${id}`;
 
-    const seriesJsonLd = {
+    // Same @graph shape as the movie page; see the comment there on why the trailer
+    // is nested rather than a standalone VideoObject.
+    const pageJsonLd = {
         "@context": "https://schema.org",
-        "@type": "TVSeries",
-        "@id": `${baseUrl}/series/${id}#tvseries`,
-        "name": series.title,
-        "image": series.posterPath ? `https://image.tmdb.org/t/p/w500${series.posterPath}` : `${baseUrl}/logo.png`,
-        "description": series.overview,
-        "startDate": series.releaseDate,
-        "dateModified": new Date().toISOString(),
-        "url": `${baseUrl}/series/${id}`,
-        "genre": series.genres,
-        "numberOfSeasons": series.number_of_seasons,
-        "numberOfEpisodes": series.number_of_episodes,
-        ...(primaryTrailer ? {
-            "trailer": {
-                "@type": "VideoObject",
-                "name": `${series.title} - ${primaryTrailer.title}`,
-                "description": `Watch the official HD trailer for ${series.title} (${releaseYear || ""}) on Neocinema.`,
-                "thumbnailUrl": [
-                    primaryTrailer.youtube_thumbnail || `https://img.youtube.com/vi/${primaryTrailer.youtube_video_id}/hqdefault.jpg`
-                ],
-                "uploadDate": series.releaseDate ? `${series.releaseDate}T00:00:00Z` : new Date().toISOString(),
-                "embedUrl": `https://www.youtube-nocookie.com/embed/${primaryTrailer.youtube_video_id}`
-            }
-        } : {}),
-        ...(series.rating && series.voteCount ? {
-            "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": series.rating,
-                "bestRating": "10",
-                "ratingCount": series.voteCount,
+        "@graph": [
+            {
+                "@type": "WebPage",
+                "@id": `${pageUrl}#webpage`,
+                "url": pageUrl,
+                "name": `${series.title}${releaseYear ? ` (${releaseYear})` : ""} — Cast, Trailers & Where to Watch`,
+                "isPartOf": { "@id": `${baseUrl}#website` },
+                "about": { "@id": `${pageUrl}#tvseries` },
+                "primaryImageOfPage": series.backdropPath ? `${TMDB_IMG}/w1280${series.backdropPath}` : undefined,
+                "breadcrumb": { "@id": `${pageUrl}#breadcrumb` },
+                "inLanguage": "en",
             },
-        } : {}),
-        "actor": (series.cast || []).slice(0, 5).map((c: any) => ({
-            "@type": "Person",
-            "name": c.name,
-            "url": `${baseUrl}/person/${c._id}`,
-        })),
-        "publisher": {
-            "@type": "Organization",
-            "@id": `${baseUrl}#org`,
-            "name": "Neocinema",
-        },
-    };
-
-    // ─── Breadcrumb JSON-LD ──────────────────────────────────────────────────
-    const breadcrumbJsonLd = {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Home", "item": baseUrl },
-            { "@type": "ListItem", "position": 2, "name": "Series", "item": `${baseUrl}/series` },
-            { "@type": "ListItem", "position": 3, "name": series.title, "item": `${baseUrl}/series/${id}` },
+            {
+                "@type": "TVSeries",
+                "@id": `${pageUrl}#tvseries`,
+                "name": series.title,
+                "url": pageUrl,
+                "image": [
+                    series.posterPath && `${TMDB_IMG}/w780${series.posterPath}`,
+                    series.backdropPath && `${TMDB_IMG}/w1280${series.backdropPath}`,
+                ].filter(Boolean),
+                "description": series.overview,
+                "startDate": series.releaseDate,
+                "genre": series.genres,
+                "inLanguage": series.language?.toLowerCase(),
+                "numberOfSeasons": series.number_of_seasons || undefined,
+                "numberOfEpisodes": series.number_of_episodes || undefined,
+                "sameAs": [
+                    series.imdbId && `https://www.imdb.com/title/${series.imdbId}/`,
+                    `https://www.themoviedb.org/tv/${series.tmdbId}`,
+                ].filter(Boolean),
+                "productionCompany": (series.productionCompanies || []).slice(0, 3).map((name: string) => ({ "@type": "Organization", name })),
+                "containsSeason": (series.seasons || [])
+                    .filter((s: any) => s.season_number > 0)
+                    .map((s: any) => ({
+                        "@type": "TVSeason",
+                        "name": s.name,
+                        "seasonNumber": s.season_number,
+                        "numberOfEpisodes": s.episode_count || undefined,
+                        "startDate": s.air_date || undefined,
+                    })),
+                "actor": (series.cast || []).slice(0, 10).map((c: any) => ({
+                    "@type": "Person",
+                    "name": c.name,
+                    "url": `${baseUrl}/person/${c._id}`,
+                })),
+                "aggregateRating": series.rating && series.voteCount ? {
+                    "@type": "AggregateRating",
+                    "ratingValue": series.rating,
+                    "bestRating": 10,
+                    "worstRating": 0,
+                    "ratingCount": series.voteCount,
+                } : undefined,
+                "trailer": primaryTrailer ? {
+                    "@type": "VideoObject",
+                    "name": `${series.title} — ${primaryTrailer.title}`,
+                    "description": `Official trailer for ${series.title}${releaseYear ? ` (${releaseYear})` : ""}.`,
+                    "thumbnailUrl": [
+                        primaryTrailer.youtube_thumbnail || `https://img.youtube.com/vi/${primaryTrailer.youtube_video_id}/hqdefault.jpg`
+                    ],
+                    "uploadDate": safeDate ? safeDate.toISOString() : undefined,
+                    "embedUrl": `https://www.youtube-nocookie.com/embed/${primaryTrailer.youtube_video_id}`,
+                } : undefined,
+            },
+            {
+                "@type": "BreadcrumbList",
+                "@id": `${pageUrl}#breadcrumb`,
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Home", "item": baseUrl },
+                    { "@type": "ListItem", "position": 2, "name": "Series", "item": `${baseUrl}/series` },
+                    { "@type": "ListItem", "position": 3, "name": series.title, "item": pageUrl },
+                ],
+            },
         ],
-    };
-
-    // Removed templated FAQ JSON-LD to avoid thin content penalties
-
-    // ─── VideoObject JSON-LD ─────────────────────────────────────────────────
-    const videoObjectJsonLd = {
-        "@context": "https://schema.org",
-        "@type": "VideoObject",
-        "@id": `${baseUrl}/series/${id}#video`,
-        "name": `${series.title} (${releaseYear || ""}) - Official Stream & Trailer`,
-        "description": series.overview
-            ? series.overview.substring(0, 200).trim()
-            : `Stream ${series.title} online on Neocinema.`,
-        "thumbnailUrl": [
-            series.backdropPath
-                ? `https://image.tmdb.org/t/p/w780${series.backdropPath}`
-                : series.posterPath
-                    ? `https://image.tmdb.org/t/p/w500${series.posterPath}`
-                    : `${baseUrl}/og_banner.png`
-        ],
-        "uploadDate": safeDate ? safeDate.toISOString() : new Date().toISOString(),
-        "contentUrl": `${baseUrl}/series/${id}`,
-        "embedUrl": primaryTrailer
-            ? `https://www.youtube-nocookie.com/embed/${primaryTrailer.youtube_video_id}`
-            : `${baseUrl}/series/${id}`,
-        "publisher": {
-            "@type": "Organization",
-            "@id": `${baseUrl}#org`,
-            "name": "Neocinema",
-            "logo": {
-                "@type": "ImageObject",
-                "url": `${baseUrl}/logo.png`
-            }
-        }
     };
 
     return (
         <main className="min-h-screen bg-black text-white overflow-x-hidden">
-            {/* <ServerNoteBanner /> */}
             <script
                 id="json-ld-series"
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(seriesJsonLd).replace(/</g, '\\u003c') }}
-            />
-            <script
-                id="json-ld-breadcrumb"
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, '\\u003c') }}
-            />
-            <script
-                id="json-ld-video"
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(videoObjectJsonLd).replace(/</g, '\\u003c') }}
+                dangerouslySetInnerHTML={{ __html: jsonLd(pageJsonLd) }}
             />
 
             {/* IMMERSIVE 2-COLUMN HERO */}
@@ -337,9 +319,6 @@ export default async function SeriesDetailsPage({
                             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2.5">
                                 <span className="rounded-full bg-blue-600/20 border border-blue-500/30 px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-widest text-blue-400 backdrop-blur-md shadow-sm">
                                     TV SERIES
-                                </span>
-                                <span className="rounded-full bg-white/5 border border-white/10 px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-widest text-neutral-300 backdrop-blur-md">
-                                    HDR
                                 </span>
                                 {series.genres?.[0] && (
                                     <span className="rounded-full bg-white/5 border border-white/10 px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-widest text-neutral-300 backdrop-blur-md">
@@ -403,16 +382,16 @@ export default async function SeriesDetailsPage({
             <div className="relative z-20 max-w-7xl mx-auto space-y-12 sm:space-y-16 px-4 sm:px-6 lg:px-8 pb-20 sm:pb-32 min-w-0">
                 {/* OFFICIAL TRAILERS & WATCHMODE STREAMING AVAILABILITY */}
                 <div id="trailers-section" className="space-y-6 min-w-0">
-                    <KinocheckTrailerSection tmdbId={series.tmdbId} title={series.title} isTv={true} />
+                    <KinocheckTrailerSection tmdbId={series.tmdbId} title={series.title} isTv={true} trailers={trailers} />
                     <WatchmodeAvailabilityBanner tmdbId={series.tmdbId} isTv={true} />
                 </div>
 
                 <div className="grid grid-cols-1 gap-10 lg:grid-cols-3 min-w-0">
                     <div className="col-span-1 space-y-6 min-w-0">
                         <div className="rounded-3xl border border-white/10 bg-neutral-900/60 p-6 backdrop-blur-xl shadow-2xl space-y-4">
-                            <h3 className="text-xs font-black uppercase tracking-widest text-red-500">
+                            <h2 className="text-xs font-black uppercase tracking-widest text-red-500">
                                 Genres
-                            </h3>
+                            </h2>
                             <div className="flex flex-wrap gap-2">
                                 {series.genres?.map((genre: string) => (
                                     <span
@@ -432,12 +411,16 @@ export default async function SeriesDetailsPage({
                 </div>
 
                 {series.seasons?.length > 0 && (
-                    <SeasonEpisodeBrowser
-                        seriesId={String(series.tmdbId || series._id)}
-                        seasons={series.seasons}
-                        initialEpisodes={[]}
-                        initialSeason={seasonParam}
-                    />
+                    // useSearchParams() inside needs its own boundary so only this
+                    // section, not the whole page, renders client-side.
+                    <Suspense fallback={null}>
+                        <SeasonEpisodeBrowser
+                            seriesId={String(series.tmdbId || series._id)}
+                            seasons={series.seasons}
+                            initialEpisodes={[]}
+                            initialSeason={seasonParam}
+                        />
+                    </Suspense>
                 )}
 
                 <AdsterraNativeBanner />

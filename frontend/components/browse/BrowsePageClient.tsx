@@ -8,7 +8,7 @@ import { Film, Sparkles, Tv } from 'lucide-react';
 
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useRef } from "react";
-import { discoverContentFromServer, searchContentFromServer } from "@/services/movieService";
+import { discoverContent, searchContent } from "@/lib/api-client";
 
 interface Genre {
     id: number;
@@ -94,7 +94,7 @@ export default function BrowsePageClient({ type, title, subtitle, initialData, i
                 try {
                     let newData;
                     if (currentFilters.search && currentFilters.search.trim().length >= 2) {
-                        newData = await searchContentFromServer(currentFilters.search, type, String(currentFilters.page));
+                        newData = await searchContent(currentFilters.search, type, currentFilters.page);
                     } else {
                         const params: Record<string, string> = {
                             page: String(currentFilters.page),
@@ -107,7 +107,7 @@ export default function BrowsePageClient({ type, title, subtitle, initialData, i
                         if (currentFilters.ratingMax !== null) params.rating_max = String(currentFilters.ratingMax);
                         if (currentFilters.language) params.language = currentFilters.language;
 
-                        newData = await discoverContentFromServer(type, params);
+                        newData = await discoverContent(type, params);
                     }
                     
                     if (newData) setData(newData);

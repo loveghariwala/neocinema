@@ -8,7 +8,7 @@ import HomeVibeFilter from "@/components/home/HomeVibeFilter";
 import MovieRouletteModal from "@/components/ui/MovieRouletteModal";
 import QuickTrailerModal from "@/components/player/QuickTrailerModal";
 import AdsterraNativeBanner from "@/components/ads/AdsterraNativeBanner";
-import { discoverContentFromServer } from "@/services/movieService";
+import { discoverContent } from "@/lib/api-client";
 
 interface HomePageInteractiveProps {
     initialData: {
@@ -47,17 +47,17 @@ export default function HomePageInteractive({ initialData }: HomePageInteractive
         try {
             let res;
             if (cat === "action") {
-                res = await discoverContentFromServer("movie", { sort_by: "popularity.desc", with_genres: "28", page: "1" });
+                res = await discoverContent("movie", { sort_by: "popularity.desc", with_genres: "28", page: "1" });
             } else if (cat === "scifi") {
-                res = await discoverContentFromServer("movie", { sort_by: "popularity.desc", with_genres: "878", page: "1" });
+                res = await discoverContent("movie", { sort_by: "popularity.desc", with_genres: "878", page: "1" });
             } else if (cat === "kdrama") {
-                res = await discoverContentFromServer("tv", { sort_by: "popularity.desc", language: "ko", with_genres: "18", page: "1" });
+                res = await discoverContent("tv", { sort_by: "popularity.desc", language: "ko", with_genres: "18", page: "1" });
             } else if (cat === "anime") {
-                res = await discoverContentFromServer("tv", { sort_by: "popularity.desc", language: "ja", with_genres: "16", page: "1" });
+                res = await discoverContent("tv", { sort_by: "popularity.desc", language: "ja", with_genres: "16", page: "1" });
             } else if (cat === "horror") {
-                res = await discoverContentFromServer("movie", { sort_by: "popularity.desc", with_genres: "27", page: "1" });
+                res = await discoverContent("movie", { sort_by: "popularity.desc", with_genres: "27", page: "1" });
             } else if (cat === "comedy") {
-                res = await discoverContentFromServer("movie", { sort_by: "popularity.desc", with_genres: "35", page: "1" });
+                res = await discoverContent("movie", { sort_by: "popularity.desc", with_genres: "35", page: "1" });
             }
             setVibeMovies(res?.results || []);
         } catch (e) {

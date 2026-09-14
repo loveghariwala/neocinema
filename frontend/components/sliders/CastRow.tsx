@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, User } from 'lucide-react';
 import Image from "next/image";
-import { getTmdbImageUrl } from "@/lib/tmdb";
+import { getTmdbImageUrl } from "@/lib/tmdb-image";
 
 interface Props {
     cast: any[];

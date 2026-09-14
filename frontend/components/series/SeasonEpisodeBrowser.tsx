@@ -6,7 +6,8 @@ import { Calendar, Loader2, Monitor } from 'lucide-react';
 
 
 import Image from "next/image";
-import { getTmdbImageUrl, tmdbService } from "@/lib/tmdb";
+import { getTmdbImageUrl } from "@/lib/tmdb-image";
+import { getSeasonEpisodes } from "@/lib/api-client";
 
 interface Episode {
     id: number;
@@ -47,7 +48,7 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons, initialEpisode
         const fetchEpisodes = async () => {
             setLoading(true);
             try {
-                const data = await tmdbService.getTvSeasonDetail(Number(seriesId), activeSeason);
+                const data = await getSeasonEpisodes(seriesId, activeSeason);
                 setEpisodes(data?.episodes || []);
             } catch {
                 setEpisodes([]);

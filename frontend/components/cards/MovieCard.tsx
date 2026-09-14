@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Film, Play, Star } from 'lucide-react';
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { getTmdbImageUrl } from "@/lib/tmdb";
+import { getTmdbImageUrl } from "@/lib/tmdb-image";
 import { prepareCardPopunder, handleCardClickPopunder } from "@/lib/adUtils";
 
 interface MovieCardProps {

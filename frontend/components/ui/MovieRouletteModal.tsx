@@ -4,8 +4,8 @@ import { useState } from "react";
 import { Dices, Sparkles, Star, X, Play, RefreshCw, Film, Tv, Flame } from 'lucide-react';
 import Image from "next/image";
 import Link from "next/link";
-import { getTmdbImageUrl } from "@/lib/tmdb";
-import { discoverContentFromServer, getTrendingFromServer } from "@/services/movieService";
+import { getTmdbImageUrl } from "@/lib/tmdb-image";
+import { discoverContent, getTrending } from "@/lib/api-client";
 
 interface MovieRouletteModalProps {
     isOpen: boolean;
@@ -40,10 +40,10 @@ export default function MovieRouletteModal({ isOpen, onClose, onOpenTrailer }: M
             const randomPage = String(Math.floor(Math.random() * 5) + 1);
 
             if (mood.id === "trending") {
-                const res = await getTrendingFromServer(mood.params.type as any, "week", randomPage);
+                const res = await getTrending(mood.params.type as "movie" | "tv", "week", randomPage);
                 list = res?.results || [];
             } else {
-                const res = await discoverContentFromServer(mood.params.type as any, {
+                const res = await discoverContent(mood.params.type as "movie" | "tv", {
                     sort_by: "popularity.desc",
                     with_genres: mood.params.genre,
                     language: mood.params.lang || "",

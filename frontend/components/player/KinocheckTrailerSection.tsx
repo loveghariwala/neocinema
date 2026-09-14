@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getKinocheckTrailers, KinocheckTrailer } from "@/services/kinocheckService";
+import { useState } from "react";
+import type { KinocheckTrailer } from "@/services/kinocheckService";
 import { Film, Play, Volume2, VolumeX, X, Sparkles } from "lucide-react";
 import { track } from "@vercel/analytics";
 
@@ -9,21 +9,13 @@ interface Props {
     tmdbId: number;
     title: string;
     isTv?: boolean;
+    trailers: KinocheckTrailer[];
 }
 
-export default function KinocheckTrailerSection({ tmdbId, title, isTv = false }: Props) {
-    const [trailers, setTrailers] = useState<KinocheckTrailer[]>([]);
+export default function KinocheckTrailerSection({ tmdbId, title, isTv = false, trailers }: Props) {
     const [selectedTrailer, setSelectedTrailer] = useState<KinocheckTrailer | null>(null);
     const [isVideoLoading, setIsVideoLoading] = useState(true);
     const [isMuted, setIsMuted] = useState(false);
-
-    useEffect(() => {
-        if (tmdbId) {
-            getKinocheckTrailers(tmdbId, isTv).then((data) => {
-                setTrailers(data || []);
-            });
-        }
-    }, [tmdbId, isTv]);
 
     const handleSelectTrailer = (trailer: KinocheckTrailer) => {
         setSelectedTrailer(trailer);
@@ -54,8 +46,8 @@ export default function KinocheckTrailerSection({ tmdbId, title, isTv = false }:
 
     if (!trailers || trailers.length === 0) return null;
 
-    const mainTrailer = trailers[trailers.length - 1];
-    const otherTrailers = trailers.slice(0, trailers.length - 1).slice(0, 3);
+    const mainTrailer = trailers[0];
+    const otherTrailers = trailers.slice(1, 4);
     const activeTrailerToDisplay = selectedTrailer || mainTrailer;
 
     return (

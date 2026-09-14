@@ -69,9 +69,10 @@ export default function Navbar() {
                                 className="h-10 w-20 object-contain mix-blend-screen"
                             />
                         </div>
-                        <h1 className="text-xl font-black tracking-tighter text-white">
+                        {/* Not an <h1>: the site name would otherwise be every page's first heading */}
+                        <span className="text-xl font-black tracking-tighter text-white">
                             NEO<span className="text-red-600">CINEMA</span>
-                        </h1>
+                        </span>
                     </Link>
 
                     {/* ─── DESKTOP NAV — Floating pill ────────── */}

@@ -24,54 +24,25 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  async headers() {
+  // Next sets Cache-Control itself from each route's revalidate, and sends
+  // no-store on 404/500. Static headers() here would apply regardless of status.
+  async redirects() {
+    // Moved from vercel.json, which the Cloudflare Worker never reads.
     return [
       {
-        source: "/:path(movies|series|person|watch|collections)/:id*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=3600, s-maxage=5184000, stale-while-revalidate=86400",
-          },
-          {
-            key: "CDN-Cache-Control",
-            value: "public, max-age=5184000, stale-while-revalidate=86400",
-          },
-          {
-            key: "Cloudflare-CDN-Cache-Control",
-            value: "public, max-age=5184000, stale-while-revalidate=86400",
-          },
-        ],
+        source: "/blog/best-free-movie-streaming-sites-2025",
+        destination: "/blog/best-free-movie-streaming-sites-2026",
+        permanent: true,
       },
       {
-        source: "/:path(about|contact|privacy|terms|cookies|disclaimer|dmca|vibe-finder)",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=86400, s-maxage=5184000, stale-while-revalidate=86400",
-          },
-          {
-            key: "CDN-Cache-Control",
-            value: "public, max-age=5184000, stale-while-revalidate=86400",
-          },
-          {
-            key: "Cloudflare-CDN-Cache-Control",
-            value: "public, max-age=5184000, stale-while-revalidate=86400",
-          },
-        ],
+        source: "/blog/best-korean-dramas-2025",
+        destination: "/blog/best-korean-dramas-2026",
+        permanent: true,
       },
       {
-        source: "/sitemap.xml",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=86400, s-maxage=86400, stale-while-revalidate=43200",
-          },
-          {
-            key: "CDN-Cache-Control",
-            value: "public, max-age=86400, stale-while-revalidate=43200",
-          },
-        ],
+        source: "/blog/best-anime-for-beginners-2025",
+        destination: "/blog/best-anime-for-beginners-2026",
+        permanent: true,
       },
     ];
   },

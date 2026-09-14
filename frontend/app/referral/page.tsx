@@ -10,7 +10,7 @@ interface PageProps {
 export async function generateMetadata(): Promise<Metadata> {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
     return {
-        title: "Claim Your Neocinema Invite Pass | Neocinema Referral",
+        title: { absolute: "Claim Your Neocinema Invite Pass | Neocinema Referral" },
         description: "Join Neocinema using a referral code and unlock premium movie & series streaming features.",
         alternates: {
             canonical: `${baseUrl}/referral`,

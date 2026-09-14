@@ -6,7 +6,7 @@ import MovieCard from "@/components/cards/MovieCard";
 import CastRow from "@/components/sliders/CastRow";
 import { MotionDiv } from "@/components/layout/Motion";
 import Image from "next/image";
-import { getTmdbImageUrl } from "@/lib/tmdb";
+import { getTmdbImageUrl } from "@/lib/tmdb-image";
 import Link from "next/link";
 import nextDynamic from "next/dynamic";
 // const StreamPlayer = nextDynamic(() => import("@/components/player/StreamPlayer")); // COMMENTED OUT: Removed pirate stream embeds for legal compliance
@@ -18,7 +18,7 @@ import { Metadata } from "next";
 // import ServerNoteBanner from "@/components/ui/ServerNoteBanner"; // COMMENTED OUT: Not needed without stream player
 import { Play } from "lucide-react";
 
-export const revalidate = 5184000; // 2 months (60 days) - maximum Edge CDN caching
+export const revalidate = 86400; // 24 h, matches TTL.detail in lib/tmdb.ts
 
 export async function generateStaticParams() {
     return [
@@ -40,13 +40,14 @@ interface PageProps {
 }
 
 import { isMovieBlocked, isMovieNoIndex } from "@/lib/blockedIds";
+import { SITE_URL, TMDB_IMG, truncate, jsonLd } from "@/lib/seo";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
     const { id } = await params;
 
     if (isMovieBlocked(id)) {
         return {
-            title: "Content Removed — NeoCinema",
+            title: "Content Removed",
             description: "This content is unavailable.",
             robots: { index: false, follow: false }
         };
@@ -55,7 +56,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
     if (!movie) {
         return {
-            title: "Movie Not Found — Neocinema",
+            title: "Movie Not Found",
             description: "The movie details page you are trying to reach does not exist or has been removed.",
             robots: { index: false, follow: false }
         };
@@ -73,21 +74,29 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     const titleText = isUpcoming
         ? `Cast of ${movie.title}, Release Date & Everything We Know`
         : `${movie.title} ${releaseYear ? `(${releaseYear}) ` : ""}— Cast, Trailers & Where to Watch`;
+    // Lead with the facts searchers compare (year, genre, rating, cast) so the snippet
+    // differs from every other site that copies TMDB's overview verbatim.
+    const facts = [
+        releaseYear && `${releaseYear}`,
+        genreLabel.toLowerCase() !== "movie" && genreLabel,
+        movie.rating > 0 && `★ ${movie.rating.toFixed(1)}/10`,
+    ].filter(Boolean).join(" · ");
+    const starring = (movie.cast || []).slice(0, 2).map((c: any) => c.name).join(" & ");
     const descriptionText = isUpcoming
-        ? `Discover the cast of ${movie.title}${releaseYear ? ` (${releaseYear})` : ""}, release date, characters, and plot summary. Read latest updates about ${movie.title} on Neocinema.`
-        : `${movie.overview ? movie.overview.substring(0, 140).trim() + '.' : `Discover ${movie.title}, a ${genreLabel.toLowerCase()} film.`} Find where to watch, cast, trailers & reviews on Neocinema.`;
+        ? truncate(`${movie.title}${releaseYear ? ` (${releaseYear})` : ""}: release date, cast${starring ? ` (${starring})` : ""}, trailer & everything we know. ${movie.overview}`)
+        : truncate(`${facts ? `${facts}. ` : ""}${starring ? `Starring ${starring}. ` : ""}Where to watch ${movie.title}, trailer & full cast. ${movie.overview}`);
 
     const castKeywords = (movie.cast || []).slice(0, 5).map((c: any) => c.name).filter(Boolean);
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+    const baseUrl = SITE_URL;
     const canonicalUrl = `${baseUrl}/movies/${id}`;
     const isBlocked = isMovieBlocked(id);
 
     const movieImage = movie.backdropPath
-        ? `https://image.tmdb.org/t/p/w780${movie.backdropPath}`
+        ? { url: `${TMDB_IMG}/w1280${movie.backdropPath}`, width: 1280, height: 720 }
         : movie.posterPath
-            ? `https://image.tmdb.org/t/p/w500${movie.posterPath}`
-            : `${baseUrl}/og_banner.png`;
+            ? { url: `${TMDB_IMG}/w500${movie.posterPath}`, width: 500, height: 750 }
+            : { url: `${baseUrl}/og_banner.png`, width: 1200, height: 630 };
 
     return {
         title: titleText,
@@ -120,21 +129,16 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
             url: canonicalUrl,
             siteName: "Neocinema",
             locale: "en_US",
-            type: "website",
-            images: [
-                {
-                    url: movieImage,
-                    width: movie.backdropPath ? 780 : 500,
-                    height: movie.backdropPath ? 439 : 750,
-                    alt: movie.title || titleText,
-                },
-            ],
+            type: "video.movie",
+            ...(safeDate ? { releaseDate: safeDate.toISOString() } : {}),
+            ...(movie.runtime ? { duration: movie.runtime * 60 } : {}),
+            images: [{ ...movieImage, alt: `${movie.title}${releaseYear ? ` (${releaseYear})` : ""}` }],
         },
         twitter: {
             card: "summary_large_image",
             title: `${titleText} | Neocinema`,
             description: descriptionText,
-            images: [movieImage],
+            images: [movieImage.url],
         }
     };
 }
@@ -161,105 +165,83 @@ export default async function MovieDetailsPage({
     const trailers = await getKinocheckTrailers(movie.tmdbId, false, movie.videos);
     const primaryTrailer = trailers[0];
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
+    const baseUrl = SITE_URL;
+    const pageUrl = `${baseUrl}/movies/${id}`;
     const safeDate = movie.releaseDate && !isNaN(new Date(movie.releaseDate).getTime())
         ? new Date(movie.releaseDate)
         : null;
     const releaseYear = safeDate ? safeDate.getFullYear() : "";
 
-    // ─── Movie JSON-LD ───────────────────────────────────────────────────────
-    const movieJsonLd = {
+    // One @graph: the page, the movie it's about, and the breadcrumb, cross-referenced by
+    // @id. The trailer is nested under Movie — there is no standalone VideoObject, since
+    // this page doesn't host the film and Google treats a mislabeled video as spam.
+    const pageJsonLd = {
         "@context": "https://schema.org",
-        "@type": "Movie",
-        "@id": `${baseUrl}/movies/${id}#movie`,
-        "name": movie.title,
-        "image": movie.posterPath ? `https://image.tmdb.org/t/p/w500${movie.posterPath}` : `${baseUrl}/logo.png`,
-        "description": movie.overview,
-        "dateCreated": movie.releaseDate || undefined,
-        "dateModified": new Date().toISOString(),
-        "url": `${baseUrl}/movies/${id}`,
-        "genre": movie.genres,
-        "duration": movie.runtime ? `PT${movie.runtime}M` : undefined,
-        ...(primaryTrailer ? {
-            "trailer": {
-                "@type": "VideoObject",
-                "name": `${movie.title} - ${primaryTrailer.title}`,
-                "description": `Watch the official HD trailer for ${movie.title} (${releaseYear || ""}) on Neocinema.`,
-                "thumbnailUrl": [
-                    primaryTrailer.youtube_thumbnail || `https://img.youtube.com/vi/${primaryTrailer.youtube_video_id}/hqdefault.jpg`
-                ],
-                "uploadDate": movie.releaseDate ? `${movie.releaseDate}T00:00:00Z` : new Date().toISOString(),
-                "embedUrl": `https://www.youtube-nocookie.com/embed/${primaryTrailer.youtube_video_id}`
-            }
-        } : {}),
-        ...(movie.director ? {
-            "director": {
-                "@type": "Person",
-                "name": movie.director,
-            }
-        } : {}),
-        ...(movie.rating && movie.voteCount ? {
-            "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": movie.rating,
-                "bestRating": "10",
-                "ratingCount": movie.voteCount,
+        "@graph": [
+            {
+                "@type": "WebPage",
+                "@id": `${pageUrl}#webpage`,
+                "url": pageUrl,
+                "name": `${movie.title}${releaseYear ? ` (${releaseYear})` : ""} — Cast, Trailers & Where to Watch`,
+                "isPartOf": { "@id": `${baseUrl}#website` },
+                "about": { "@id": `${pageUrl}#movie` },
+                "primaryImageOfPage": movie.backdropPath ? `${TMDB_IMG}/w1280${movie.backdropPath}` : undefined,
+                "breadcrumb": { "@id": `${pageUrl}#breadcrumb` },
+                "inLanguage": "en",
             },
-        } : {}),
-        "actor": (movie.cast || []).slice(0, 5).map((c: any) => ({
-            "@type": "Person",
-            "name": c.name,
-            "url": `${baseUrl}/person/${c._id}`,
-        })),
-        "publisher": {
-            "@type": "Organization",
-            "@id": `${baseUrl}#org`,
-            "name": "Neocinema",
-        },
-    };
-
-    // ─── Breadcrumb JSON-LD ──────────────────────────────────────────────────
-    const breadcrumbJsonLd = {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Home", "item": baseUrl },
-            { "@type": "ListItem", "position": 2, "name": "Movies", "item": `${baseUrl}/movies` },
-            { "@type": "ListItem", "position": 3, "name": movie.title, "item": `${baseUrl}/movies/${id}` },
+            {
+                "@type": "Movie",
+                "@id": `${pageUrl}#movie`,
+                "name": movie.title,
+                "url": pageUrl,
+                "image": [
+                    movie.posterPath && `${TMDB_IMG}/w780${movie.posterPath}`,
+                    movie.backdropPath && `${TMDB_IMG}/w1280${movie.backdropPath}`,
+                ].filter(Boolean),
+                "description": movie.overview,
+                "datePublished": movie.releaseDate,
+                "genre": movie.genres,
+                "inLanguage": movie.language?.toLowerCase(),
+                "duration": movie.runtime ? `PT${Math.floor(movie.runtime / 60)}H${movie.runtime % 60}M` : undefined,
+                "sameAs": [
+                    movie.imdbId && `https://www.imdb.com/title/${movie.imdbId}/`,
+                    `https://www.themoviedb.org/movie/${movie.tmdbId}`,
+                ].filter(Boolean),
+                "director": movie.director ? { "@type": "Person", "name": movie.director } : undefined,
+                "productionCompany": (movie.productionCompanies || []).slice(0, 3).map((name: string) => ({ "@type": "Organization", name })),
+                "actor": (movie.cast || []).slice(0, 10).map((c: any) => ({
+                    "@type": "Person",
+                    "name": c.name,
+                    "url": `${baseUrl}/person/${c._id}`,
+                })),
+                "aggregateRating": movie.rating && movie.voteCount ? {
+                    "@type": "AggregateRating",
+                    "ratingValue": movie.rating,
+                    "bestRating": 10,
+                    "worstRating": 0,
+                    "ratingCount": movie.voteCount,
+                } : undefined,
+                "trailer": primaryTrailer ? {
+                    "@type": "VideoObject",
+                    "name": `${movie.title} — ${primaryTrailer.title}`,
+                    "description": `Official trailer for ${movie.title}${releaseYear ? ` (${releaseYear})` : ""}.`,
+                    "thumbnailUrl": [
+                        primaryTrailer.youtube_thumbnail || `https://img.youtube.com/vi/${primaryTrailer.youtube_video_id}/hqdefault.jpg`
+                    ],
+                    "uploadDate": safeDate ? safeDate.toISOString() : undefined,
+                    "embedUrl": `https://www.youtube-nocookie.com/embed/${primaryTrailer.youtube_video_id}`,
+                } : undefined,
+            },
+            {
+                "@type": "BreadcrumbList",
+                "@id": `${pageUrl}#breadcrumb`,
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Home", "item": baseUrl },
+                    { "@type": "ListItem", "position": 2, "name": "Movies", "item": `${baseUrl}/movies` },
+                    { "@type": "ListItem", "position": 3, "name": movie.title, "item": pageUrl },
+                ],
+            },
         ],
-    };
-
-    // Removed templated FAQ JSON-LD to avoid thin content penalties
-
-    const videoObjectJsonLd = {
-        "@context": "https://schema.org",
-        "@type": "VideoObject",
-        "@id": `${baseUrl}/movies/${id}#video`,
-        "name": `${movie.title} (${releaseYear || ""}) - Official Stream & Trailer`,
-        "description": movie.overview
-            ? movie.overview.substring(0, 200).trim()
-            : `Stream ${movie.title} online on Neocinema.`,
-        "thumbnailUrl": [
-            movie.backdropPath
-                ? `https://image.tmdb.org/t/p/w780${movie.backdropPath}`
-                : movie.posterPath
-                    ? `https://image.tmdb.org/t/p/w500${movie.posterPath}`
-                    : `${baseUrl}/og_banner.png`
-        ],
-        "uploadDate": safeDate ? safeDate.toISOString() : new Date().toISOString(),
-        "contentUrl": `${baseUrl}/movies/${id}`,
-        "embedUrl": primaryTrailer
-            ? `https://www.youtube-nocookie.com/embed/${primaryTrailer.youtube_video_id}`
-            : `${baseUrl}/movies/${id}`,
-        "publisher": {
-            "@type": "Organization",
-            "@id": `${baseUrl}#org`,
-            "name": "Neocinema",
-            "logo": {
-                "@type": "ImageObject",
-                "url": `${baseUrl}/logo.png`
-            }
-        }
     };
 
     return (
@@ -267,17 +249,7 @@ export default async function MovieDetailsPage({
             <script
                 id="json-ld-movie"
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(movieJsonLd).replace(/</g, '\\u003c') }}
-            />
-            <script
-                id="json-ld-breadcrumb"
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd).replace(/</g, '\\u003c') }}
-            />
-            <script
-                id="json-ld-video"
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(videoObjectJsonLd).replace(/</g, '\\u003c') }}
+                dangerouslySetInnerHTML={{ __html: jsonLd(pageJsonLd) }}
             />
 
 
@@ -339,10 +311,7 @@ export default async function MovieDetailsPage({
                             <div className="md:col-span-8 lg:col-span-9 space-y-5 text-center md:text-left min-w-0">
                                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-2.5">
                                     <span className="rounded-full bg-red-600/20 border border-red-500/30 px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-widest text-red-500 backdrop-blur-md shadow-sm">
-                                        4K ULTRA HD
-                                    </span>
-                                    <span className="rounded-full bg-white/5 border border-white/10 px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-widest text-neutral-300 backdrop-blur-md">
-                                        HDR
+                                        MOVIE
                                     </span>
                                     {movie.genres?.[0] && (
                                         <span className="rounded-full bg-white/5 border border-white/10 px-3 py-1 text-[10px] sm:text-xs font-black uppercase tracking-widest text-neutral-300 backdrop-blur-md">
@@ -407,7 +376,7 @@ export default async function MovieDetailsPage({
                     
                     {/* OFFICIAL TRAILERS & WATCHMODE STREAMING AVAILABILITY */}
                     <div id="trailers-section" className="space-y-6 min-w-0">
-                        <KinocheckTrailerSection tmdbId={movie.tmdbId} title={movie.title} />
+                        <KinocheckTrailerSection tmdbId={movie.tmdbId} title={movie.title} trailers={trailers} />
                         <WatchmodeAvailabilityBanner tmdbId={movie.tmdbId} />
                     </div>
 
@@ -415,9 +384,9 @@ export default async function MovieDetailsPage({
                         {/* LEFT: DETAILS & GENRES */}
                         <div className="col-span-1 space-y-6 min-w-0">
                             <div className="rounded-3xl border border-white/10 bg-neutral-900/60 p-6 backdrop-blur-xl shadow-2xl space-y-4">
-                                <h3 className="text-xs font-black uppercase tracking-widest text-red-500">
+                                <h2 className="text-xs font-black uppercase tracking-widest text-red-500">
                                     Genres
-                                </h3>
+                                </h2>
                                 <div className="flex flex-wrap gap-2">
                                     {movie.genres?.map((genre: string) => (
                                         <span
@@ -432,9 +401,9 @@ export default async function MovieDetailsPage({
 
                             {movie.productionCompanies?.length > 0 && (
                                 <div className="rounded-3xl border border-white/10 bg-neutral-900/60 p-6 backdrop-blur-xl shadow-2xl space-y-4">
-                                    <h3 className="text-xs font-black uppercase tracking-widest text-red-500">
+                                    <h2 className="text-xs font-black uppercase tracking-widest text-red-500">
                                         Production
-                                    </h3>
+                                    </h2>
                                     <div className="space-y-2.5">
                                         {movie.productionCompanies?.map((company: string) => (
                                             <div key={company} className="flex items-center gap-2.5 text-xs font-bold text-neutral-300">

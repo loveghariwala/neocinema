@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { X, Film, Star, ExternalLink, Play } from 'lucide-react';
 import Link from "next/link";
-import { getKinocheckTrailers, KinocheckTrailer } from "@/services/kinocheckService";
+import type { KinocheckTrailer } from "@/services/kinocheckService";
+import { getTrailers } from "@/lib/api-client";
 import { track } from "@vercel/analytics";
 
 interface QuickTrailerModalProps {
@@ -40,7 +41,7 @@ export default function QuickTrailerModal({ movie, isOpen, onClose }: QuickTrail
 
         async function fetchTrailers() {
             try {
-                const res = await getKinocheckTrailers(Number(tmdbId), isTv);
+                const res: KinocheckTrailer[] = await getTrailers(tmdbId, isTv);
                 if (isMounted) {
                     setTrailers(res || []);
                     if (res && res.length > 0) {

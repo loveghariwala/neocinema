@@ -1,3 +1,4 @@
+import "server-only";
 import { cache } from "react";
 import { tmdbService } from "@/lib/tmdb";
 import { isMovieBlocked } from "@/lib/blockedIds";
@@ -44,78 +45,78 @@ export async function getTopRatedSeries() {
     }
 }
 
+/** TMDB ids are plain positive integers; anything else is rejected before a fetch. */
+export function parseTmdbId(id: string): number | null {
+    if (!/^[1-9]\d{0,8}$/.test(id)) return null;
+    return Number(id);
+}
+
+// Returns null only when the title doesn't exist; TMDB failures throw.
 export const getMovieDetails = cache(async function getMovieDetails(id: string, type: "movie" | "tv" = "movie") {
-    try {
-        if (!id || isMovieBlocked(id)) return null;
+    const numId = parseTmdbId(id);
+    if (numId === null || isMovieBlocked(id)) return null;
 
-        const numId = Number(id);
-        if (isNaN(numId) || numId <= 0) return null;
+    const data = type === "movie"
+        ? await tmdbService.getMovieDetail(numId)
+        : await tmdbService.getTvDetail(numId);
 
-        const data = type === "movie"
-            ? await tmdbService.getMovieDetail(numId)
-            : await tmdbService.getTvDetail(numId);
+    if (!data || !data.id) return null;
 
-        if (!data || !data.id) return null;
+    let similarMovies: any[] = [];
+    const seenIds = new Set<number>();
 
-        let similarMovies: any[] = [];
-        const seenIds = new Set<number>();
-
-        // TMDB getMovieDetail already returns data.similar.results and data.videos.results
-        if (data.similar?.results && Array.isArray(data.similar.results)) {
-            data.similar.results.forEach((s: any) => {
-                if (s && s.id && !seenIds.has(s.id) && similarMovies.length < 16) {
-                    seenIds.add(s.id);
-                    similarMovies.push({
-                        tmdbId: s.id,
-                        title: s.title || s.name || "Untitled",
-                        posterPath: s.poster_path || "",
-                        rating: typeof s.vote_average === "number" ? Math.round(s.vote_average * 10) / 10 : 0,
-                        releaseDate: s.release_date || s.first_air_date || "",
-                        isMovie: type === "movie" || s.media_type === "movie"
-                    });
-                }
-            });
-        }
-
-        const rating = typeof data.vote_average === "number" ? Math.round(data.vote_average * 10) / 10 : 0;
-        const voteCount = typeof data.vote_count === "number" ? data.vote_count : 0;
-        const runtime = typeof data.runtime === "number" ? data.runtime : (Array.isArray(data.episode_run_time) && data.episode_run_time[0]) || 0;
-
-        // Normalize TMDB detail format to our internal format for the UI
-        return {
-            _id: String(data.id),
-            tmdbId: data.id,
-            imdbId: data.imdb_id || data.external_ids?.imdb_id || null,
-            title: data.title || data.name || "Untitled",
-            overview: data.overview || "",
-            posterPath: data.poster_path || "",
-            backdropPath: data.backdrop_path || "",
-            releaseDate: data.release_date || data.first_air_date || "",
-            rating,
-            voteCount,
-            language: data.original_language?.toUpperCase() || "EN",
-            genres: Array.isArray(data.genres) ? data.genres.map((g: any) => g.name).filter(Boolean) : [],
-            productionCompanies: Array.isArray(data.production_companies) ? data.production_companies.map((c: any) => c.name).filter(Boolean) : [],
-            networks: Array.isArray(data.networks) ? data.networks.map((n: any) => n.name).filter(Boolean) : [],
-            runtime,
-            cast: Array.isArray(data.credits?.cast) ? data.credits.cast.slice(0, 10).map((c: any) => ({
-                _id: String(c.id),
-                name: c.name || "Unknown",
-                character: c.character || "",
-                profilePath: c.profile_path || null
-            })) : [],
-            director: data.credits?.crew?.find((c: any) => c.job === "Director")?.name || null,
-            similar: similarMovies,
-            isMovie: type === "movie",
-            videos: Array.isArray(data.videos?.results) ? data.videos.results : [],
-            seasons: Array.isArray(data.seasons) ? data.seasons : [],
-            number_of_seasons: data.number_of_seasons || 0,
-            number_of_episodes: data.number_of_episodes || 0
-        };
-    } catch (error) {
-        console.error("Movie detail fetch failed:", error);
-        return null;
+    // TMDB getMovieDetail already returns data.similar.results and data.videos.results
+    if (data.similar?.results && Array.isArray(data.similar.results)) {
+        data.similar.results.forEach((s: any) => {
+            if (s && s.id && !seenIds.has(s.id) && similarMovies.length < 16) {
+                seenIds.add(s.id);
+                similarMovies.push({
+                    tmdbId: s.id,
+                    title: s.title || s.name || "Untitled",
+                    posterPath: s.poster_path || "",
+                    rating: typeof s.vote_average === "number" ? Math.round(s.vote_average * 10) / 10 : 0,
+                    releaseDate: s.release_date || s.first_air_date || "",
+                    isMovie: type === "movie" || s.media_type === "movie"
+                });
+            }
+        });
     }
+
+    const rating = typeof data.vote_average === "number" ? Math.round(data.vote_average * 10) / 10 : 0;
+    const voteCount = typeof data.vote_count === "number" ? data.vote_count : 0;
+    const runtime = typeof data.runtime === "number" ? data.runtime : (Array.isArray(data.episode_run_time) && data.episode_run_time[0]) || 0;
+
+    // Normalize TMDB detail format to our internal format for the UI
+    return {
+        _id: String(data.id),
+        tmdbId: data.id,
+        imdbId: data.imdb_id || data.external_ids?.imdb_id || null,
+        title: data.title || data.name || "Untitled",
+        overview: data.overview || "",
+        posterPath: data.poster_path || "",
+        backdropPath: data.backdrop_path || "",
+        releaseDate: data.release_date || data.first_air_date || "",
+        rating,
+        voteCount,
+        language: data.original_language?.toUpperCase() || "EN",
+        genres: Array.isArray(data.genres) ? data.genres.map((g: any) => g.name).filter(Boolean) : [],
+        productionCompanies: Array.isArray(data.production_companies) ? data.production_companies.map((c: any) => c.name).filter(Boolean) : [],
+        networks: Array.isArray(data.networks) ? data.networks.map((n: any) => n.name).filter(Boolean) : [],
+        runtime,
+        cast: Array.isArray(data.credits?.cast) ? data.credits.cast.slice(0, 10).map((c: any) => ({
+            _id: String(c.id),
+            name: c.name || "Unknown",
+            character: c.character || "",
+            profilePath: c.profile_path || null
+        })) : [],
+        director: data.credits?.crew?.find((c: any) => c.job === "Director")?.name || null,
+        similar: similarMovies,
+        isMovie: type === "movie",
+        videos: Array.isArray(data.videos?.results) ? data.videos.results : [],
+        seasons: Array.isArray(data.seasons) ? data.seasons : [],
+        number_of_seasons: data.number_of_seasons || 0,
+        number_of_episodes: data.number_of_episodes || 0
+    };
 });
 
 export async function searchMovies(query: string, sort: string = "popularity") {
@@ -129,133 +130,101 @@ export async function searchMovies(query: string, sort: string = "popularity") {
 }
 
 export async function discoverContentFromServer(type: "movie" | "tv", queryParams: Record<string, string>) {
-    try {
-        const data = type === "movie"
-            ? await tmdbService.discoverMovies({
-                page: Number(queryParams.page) || 1,
-                sort_by: queryParams.sort_by || "popularity.desc",
-                with_genres: queryParams.with_genres,
-                year_from: queryParams.year_from ? Number(queryParams.year_from) : undefined,
-                year_to: queryParams.year_to ? Number(queryParams.year_to) : undefined,
-                rating_min: queryParams.rating_min ? Number(queryParams.rating_min) : undefined,
-                rating_max: queryParams.rating_max ? Number(queryParams.rating_max) : undefined,
-                language: queryParams.language,
-                with_keywords: queryParams.with_keywords,
-                with_companies: queryParams.with_companies,
-            })
-            : await tmdbService.discoverTv({
-                page: Number(queryParams.page) || 1,
-                sort_by: queryParams.sort_by || "popularity.desc",
-                with_genres: queryParams.with_genres,
-                year_from: queryParams.year_from ? Number(queryParams.year_from) : undefined,
-                year_to: queryParams.year_to ? Number(queryParams.year_to) : undefined,
-                rating_min: queryParams.rating_min ? Number(queryParams.rating_min) : undefined,
-                rating_max: queryParams.rating_max ? Number(queryParams.rating_max) : undefined,
-                language: queryParams.language,
-                with_keywords: queryParams.with_keywords,
-                with_companies: queryParams.with_companies,
-            });
+    const data = type === "movie"
+        ? await tmdbService.discoverMovies({
+            page: Number(queryParams.page) || 1,
+            sort_by: queryParams.sort_by || "popularity.desc",
+            with_genres: queryParams.with_genres,
+            year_from: queryParams.year_from ? Number(queryParams.year_from) : undefined,
+            year_to: queryParams.year_to ? Number(queryParams.year_to) : undefined,
+            rating_min: queryParams.rating_min ? Number(queryParams.rating_min) : undefined,
+            rating_max: queryParams.rating_max ? Number(queryParams.rating_max) : undefined,
+            language: queryParams.language,
+            with_keywords: queryParams.with_keywords,
+            with_companies: queryParams.with_companies,
+        })
+        : await tmdbService.discoverTv({
+            page: Number(queryParams.page) || 1,
+            sort_by: queryParams.sort_by || "popularity.desc",
+            with_genres: queryParams.with_genres,
+            year_from: queryParams.year_from ? Number(queryParams.year_from) : undefined,
+            year_to: queryParams.year_to ? Number(queryParams.year_to) : undefined,
+            rating_min: queryParams.rating_min ? Number(queryParams.rating_min) : undefined,
+            rating_max: queryParams.rating_max ? Number(queryParams.rating_max) : undefined,
+            language: queryParams.language,
+            with_keywords: queryParams.with_keywords,
+            with_companies: queryParams.with_companies,
+        });
 
-        if (data?.results) {
-            data.results = data.results
-                .filter((item: any) => !isMovieBlocked(item.tmdbId || item.id))
-                .map((item: any) => ({
-                    id: item.id || item.tmdbId,
-                    tmdbId: item.tmdbId || item.id,
-                    title: item.title || item.name,
-                    name: item.name,
-                    posterPath: item.posterPath,
-                    rating: item.rating,
-                    releaseDate: item.releaseDate,
-                    genres: item.genres,
-                    genreIds: item.genreIds,
-                    mediaType: item.mediaType || type,
-                    isMovie: item.isMovie ?? (type === "movie" || item.mediaType === "movie"),
-                }));
-        }
-        return data;
-    } catch (e) {
-        console.error(`discoverContentFromServer error for ${type}:`, e);
+    if (data?.results) {
+        data.results = data.results
+            .filter((item: any) => !isMovieBlocked(item.tmdbId || item.id))
+            .map((item: any) => ({
+                id: item.id || item.tmdbId,
+                tmdbId: item.tmdbId || item.id,
+                title: item.title || item.name,
+                name: item.name,
+                posterPath: item.posterPath,
+                rating: item.rating,
+                releaseDate: item.releaseDate,
+                genres: item.genres,
+                genreIds: item.genreIds,
+                mediaType: item.mediaType || type,
+                isMovie: item.isMovie ?? (type === "movie" || item.mediaType === "movie"),
+            }));
     }
-    return { results: [], totalResults: 0, totalPages: 1, currentPage: 1 };
+    return data;
 }
 
 export async function getGenresFromServer(type: "movie" | "tv") {
-    try {
-        const genres = type === "movie"
-            ? await tmdbService.getMovieGenres()
-            : await tmdbService.getTvGenres();
-        return { genres };
-    } catch (e) {
-        console.error(`getGenresFromServer error for ${type}:`, e);
-    }
-    return { genres: [] };
+    const genres = type === "movie"
+        ? await tmdbService.getMovieGenres()
+        : await tmdbService.getTvGenres();
+    return { genres };
 }
 
 export async function searchContentFromServer(query: string, type?: string, page?: string) {
-    try {
-        const pageNum = Number(page) || 1;
-        let data;
-        if (type === "movie") {
-            data = await tmdbService.searchMovies(query, pageNum);
-        } else if (type === "tv") {
-            data = await tmdbService.searchTv(query, pageNum);
-        } else {
-            data = await tmdbService.searchMulti(query, pageNum);
-        }
-        if (data?.results) {
-            data.results = data.results
-                .filter((item: any) => !isMovieBlocked(item.tmdbId || item.id))
-                .map((item: any) => ({
-                    id: item.id || item.tmdbId,
-                    tmdbId: item.tmdbId || item.id,
-                    title: item.title || item.name,
-                    name: item.name,
-                    posterPath: item.posterPath,
-                    rating: item.rating,
-                    releaseDate: item.releaseDate,
-                    genres: item.genres,
-                    genreIds: item.genreIds,
-                    mediaType: item.mediaType || type,
-                    isMovie: item.isMovie ?? (type === "movie" || item.mediaType === "movie"),
-                }));
-        }
-        return data;
-    } catch (e) {
-        console.error("searchContentFromServer error:", e);
+    const pageNum = Number(page) || 1;
+    let data;
+    if (type === "movie") {
+        data = await tmdbService.searchMovies(query, pageNum);
+    } else if (type === "tv") {
+        data = await tmdbService.searchTv(query, pageNum);
+    } else {
+        data = await tmdbService.searchMulti(query, pageNum);
     }
-    return { results: [], totalResults: 0, totalPages: 1, currentPage: 1 };
+    if (data?.results) {
+        data.results = data.results
+            .filter((item: any) => !isMovieBlocked(item.tmdbId || item.id))
+            .map((item: any) => ({
+                id: item.id || item.tmdbId,
+                tmdbId: item.tmdbId || item.id,
+                title: item.title || item.name,
+                name: item.name,
+                posterPath: item.posterPath,
+                rating: item.rating,
+                releaseDate: item.releaseDate,
+                genres: item.genres,
+                genreIds: item.genreIds,
+                mediaType: item.mediaType || type,
+                isMovie: item.isMovie ?? (type === "movie" || item.mediaType === "movie"),
+            }));
+    }
+    return data;
 }
 
 export async function getTrendingFromServer(mediaType: string, timeWindow: string = "week", page: string = "1") {
-    try {
-        const data = await tmdbService.getTrending(mediaType, timeWindow, Number(page) || 1);
-        return data;
-    } catch (e) {
-        console.error("getTrendingFromServer error:", e);
-    }
-    return { results: [] };
+    const data = await tmdbService.getTrending(mediaType, timeWindow, Number(page) || 1);
+    return data;
 }
 
 export const getPersonDetails = cache(async function getPersonDetails(id: string) {
-    try {
-        if (!id) return null;
-        const numId = Number(id);
-        if (isNaN(numId) || numId <= 0) return null;
-        const data = await tmdbService.getPersonCredits(numId);
-        return data;
-    } catch (e) {
-        console.error("getPersonDetails error:", e);
-    }
-    return null;
+    const numId = parseTmdbId(id);
+    if (numId === null) return null;
+    return tmdbService.getPersonCredits(numId);
 });
 
 export async function getTvSeasonDetail(seriesId: string | number, seasonNumber: number) {
-    try {
-        const data = await tmdbService.getTvSeasonDetail(Number(seriesId), seasonNumber);
-        return data;
-    } catch (e) {
-        console.error("getTvSeasonDetail error:", e);
-    }
-    return null;
+    const data = await tmdbService.getTvSeasonDetail(Number(seriesId), seasonNumber);
+    return data;
 }

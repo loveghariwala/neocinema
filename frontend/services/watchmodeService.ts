@@ -1,3 +1,5 @@
+import "server-only";
+
 export interface WatchmodeSource {
     source_id: number;
     name: string;
@@ -9,7 +11,7 @@ export interface WatchmodeSource {
 }
 
 export async function getWatchmodeSources(tmdbId: number, isTv: boolean = false): Promise<WatchmodeSource[]> {
-    const apiKey = process.env.NEXT_PUBLIC_WATCHMODE_API_KEY || "bAsgGkU6wA8njfa2Hr9Z48OKQlnLr6e0NOw5y4Ai";
+    const apiKey = process.env.WATCHMODE_API_KEY;
     if (!apiKey) return [];
 
     try {

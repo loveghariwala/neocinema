@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback, useTransition, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import MovieCard from "@/components/cards/MovieCard";
-import { searchContentFromServer } from "@/services/movieService";
+import { searchContent } from "@/lib/api-client";
 import { Film, Flame, Loader2, Search, Sparkles, TrendingUp, Tv, X } from 'lucide-react';
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 const TYPE_FILTERS = [
     { label: "All", value: "", icon: null },
@@ -16,69 +16,84 @@ const QUICK_DISCOVERY_TAGS = [
     "Action", "Sci-Fi", "Hindi Dubbed", "Kdrama", "Horror", "Comedy", "Anime", "Thriller", "Marvel", "Romance"
 ];
 
+const EMPTY_RESULTS = { results: [], totalResults: 0, totalPages: 1, currentPage: 1 };
+
 interface SearchPageClientProps {
-    initialQuery: string;
-    initialType: string;
-    initialPage: number;
-    initialData: any;
     initialTrending: any[];
 }
 
+/** Reads q/type/page from the URL, falling back to defaults for invalid values. */
+function readSearchState(params: URLSearchParams) {
+    const rawType = params.get("type") || "";
+    const rawPage = Number(params.get("page"));
+    return {
+        query: params.get("q") || "",
+        type: rawType === "movie" || rawType === "tv" ? rawType : "",
+        page: Number.isInteger(rawPage) && rawPage >= 1 && rawPage <= 500 ? rawPage : 1,
+    };
+}
+
+// The page is statically rendered, so the query comes from the URL on the client
+// and results are fetched from the cached /api/search route.
 export default function SearchPageClient({
-    initialQuery,
-    initialType,
-    initialPage,
-    initialData,
     initialTrending,
 }: SearchPageClientProps) {
-    const [query, setQuery] = useState(initialQuery);
-    const [type, setType] = useState(initialType);
-    const [page, setPage] = useState(initialPage);
-    const [data, setData] = useState<any>(initialData);
-    const [isLoading, setIsLoading] = useState(false);
-    const isInitialMount = useRef(true);
+    const searchParams = useSearchParams();
+    const urlState = readSearchState(searchParams);
+
+    const [query, setQuery] = useState(urlState.query);
+    const [type, setType] = useState(urlState.type);
+    const [page, setPage] = useState(urlState.page);
+    const [data, setData] = useState<any>(EMPTY_RESULTS);
+    const [isLoading, setIsLoading] = useState(urlState.query.trim().length >= 2);
+
+    // The URL is only rewritten after the user types, so opening /search?q=...
+    // never strips the query. lastPushedUrl tells our own pushes apart from
+    // outside navigation (back/forward, the navbar search).
+    const hasEditedQuery = useRef(false);
+    const lastPushedUrl = useRef(searchParams.toString());
 
     const router = useRouter();
     const pathname = usePathname();
     const trending = initialTrending;
 
-    // Fetch data when search params change
+    // Adopt the URL when it changes from outside this component
+    const searchParamsKey = searchParams.toString();
     useEffect(() => {
-        if (isInitialMount.current && query === initialQuery && type === initialType && page === initialPage) {
-            isInitialMount.current = false;
+        if (searchParamsKey === lastPushedUrl.current) return;
+        lastPushedUrl.current = searchParamsKey;
+        const next = readSearchState(new URLSearchParams(searchParamsKey));
+        hasEditedQuery.current = false;
+        setQuery(next.query);
+        setType(next.type);
+        setPage(next.page);
+    }, [searchParamsKey]);
+
+    // Fetch data when the query, type or page changes (including the first load)
+    useEffect(() => {
+        if (query.trim().length < 2) {
+            setData(EMPTY_RESULTS);
+            setIsLoading(false);
             return;
         }
 
-        isInitialMount.current = false;
-
-        if (query && query.trim().length >= 2) {
-            setIsLoading(true);
-        }
-
-        const timer = setTimeout(() => {
-            const fetchNewData = async () => {
-                if (query && query.trim().length >= 2) {
-                    try {
-                        const newData = await searchContentFromServer(query, type, String(page));
-                        if (newData) setData(newData);
-                    } catch (e) {
-                        console.error("Failed to fetch search data:", e);
-                    } finally {
-                        setIsLoading(false);
-                    }
-                } else {
-                    setData({ results: [], totalResults: 0, totalPages: 1, currentPage: 1 });
-                    setIsLoading(false);
-                }
-            };
-            fetchNewData();
-        }, 350);
-        return () => clearTimeout(timer);
-    }, [query, type, page, initialQuery, initialType, initialPage]);
-
-    useEffect(() => {
-        setPage(initialPage);
-    }, [initialPage]);
+        setIsLoading(true);
+        let cancelled = false;
+        const timer = setTimeout(async () => {
+            try {
+                const newData = await searchContent(query, type, page);
+                if (!cancelled && newData) setData(newData);
+            } catch (e) {
+                console.error("Failed to fetch search data:", e);
+            } finally {
+                if (!cancelled) setIsLoading(false);
+            }
+        }, hasEditedQuery.current ? 350 : 0);
+        return () => {
+            cancelled = true;
+            clearTimeout(timer);
+        };
+    }, [query, type, page]);
 
     const updateUrl = useCallback((newQuery: string, newType: string, newPage: number) => {
         const params = new URLSearchParams();
@@ -87,15 +102,16 @@ export default function SearchPageClient({
             if (newType) params.set("type", newType);
             if (newPage > 1) params.set("page", String(newPage));
         }
+        lastPushedUrl.current = params.toString();
         const newUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname;
         router.push(newUrl, { scroll: false });
     }, [pathname, router]);
 
-    // Debounced search typing URL sync
+    // Debounced URL sync while typing
     useEffect(() => {
+        if (!hasEditedQuery.current) return;
         const timer = setTimeout(() => {
-            const searchParams = new URLSearchParams(window.location.search);
-            const urlQ = searchParams.get("q") || "";
+            const urlQ = new URLSearchParams(window.location.search).get("q") || "";
             if (query.trim() !== urlQ.trim()) {
                 updateUrl(query, type, 1);
             }
@@ -166,7 +182,11 @@ export default function SearchPageClient({
                                 type="text"
                                 placeholder="Search movies, series, actors (e.g., Avatar, Spider-Man)..."
                                 value={query}
-                                onChange={(e) => setQuery(e.target.value)}
+                                onChange={(e) => {
+                                    hasEditedQuery.current = true;
+                                    setQuery(e.target.value);
+                                    setPage(1);
+                                }}
                                 className="w-full bg-transparent text-sm sm:text-base font-medium text-white outline-none placeholder:text-neutral-500"
                                 autoFocus
                             />

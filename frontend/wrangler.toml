@@ -1,5 +1,6 @@
 name = "neocinema-worker"
-main = ".open-next/worker.js"
+# Wraps .open-next/worker.js: edge-caches /api GETs and strips cache headers from errors.
+main = "custom-worker.ts"
 compatibility_date = "2024-12-30"
 compatibility_flags = ["nodejs_compat"]
 minify = true
@@ -8,7 +9,25 @@ minify = true
 directory = ".open-next/assets"
 binding = "ASSETS"
 
+# OpenNext incremental cache (ISR pages + TMDB fetch cache).
+# Create once: npx wrangler r2 bucket create neocinema-opennext-cache
+[[r2_buckets]]
+binding = "NEXT_INC_CACHE_R2_BUCKET"
+bucket_name = "neocinema-opennext-cache"
+
+# The revalidation queue calls back into this worker to regenerate stale pages.
+[[services]]
+binding = "WORKER_SELF_REFERENCE"
+service = "neocinema-worker"
+
+[[durable_objects.bindings]]
+name = "NEXT_CACHE_DO_QUEUE"
+class_name = "DOQueueHandler"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["DOQueueHandler"]
+
 [observability.logs]
 enabled = true
 invocation_logs = true
-

@@ -6,56 +6,24 @@
  * FastAPI ai-service is unavailable.
  * 
  * Supports: discover, search, genre lists, trending, details, person credits.
- * Includes in-memory TTL caching to avoid redundant network calls.
+ * Responses are cached by the Next data cache using the TTL presets below.
  */
+
+import "server-only";
 
 const BASE_URL = "https://api.themoviedb.org/3";
 
-// ─── In-Memory TTL Cache ────────────────────────────────────────────────────
-// Simple Map-based cache with per-entry expiration times.
-// Max 2000 entries; oldest entries are evicted when the limit is exceeded.
+// ─── Cache TTLs (seconds) ───────────────────────────────────────────────────
+// Passed to fetch's next.revalidate, so responses live in the Next data cache (R2 on
+// Cloudflare). A page revalidates at the lowest TTL among its fetches, so these must
+// not be lower than the page's own revalidate export.
 
-const _cache = new Map<string, { expiresAt: number; value: any }>();
-const CACHE_MAX_SIZE = 2000;
-
-// TTL presets (milliseconds)
-const TTL_SHORT = 10 * 60 * 1000;    // 10 min — trending, discover, search results
-const TTL_MEDIUM = 60 * 60 * 1000;   // 1 hour — details, genres, person
-const TTL_LONG = 24 * 60 * 60 * 1000; // 24 hours — genre lists (rarely change)
-
-function cacheKey(endpoint: string, params: Record<string, any> | null): string {
-    const raw = endpoint + "|" + JSON.stringify(params || {}, Object.keys(params || {}).sort());
-    // Simple hash using string reduce
-    let hash = 0;
-    for (let i = 0; i < raw.length; i++) {
-        const char = raw.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash |= 0; // Convert to 32bit integer
-    }
-    return String(hash);
-}
-
-function cacheGet(key: string): any | null {
-    const entry = _cache.get(key);
-    if (!entry) return null;
-    if (Date.now() > entry.expiresAt) {
-        _cache.delete(key);
-        return null;
-    }
-    return entry.value;
-}
-
-function cacheSet(key: string, value: any, ttl: number): void {
-    if (_cache.size >= CACHE_MAX_SIZE) {
-        // Evict the 200 oldest entries in one pass
-        const entries = Array.from(_cache.entries())
-            .sort((a, b) => a[1].expiresAt - b[1].expiresAt);
-        for (let i = 0; i < 200 && i < entries.length; i++) {
-            _cache.delete(entries[i][0]);
-        }
-    }
-    _cache.set(key, { expiresAt: Date.now() + ttl, value });
-}
+export const TTL = {
+    search: 600,       // 10 min — free-text search, only used by /api/search
+    list: 3600,        // 1 h — trending, discover (home, hubs, collections)
+    detail: 86400,     // 24 h — movie/tv/person/season details, sitemap lists
+    genres: 604800,    // 7 d — genre lists
+} as const;
 
 // ─── Genre ID Maps (matching FastAPI exactly) ──────────────────────────────
 
@@ -77,13 +45,10 @@ const TV_GENRES: Record<number, string> = {
 
 // ─── HTTP Helper ───────────────────────────────────────────────────────────
 
-async function tmdbGet(endpoint: string, params: Record<string, any> = {}, ttl: number = TTL_SHORT, retries = 2): Promise<any> {
-    const key = cacheKey(endpoint, params);
-    const cached = cacheGet(key);
-    if (cached !== null) return cached;
-
+async function tmdbGet(endpoint: string, params: Record<string, any>, ttl: number, retries = 2): Promise<any> {
     const url = new URL(`${BASE_URL}${endpoint}`);
-    const apiKey = process.env.NEXT_PUBLIC_TMDB_API_KEY || process.env.TMDB_API_KEY || "0b702f897d43fed03749ab68da8ef51c";
+    const apiKey = process.env.TMDB_API_KEY;
+    if (!apiKey) throw new Error("TMDB_API_KEY is not set");
     url.searchParams.set("api_key", apiKey);
     Object.entries(params).forEach(([k, v]) => {
         if (v !== undefined && v !== null) {
@@ -91,57 +56,42 @@ async function tmdbGet(endpoint: string, params: Record<string, any> = {}, ttl: 
         }
     });
 
-    const isServer = typeof window === "undefined";
     const isDetailEndpoint = /^\/(movie|tv|person)\/\d+/.test(endpoint) && !endpoint.includes("/combined_credits");
 
-    for (let i = 0; i < retries; i++) {
+    // Only a TMDB 404 means "missing". Timeouts, 429s and 5xx are thrown after the
+    // last retry so pages render error.tsx (500, never cached) instead of notFound()
+    // or an empty list that ISR would store.
+    for (let i = 0; ; i++) {
+        const isLastAttempt = i >= retries - 1;
+        let response: Response;
         try {
-            const fetchOptions: RequestInit & { next?: { revalidate: number } } = {
+            response = await fetch(url.toString(), {
                 headers: { "Content-Type": "application/json" },
                 signal: AbortSignal.timeout(5000), // 5s timeout for fast failover on edge workers
-            };
-
-            if (isServer) {
-                fetchOptions.next = { revalidate: Math.floor(ttl / 1000) };
-            }
-
-            const response = await fetch(url.toString(), fetchOptions);
-
-            if (!response.ok) {
-                if (response.status === 429 && i < retries - 1) {
-                    const retryAfter = response.headers.get("retry-after")
-                        ? parseInt(response.headers.get("retry-after") as string) * 1000
-                        : (i + 1) * 400;
-                    console.warn(`[TMDB] 429 Rate Limited on ${endpoint}. Retrying in ${retryAfter}ms...`);
-                    await new Promise(resolve => setTimeout(resolve, retryAfter));
-                    continue;
-                }
-                if (response.status === 404) {
-                    const notFoundFallback = isDetailEndpoint ? null : { results: [], total_results: 0, total_pages: 1, page: 1, genres: [] };
-                    cacheSet(key, notFoundFallback, 3600 * 1000); // Cache 404 for 1 hour
-                    return notFoundFallback;
-                }
-                throw new Error(`TMDB API error: ${response.status} ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            cacheSet(key, data, ttl);
-            return data;
+                next: { revalidate: ttl },
+            });
         } catch (error: any) {
-            if (i < retries - 1 && (error.name === "TimeoutError" || error.name === "AbortError" || error.message?.includes("fetch failed"))) {
-                console.warn(`[TMDB] Fetch failed for ${endpoint}. Retrying... (${i + 1}/${retries})`);
-                await new Promise(resolve => setTimeout(resolve, (i + 1) * 250));
-                continue;
-            }
-            console.warn(`[TMDB] Graceful fallback triggered for ${endpoint}: ${error.message}`);
-            const fallback = isDetailEndpoint ? null : { results: [], total_results: 0, total_pages: 1, page: 1, genres: [] };
-            cacheSet(key, fallback, 60 * 1000); // Cache transient failure for 60s
-            return fallback;
+            if (isLastAttempt) throw new Error(`TMDB request failed for ${endpoint}: ${error.message}`);
+            console.warn(`[TMDB] Fetch failed for ${endpoint}. Retrying... (${i + 1}/${retries})`);
+            await new Promise(resolve => setTimeout(resolve, (i + 1) * 250));
+            continue;
         }
+
+        if (response.ok) return response.json();
+
+        if (response.status === 404) {
+            return isDetailEndpoint ? null : { results: [], total_results: 0, total_pages: 1, page: 1, genres: [] };
+        }
+
+        const retryable = response.status === 429 || response.status >= 500;
+        if (!retryable || isLastAttempt) {
+            throw new Error(`TMDB API error for ${endpoint}: ${response.status} ${response.statusText}`);
+        }
+        const retryAfterHeader = parseInt(response.headers.get("retry-after") || "", 10);
+        const retryAfter = Math.min(Number.isFinite(retryAfterHeader) ? retryAfterHeader * 1000 : (i + 1) * 400, 2000);
+        console.warn(`[TMDB] ${response.status} on ${endpoint}. Retrying in ${retryAfter}ms...`);
+        await new Promise(resolve => setTimeout(resolve, retryAfter));
     }
-    const finalFallback = isDetailEndpoint ? null : { results: [], total_results: 0, total_pages: 1, page: 1, genres: [] };
-    cacheSet(key, finalFallback, 60 * 1000);
-    return finalFallback;
 }
 
 // ─── Normalizers (matching FastAPI exactly) ─────────────────────────────────
@@ -225,7 +175,7 @@ export const tmdbService = {
         language?: string;
         with_keywords?: string;
         with_companies?: string;
-    }) {
+    }, ttl: number = TTL.list) {
         const queryParams: Record<string, any> = {
             page: params.page || 1,
             sort_by: params.sort_by || "popularity.desc",
@@ -240,7 +190,7 @@ export const tmdbService = {
         if (params.with_keywords) queryParams.with_keywords = params.with_keywords;
         if (params.with_companies) queryParams.with_companies = params.with_companies;
 
-        const data = await tmdbGet("/discover/movie", queryParams);
+        const data = await tmdbGet("/discover/movie", queryParams, ttl);
         const results = (data.results || []).map(normalizeMovie);
         return paginatedResponse(data, results);
     },
@@ -256,7 +206,7 @@ export const tmdbService = {
         language?: string;
         with_keywords?: string;
         with_companies?: string;
-    }) {
+    }, ttl: number = TTL.list) {
         const queryParams: Record<string, any> = {
             page: params.page || 1,
             sort_by: params.sort_by || "popularity.desc",
@@ -271,7 +221,7 @@ export const tmdbService = {
         if (params.with_keywords) queryParams.with_keywords = params.with_keywords;
         if (params.with_companies) queryParams.with_companies = params.with_companies;
 
-        const data = await tmdbGet("/discover/tv", queryParams);
+        const data = await tmdbGet("/discover/tv", queryParams, ttl);
         const results = (data.results || []).map(normalizeTv);
         return paginatedResponse(data, results);
     },
@@ -279,7 +229,7 @@ export const tmdbService = {
     // ─── SEARCH ─────────────────────────────────────────────────────────────
 
     async searchMulti(query: string, page: number = 1) {
-        const data = await tmdbGet("/search/multi", { query, page });
+        const data = await tmdbGet("/search/multi", { query, page }, TTL.search);
         const results: any[] = [];
         for (const item of data.results || []) {
             const mediaType = item.media_type || "movie";
@@ -294,21 +244,21 @@ export const tmdbService = {
     },
 
     async searchMovies(query: string, page: number = 1) {
-        const data = await tmdbGet("/search/movie", { query, page });
+        const data = await tmdbGet("/search/movie", { query, page }, TTL.search);
         const results = (data.results || []).map(normalizeMovie);
         return paginatedResponse(data, results);
     },
 
     async searchTv(query: string, page: number = 1) {
-        const data = await tmdbGet("/search/tv", { query, page });
+        const data = await tmdbGet("/search/tv", { query, page }, TTL.search);
         const results = (data.results || []).map(normalizeTv);
         return paginatedResponse(data, results);
     },
 
     // ─── TRENDING ───────────────────────────────────────────────────────────
 
-    async getTrending(mediaType: string = "movie", timeWindow: string = "week", page: number = 1) {
-        const data = await tmdbGet(`/trending/${mediaType}/${timeWindow}`, { page });
+    async getTrending(mediaType: string = "movie", timeWindow: string = "week", page: number = 1, ttl: number = TTL.list) {
+        const data = await tmdbGet(`/trending/${mediaType}/${timeWindow}`, { page }, ttl);
         const normalizer = mediaType === "movie" ? normalizeMovie : normalizeTv;
         const results = (data.results || []).map(normalizer);
         return paginatedResponse(data, results);
@@ -317,27 +267,28 @@ export const tmdbService = {
     // ─── GENRE LISTS ────────────────────────────────────────────────────────
 
     async getMovieGenres() {
-        const data = await tmdbGet("/genre/movie/list", {}, TTL_LONG);
+        const data = await tmdbGet("/genre/movie/list", {}, TTL.genres);
         return data.genres || [];
     },
 
     async getTvGenres() {
-        const data = await tmdbGet("/genre/tv/list", {}, TTL_LONG);
+        const data = await tmdbGet("/genre/tv/list", {}, TTL.genres);
         return data.genres || [];
     },
 
     // ─── DETAILS ────────────────────────────────────────────────────────────
 
     async getMovieDetail(tmdbId: number) {
-        return await tmdbGet(`/movie/${tmdbId}`, { append_to_response: "credits,similar,videos" }, TTL_MEDIUM);
+        return await tmdbGet(`/movie/${tmdbId}`, { append_to_response: "credits,similar,videos" }, TTL.detail);
     },
 
     async getTvDetail(tmdbId: number) {
-        return await tmdbGet(`/tv/${tmdbId}`, { append_to_response: "credits,similar,videos" }, TTL_MEDIUM);
+        // external_ids gives the IMDb id, which movies return at the top level but TV doesn't
+        return await tmdbGet(`/tv/${tmdbId}`, { append_to_response: "credits,similar,videos,external_ids" }, TTL.detail);
     },
 
     async getTvSeasonDetail(tmdbId: number, seasonNumber: number) {
-        return await tmdbGet(`/tv/${tmdbId}/season/${seasonNumber}`, {}, TTL_MEDIUM);
+        return await tmdbGet(`/tv/${tmdbId}/season/${seasonNumber}`, {}, TTL.detail);
     },
 
     // ─── PERSON CREDITS ─────────────────────────────────────────────────────
@@ -345,8 +296,8 @@ export const tmdbService = {
     async getPersonCredits(personId: number) {
         // Fetch both combined credits and person bio details in parallel
         const [data, personDetails] = await Promise.all([
-            tmdbGet(`/person/${personId}/combined_credits`, {}, TTL_MEDIUM),
-            tmdbGet(`/person/${personId}`, {}, TTL_MEDIUM),
+            tmdbGet(`/person/${personId}/combined_credits`, {}, TTL.detail),
+            tmdbGet(`/person/${personId}`, {}, TTL.detail),
         ]);
 
         if (!personDetails || !personDetails.id) return null;
@@ -384,24 +335,19 @@ export const tmdbService = {
                 profilePath: personDetails.profile_path || "",
                 placeOfBirth: personDetails.place_of_birth || "",
                 birthday: personDetails.birthday || "",
+                deathday: personDetails.deathday || "",
+                knownForDepartment: personDetails.known_for_department || "",
+                imdbId: personDetails.imdb_id || "",
             },
             results,
         };
     },
-};
 
-/**
- * Helper to construct robust TMDB image URLs.
- * Proxies via /tmdb-img/ rewrite to prevent ISP DNS blocking on live deployments.
- */
-export function getTmdbImageUrl(path: string | null | undefined, size: string = "w500", fallbackTitle: string = "Movie"): string {
-    if (!path) {
-        return `https://ui-avatars.com/api/?name=${encodeURIComponent(fallbackTitle)}&background=1a1a1a&color=dc2626&size=300&bold=true`;
-    }
-    if (path.startsWith("http://") || path.startsWith("https://")) {
-        return path;
-    }
-    const cleanPath = path.startsWith("/") ? path : `/${path}`;
-    return `https://image.tmdb.org/t/p/${size}${cleanPath}`;
-}
+    // ─── PEOPLE ─────────────────────────────────────────────────────────────
+
+    async getPopularPeople(page: number = 1, ttl: number = TTL.detail) {
+        const data = await tmdbGet("/person/popular", { page: String(page) }, ttl);
+        return Array.isArray(data?.results) ? data.results as { id: number; adult?: boolean }[] : [];
+    },
+};
 

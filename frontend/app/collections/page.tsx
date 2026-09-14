@@ -6,7 +6,7 @@ import { Film } from 'lucide-react';
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.neocinematv.com';
 
 export const metadata: Metadata = {
-    title: "Curated Movie Collections & Watchlists | NeoCinema",
+    title: { absolute: "Curated Movie Collections & Watchlists | Neocinema" },
     description: "Discover hand-picked lists of the best movies and TV series tailored by genre, mood, and style. From cyberpunk classics to feel-good comedies and psychological thrillers.",
     keywords: [
         "curated movie lists",

@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { ChevronLeft, ChevronRight, Info, Play, Star } from 'lucide-react';
 import Link from "next/link";
-import { getTmdbImageUrl } from "@/lib/tmdb";
+import { getTmdbImageUrl } from "@/lib/tmdb-image";
 
 export default function HeroBanner({
     movies = [],
@@ -15,7 +15,20 @@ export default function HeroBanner({
         return [];
     }, [movies, movie]);
 
-    const [currentIndex, setCurrentIndex] = useState(0);
+    // Backdrops are 1280px images: load the first one up front, and each later one only
+    // once its slide is reached (plus the slide after it, so the crossfade isn't blank).
+    const [slides, setSlides] = useState(() => ({ current: 0, loaded: new Set([0]) }));
+    const currentIndex = slides.current;
+    const loadedSlides = slides.loaded;
+
+    const step = (delta: number) => {
+        setSlides(({ current, loaded }) => {
+            const index = (current + delta + list.length) % list.length;
+            const next = (index + 1) % list.length;
+            if (loaded.has(index) && loaded.has(next)) return { current: index, loaded };
+            return { current: index, loaded: new Set(loaded).add(index).add(next) };
+        });
+    };
 
     useEffect(() => {
         if (list.length <= 1) return;
@@ -23,21 +36,18 @@ export default function HeroBanner({
 
         const timer = setInterval(() => {
             if (document.visibilityState === "visible") {
-                setCurrentIndex((prev) => (prev + 1) % list.length);
+                step(1);
             }
         }, 10000); // Auto-rotation every 10 seconds on desktop only
         return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [list.length]);
 
     if (!list || list.length === 0) return null;
 
-    const handleNext = () => {
-        setCurrentIndex((prev) => (prev + 1) % list.length);
-    };
+    const handleNext = () => step(1);
 
-    const handlePrev = () => {
-        setCurrentIndex((prev) => (prev - 1 + list.length) % list.length);
-    };
+    const handlePrev = () => step(-1);
 
     const currentItem = list[currentIndex] || {};
 
@@ -55,7 +65,7 @@ export default function HeroBanner({
                                 isActive ? "opacity-100" : "opacity-0"
                             }`}
                         >
-                            {itemBackdrop ? (
+                            {itemBackdrop && loadedSlides.has(index) ? (
                                 <picture className="absolute inset-0 h-full w-full">
                                     <source media="(max-width: 768px)" srcSet={getTmdbImageUrl(itemBackdrop, "w780")} />
                                     <source media="(min-width: 769px)" srcSet={getTmdbImageUrl(itemBackdrop, "w1280")} />
@@ -66,8 +76,7 @@ export default function HeroBanner({
                                         style={{
                                             animation: isActive ? "ken-burns 40s linear infinite alternate" : "none",
                                         }}
-                                        fetchPriority={index === 0 ? "high" : "low"}
-                                    />
+                                        fetchPriority={index === 0 ? "high" : "low"}                                    />
                                 </picture>
                             ) : (
                                 <div className="h-full w-full bg-neutral-900" />
@@ -118,11 +127,12 @@ export default function HeroBanner({
                                 </div>
 
                                 {/* Title */}
-                                <h1
+                                {/* h2: the home page's h1 is its own heading, and each slide would add another */}
+                                <h2
                                     className="mb-3 sm:mb-4 pb-1 lg:pb-4 text-4xl sm:text-5xl md:text-7xl lg:text-[7rem] font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60 leading-[1.1] filter drop-shadow-[0_0_30px_rgba(255,255,255,0.2)] break-words"
                                 >
                                     {itemTitle}
-                                </h1>
+                                </h2>
 
                                 {/* Overview */}
                                 <p

@@ -2,12 +2,10 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
-import Security from "@/components/ui/Security";
 import InstallAppBanner from "@/components/ui/InstallAppBanner";
 import AdsterraSocialBar from "@/components/ads/AdsterraSocialBar";
 import MonetagAds from "@/components/ads/MonetagAds";
 import { Geist, Geist_Mono, Noto_Sans, Playfair_Display } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next"
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -30,11 +28,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com"),
+  // Google truncates titles past ~60 characters and descriptions past ~155.
   title: {
-    default: "Neocinema — Discover Movies, TV Series & Anime | Trailers, Cast & Where to Watch",
+    default: "Neocinema — Discover Movies, TV Series & Where to Watch",
     template: "%s | Neocinema"
   },
-  description: "Explore Neocinema: discover movies, TV series & anime. Use our advanced filter to select multiple genres, combine with ratings or release years, and sort precisely to find exactly what to watch. View trailers, cast info & where to watch.",
+  description: "Find what to watch next. Browse trending movies, TV series & anime with trailers, full cast, ratings and where to stream — filter by genre, year & mood.",
   keywords: [
     "movie discovery platform",
     "TV series recommendations",
@@ -81,10 +80,11 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  // No `url` here: pages without their own openGraph would inherit it and every one
+  // would claim to be the home page. Next falls back to no og:url, which is correct.
   openGraph: {
     title: "Neocinema — Movies, Series & Anime Discovery",
-    description: "Discover trending movies, TV series, and anime on Neocinema. AI-powered recommendations and a cinematic browsing experience.",
-    url: 'https://www.neocinematv.com',
+    description: "Discover trending movies, TV series, and anime on Neocinema, with trailers, cast and where to watch.",
     siteName: "Neocinema",
     locale: "en_US",
     type: "website",
@@ -133,15 +133,9 @@ export default function RootLayout({
         "name": "Neocinema",
         "url": baseUrl,
         "logo": `${baseUrl}/logo.png`,
-        "legalName": "Neocinema",
-        "description": "AI-powered cinematic movie and series discovery platform with semantic search and personalized recommendations.",
+        "description": "Movie and TV series discovery platform with trailers, cast information and where-to-watch guides.",
         "foundingDate": "2025",
-        "founders": [
-          {
-            "@type": "Person",
-            "name": "Love Ghariwala",
-          },
-        ],
+        "founder": { "@id": `${baseUrl}#creator` },
         "sameAs": [
           "https://twitter.com/neocinematv",
           "https://github.com/loveghariwala"
@@ -152,46 +146,21 @@ export default function RootLayout({
         "@id": `${baseUrl}#website`,
         "url": baseUrl,
         "name": "Neocinema",
-        "description": "AI-powered cinematic movie and series discovery platform with advanced search and personalized recommendations.",
+        "alternateName": ["NeocinemaTV", "Neo Cinema"],
+        "description": "Discover movies, TV series and anime with trailers, cast information and where-to-watch guides.",
+        "inLanguage": "en",
         "publisher": { "@id": `${baseUrl}#org` },
         "potentialAction": {
           "@type": "SearchAction",
-          "target": `${baseUrl}/search?q={search_term_string}`,
+          "target": { "@type": "EntryPoint", "urlTemplate": `${baseUrl}/search?q={search_term_string}` },
           "query-input": "required name=search_term_string",
         },
-      },
-      {
-        "@type": "SoftwareApplication",
-        "@id": `${baseUrl}#app`,
-        "name": "Neocinema",
-        "url": baseUrl,
-        "description": "A platform for discovering movies, TV series, and anime with AI-powered semantic recommendations, advanced filtering, and personalized watchlists.",
-        "applicationCategory": "EntertainmentApplication",
-        "operatingSystem": "All",
-        "publisher": { "@id": `${baseUrl}#org` },
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD",
-          "category": "free"
-        },
-        "featureList": [
-          "AI-powered movie recommendations",
-          "Semantic search with vector embeddings",
-          "Multi-genre combination search and precise filtering",
-          "Personalized watchlists",
-          "Trending and top-rated discovery",
-          "Cast and crew exploration",
-          "Ultra-dark cinematic UI experience",
-        ],
       },
       {
         "@type": "Person",
         "@id": `${baseUrl}#creator`,
         "name": "Love Ghariwala",
-        "jobTitle": "Full-Stack Developer & AI Engineer",
-        "url": baseUrl,
-        "worksFor": { "@id": `${baseUrl}#org` },
+        "url": "https://github.com/loveghariwala",
       },
     ],
   };
@@ -231,16 +200,15 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
         />
         <div className="flex-grow flex flex-col min-w-0">
-          <Security />
           <Navbar />
-          <main className="flex-grow">
+          {/* A div, not <main>: each page renders its own <main>, and nested mains are invalid */}
+          <div className="flex-grow">
             {children}
-          </main>
+          </div>
           <Footer />
           <InstallAppBanner />
         </div>
         <AdsterraSocialBar />
-        <Analytics />
 
       </body>
     </html>

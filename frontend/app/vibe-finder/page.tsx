@@ -4,7 +4,7 @@ import VibeFinderClient from "@/components/vibe/VibeFinderClient";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
 
 export const metadata: Metadata = {
-    title: "What Movie Should I Watch? | NeoCinema",
+    title: { absolute: "What Movie Should I Watch? | Neocinema" },
     description: "Can't decide what movie to watch tonight on Netflix, Prime, or Hulu? Use our free AI Movie Vibe Finder to get instant movie recommendations matching your exact mood and streaming service.",
     keywords: [
         "what movie should i watch",

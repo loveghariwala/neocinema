@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { ChevronLeft, ChevronRight, Flame } from 'lucide-react';
 import Link from "next/link";
 import Image from "next/image";
-import { getTmdbImageUrl } from "@/lib/tmdb";
+import { getTmdbImageUrl } from "@/lib/tmdb-image";
 import { Star } from 'lucide-react';
 import { prepareCardPopunder, handleCardClickPopunder } from "@/lib/adUtils";
 
