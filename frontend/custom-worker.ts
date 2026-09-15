@@ -41,6 +41,3 @@ const worker = {
 };
 
 export default worker;
-
-// @ts-expect-error: generated at build time
-export { DOQueueHandler } from "./.open-next/worker.js";

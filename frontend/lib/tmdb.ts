@@ -14,7 +14,7 @@ import "server-only";
 const BASE_URL = "https://api.themoviedb.org/3";
 
 // ─── Cache TTLs (seconds) ───────────────────────────────────────────────────
-// Passed to fetch's next.revalidate, so responses live in the Next data cache (R2 on
+// Passed to fetch's next.revalidate, so responses live in the Next data cache (static assets on
 // Cloudflare). A page revalidates at the lowest TTL among its fetches, so these must
 // not be lower than the page's own revalidate export.
 

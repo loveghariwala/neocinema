@@ -5,6 +5,10 @@ on:
     branches:
       - master
       - main
+  # The page cache is read-only and baked in at build time, so rebuild daily to refresh TMDB data.
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -33,6 +37,9 @@ jobs:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           WATCHMODE_API_KEY: ${{ secrets.WATCHMODE_API_KEY }}
           KINOCHECK_API_KEY: ${{ secrets.KINOCHECK_API_KEY }}
+
+      - name: Copy prerendered cache into static assets
+        run: npx opennextjs-cloudflare populateCache local
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
