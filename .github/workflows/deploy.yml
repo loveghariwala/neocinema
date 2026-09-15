@@ -28,6 +28,11 @@ jobs:
 
       - name: Build Next.js with OpenNext
         run: npx opennextjs-cloudflare build
+        env:
+          # Needed at build time: static pages are prerendered from TMDB data.
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          WATCHMODE_API_KEY: ${{ secrets.WATCHMODE_API_KEY }}
+          KINOCHECK_API_KEY: ${{ secrets.KINOCHECK_API_KEY }}
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
@@ -36,3 +41,12 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
           workingDirectory: frontend
+          # Uploaded as Worker secrets so ISR/API routes can read them at runtime.
+          secrets: |
+            TMDB_API_KEY
+            WATCHMODE_API_KEY
+            KINOCHECK_API_KEY
+        env:
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          WATCHMODE_API_KEY: ${{ secrets.WATCHMODE_API_KEY }}
+          KINOCHECK_API_KEY: ${{ secrets.KINOCHECK_API_KEY }}
