@@ -5,9 +5,9 @@ on:
     branches:
       - master
       - main
-  # The page cache is read-only and baked in at build time, so rebuild monthly to refresh TMDB data.
+  # The page cache is read-only and baked in at build time, so rebuild every 15 days to refresh TMDB data.
   schedule:
-    - cron: "0 3 1 * *"
+    - cron: "0 3 */15 * *"
   workflow_dispatch:
 
 jobs:
