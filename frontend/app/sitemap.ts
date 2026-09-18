@@ -6,7 +6,7 @@ import { tmdbService, TTL } from '@/lib/tmdb';
 import { BLOCKED_IDS, NOINDEX_IDS } from '@/lib/blockedIds';
 import { SITE_URL } from '@/lib/seo';
 
-export const revalidate = 86400; // 24 h; its TMDB lists are fetched with TTL.detail
+// No `revalidate` — the static-assets cache is read-only; data is refreshed by the daily cron rebuild.
 
 // lastModified is set only where it's a real date. Google ignores lastmod on sites
 // where it's always "now", which is what stamping every URL with the build time does.

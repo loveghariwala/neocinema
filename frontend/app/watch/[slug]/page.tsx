@@ -11,7 +11,7 @@ export function generateStaticParams() {
         slug: landing.slug,
     }));
 }
-export const revalidate = 3600; // 1 h, matches TTL.list in lib/tmdb.ts
+// No `revalidate` — the static-assets cache is read-only; data is refreshed by the daily cron rebuild.
 
 interface PageProps {
     params: Promise<{ slug: string }>;

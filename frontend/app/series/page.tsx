@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react';
 
 import { discoverContentFromServer, getGenresFromServer, searchContentFromServer } from "@/services/movieService";
 
-export const revalidate = 3600; // 1 h, matches TTL.list in lib/tmdb.ts
+// No `revalidate` — the static-assets cache is read-only; data is refreshed by the daily cron rebuild.
 
 // ─── Cached data fetch (shared between generateMetadata + page render) ───────
 const getSeriesPageData = cache(async (searchParams: Record<string, string>) => {

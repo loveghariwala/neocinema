@@ -4,7 +4,7 @@ import HomePageInteractive from "@/components/home/HomePageInteractive";
 import { getTrendingFromServer, discoverContentFromServer, getMovieDetails } from "@/services/movieService";
 import { Metadata } from "next";
 
-export const revalidate = 3600; // 1 h, matches TTL.list in lib/tmdb.ts
+// No `revalidate` — the static-assets cache is read-only; data is refreshed by the daily cron rebuild.
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.neocinematv.com";
 

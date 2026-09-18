@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { SITE_URL, TMDB_IMG, truncate, jsonLd } from "@/lib/seo";
 
-export const revalidate = 86400; // 24 h, matches TTL.detail in lib/tmdb.ts
+// No `revalidate` — the static-assets cache is read-only; data is refreshed by the daily cron rebuild.
 
 export async function generateStaticParams() {
     return [

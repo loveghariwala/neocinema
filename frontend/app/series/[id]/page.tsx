@@ -20,7 +20,7 @@ import { Metadata } from "next";
 // import ServerNoteBanner from "@/components/ui/ServerNoteBanner"; // COMMENTED OUT: Not needed without stream player
 import { Play } from "lucide-react";
 
-export const revalidate = 86400; // 24 h, matches TTL.detail in lib/tmdb.ts
+// No `revalidate` — the static-assets cache is read-only; data is refreshed by the daily cron rebuild.
 
 export async function generateStaticParams() {
     return [
