@@ -42,7 +42,7 @@ export const getKinocheckTrailers = cache(async function getKinocheckTrailers(
     try {
         const tmdbRes = await fetch(
             `https://api.themoviedb.org/3/${typePath}/${tmdbId}/videos?api_key=${tmdbApiKey}&language=en-US`,
-            { next: { revalidate: 86400 } }
+            { next: { revalidate: false } }
         );
         if (tmdbRes.ok) {
             const tmdbData = await tmdbRes.json();
@@ -77,7 +77,7 @@ export const getKinocheckTrailers = cache(async function getKinocheckTrailers(
             ? `https://api.kinocheck.com/shows?tmdb_id=${tmdbId}${apiKey ? `&key=${apiKey}` : ""}`
             : `https://api.kinocheck.com/movies?tmdb_id=${tmdbId}${apiKey ? `&key=${apiKey}` : ""}`;
             
-        const res = await fetch(endpoint, { next: { revalidate: 86400 } });
+        const res = await fetch(endpoint, { next: { revalidate: false } });
         if (res.ok) {
             const data = await res.json();
             const videos = data?.videos || data?.trailer || data?.trailers || [];

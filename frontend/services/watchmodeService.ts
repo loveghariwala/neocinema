@@ -18,14 +18,14 @@ export async function getWatchmodeSources(tmdbId: number, isTv: boolean = false)
         const titleId = `${isTv ? "tv" : "movie"}-${tmdbId}`;
         const res = await fetch(
             `https://api.watchmode.com/v1/title/${titleId}/sources/?apiKey=${apiKey}`,
-            { next: { revalidate: 86400 } }
+            { next: { revalidate: false } }
         );
 
         if (!res.ok) {
             // Fallback search by TMDB ID format
             const searchRes = await fetch(
                 `https://api.watchmode.com/v1/search/?apiKey=${apiKey}&search_field=tmdb_${isTv ? "tv" : "movie"}_id&search_value=${tmdbId}`,
-                { next: { revalidate: 86400 } }
+                { next: { revalidate: false } }
             );
             if (!searchRes.ok) return [];
             const searchData = await searchRes.json();
@@ -34,7 +34,7 @@ export async function getWatchmodeSources(tmdbId: number, isTv: boolean = false)
 
             const sourcesRes = await fetch(
                 `https://api.watchmode.com/v1/title/${foundTitle.id}/sources/?apiKey=${apiKey}`,
-                { next: { revalidate: 86400 } }
+                { next: { revalidate: false } }
             );
             if (!sourcesRes.ok) return [];
             const sourcesData = await sourcesRes.json();

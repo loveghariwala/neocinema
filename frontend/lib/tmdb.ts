@@ -68,7 +68,7 @@ async function tmdbGet(endpoint: string, params: Record<string, any>, ttl: numbe
             response = await fetch(url.toString(), {
                 headers: { "Content-Type": "application/json" },
                 signal: AbortSignal.timeout(5000), // 5s timeout for fast failover on edge workers
-                next: { revalidate: ttl },
+                next: { revalidate: false },
             });
         } catch (error: any) {
             if (isLastAttempt) throw new Error(`TMDB request failed for ${endpoint}: ${error.message}`);
