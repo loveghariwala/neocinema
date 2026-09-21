@@ -5,7 +5,7 @@ on:
     branches:
       - master
       - main
-  # The page cache is read-only and baked in at build time, so rebuild every 15 days to refresh TMDB data.
+  # Scheduled rebuild every 15 days to keep dependency and build artifacts fresh.
   schedule:
     - cron: "0 3 */15 * *"
   workflow_dispatch:
@@ -38,9 +38,6 @@ jobs:
           WATCHMODE_API_KEY: ${{ secrets.WATCHMODE_API_KEY }}
           KINOCHECK_API_KEY: ${{ secrets.KINOCHECK_API_KEY }}
           NEXT_PUBLIC_BASE_URL: https://www.neocinematv.com
-
-      - name: Copy prerendered cache into static assets
-        run: npx opennextjs-cloudflare populateCache local
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
