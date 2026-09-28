@@ -1,5 +1,4 @@
-import "server-only";
-import { cache } from "react";
+
 import { tmdbService } from "@/lib/tmdb";
 import { isMovieBlocked } from "@/lib/blockedIds";
 
@@ -60,7 +59,7 @@ export function parseTmdbId(id: string): number | null {
 }
 
 // Returns null only when the title doesn't exist; TMDB failures throw.
-export const getMovieDetails = cache(async function getMovieDetails(id: string, type: "movie" | "tv" = "movie") {
+export async function getMovieDetails(id: string, type: "movie" | "tv" = "movie") {
     const numId = parseTmdbId(id);
     if (numId === null || isMovieBlocked(id)) return null;
 
@@ -125,7 +124,7 @@ export const getMovieDetails = cache(async function getMovieDetails(id: string, 
         number_of_seasons: data.number_of_seasons || 0,
         number_of_episodes: data.number_of_episodes || 0
     };
-});
+}
 
 export async function searchMovies(query: string, sort: string = "popularity") {
     try {
@@ -229,11 +228,11 @@ export async function getTrendingFromServer(mediaType: string, timeWindow: strin
     return data;
 }
 
-export const getPersonDetails = cache(async function getPersonDetails(id: string) {
+export async function getPersonDetails(id: string) {
     const numId = parseTmdbId(id);
     if (numId === null) return null;
     return tmdbService.getPersonCredits(numId);
-});
+}
 
 export async function getTvSeasonDetail(seriesId: string | number, seasonNumber: number) {
     const data = await tmdbService.getTvSeasonDetail(Number(seriesId), seasonNumber);
