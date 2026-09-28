@@ -33,14 +33,14 @@ interface ServerConfig {
     speed: 1 | 2 | 3;
 }
 
-const SERVERS: ServerConfig[] = [
-    { name: "ALPHA", providerId: 1, baseUrl: "https://vidnest.fun", encryption: "AES-256", quality: "4K", speed: 3 },
-    { name: "BETA", providerId: 2, baseUrl: "https://vidsrc.sbs/embed", encryption: "SSL/TLS", quality: "1080p", speed: 3 },
-    { name: "GAMMA", providerId: 3, baseUrl: "https://player.videasy.to", encryption: "SSL/TLS", quality: "1080p", speed: 3 },
-    { name: "DELTA", providerId: 4, baseUrl: "https://vidlink.pro", encryption: "SSL/TLS", quality: "1080p", speed: 3 },
-    { name: "EPSILON", providerId: 5, baseUrl: "https://vidfast.vc", encryption: "AES-256", quality: "4K", speed: 3 },
-    { name: "ZETA", providerId: 6, baseUrl: "https://peachify.pro/embed", encryption: "AES-256", quality: "4K", speed: 2 },
-    { name: "ETA", providerId: 7, baseUrl: "https://www.vidking.net/embed", encryption: "E2E", quality: "1080p", speed: 3 },
+const SERVERS: (Omit<ServerConfig, 'baseUrl'> & { encodedUrl: string })[] = [
+    { name: "ALPHA", providerId: 1, encodedUrl: "aHR0cHM6Ly92aWRuZXN0LmZ1bg==", encryption: "AES-256", quality: "4K", speed: 3 },
+    { name: "BETA", providerId: 2, encodedUrl: "aHR0cHM6Ly92aWRzcmMuc2JzL2VtYmVk", encryption: "SSL/TLS", quality: "1080p", speed: 3 },
+    { name: "GAMMA", providerId: 3, encodedUrl: "aHR0cHM6Ly9wbGF5ZXIudmlkZWFzeS50bw==", encryption: "SSL/TLS", quality: "1080p", speed: 3 },
+    { name: "DELTA", providerId: 4, encodedUrl: "aHR0cHM6Ly92aWRsaW5rLnBybw==", encryption: "SSL/TLS", quality: "1080p", speed: 3 },
+    { name: "EPSILON", providerId: 5, encodedUrl: "aHR0cHM6Ly92aWRmYXN0LnZj", encryption: "AES-256", quality: "4K", speed: 3 },
+    { name: "ZETA", providerId: 6, encodedUrl: "aHR0cHM6Ly9wZWFjaGlmeS5wcm8vZW1iZWQ=", encryption: "AES-256", quality: "4K", speed: 2 },
+    { name: "ETA", providerId: 7, encodedUrl: "aHR0cHM6Ly93d3cudmlka2luZy5uZXQvZW1iZWQ=", encryption: "E2E", quality: "1080p", speed: 3 },
 ];
 
 const encryptionColor: Record<string, string> = {
@@ -80,6 +80,7 @@ export default function StreamPlayer({
     const [streamFailed, setStreamFailed] = useState(false);
     const [triedServerIndices, setTriedServerIndices] = useState<number[]>([]);
     const [showServerPanel, setShowServerPanel] = useState(false);
+    const [hasStarted, setHasStarted] = useState(autoPlay);
     const loadTimerRef = useRef<NodeJS.Timeout | null>(null);
     const playerContainerRef = useRef<HTMLDivElement>(null);
 
@@ -120,6 +121,7 @@ export default function StreamPlayer({
     // Embed URL construction with requested parameters: autoplay, nextButton, episodeSelector
     const streamUrl = useMemo(() => {
         const server = SERVERS[selectedServerIndex] || SERVERS[0];
+        const baseUrl = typeof window !== 'undefined' ? atob(server.encodedUrl) : "";
         const tvParams = "autoplay=1&autoPlay=true&nextButton=true&autoNext=true&episodeSelector=true&nextEpisode=true";
         const movieParams = "autoplay=1&autoPlay=true";
         const params = isTv ? tvParams : movieParams;
@@ -134,7 +136,7 @@ export default function StreamPlayer({
             return `https://vidlink.pro/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?primaryColor=dc2626&${params}`;
         }
 
-        return `${server.baseUrl}/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?${params}`;
+        return `${baseUrl}/${typePath}/${tmdbId}${isTv ? `/${selectedSeason}/${selectedEpisode}` : ""}?${params}`;
     }, [selectedServerIndex, tmdbId, typePath, isTv, selectedSeason, selectedEpisode]);
 
     // Reset loading state when stream changes
@@ -145,7 +147,7 @@ export default function StreamPlayer({
 
     // Auto-try next server after 15 seconds of loading
     useEffect(() => {
-        if (!isLoading) {
+        if (!hasStarted || !isLoading) {
             if (loadTimerRef.current) clearTimeout(loadTimerRef.current);
             return;
         }
@@ -224,8 +226,18 @@ export default function StreamPlayer({
     const hasNextEpisode = isTv && (selectedEpisode < maxEpisodes || selectedSeason < activeSeasons.length);
     const hasPrevEpisode = isTv && (selectedEpisode > 1 || selectedSeason > 1);
 
+    // Anti-bot check: hide the player completely if accessed by a known bot or headless browser
+    const isBot = typeof window !== 'undefined' && (
+        navigator.webdriver || 
+        /bot|googlebot|crawler|spider|robot|crawling|bingbot/i.test(navigator.userAgent)
+    );
+
+    if (isBot) {
+        return null;
+    }
+
     return (
-        <div id="inline-stream-player" ref={playerContainerRef} className="w-full my-6 sm:my-8 rounded-2xl md:rounded-3xl border border-white/10 bg-neutral-950/90 shadow-[0_20px_80px_rgba(0,0,0,0.8)] transition-all duration-500 backdrop-blur-2xl relative z-30">
+        <div id="inline-stream-player" ref={playerContainerRef} className="w-full my-6 sm:my-8 rounded-2xl md:rounded-3xl border border-white/10 bg-neutral-950/90 shadow-[0_20px_80px_rgba(0,0,0,0.8)] transition-all duration-500 backdrop-blur-2xl relative z-30" data-nosnippet="true">
             {/* Click-outside Backdrop for Dropdowns */}
             {(showSeasonDropdown || showEpisodeDropdown) && (
                 <div
@@ -367,55 +379,81 @@ export default function StreamPlayer({
 
             {/* ─── 16:9 Aspect Ratio Iframe Screen ───────────────────────── */}
             <div className="relative w-full aspect-video bg-black overflow-hidden group">
-                {isLoading && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-neutral-950 z-20">
-                        <div className="relative h-20 w-20">
-                            <div className="absolute inset-0 rounded-full border-4 border-white/5" />
-                            <div className="absolute inset-0 rounded-full border-t-4 border-red-600 animate-spin" />
-                            <div className="absolute inset-2 rounded-full border-b-2 border-red-500/30 animate-pulse" />
-                        </div>
-                        <div className="text-center px-4">
-                            <h4 className="text-sm sm:text-base font-black text-white uppercase tracking-[0.2em]">Connecting Stream</h4>
-                            <p className="text-[10px] sm:text-xs text-neutral-400 font-bold mt-1">
-                                SERVER: <span className="text-red-400">{currentServer.name}</span> ({selectedServerIndex + 1}/{SERVERS.length})
-                            </p>
-                        </div>
+                {!hasStarted ? (
+                    <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-neutral-900/50 backdrop-blur-sm">
+                        {backdropPath && (
+                            <img
+                                src={`https://image.tmdb.org/t/p/w1280${backdropPath}`}
+                                alt={title}
+                                className="absolute inset-0 w-full h-full object-cover opacity-50"
+                            />
+                        )}
+                        <div className="absolute inset-0 bg-black/40" />
+                        <button
+                            onClick={() => setHasStarted(true)}
+                            className="relative z-10 flex flex-col items-center justify-center gap-3 transition-transform hover:scale-105 active:scale-95"
+                        >
+                            <div className="rounded-full bg-red-600 p-5 shadow-[0_0_40px_rgba(220,38,38,0.6)] flex items-center justify-center">
+                                <Play fill="currentColor" size={32} className="text-white ml-1" />
+                            </div>
+                            <span className="text-sm font-black uppercase tracking-widest text-white shadow-black drop-shadow-md">
+                                Start Stream
+                            </span>
+                        </button>
                     </div>
-                )}
+                ) : (
+                    <>
+                        {isLoading && (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-neutral-950 z-20">
+                                <div className="relative h-20 w-20">
+                                    <div className="absolute inset-0 rounded-full border-4 border-white/5" />
+                                    <div className="absolute inset-0 rounded-full border-t-4 border-red-600 animate-spin" />
+                                    <div className="absolute inset-2 rounded-full border-b-2 border-red-500/30 animate-pulse" />
+                                </div>
+                                <div className="text-center px-4">
+                                    <h4 className="text-sm sm:text-base font-black text-white uppercase tracking-[0.2em]">Connecting Stream</h4>
+                                    <p className="text-[10px] sm:text-xs text-neutral-400 font-bold mt-1">
+                                        SERVER: <span className="text-red-400">{currentServer.name}</span> ({selectedServerIndex + 1}/{SERVERS.length})
+                                    </p>
+                                </div>
+                            </div>
+                        )}
 
-                {streamFailed && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-neutral-950 z-30 px-6">
-                        <div className="rounded-full bg-red-600/10 p-4 border border-red-600/20">
-                            <AlertCircle size={36} className="text-red-500" />
-                        </div>
-                        <div className="text-center max-w-md">
-                            <h4 className="text-base font-black text-white mb-1">Server Unavailable</h4>
-                            <p className="text-xs text-neutral-400 mb-4">
-                                Stream failed to respond. Please try switching servers below or retry all.
-                            </p>
-                            <button
-                                onClick={handleRetryAll}
-                                className="flex items-center gap-2 mx-auto rounded-full bg-red-600 px-5 py-2 text-xs font-black text-white hover:bg-red-700 transition-all"
-                            >
-                                <RefreshCw size={14} />
-                                RETRY ALL SERVERS
-                            </button>
-                        </div>
-                    </div>
-                )}
+                        {streamFailed && (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-neutral-950 z-30 px-6">
+                                <div className="rounded-full bg-red-600/10 p-4 border border-red-600/20">
+                                    <AlertCircle size={36} className="text-red-500" />
+                                </div>
+                                <div className="text-center max-w-md">
+                                    <h4 className="text-base font-black text-white mb-1">Server Unavailable</h4>
+                                    <p className="text-xs text-neutral-400 mb-4">
+                                        Stream failed to respond. Please try switching servers below or retry all.
+                                    </p>
+                                    <button
+                                        onClick={handleRetryAll}
+                                        className="flex items-center gap-2 mx-auto rounded-full bg-red-600 px-5 py-2 text-xs font-black text-white hover:bg-red-700 transition-all"
+                                    >
+                                        <RefreshCw size={14} />
+                                        RETRY ALL SERVERS
+                                    </button>
+                                </div>
+                            </div>
+                        )}
 
-                <iframe
-                    key={streamUrl}
-                    src={streamUrl}
-                    className="w-full h-full border-none"
-                    allowFullScreen
-                    referrerPolicy="no-referrer"
-                    allow="autoplay; encrypted-media"
-                    onLoad={() => {
-                        setIsLoading(false);
-                        setStreamFailed(false);
-                    }}
-                />
+                        <iframe
+                            key={streamUrl}
+                            src={streamUrl}
+                            className="w-full h-full border-none"
+                            allowFullScreen
+                            referrerPolicy="no-referrer"
+                            allow="autoplay; encrypted-media"
+                            onLoad={() => {
+                                setIsLoading(false);
+                                setStreamFailed(false);
+                            }}
+                        />
+                    </>
+                )}
 
                 {/* Overlay Server Selection Grid */}
                 {showServerPanel && (

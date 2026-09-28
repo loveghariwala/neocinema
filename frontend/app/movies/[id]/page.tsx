@@ -9,13 +9,13 @@ import Image from "next/image";
 import { getTmdbImageUrl } from "@/lib/tmdb-image";
 import Link from "next/link";
 import nextDynamic from "next/dynamic";
-// const StreamPlayer = nextDynamic(() => import("@/components/player/StreamPlayer")); // COMMENTED OUT: Removed pirate stream embeds for legal compliance
+const StreamPlayer = nextDynamic(() => import("@/components/player/ClientStreamPlayer"));
 const WatchmodeAvailabilityBanner = nextDynamic(() => import("@/components/ui/WatchmodeAvailabilityBanner"));
 const KinocheckTrailerSection = nextDynamic(() => import("@/components/player/KinocheckTrailerSection"));
 const AdsterraNativeBanner = nextDynamic(() => import("@/components/ads/AdsterraNativeBanner"));
 import ShareButton from "@/components/ui/ShareButton";
 import { Metadata } from "next";
-// import ServerNoteBanner from "@/components/ui/ServerNoteBanner"; // COMMENTED OUT: Not needed without stream player
+import ServerNoteBanner from "@/components/ui/ServerNoteBanner";
 import { Play } from "lucide-react";
 
 // No `revalidate` — the static-assets cache is read-only; data is refreshed by the daily cron rebuild.
@@ -120,7 +120,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         alternates: {
             canonical: canonicalUrl,
         },
-        robots: isBlocked || isMovieNoIndex(id)
+        robots: isBlocked || isMovieNoIndex(id) || (movie as any).origin_country?.includes("RU") || (movie as any).production_countries?.some((c: any) => c.iso_3166_1 === "RU") || (movie as any).original_language === "ru"
             ? { index: false, follow: false }
             : { index: true, follow: true },
         openGraph: {
@@ -373,6 +373,17 @@ export default async function MovieDetailsPage({
 
                 {/* CONTENT GRID */}
                 <div className="relative z-20 max-w-7xl mx-auto space-y-12 sm:space-y-16 px-4 sm:px-6 lg:px-8 pb-20 sm:pb-32 min-w-0">
+                    <ServerNoteBanner />
+                    
+                    <div className="w-full">
+                        <StreamPlayer
+                            tmdbId={movie.tmdbId}
+                            imdbId={movie.imdbId}
+                            title={movie.title}
+                            posterPath={movie.posterPath}
+                            backdropPath={movie.backdropPath}
+                        />
+                    </div>
                     
                     {/* OFFICIAL TRAILERS & WATCHMODE STREAMING AVAILABILITY */}
                     <div id="trailers-section" className="space-y-6 min-w-0">

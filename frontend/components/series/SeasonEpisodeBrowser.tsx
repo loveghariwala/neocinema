@@ -67,6 +67,19 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons, initialEpisode
         router.push(`?${params.toString()}`, { scroll: false });
     };
 
+    const changeEpisode = (episodeNumber: number) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("season", String(activeSeason));
+        params.set("episode", String(episodeNumber));
+        router.push(`?${params.toString()}`, { scroll: false });
+        
+        // Scroll to player smoothly
+        const player = document.getElementById("inline-stream-player");
+        if (player) {
+            player.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    };
+
     return (
         <div className="space-y-8 select-none">
             {/* Header / Tabs */}
@@ -115,9 +128,10 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons, initialEpisode
                             : null;
 
                         return (
-                            <div
+                            <button
                                 key={episode.id}
-                                className="group relative flex flex-row rounded-2xl border border-white/5 bg-white/[0.02] overflow-hidden transition-all h-28 sm:h-36 md:h-40"
+                                onClick={() => changeEpisode(episode.episode_number)}
+                                className="group relative flex flex-row rounded-2xl border border-white/5 bg-white/[0.02] overflow-hidden transition-all h-28 sm:h-36 md:h-40 hover:bg-white/[0.05] hover:border-white/20 text-left w-full cursor-pointer touch-manipulation active:scale-[0.98]"
                             >
                                 {/* Thumbnail Image (Left Side) */}
                                 <div className="relative h-full w-32 sm:w-48 md:w-64 flex-shrink-0 bg-neutral-900/60 flex items-center justify-center overflow-hidden border-r border-white/5">
@@ -162,7 +176,7 @@ export default function SeasonEpisodeBrowser({ seriesId, seasons, initialEpisode
                                         </p>
                                     </div>
                                 </div>
-                            </div>
+                            </button>
                         );
                     })
                 )}

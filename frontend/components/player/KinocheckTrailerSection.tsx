@@ -51,7 +51,7 @@ export default function KinocheckTrailerSection({ tmdbId, title, isTv = false, t
     const activeTrailerToDisplay = selectedTrailer || mainTrailer;
 
     return (
-        <div className="w-full my-8 space-y-4">
+        <div className="w-full max-w-xl mx-auto my-8 space-y-2">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <div className="p-2 rounded-xl bg-red-600/20 border border-red-500/30 text-red-500">
@@ -183,11 +183,10 @@ export default function KinocheckTrailerSection({ tmdbId, title, isTv = false, t
                         <button
                             key={trailer.id || trailer.youtube_video_id}
                             onClick={() => handleSelectTrailer(trailer)}
-                            className={`group relative rounded-2xl overflow-hidden border bg-neutral-900 aspect-video text-left transition-all hover:scale-[1.03] shadow-lg cursor-pointer touch-manipulation ${
-                                selectedTrailer?.youtube_video_id === trailer.youtube_video_id
-                                    ? "border-red-500 ring-2 ring-red-500/50"
-                                    : "border-white/10 hover:border-red-500/50"
-                            }`}
+                            className={`group relative rounded-2xl overflow-hidden border bg-neutral-900 aspect-video text-left transition-all hover:scale-[1.03] shadow-lg cursor-pointer touch-manipulation ${selectedTrailer?.youtube_video_id === trailer.youtube_video_id
+                                ? "border-red-500 ring-2 ring-red-500/50"
+                                : "border-white/10 hover:border-red-500/50"
+                                }`}
                         >
                             <img
                                 src={trailer.youtube_thumbnail}
